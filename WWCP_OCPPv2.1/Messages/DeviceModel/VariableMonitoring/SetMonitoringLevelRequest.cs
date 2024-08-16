@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new SetMonitoringLevel request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -80,23 +80,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetMonitoringLevelRequest(NetworkingNode_Id             DestinationId,
-                                         Severities                    Severity,
+        public SetMonitoringLevelRequest(SourceRouting            Destination,
+                                         Severities               Severity,
 
-                                         IEnumerable<KeyPair>?         SignKeys            = null,
-                                         IEnumerable<SignInfo>?        SignInfos           = null,
-                                         IEnumerable<Signature>?       Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                         IEnumerable<Signature>?  Signatures          = null,
 
-                                         CustomData?                   CustomData          = null,
+                                         CustomData?              CustomData          = null,
 
-                                         Request_Id?                   RequestId           = null,
-                                         DateTime?                     RequestTimestamp    = null,
-                                         TimeSpan?                     RequestTimeout      = null,
-                                         EventTracking_Id?             EventTrackingId     = null,
-                                         NetworkPath?                  NetworkPath         = null,
-                                         CancellationToken             CancellationToken   = default)
+                                         Request_Id?              RequestId           = null,
+                                         DateTime?                RequestTimestamp    = null,
+                                         TimeSpan?                RequestTimeout      = null,
+                                         EventTracking_Id?        EventTrackingId     = null,
+                                         NetworkPath?             NetworkPath         = null,
+                                         CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(SetMonitoringLevelRequest)[..^7],
 
                    SignKeys,
@@ -167,14 +167,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetMonitoringLevelRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetMonitoringLevelRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SetMonitoringLevel request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom SetMonitoringLevel requests.</param>
         public static SetMonitoringLevelRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      NetworkingNode_Id                                        DestinationId,
+                                                      SourceRouting                                            SourceRouting,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var setMonitoringLevelRequest,
                          out var errorResponse,
@@ -211,14 +211,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetMonitoringLevelRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetMonitoringLevelRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetMonitoringLevel request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetMonitoringLevelRequest">The parsed SetMonitoringLevel request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom SetMonitoringLevel requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       NetworkingNode_Id                                        DestinationId,
+                                       SourceRouting                                            SourceRouting,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SetMonitoringLevelRequest?      SetMonitoringLevelRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetMonitoringLevelRequest = new SetMonitoringLevelRequest(
 
-                                                DestinationId,
+                                                    SourceRouting,
                                                 Severity.Value,
 
                                                 null,

@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections;
 
 #endregion
 
@@ -197,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             = new ("0");
 
         /// <summary>
-        /// Route this message to the next Charging Station Management System (OCPP v1.x: Central System).
+        /// Route this message to the next Charging Station Management System.
         /// </summary>
         public static NetworkingNode_Id  CSMS    { get; }
             = new ("CSMS");

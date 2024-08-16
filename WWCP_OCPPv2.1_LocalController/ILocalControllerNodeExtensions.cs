@@ -51,15 +51,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.BootNotificationResponse>
+        public static Task<BootNotificationResponse>
 
-            SendBootNotification(this ILocalControllerNode         LocalController,
+            SendBootNotification(this ILocalControllerNode     LocalController,
 
                                  BootReason                    BootReason,
 
                                  CustomData?                   CustomData           = null,
 
-                                 NetworkingNode_Id?            DestinationId        = null,
+                                 SourceRouting?                Destination         = null,
                                  NetworkPath?                  NetworkPath          = null,
 
                                  IEnumerable<KeyPair>?         SignKeys             = null,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.BootNotification(
                        new BootNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            new ChargingStation(
                                LocalController.Model,
@@ -120,16 +120,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.FirmwareStatusNotificationResponse>
+        public static Task<FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this ILocalControllerNode         LocalController,
+            SendFirmwareStatusNotification(this ILocalControllerNode     LocalController,
 
                                            FirmwareStatus                Status,
                                            Int64?                        UpdateFirmwareRequestId   = null,
 
                                            CustomData?                   CustomData                = null,
 
-                                           NetworkingNode_Id?            DestinationId         = null,
+                                           SourceRouting?                Destination               = null,
                                            NetworkPath?                  NetworkPath               = null,
 
                                            IEnumerable<KeyPair>?         SignKeys                  = null,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.FirmwareStatusNotification(
                        new FirmwareStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            UpdateFirmwareRequestId,
@@ -184,9 +184,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.PublishFirmwareStatusNotificationResponse>
+        public static Task<PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(this ILocalControllerNode         LocalController,
+            SendPublishFirmwareStatusNotification(this ILocalControllerNode     LocalController,
 
                                                   PublishFirmwareStatus         Status,
                                                   Int32?                        PublishFirmwareStatusNotificationRequestId,
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                                   CustomData?                   CustomData          = null,
 
-                                                  NetworkingNode_Id?            DestinationId   = null,
+                                                  SourceRouting?                Destination         = null,
                                                   NetworkPath?                  NetworkPath         = null,
 
                                                   IEnumerable<KeyPair>?         SignKeys            = null,
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.PublishFirmwareStatusNotification(
                        new PublishFirmwareStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            PublishFirmwareStatusNotificationRequestId,
@@ -247,13 +247,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.HeartbeatResponse>
+        public static Task<HeartbeatResponse>
 
-            SendHeartbeat(this ILocalControllerNode         LocalController,
+            SendHeartbeat(this ILocalControllerNode     LocalController,
 
                           CustomData?                   CustomData          = null,
 
-                          NetworkingNode_Id?            DestinationId   = null,
+                          SourceRouting?                Destination         = null,
                           NetworkPath?                  NetworkPath         = null,
 
                           IEnumerable<KeyPair>?         SignKeys            = null,
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.Heartbeat(
                        new HeartbeatRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            SignKeys,
                            SignInfos,
@@ -306,9 +306,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyEventResponse>
+        public static Task<NotifyEventResponse>
 
-            NotifyEvent(this ILocalControllerNode         LocalController,
+            NotifyEvent(this ILocalControllerNode     LocalController,
 
                         DateTime                      GeneratedAt,
                         UInt32                        SequenceNumber,
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                         CustomData?                   CustomData          = null,
 
-                        NetworkingNode_Id?            DestinationId   = null,
+                        SourceRouting?                Destination         = null,
                         NetworkPath?                  NetworkPath         = null,
 
                         IEnumerable<KeyPair>?         SignKeys            = null,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyEvent(
                        new NotifyEventRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            GeneratedAt,
                            SequenceNumber,
@@ -374,9 +374,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.SecurityEventNotificationResponse>
+        public static Task<SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(this ILocalControllerNode         LocalController,
+            SendSecurityEventNotification(this ILocalControllerNode     LocalController,
 
                                           SecurityEventType             Type,
                                           DateTime                      Timestamp,
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                           CustomData?                   CustomData          = null,
 
-                                          NetworkingNode_Id?            DestinationId   = null,
+                                          SourceRouting?                Destination         = null,
                                           NetworkPath?                  NetworkPath         = null,
 
                                           IEnumerable<KeyPair>?         SignKeys            = null,
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.SecurityEventNotification(
                        new SecurityEventNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Type,
                            Timestamp,
@@ -442,9 +442,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyReportResponse>
+        public static Task<NotifyReportResponse>
 
-            NotifyReport(this ILocalControllerNode         LocalController,
+            NotifyReport(this ILocalControllerNode     LocalController,
 
                          Int32                         NotifyReportRequestId,
                          UInt32                        SequenceNumber,
@@ -454,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                          CustomData?                   CustomData          = null,
 
-                         NetworkingNode_Id?            DestinationId   = null,
+                         SourceRouting?                Destination         = null,
                          NetworkPath?                  NetworkPath         = null,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyReport(
                        new NotifyReportRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyReportRequestId,
                            SequenceNumber,
@@ -514,9 +514,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyMonitoringReportResponse>
+        public static Task<NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(this ILocalControllerNode         LocalController,
+            NotifyMonitoringReport(this ILocalControllerNode     LocalController,
 
                                    Int32                         NotifyMonitoringReportRequestId,
                                    UInt32                        SequenceNumber,
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                    CustomData?                   CustomData          = null,
 
-                                   NetworkingNode_Id?            DestinationId   = null,
+                                   SourceRouting?                Destination         = null,
                                    NetworkPath?                  NetworkPath         = null,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
@@ -543,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyMonitoringReport(
                        new NotifyMonitoringReportRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
@@ -583,16 +583,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.LogStatusNotificationResponse>
+        public static Task<LogStatusNotificationResponse>
 
-            SendLogStatusNotification(this ILocalControllerNode         LocalController,
+            SendLogStatusNotification(this ILocalControllerNode     LocalController,
 
                                       UploadLogStatus               Status,
                                       Int32?                        LogRequestId        = null,
 
                                       CustomData?                   CustomData          = null,
 
-                                      NetworkingNode_Id?            DestinationId   = null,
+                                      SourceRouting?                Destination         = null,
                                       NetworkPath?                  NetworkPath         = null,
 
                                       IEnumerable<KeyPair>?         SignKeys            = null,
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.LogStatusNotification(
                        new LogStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            LogRequestId,
@@ -648,9 +648,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.SignCertificateResponse>
+        public static Task<SignCertificateResponse>
 
-            SendCertificateSigningRequest(this ILocalControllerNode         LocalController,
+            SendCertificateSigningRequest(this ILocalControllerNode     LocalController,
 
                                           String                        CSR,
                                           Int32                         SignCertificateRequestId,
@@ -658,7 +658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                           CustomData?                   CustomData          = null,
 
-                                          NetworkingNode_Id?            DestinationId   = null,
+                                          SourceRouting?                Destination         = null,
                                           NetworkPath?                  NetworkPath         = null,
 
                                           IEnumerable<KeyPair>?         SignKeys            = null,
@@ -675,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.SignCertificate(
                        new SignCertificateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            CSR,
                            SignCertificateRequestId,
@@ -716,9 +716,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.Get15118EVCertificateResponse>
+        public static Task<Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(this ILocalControllerNode         LocalController,
+            Get15118EVCertificate(this ILocalControllerNode     LocalController,
 
                                   ISO15118SchemaVersion         ISO15118SchemaVersion,
                                   CertificateAction             CertificateAction,
@@ -728,7 +728,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                   CustomData?                   CustomData                         = null,
 
-                                  NetworkingNode_Id?            DestinationId                  = null,
+                                  SourceRouting?                Destination                        = null,
                                   NetworkPath?                  NetworkPath                        = null,
 
                                   IEnumerable<KeyPair>?         SignKeys                           = null,
@@ -745,7 +745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.Get15118EVCertificate(
                        new Get15118EVCertificateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ISO15118SchemaVersion,
                            CertificateAction,
@@ -784,15 +784,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.GetCertificateStatusResponse>
+        public static Task<GetCertificateStatusResponse>
 
-            GetCertificateStatus(this ILocalControllerNode         LocalController,
+            GetCertificateStatus(this ILocalControllerNode     LocalController,
 
                                  OCSPRequestData               OCSPRequestData,
 
                                  CustomData?                   CustomData          = null,
 
-                                 NetworkingNode_Id?            DestinationId   = null,
+                                 SourceRouting?                Destination         = null,
                                  NetworkPath?                  NetworkPath         = null,
 
                                  IEnumerable<KeyPair>?         SignKeys            = null,
@@ -809,7 +809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.GetCertificateStatus(
                        new GetCertificateStatusRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            OCSPRequestData,
 
@@ -846,16 +846,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.GetCRLResponse>
+        public static Task<GetCRLResponse>
 
-            GetCRLRequest(this ILocalControllerNode         LocalController,
+            GetCRLRequest(this ILocalControllerNode     LocalController,
 
                           UInt32                        GetCRLRequestId,
                           CertificateHashData           CertificateHashData,
 
                           CustomData?                   CustomData          = null,
 
-                          NetworkingNode_Id?            DestinationId   = null,
+                          SourceRouting?                Destination         = null,
                           NetworkPath?                  NetworkPath         = null,
 
                           IEnumerable<KeyPair>?         SignKeys            = null,
@@ -872,7 +872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.GetCRL(
                        new GetCRLRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            GetCRLRequestId,
                            CertificateHashData,
@@ -910,16 +910,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.ReservationStatusUpdateResponse>
+        public static Task<ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(this ILocalControllerNode         LocalController,
+            SendReservationStatusUpdate(this ILocalControllerNode     LocalController,
 
                                         Reservation_Id                ReservationId,
                                         ReservationUpdateStatus       ReservationUpdateStatus,
 
                                         CustomData?                   CustomData          = null,
 
-                                        NetworkingNode_Id?            DestinationId   = null,
+                                        SourceRouting?                Destination         = null,
                                         NetworkPath?                  NetworkPath         = null,
 
                                         IEnumerable<KeyPair>?         SignKeys            = null,
@@ -936,7 +936,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.ReservationStatusUpdate(
                        new ReservationStatusUpdateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ReservationId,
                            ReservationUpdateStatus,
@@ -974,9 +974,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.AuthorizeResponse>
+        public static Task<AuthorizeResponse>
 
-            Authorize(this ILocalControllerNode          LocalController,
+            Authorize(this ILocalControllerNode      LocalController,
 
                       IdToken                        IdToken,
                       Certificate?                   Certificate                   = null,
@@ -984,7 +984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                       CustomData?                    CustomData                    = null,
 
-                      NetworkingNode_Id?             DestinationId             = null,
+                      SourceRouting?                 Destination                   = null,
                       NetworkPath?                   NetworkPath                   = null,
 
                       IEnumerable<KeyPair>?          SignKeys                      = null,
@@ -1001,7 +1001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.Authorize(
                        new AuthorizeRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            IdToken,
                            Certificate,
@@ -1041,9 +1041,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyEVChargingNeedsResponse>
+        public static Task<NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(this ILocalControllerNode         LocalController,
+            NotifyEVChargingNeeds(this ILocalControllerNode     LocalController,
 
                                   EVSE_Id                       EVSEId,
                                   ChargingNeeds                 ChargingNeeds,
@@ -1052,7 +1052,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                   CustomData?                   CustomData          = null,
 
-                                  NetworkingNode_Id?            DestinationId   = null,
+                                  SourceRouting?                Destination         = null,
                                   NetworkPath?                  NetworkPath         = null,
 
                                   IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1069,7 +1069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyEVChargingNeeds(
                        new NotifyEVChargingNeedsRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EVSEId,
                            ChargingNeeds,
@@ -1120,9 +1120,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.TransactionEventResponse>
+        public static Task<TransactionEventResponse>
 
-            SendTransactionEvent(this ILocalControllerNode         LocalController,
+            SendTransactionEvent(this ILocalControllerNode     LocalController,
 
                                  TransactionEvents             EventType,
                                  DateTime                      Timestamp,
@@ -1141,7 +1141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                  CustomData?                   CustomData              = null,
 
-                                 NetworkingNode_Id?            DestinationId       = null,
+                                 SourceRouting?                Destination             = null,
                                  NetworkPath?                  NetworkPath             = null,
 
                                  IEnumerable<KeyPair>?         SignKeys                = null,
@@ -1158,7 +1158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.TransactionEvent(
                        new TransactionEventRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EventType,
                            Timestamp,
@@ -1209,9 +1209,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.StatusNotificationResponse>
+        public static Task<StatusNotificationResponse>
 
-            SendStatusNotification(this ILocalControllerNode         LocalController,
+            SendStatusNotification(this ILocalControllerNode     LocalController,
 
                                    EVSE_Id                       EVSEId,
                                    Connector_Id                  ConnectorId,
@@ -1220,7 +1220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                    CustomData?                   CustomData          = null,
 
-                                   NetworkingNode_Id?            DestinationId   = null,
+                                   SourceRouting?                Destination         = null,
                                    NetworkPath?                  NetworkPath         = null,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1237,7 +1237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.StatusNotification(
                        new StatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Timestamp,
                            Status,
@@ -1276,16 +1276,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.MeterValuesResponse>
+        public static Task<MeterValuesResponse>
 
-            SendMeterValues(this ILocalControllerNode         LocalController,
+            SendMeterValues(this ILocalControllerNode     LocalController,
 
                             EVSE_Id                       EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>       MeterValues,
 
                             CustomData?                   CustomData          = null,
 
-                            NetworkingNode_Id?            DestinationId   = null,
+                            SourceRouting?                Destination         = null,
                             NetworkPath?                  NetworkPath         = null,
 
                             IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1302,7 +1302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.MeterValues(
                        new MeterValuesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EVSEId,
                            MeterValues,
@@ -1340,9 +1340,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyChargingLimitResponse>
+        public static Task<NotifyChargingLimitResponse>
 
-            NotifyChargingLimit(this ILocalControllerNode          LocalController,
+            NotifyChargingLimit(this ILocalControllerNode      LocalController,
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
@@ -1350,7 +1350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                 CustomData?                    CustomData          = null,
 
-                                NetworkingNode_Id?             DestinationId   = null,
+                                SourceRouting?                 Destination         = null,
                                 NetworkPath?                   NetworkPath         = null,
 
                                 IEnumerable<KeyPair>?          SignKeys            = null,
@@ -1367,7 +1367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyChargingLimit(
                        new NotifyChargingLimitRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ChargingLimit,
                            ChargingSchedules,
@@ -1405,16 +1405,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.ClearedChargingLimitResponse>
+        public static Task<ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(this ILocalControllerNode         LocalController,
+            SendClearedChargingLimit(this ILocalControllerNode     LocalController,
 
                                      ChargingLimitSource           ChargingLimitSource,
                                      EVSE_Id?                      EVSEId,
 
                                      CustomData?                   CustomData          = null,
 
-                                     NetworkingNode_Id?            DestinationId   = null,
+                                     SourceRouting?                Destination         = null,
                                      NetworkPath?                  NetworkPath         = null,
 
                                      IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1431,7 +1431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.ClearedChargingLimit(
                        new ClearedChargingLimitRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ChargingLimitSource,
                            EVSEId,
@@ -1471,9 +1471,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.ReportChargingProfilesResponse>
+        public static Task<ReportChargingProfilesResponse>
 
-            ReportChargingProfiles(this ILocalControllerNode         LocalController,
+            ReportChargingProfiles(this ILocalControllerNode     LocalController,
 
                                    Int32                         ReportChargingProfilesRequestId,
                                    ChargingLimitSource           ChargingLimitSource,
@@ -1483,7 +1483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                    CustomData?                   CustomData          = null,
 
-                                   NetworkingNode_Id?            DestinationId   = null,
+                                   SourceRouting?                Destination         = null,
                                    NetworkPath?                  NetworkPath         = null,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1500,7 +1500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.ReportChargingProfiles(
                        new ReportChargingProfilesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ReportChargingProfilesRequestId,
                            ChargingLimitSource,
@@ -1543,9 +1543,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyEVChargingScheduleResponse>
+        public static Task<NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(this ILocalControllerNode         LocalController,
+            NotifyEVChargingSchedule(this ILocalControllerNode     LocalController,
 
                                      DateTime                      TimeBase,
                                      EVSE_Id                       EVSEId,
@@ -1555,7 +1555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                      CustomData?                   CustomData                 = null,
 
-                                     NetworkingNode_Id?            DestinationId          = null,
+                                     SourceRouting?                Destination                = null,
                                      NetworkPath?                  NetworkPath                = null,
 
                                      IEnumerable<KeyPair>?         SignKeys                   = null,
@@ -1572,7 +1572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyEVChargingSchedule(
                        new NotifyEVChargingScheduleRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            TimeBase,
                            EVSEId,
@@ -1612,16 +1612,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyPriorityChargingResponse>
+        public static Task<NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(this ILocalControllerNode         LocalController,
+            NotifyPriorityCharging(this ILocalControllerNode     LocalController,
 
                                    Transaction_Id                TransactionId,
                                    Boolean                       Activated,
 
                                    CustomData?                   CustomData          = null,
 
-                                   NetworkingNode_Id?            DestinationId   = null,
+                                   SourceRouting?                Destination         = null,
                                    NetworkPath?                  NetworkPath         = null,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1638,7 +1638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyPriorityCharging(
                        new NotifyPriorityChargingRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            TransactionId,
                            Activated,
@@ -1674,15 +1674,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.PullDynamicScheduleUpdateResponse>
+        public static Task<PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(this ILocalControllerNode         LocalController,
+            PullDynamicScheduleUpdate(this ILocalControllerNode     LocalController,
 
                                       ChargingProfile_Id            ChargingProfileId,
 
                                       CustomData?                   CustomData          = null,
 
-                                      NetworkingNode_Id?            DestinationId   = null,
+                                      SourceRouting?                Destination         = null,
                                       NetworkPath?                  NetworkPath         = null,
 
                                       IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.PullDynamicScheduleUpdate(
                        new PullDynamicScheduleUpdateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ChargingProfileId,
 
@@ -1737,9 +1737,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyDisplayMessagesResponse>
+        public static Task<NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(this ILocalControllerNode         LocalController,
+            NotifyDisplayMessages(this ILocalControllerNode     LocalController,
 
                                   Int32                         NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>      MessageInfos,
@@ -1747,7 +1747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                   CustomData?                   CustomData          = null,
 
-                                  NetworkingNode_Id?            DestinationId   = null,
+                                  SourceRouting?                Destination         = null,
                                   NetworkPath?                  NetworkPath         = null,
 
                                   IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1764,7 +1764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyDisplayMessages(
                        new NotifyDisplayMessagesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,
@@ -1805,9 +1805,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.NotifyCustomerInformationResponse>
+        public static Task<NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(this ILocalControllerNode         LocalController,
+            NotifyCustomerInformation(this ILocalControllerNode     LocalController,
 
                                       Int64                         NotifyCustomerInformationRequestId,
                                       String                        Data,
@@ -1817,7 +1817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                       CustomData?                   CustomData          = null,
 
-                                      NetworkingNode_Id?            DestinationId   = null,
+                                      SourceRouting?                Destination         = null,
                                       NetworkPath?                  NetworkPath         = null,
 
                                       IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1834,7 +1834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.NotifyCustomerInformation(
                        new NotifyCustomerInformationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyCustomerInformationRequestId,
                            Data,
@@ -1864,12 +1864,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #region as CSMS
 
-        #region Reset                       (DestinationId, ResetType, EVSEId = null, ...)
+        #region Reset                       (Destination, ResetType, EVSEId = null, ...)
 
         /// <summary>
         /// Reset the given charging station/local controller.
         /// </summary>
-        /// <param name="DestinationId">The charging station/local controller identification.</param>
+        /// <param name="Destination">The charging station/local controller identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -1881,10 +1881,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ResetResponse>
+        public static Task<ResetResponse>
 
-            Reset(this ILocalControllerNode         LocalController,
-                  NetworkingNode_Id             DestinationId,
+            Reset(this ILocalControllerNode     LocalController,
+                  SourceRouting                 Destination,
                   ResetType                     ResetType,
                   EVSE_Id?                      EVSEId              = null,
 
@@ -1904,12 +1904,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.Reset(
                        new ResetRequest(
-                           DestinationId,
+                           Destination,
                            ResetType,
                            EVSEId,
-
-                           null,
-                           null,
 
                            SignKeys,
                            SignInfos,
@@ -1928,12 +1925,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region UpdateFirmware              (DestinationId, Firmware, UpdateFirmwareRequestId, ...)
+        #region UpdateFirmware              (Destination, Firmware, UpdateFirmwareRequestId, ...)
 
         /// <summary>
         /// Initiate a firmware update of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -1947,10 +1944,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.UpdateFirmwareResponse>
+        public static Task<UpdateFirmwareResponse>
 
-            UpdateFirmware(this ILocalControllerNode         LocalController,
-                           NetworkingNode_Id             DestinationId,
+            UpdateFirmware(this ILocalControllerNode     LocalController,
+                           SourceRouting                 Destination,
                            Firmware                      Firmware,
                            Int32                         UpdateFirmwareRequestId,
                            Byte?                         Retries             = null,
@@ -1973,7 +1970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.UpdateFirmware(
                        new UpdateFirmwareRequest(
-                           DestinationId,
+                           Destination,
                            Firmware,
                            UpdateFirmwareRequestId,
                            Retries,
@@ -1996,12 +1993,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region PublishFirmware             (DestinationId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+        #region PublishFirmware             (Destination, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Publish a firmware onto a local controller.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
@@ -2016,10 +2013,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.PublishFirmwareResponse>
+        public static Task<PublishFirmwareResponse>
 
-            PublishFirmware(this ILocalControllerNode         LocalController,
-                            NetworkingNode_Id             DestinationId,
+            PublishFirmware(this ILocalControllerNode     LocalController,
+                            SourceRouting                 Destination,
                             Int32                         PublishFirmwareRequestId,
                             URL                           DownloadLocation,
                             String                        MD5Checksum,
@@ -2043,7 +2040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.PublishFirmware(
                        new PublishFirmwareRequest(
-                           DestinationId,
+                           Destination,
                            PublishFirmwareRequestId,
                            DownloadLocation,
                            MD5Checksum,
@@ -2067,12 +2064,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region UnpublishFirmware           (DestinationId, MD5Checksum, ...)
+        #region UnpublishFirmware           (Destination, MD5Checksum, ...)
 
         /// <summary>
         /// Unpublish a firmware from a local controller.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2083,10 +2080,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.UnpublishFirmwareResponse>
+        public static Task<UnpublishFirmwareResponse>
 
-            UnpublishFirmware(this ILocalControllerNode         LocalController,
-                              NetworkingNode_Id             DestinationId,
+            UnpublishFirmware(this ILocalControllerNode     LocalController,
+                              SourceRouting                 Destination,
                               String                        MD5Checksum,
 
                               CustomData?                   CustomData          = null,
@@ -2106,7 +2103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.UnpublishFirmware(
                        new UnpublishFirmwareRequest(
-                           DestinationId,
+                           Destination,
                            MD5Checksum,
 
                            SignKeys,
@@ -2126,12 +2123,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetBaseReport               (DestinationId, GetBaseReportRequestId, ReportBase, ...)
+        #region GetBaseReport               (Destination, GetBaseReportRequestId, ReportBase, ...)
 
         /// <summary>
         /// Retrieve the base report from the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -2143,10 +2140,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetBaseReportResponse>
+        public static Task<GetBaseReportResponse>
 
-            GetBaseReport(this ILocalControllerNode         LocalController,
-                          NetworkingNode_Id             DestinationId,
+            GetBaseReport(this ILocalControllerNode     LocalController,
+                          SourceRouting                 Destination,
                           Int64                         GetBaseReportRequestId,
                           ReportBase                    ReportBase,
 
@@ -2167,7 +2164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetBaseReport(
                        new GetBaseReportRequest(
-                           DestinationId,
+                           Destination,
                            GetBaseReportRequestId,
                            ReportBase,
 
@@ -2188,12 +2185,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetReport                   (DestinationId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+        #region GetReport                   (Destination, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Retrieve reports from the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="GetReportRequestId">The local controller identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
@@ -2206,10 +2203,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetReportResponse>
+        public static Task<GetReportResponse>
 
-            GetReport(this ILocalControllerNode           LocalController,
-                      NetworkingNode_Id               DestinationId,
+            GetReport(this ILocalControllerNode       LocalController,
+                      SourceRouting                   Destination,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
@@ -2231,7 +2228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetReport(
                        new GetReportRequest(
-                           DestinationId,
+                           Destination,
                            GetReportRequestId,
                            ComponentCriteria,
                            ComponentVariables,
@@ -2253,12 +2250,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetLog                      (DestinationId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                      (Destination, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -2273,10 +2270,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetLogResponse>
+        public static Task<GetLogResponse>
 
-            GetLog(this ILocalControllerNode         LocalController,
-                   NetworkingNode_Id             DestinationId,
+            GetLog(this ILocalControllerNode     LocalController,
+                   SourceRouting                 Destination,
                    LogType                       LogType,
                    Int32                         LogRequestId,
                    LogParameters                 Log,
@@ -2300,7 +2297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetLog(
                        new GetLogRequest(
-                           DestinationId,
+                           Destination,
                            LogType,
                            LogRequestId,
                            Log,
@@ -2325,12 +2322,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region SetVariables                (DestinationId, VariableData, DataConsistencyModel = null, ...)
+        #region SetVariables                (Destination, VariableData, DataConsistencyModel = null, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
         /// <param name="DataConsistencyModel">An optional data consistency model for this request.</param>
         /// 
@@ -2342,10 +2339,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetVariablesResponse>
+        public static Task<SetVariablesResponse>
 
-            SetVariables(this ILocalControllerNode         LocalController,
-                         NetworkingNode_Id             DestinationId,
+            SetVariables(this ILocalControllerNode     LocalController,
+                         SourceRouting                 Destination,
                          IEnumerable<SetVariableData>  VariableData,
                          DataConsistencyModel?         DataConsistencyModel   = null,
 
@@ -2366,7 +2363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetVariables(
                        new SetVariablesRequest(
-                           DestinationId,
+                           Destination,
                            VariableData,
                            DataConsistencyModel,
 
@@ -2387,12 +2384,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetVariables                (DestinationId, VariableData, ...)
+        #region GetVariables                (Destination, VariableData, ...)
 
         /// <summary>
         /// Get variable data from a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2403,10 +2400,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetVariablesResponse>
+        public static Task<GetVariablesResponse>
 
-            GetVariables(this ILocalControllerNode         LocalController,
-                         NetworkingNode_Id             DestinationId,
+            GetVariables(this ILocalControllerNode     LocalController,
+                         SourceRouting                 Destination,
                          IEnumerable<GetVariableData>  VariableData,
 
                          CustomData?                   CustomData          = null,
@@ -2426,7 +2423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetVariables(
                        new GetVariablesRequest(
-                           DestinationId,
+                           Destination,
                            VariableData,
 
                            SignKeys,
@@ -2446,12 +2443,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SetMonitoringBase           (DestinationId, MonitoringBase, ...)
+        #region SetMonitoringBase           (Destination, MonitoringBase, ...)
 
         /// <summary>
         /// Set the monitoring base of a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="MonitoringBase">The monitoring base to be set.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2462,10 +2459,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetMonitoringBaseResponse>
+        public static Task<SetMonitoringBaseResponse>
 
-            SetMonitoringBase(this ILocalControllerNode         LocalController,
-                              NetworkingNode_Id             DestinationId,
+            SetMonitoringBase(this ILocalControllerNode     LocalController,
+                              SourceRouting                 Destination,
                               MonitoringBase                MonitoringBase,
 
                               CustomData?                   CustomData          = null,
@@ -2485,7 +2482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetMonitoringBase(
                        new SetMonitoringBaseRequest(
-                           DestinationId,
+                           Destination,
                            MonitoringBase,
 
                            SignKeys,
@@ -2505,12 +2502,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetMonitoringReport         (DestinationId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+        #region GetMonitoringReport         (Destination, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get monitoring report from a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="GetMonitoringReportRequestId">The local controller identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
@@ -2523,10 +2520,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetMonitoringReportResponse>
+        public static Task<GetMonitoringReportResponse>
 
-            GetMonitoringReport(this ILocalControllerNode             LocalController,
-                                NetworkingNode_Id                 DestinationId,
+            GetMonitoringReport(this ILocalControllerNode         LocalController,
+                                SourceRouting                     Destination,
                                 Int32                             GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>    ComponentVariables,
@@ -2548,7 +2545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetMonitoringReport(
                        new GetMonitoringReportRequest(
-                           DestinationId,
+                           Destination,
                            GetMonitoringReportRequestId,
                            MonitoringCriteria,
                            ComponentVariables,
@@ -2570,12 +2567,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SetMonitoringLevel          (DestinationId, Severity, ...)
+        #region SetMonitoringLevel          (Destination, Severity, ...)
 
         /// <summary>
         /// Set the monitoring level on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2586,10 +2583,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetMonitoringLevelResponse>
+        public static Task<SetMonitoringLevelResponse>
 
-            SetMonitoringLevel(this ILocalControllerNode         LocalController,
-                               NetworkingNode_Id             DestinationId,
+            SetMonitoringLevel(this ILocalControllerNode     LocalController,
+                               SourceRouting                 Destination,
                                Severities                    Severity,
 
                                CustomData?                   CustomData          = null,
@@ -2609,7 +2606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetMonitoringLevel(
                        new SetMonitoringLevelRequest(
-                           DestinationId,
+                           Destination,
                            Severity,
 
                            SignKeys,
@@ -2629,12 +2626,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SetVariableMonitoring       (DestinationId, MonitoringData, ...)
+        #region SetVariableMonitoring       (Destination, MonitoringData, ...)
 
         /// <summary>
         /// Set a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2645,10 +2642,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetVariableMonitoringResponse>
+        public static Task<SetVariableMonitoringResponse>
 
-            SetVariableMonitoring(this ILocalControllerNode           LocalController,
-                                  NetworkingNode_Id               DestinationId,
+            SetVariableMonitoring(this ILocalControllerNode       LocalController,
+                                  SourceRouting                   Destination,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
                                   CustomData?                     CustomData          = null,
@@ -2668,7 +2665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetVariableMonitoring(
                        new SetVariableMonitoringRequest(
-                           DestinationId,
+                           Destination,
                            MonitoringData,
 
                            SignKeys,
@@ -2688,12 +2685,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region ClearVariableMonitoring     (DestinationId, VariableMonitoringIds, ...)
+        #region ClearVariableMonitoring     (Destination, VariableMonitoringIds, ...)
 
         /// <summary>
         /// Delete a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="VariableMonitoringIds">An enumeration of variable monitoring identifications to clear.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2704,10 +2701,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ClearVariableMonitoringResponse>
+        public static Task<ClearVariableMonitoringResponse>
 
-            ClearVariableMonitoring(this ILocalControllerNode               LocalController,
-                                    NetworkingNode_Id                   DestinationId,
+            ClearVariableMonitoring(this ILocalControllerNode           LocalController,
+                                    SourceRouting                       Destination,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
                                     CustomData?                         CustomData          = null,
@@ -2727,7 +2724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.ClearVariableMonitoring(
                        new ClearVariableMonitoringRequest(
-                           DestinationId,
+                           Destination,
                            VariableMonitoringIds,
 
                            SignKeys,
@@ -2747,12 +2744,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SetNetworkProfile           (DestinationId, ConfigurationSlot, NetworkConnectionProfile, ...)
+        #region SetNetworkProfile           (Destination, ConfigurationSlot, NetworkConnectionProfile, ...)
 
         /// <summary>
         /// Set the network profile of a charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
         /// 
@@ -2764,10 +2761,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetNetworkProfileResponse>
+        public static Task<SetNetworkProfileResponse>
 
-            SetNetworkProfile(this ILocalControllerNode         LocalController,
-                              NetworkingNode_Id             DestinationId,
+            SetNetworkProfile(this ILocalControllerNode     LocalController,
+                              SourceRouting                 Destination,
                               Int32                         ConfigurationSlot,
                               NetworkConnectionProfile      NetworkConnectionProfile,
 
@@ -2788,7 +2785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetNetworkProfile(
                        new SetNetworkProfileRequest(
-                           DestinationId,
+                           Destination,
                            ConfigurationSlot,
                            NetworkConnectionProfile,
 
@@ -2809,12 +2806,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region ChangeAvailability          (DestinationId, OperationalStatus, EVSE = null, ...)
+        #region ChangeAvailability          (Destination, OperationalStatus, EVSE = null, ...)
 
         /// <summary>
         /// Change the availability of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
         /// 
         /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
@@ -2827,10 +2824,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ChangeAvailabilityResponse>
+        public static Task<ChangeAvailabilityResponse>
 
-            ChangeAvailability(this ILocalControllerNode         LocalController,
-                               NetworkingNode_Id             DestinationId,
+            ChangeAvailability(this ILocalControllerNode     LocalController,
+                               SourceRouting                 Destination,
                                OperationalStatus             OperationalStatus,
 
                                EVSE?                         EVSE                = null,
@@ -2852,7 +2849,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.ChangeAvailability(
                        new ChangeAvailabilityRequest(
-                           DestinationId,
+                           Destination,
                            OperationalStatus,
                            EVSE,
 
@@ -2873,12 +2870,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region TriggerMessage              (DestinationId, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
+        #region TriggerMessage              (Destination, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomTrigger">An optional custom trigger.</param>
@@ -2891,10 +2888,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.TriggerMessageResponse>
+        public static Task<TriggerMessageResponse>
 
-            TriggerMessage(this ILocalControllerNode         LocalController,
-                           NetworkingNode_Id             DestinationId,
+            TriggerMessage(this ILocalControllerNode     LocalController,
+                           SourceRouting                 Destination,
                            MessageTrigger                RequestedMessage,
                            EVSE?                         EVSE                = null,
                            String?                       CustomTrigger       = null,
@@ -2916,7 +2913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.TriggerMessage(
                        new TriggerMessageRequest(
-                           DestinationId,
+                           Destination,
                            RequestedMessage,
                            EVSE,
                            CustomTrigger,
@@ -2939,12 +2936,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region SendSignedCertificate       (DestinationId, CertificateChain, CertificateType = null, ...)
+        #region SendSignedCertificate       (Destination, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
         /// Send the signed certificate to the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2955,10 +2952,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.CertificateSignedResponse>
+        public static Task<CertificateSignedResponse>
 
-            SendSignedCertificate(this ILocalControllerNode         LocalController,
-                                  NetworkingNode_Id             DestinationId,
+            SendSignedCertificate(this ILocalControllerNode     LocalController,
+                                  SourceRouting                 Destination,
                                   CertificateChain              CertificateChain,
                                   CertificateSigningUse?        CertificateType     = null,
 
@@ -2979,7 +2976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.CertificateSigned(
                        new CertificateSignedRequest(
-                           DestinationId,
+                           Destination,
                            CertificateChain,
                            CertificateType,
 
@@ -3000,12 +2997,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region InstallCertificate          (DestinationId, CertificateType, Certificate, ...)
+        #region InstallCertificate          (Destination, CertificateType, Certificate, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
@@ -3017,10 +3014,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.InstallCertificateResponse>
+        public static Task<InstallCertificateResponse>
 
-            InstallCertificate(this ILocalControllerNode         LocalController,
-                               NetworkingNode_Id             DestinationId,
+            InstallCertificate(this ILocalControllerNode     LocalController,
+                               SourceRouting                 Destination,
                                InstallCertificateUse         CertificateType,
                                Certificate                   Certificate,
 
@@ -3041,7 +3038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.InstallCertificate(
                        new InstallCertificateRequest(
-                           DestinationId,
+                           Destination,
                            CertificateType,
                            Certificate,
 
@@ -3062,12 +3059,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetInstalledCertificateIds  (DestinationId, CertificateTypes, ...)
+        #region GetInstalledCertificateIds  (Destination, CertificateTypes, ...)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -3078,10 +3075,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetInstalledCertificateIdsResponse>
+        public static Task<GetInstalledCertificateIdsResponse>
 
-            GetInstalledCertificateIds(this ILocalControllerNode              LocalController,
-                                       NetworkingNode_Id                  DestinationId,
+            GetInstalledCertificateIds(this ILocalControllerNode          LocalController,
+                                       SourceRouting                      Destination,
                                        IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
 
                                        CustomData?                        CustomData          = null,
@@ -3101,7 +3098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetInstalledCertificateIds(
                        new GetInstalledCertificateIdsRequest(
-                           DestinationId,
+                           Destination,
                            CertificateTypes,
 
                            SignKeys,
@@ -3121,12 +3118,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region DeleteCertificate           (DestinationId, CertificateHashData, ...)
+        #region DeleteCertificate           (Destination, CertificateHashData, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -3137,10 +3134,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.DeleteCertificateResponse>
+        public static Task<DeleteCertificateResponse>
 
-            DeleteCertificate(this ILocalControllerNode         LocalController,
-                              NetworkingNode_Id             DestinationId,
+            DeleteCertificate(this ILocalControllerNode     LocalController,
+                              SourceRouting                 Destination,
                               CertificateHashData           CertificateHashData,
 
                               CustomData?                   CustomData          = null,
@@ -3160,7 +3157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.DeleteCertificate(
                        new DeleteCertificateRequest(
-                           DestinationId,
+                           Destination,
                            CertificateHashData,
 
                            SignKeys,
@@ -3180,12 +3177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region NotifyCRLAvailability       (DestinationId, NotifyCRLRequestId, Availability, Location, ...)
+        #region NotifyCRLAvailability       (Destination, NotifyCRLRequestId, Availability, Location, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
         /// <param name="Availability">An availability status of the certificate revocation list.</param>
         /// <param name="Location">An optional location of the certificate revocation list.</param>
@@ -3198,10 +3195,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.NotifyCRLResponse>
+        public static Task<NotifyCRLResponse>
 
-            NotifyCRLAvailability(this ILocalControllerNode         LocalController,
-                                  NetworkingNode_Id             DestinationId,
+            NotifyCRLAvailability(this ILocalControllerNode     LocalController,
+                                  SourceRouting                 Destination,
                                   Int32                         NotifyCRLRequestId,
                                   NotifyCRLStatus               Availability,
                                   URL?                          Location,
@@ -3223,7 +3220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.NotifyCRL(
                        new NotifyCRLRequest(
-                           DestinationId,
+                           Destination,
                            NotifyCRLRequestId,
                            Availability,
                            Location,
@@ -3246,12 +3243,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region GetLocalListVersion         (DestinationId, ...)
+        #region GetLocalListVersion         (Destination, ...)
 
         /// <summary>
         /// Return the local white list of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -3261,10 +3258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetLocalListVersionResponse>
+        public static Task<GetLocalListVersionResponse>
 
-            GetLocalListVersion(this ILocalControllerNode         LocalController,
-                                NetworkingNode_Id             DestinationId,
+            GetLocalListVersion(this ILocalControllerNode     LocalController,
+                                SourceRouting                 Destination,
 
                                 CustomData?                   CustomData          = null,
 
@@ -3283,7 +3280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetLocalListVersion(
                        new GetLocalListVersionRequest(
-                           DestinationId,
+                           Destination,
 
                            SignKeys,
                            SignInfos,
@@ -3302,12 +3299,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SendLocalList               (DestinationId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList               (Destination, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
@@ -3320,10 +3317,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SendLocalListResponse>
+        public static Task<SendLocalListResponse>
 
-            SendLocalList(this ILocalControllerNode            LocalController,
-                          NetworkingNode_Id                DestinationId,
+            SendLocalList(this ILocalControllerNode        LocalController,
+                          SourceRouting                    Destination,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -3345,7 +3342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SendLocalList(
                        new SendLocalListRequest(
-                           DestinationId,
+                           Destination,
                            ListVersion,
                            UpdateType,
                            LocalAuthorizationList,
@@ -3367,12 +3364,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region ClearCache                  (DestinationId, ...)
+        #region ClearCache                  (Destination, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -3382,10 +3379,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ClearCacheResponse>
+        public static Task<ClearCacheResponse>
 
-            ClearCache(this ILocalControllerNode         LocalController,
-                       NetworkingNode_Id             DestinationId,
+            ClearCache(this ILocalControllerNode     LocalController,
+                       SourceRouting                 Destination,
 
                        CustomData?                   CustomData          = null,
 
@@ -3404,7 +3401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.ClearCache(
                        new ClearCacheRequest(
-                           DestinationId,
+                           Destination,
 
                            SignKeys,
                            SignInfos,
@@ -3424,12 +3421,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region ReserveNow                  (DestinationId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                  (Destination, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
@@ -3445,10 +3442,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ReserveNowResponse>
+        public static Task<ReserveNowResponse>
 
-            ReserveNow(this ILocalControllerNode         LocalController,
-                       NetworkingNode_Id             DestinationId,
+            ReserveNow(this ILocalControllerNode     LocalController,
+                       SourceRouting                 Destination,
                        Reservation_Id                ReservationId,
                        DateTime                      ExpiryDate,
                        IdToken                       IdToken,
@@ -3473,7 +3470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.ReserveNow(
                        new ReserveNowRequest(
-                           DestinationId,
+                           Destination,
                            ReservationId,
                            ExpiryDate,
                            IdToken,
@@ -3498,12 +3495,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region CancelReservation           (DestinationId, ReservationId, ...)
+        #region CancelReservation           (Destination, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -3514,10 +3511,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.CancelReservationResponse>
+        public static Task<CancelReservationResponse>
 
-            CancelReservation(this ILocalControllerNode         LocalController,
-                              NetworkingNode_Id             DestinationId,
+            CancelReservation(this ILocalControllerNode     LocalController,
+                              SourceRouting                 Destination,
                               Reservation_Id                ReservationId,
 
                               CustomData?                   CustomData          = null,
@@ -3537,7 +3534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.CancelReservation(
                        new CancelReservationRequest(
-                           DestinationId,
+                           Destination,
                            ReservationId,
 
                            SignKeys,
@@ -3557,12 +3554,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region StartCharging               (DestinationId, RequestStartTransactionRequestId, IdToken, ...)
+        #region StartCharging               (Destination, RequestStartTransactionRequestId, IdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
@@ -3578,10 +3575,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.RequestStartTransactionResponse>
+        public static Task<RequestStartTransactionResponse>
 
-            StartCharging(this ILocalControllerNode         LocalController,
-                          NetworkingNode_Id             DestinationId,
+            StartCharging(this ILocalControllerNode     LocalController,
+                          SourceRouting                 Destination,
                           RemoteStart_Id                RequestStartTransactionRequestId,
                           IdToken                       IdToken,
                           EVSE_Id?                      EVSEId              = null,
@@ -3606,7 +3603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.RequestStartTransaction(
                        new RequestStartTransactionRequest(
-                           DestinationId,
+                           Destination,
                            RequestStartTransactionRequestId,
                            IdToken,
                            EVSEId,
@@ -3631,12 +3628,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region StopCharging                (DestinationId, TransactionId, ...)
+        #region StopCharging                (Destination, TransactionId, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -3647,10 +3644,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.RequestStopTransactionResponse>
+        public static Task<RequestStopTransactionResponse>
 
-            StopCharging(this ILocalControllerNode         LocalController,
-                         NetworkingNode_Id             DestinationId,
+            StopCharging(this ILocalControllerNode     LocalController,
+                         SourceRouting                 Destination,
                          Transaction_Id                TransactionId,
 
                          CustomData?                   CustomData          = null,
@@ -3670,7 +3667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.RequestStopTransaction(
                        new RequestStopTransactionRequest(
-                           DestinationId,
+                           Destination,
                            TransactionId,
 
                            SignKeys,
@@ -3690,12 +3687,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetTransactionStatus        (DestinationId, ConnectorId, ChargingProfile, ...)
+        #region GetTransactionStatus        (Destination, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -3706,10 +3703,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetTransactionStatusResponse>
+        public static Task<GetTransactionStatusResponse>
 
-            GetTransactionStatus(this ILocalControllerNode         LocalController,
-                                 NetworkingNode_Id             DestinationId,
+            GetTransactionStatus(this ILocalControllerNode     LocalController,
+                                 SourceRouting                 Destination,
                                  Transaction_Id?               TransactionId       = null,
 
                                  CustomData?                   CustomData          = null,
@@ -3729,7 +3726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetTransactionStatus(
                        new GetTransactionStatusRequest(
-                           DestinationId,
+                           Destination,
                            TransactionId,
 
                            SignKeys,
@@ -3749,12 +3746,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SetChargingProfile          (DestinationId, EVSEId, ChargingProfile, ...)
+        #region SetChargingProfile          (Destination, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -3766,10 +3763,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetChargingProfileResponse>
+        public static Task<SetChargingProfileResponse>
 
-            SetChargingProfile(this ILocalControllerNode         LocalController,
-                               NetworkingNode_Id             DestinationId,
+            SetChargingProfile(this ILocalControllerNode     LocalController,
+                               SourceRouting                 Destination,
                                EVSE_Id                       EVSEId,
                                ChargingProfile               ChargingProfile,
 
@@ -3790,7 +3787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetChargingProfile(
                        new SetChargingProfileRequest(
-                           DestinationId,
+                           Destination,
                            EVSEId,
                            ChargingProfile,
 
@@ -3811,12 +3808,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetChargingProfiles         (DestinationId, EVSEId, ChargingProfile, ...)
+        #region GetChargingProfiles         (Destination, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -3828,10 +3825,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetChargingProfilesResponse>
+        public static Task<GetChargingProfilesResponse>
 
-            GetChargingProfiles(this ILocalControllerNode         LocalController,
-                                NetworkingNode_Id             DestinationId,
+            GetChargingProfiles(this ILocalControllerNode     LocalController,
+                                SourceRouting                 Destination,
                                 Int64                         GetChargingProfilesRequestId,
                                 ChargingProfileCriterion      ChargingProfile,
                                 EVSE_Id?                      EVSEId              = null,
@@ -3853,7 +3850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetChargingProfiles(
                        new GetChargingProfilesRequest(
-                           DestinationId,
+                           Destination,
                            GetChargingProfilesRequestId,
                            ChargingProfile,
                            EVSEId,
@@ -3875,12 +3872,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region ClearChargingProfile        (DestinationId, ChargingProfileId, ChargingProfileCriteria, ...)
+        #region ClearChargingProfile        (Destination, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
         /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
         /// 
@@ -3892,10 +3889,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ClearChargingProfileResponse>
+        public static Task<ClearChargingProfileResponse>
 
-            ClearChargingProfile(this ILocalControllerNode         LocalController,
-                                 NetworkingNode_Id             DestinationId,
+            ClearChargingProfile(this ILocalControllerNode     LocalController,
+                                 SourceRouting                 Destination,
                                  ChargingProfile_Id?           ChargingProfileId         = null,
                                  ClearChargingProfile?         ChargingProfileCriteria   = null,
 
@@ -3916,7 +3913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.ClearChargingProfile(
                        new ClearChargingProfileRequest(
-                           DestinationId,
+                           Destination,
                            ChargingProfileId,
                            ChargingProfileCriteria,
 
@@ -3937,12 +3934,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetCompositeSchedule        (DestinationId, Duration, EVSEId, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule        (Destination, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -3955,10 +3952,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetCompositeScheduleResponse>
+        public static Task<GetCompositeScheduleResponse>
 
-            GetCompositeSchedule(this ILocalControllerNode         LocalController,
-                                 NetworkingNode_Id             DestinationId,
+            GetCompositeSchedule(this ILocalControllerNode     LocalController,
+                                 SourceRouting                 Destination,
                                  TimeSpan                      Duration,
                                  EVSE_Id                       EVSEId,
                                  ChargingRateUnits?            ChargingRateUnit    = null,
@@ -3980,7 +3977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetCompositeSchedule(
                        new GetCompositeScheduleRequest(
-                           DestinationId,
+                           Destination,
                            Duration,
                            EVSEId,
                            ChargingRateUnit,
@@ -4002,12 +3999,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region UpdateDynamicSchedule       (DestinationId, ChargingProfileId, Limit = null, ...)
+        #region UpdateDynamicSchedule       (Destination, ChargingProfileId, Limit = null, ...)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -4034,10 +4031,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.UpdateDynamicScheduleResponse>
+        public static Task<UpdateDynamicScheduleResponse>
 
-            UpdateDynamicSchedule(this ILocalControllerNode         LocalController,
-                                  NetworkingNode_Id             DestinationId,
+            UpdateDynamicSchedule(this ILocalControllerNode     LocalController,
+                                  SourceRouting                 Destination,
                                   ChargingProfile_Id            ChargingProfileId,
 
                                   ChargingRateValue?            Limit                 = null,
@@ -4074,7 +4071,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.UpdateDynamicSchedule(
                        new UpdateDynamicScheduleRequest(
 
-                           DestinationId,
+                           Destination,
                            ChargingProfileId,
 
                            Limit,
@@ -4111,12 +4108,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer (DestinationId, AllowedEnergyTransferModes, ...)
+        #region NotifyAllowedEnergyTransfer (Destination, AllowedEnergyTransferModes, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -4127,10 +4124,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.NotifyAllowedEnergyTransferResponse>
+        public static Task<NotifyAllowedEnergyTransferResponse>
 
-            NotifyAllowedEnergyTransfer(this ILocalControllerNode            LocalController,
-                                        NetworkingNode_Id                DestinationId,
+            NotifyAllowedEnergyTransfer(this ILocalControllerNode        LocalController,
+                                        SourceRouting                    Destination,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
                                         CustomData?                      CustomData          = null,
@@ -4150,7 +4147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.NotifyAllowedEnergyTransfer(
                        new NotifyAllowedEnergyTransferRequest(
-                           DestinationId,
+                           Destination,
                            AllowedEnergyTransferModes,
 
                            SignKeys,
@@ -4170,12 +4167,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region UsePriorityCharging         (DestinationId, TransactionId, Activate, ...)
+        #region UsePriorityCharging         (Destination, TransactionId, Activate, ...)
 
         /// <summary>
         /// Switch to the priority charging profile.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -4187,10 +4184,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.UsePriorityChargingResponse>
+        public static Task<UsePriorityChargingResponse>
 
-            UsePriorityCharging(this ILocalControllerNode         LocalController,
-                                NetworkingNode_Id             DestinationId,
+            UsePriorityCharging(this ILocalControllerNode     LocalController,
+                                SourceRouting                 Destination,
                                 Transaction_Id                TransactionId,
                                 Boolean                       Activate,
 
@@ -4211,7 +4208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.UsePriorityCharging(
                        new UsePriorityChargingRequest(
-                           DestinationId,
+                           Destination,
                            TransactionId,
                            Activate,
 
@@ -4232,12 +4229,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region UnlockConnector             (DestinationId, EVSEId, ConnectorId, ...)
+        #region UnlockConnector             (Destination, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -4248,10 +4245,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.UnlockConnectorResponse>
+        public static Task<UnlockConnectorResponse>
 
-            UnlockConnector(this ILocalControllerNode         LocalController,
-                            NetworkingNode_Id             DestinationId,
+            UnlockConnector(this ILocalControllerNode     LocalController,
+                            SourceRouting                 Destination,
                             EVSE_Id                       EVSEId,
                             Connector_Id                  ConnectorId,
 
@@ -4272,7 +4269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.UnlockConnector(
                        new UnlockConnectorRequest(
-                           DestinationId,
+                           Destination,
                            EVSEId,
                            ConnectorId,
 
@@ -4294,14 +4291,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region SendAFRRSignal              (DestinationId, ActivationTimestamp, Signal, ...)
+        #region SendAFRRSignal              (Destination, ActivationTimestamp, Signal, ...)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
         /// The charging station uses the value of signal to select a matching power value
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
-        /// <param name="DestinationId">The local controller identification.</param>
+        /// <param name="Destination">The local controller identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">Ther value of the signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -4313,10 +4310,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.AFRRSignalResponse>
+        public static Task<AFRRSignalResponse>
 
-            SendAFRRSignal(this ILocalControllerNode         LocalController,
-                           NetworkingNode_Id             DestinationId,
+            SendAFRRSignal(this ILocalControllerNode     LocalController,
+                           SourceRouting                 Destination,
                            DateTime                      ActivationTimestamp,
                            AFRR_Signal                   Signal,
 
@@ -4337,7 +4334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.AFRRSignal(
                        new AFRRSignalRequest(
-                           DestinationId,
+                           Destination,
                            ActivationTimestamp,
                            Signal,
 
@@ -4359,7 +4356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region SetDisplayMessage           (DestinationId, Message, ...)
+        #region SetDisplayMessage           (Destination, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -4374,10 +4371,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetDisplayMessageResponse>
+        public static Task<SetDisplayMessageResponse>
 
-            SetDisplayMessage(this ILocalControllerNode         LocalController,
-                              NetworkingNode_Id             DestinationId,
+            SetDisplayMessage(this ILocalControllerNode     LocalController,
+                              SourceRouting                 Destination,
                               MessageInfo                   Message,
 
                               CustomData?                   CustomData          = null,
@@ -4397,7 +4394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetDisplayMessage(
                        new SetDisplayMessageRequest(
-                           DestinationId,
+                           Destination,
                            Message,
 
                            SignKeys,
@@ -4417,7 +4414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetDisplayMessages          (DestinationId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
+        #region GetDisplayMessages          (Destination, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
 
         /// <summary>
         /// Get all display messages.
@@ -4435,10 +4432,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetDisplayMessagesResponse>
+        public static Task<GetDisplayMessagesResponse>
 
-            GetDisplayMessages(this ILocalControllerNode            LocalController,
-                               NetworkingNode_Id                DestinationId,
+            GetDisplayMessages(this ILocalControllerNode        LocalController,
+                               SourceRouting                    Destination,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                MessagePriority?                 Priority            = null,
@@ -4461,7 +4458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetDisplayMessages(
                        new GetDisplayMessagesRequest(
-                           DestinationId,
+                           Destination,
                            GetDisplayMessagesRequestId,
                            Ids,
                            Priority,
@@ -4484,7 +4481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region ClearDisplayMessage         (DestinationId, DisplayMessageId, ...)
+        #region ClearDisplayMessage         (Destination, DisplayMessageId, ...)
 
         /// <summary>
         /// Remove a display message.
@@ -4499,10 +4496,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.ClearDisplayMessageResponse>
+        public static Task<ClearDisplayMessageResponse>
 
-            ClearDisplayMessage(this ILocalControllerNode         LocalController,
-                                NetworkingNode_Id             DestinationId,
+            ClearDisplayMessage(this ILocalControllerNode     LocalController,
+                                SourceRouting                 Destination,
                                 DisplayMessage_Id             DisplayMessageId,
 
                                 CustomData?                   CustomData          = null,
@@ -4522,7 +4519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.ClearDisplayMessage(
                        new ClearDisplayMessageRequest(
-                           DestinationId,
+                           Destination,
                            DisplayMessageId,
 
                            SignKeys,
@@ -4542,7 +4539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region SendCostUpdated             (DestinationId, TotalCost, TransactionId, ...)
+        #region SendCostUpdated             (Destination, TotalCost, TransactionId, ...)
 
         /// <summary>
         /// Send updated total costs.
@@ -4558,10 +4555,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.CostUpdatedResponse>
+        public static Task<CostUpdatedResponse>
 
-            SendCostUpdated(this ILocalControllerNode         LocalController,
-                            NetworkingNode_Id             DestinationId,
+            SendCostUpdated(this ILocalControllerNode     LocalController,
+                            SourceRouting                 Destination,
                             Decimal                       TotalCost,
                             Transaction_Id                TransactionId,
 
@@ -4582,7 +4579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.CostUpdated(
                        new CostUpdatedRequest(
-                           DestinationId,
+                           Destination,
                            TotalCost,
                            TransactionId,
 
@@ -4603,7 +4600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region RequestCustomerInformation  (DestinationId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+        #region RequestCustomerInformation  (Destination, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.
@@ -4623,10 +4620,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.CustomerInformationResponse>
+        public static Task<CustomerInformationResponse>
 
-            RequestCustomerInformation(this ILocalControllerNode         LocalController,
-                                       NetworkingNode_Id             DestinationId,
+            RequestCustomerInformation(this ILocalControllerNode     LocalController,
+                                       SourceRouting                 Destination,
                                        Int64                         CustomerInformationRequestId,
                                        Boolean                       Report,
                                        Boolean                       Clear,
@@ -4651,7 +4648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.CustomerInformation(
                        new CustomerInformationRequest(
-                           DestinationId,
+                           Destination,
                            CustomerInformationRequestId,
                            Report,
                            Clear,
@@ -4679,10 +4676,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-
         // E2E Charging Tariffs Extensions
 
-        #region SetDefaultChargingTariff    (DestinationId, ChargingTariff,          EVSEIds = null, ...)
+        #region SetDefaultChargingTariff    (Destination, ChargingTariff,          EVSEIds = null, ...)
 
         /// <summary>
         /// Set a default charging tariff for the charging station,
@@ -4699,10 +4695,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetDefaultChargingTariffResponse>
+        public static Task<SetDefaultChargingTariffResponse>
 
-            SetDefaultChargingTariff(this ILocalControllerNode         LocalController,
-                                     NetworkingNode_Id             DestinationId,
+            SetDefaultChargingTariff(this ILocalControllerNode     LocalController,
+                                     SourceRouting                 Destination,
                                      ChargingTariff                ChargingTariff,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
@@ -4723,7 +4719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.SetDefaultChargingTariff(
                        new SetDefaultChargingTariffRequest(
-                           DestinationId,
+                           Destination,
                            ChargingTariff,
                            EVSEIds,
 
@@ -4744,7 +4740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetDefaultChargingTariff    (DestinationId,                          EVSEIds = null, ...)
+        #region GetDefaultChargingTariff    (Destination,                          EVSEIds = null, ...)
 
         /// <summary>
         /// Get the default charging tariff(s) for the charging station and its EVSEs.
@@ -4759,10 +4755,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetDefaultChargingTariffResponse>
+        public static Task<GetDefaultChargingTariffResponse>
 
-            GetDefaultChargingTariff(this ILocalControllerNode         LocalController,
-                                     NetworkingNode_Id             DestinationId,
+            GetDefaultChargingTariff(this ILocalControllerNode     LocalController,
+                                     SourceRouting                 Destination,
                                      IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
                                      CustomData?                   CustomData          = null,
@@ -4782,7 +4778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.GetDefaultChargingTariff(
                        new GetDefaultChargingTariffRequest(
-                           DestinationId,
+                           Destination,
                            EVSEIds,
 
                            SignKeys,
@@ -4802,7 +4798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region RemoveDefaultChargingTariff (DestinationId, ChargingTariffId = null, EVSEIds = null, ...)
+        #region RemoveDefaultChargingTariff (Destination, ChargingTariffId = null, EVSEIds = null, ...)
 
         /// <summary>
         /// Remove the default charging tariff of the charging station,
@@ -4819,10 +4815,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.RemoveDefaultChargingTariffResponse>
+        public static Task<RemoveDefaultChargingTariffResponse>
 
-            RemoveDefaultChargingTariff(this ILocalControllerNode         LocalController,
-                                        NetworkingNode_Id             DestinationId,
+            RemoveDefaultChargingTariff(this ILocalControllerNode     LocalController,
+                                        SourceRouting                 Destination,
                                         ChargingTariff_Id?            ChargingTariffId    = null,
                                         IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
@@ -4843,7 +4839,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                 => LocalController.OCPP.OUT.RemoveDefaultChargingTariff(
                        new RemoveDefaultChargingTariffRequest(
-                           DestinationId,
+                           Destination,
                            ChargingTariffId,
                            EVSEIds,
 

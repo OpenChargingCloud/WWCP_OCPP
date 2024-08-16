@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new DeleteFile request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
         /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DeleteFileRequest(NetworkingNode_Id        DestinationId,
+        public DeleteFileRequest(SourceRouting            SourceRouting,
                                  FilePath                 FileName,
                                  Byte[]?                  FileSHA256          = null,
                                  Byte[]?                  FileSHA512          = null,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  NetworkPath?             NetworkPath         = null,
                                  CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(DeleteFileRequest)[..^7],
 
                    SignKeys,
@@ -152,14 +152,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomDeleteFileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomDeleteFileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a DeleteFileRequest request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static DeleteFileRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              NetworkingNode_Id                                DestinationId,
+                                              SourceRouting                                    SourceRouting,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var deleteFileRequest,
                          out var errorResponse,
@@ -197,14 +197,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out DeleteFileRequest, out ErrorResponse, CustomDeleteFileRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DeleteFileRequest, out ErrorResponse, CustomDeleteFileRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteFile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DeleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       NetworkingNode_Id                                DestinationId,
+                                       SourceRouting                                    SourceRouting,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out DeleteFileRequest?      DeleteFileRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DeleteFileRequest = new DeleteFileRequest(
 
-                                        DestinationId,
+                                            SourceRouting,
                                         FileName,
                                         FileSHA256,
                                         FileSHA512,

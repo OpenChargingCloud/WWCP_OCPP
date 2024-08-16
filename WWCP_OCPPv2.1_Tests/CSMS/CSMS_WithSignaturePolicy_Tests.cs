@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType       = ResetType.Immediate;
                 var now             = Timestamp.Now;
                 var response        = await testCSMS01.Reset(
-                                                DestinationId:   chargingStation1.Id,
+                                                Destination:    SourceRouting.To( chargingStation1.Id),
                                                 ResetType:       resetType,
                                                 CustomData:      null
                                             );

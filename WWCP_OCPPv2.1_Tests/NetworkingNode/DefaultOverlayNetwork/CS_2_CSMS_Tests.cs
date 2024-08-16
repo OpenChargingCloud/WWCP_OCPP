@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONRequestMessagesSent.           Count,                   Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
                     var nnJSONRequestMessage = nnJSONRequestMessagesSent.First();
-                    Assert.That(nnJSONRequestMessage.Item1.DestinationId,                 Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONRequestMessage.Item1.Destination,                 Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Length,                Is.EqualTo(2));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Source,                Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Last,                  Is.EqualTo(localController.Id));
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Response FORWARD
                     Assert.That(nnJSONResponseMessagesSent.Count,                             Is.EqualTo(1), "The BootNotification JSON response did not leave the networking node!");
                     var nnJSONResponseMessage = nnJSONResponseMessagesSent.First();
-                    Assert.That(nnJSONResponseMessage.Item1.DestinationId,                Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnJSONResponseMessage.Item1.Destination.Next,                 Is.EqualTo(chargingStation.Id));
                     //ToDo: network path length is 3 instead of 2 as "CSMS" is added to the list of "csms01" as the anycast is not recognized!
                     //Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Length,               Is.EqualTo(2));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONRequestMessagesSent.           Count,               Is.EqualTo(1), "The DataTransfer JSON request did not leave the networking node!");
                     var nnJSONRequestMessage = nnJSONRequestMessagesSent.First();
-                    Assert.That(nnJSONRequestMessage.Item1.DestinationId,             Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONRequestMessage.Item1.Destination,             Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Length,            Is.EqualTo(2));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Source,            Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Last,              Is.EqualTo(localController.Id));
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Response FORWARD
                     Assert.That(nnJSONResponseMessagesSent.Count,                             Is.EqualTo(1), "The DataTransfer JSON response did not leave the networking node!");
                     var nnJSONResponseMessage = nnJSONResponseMessagesSent.First();
-                    Assert.That(nnJSONResponseMessage.Item1.DestinationId,                Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnJSONResponseMessage.Item1.Destination.Next,                 Is.EqualTo(chargingStation.Id));
                     //ToDo: network path length is 3 instead of 2 as "CSMS" is added to the list of "csms01" as the anycast is not recognized!
                     //Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Length,               Is.EqualTo(2));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Source,               Is.EqualTo(CSMS.Id));

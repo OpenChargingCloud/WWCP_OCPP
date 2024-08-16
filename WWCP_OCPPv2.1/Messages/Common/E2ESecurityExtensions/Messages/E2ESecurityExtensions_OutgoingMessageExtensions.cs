@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class E2ESecurityExtensions_OutgoingMessageExtensions
     {
 
-        #region TransferSecureData                    (Parameter, Payload, KeyId = null, Key = null, Nonce = null, Counter = null, DestinationId = null, ...)
+        #region TransferSecureData                    (Parameter, Payload, KeyId = null, Key = null, Nonce = null, Counter = null, SourceRouting = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the given charging station.
@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Nonce"></param>
         /// <param name="Counter"></param>
         /// 
-        /// <param name="DestinationId">The optional networking node identification.</param>
+        /// <param name="Destination">The optional networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// 
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                UInt64?                         Nonce               = null,
                                UInt64?                         Counter             = null,
 
-                               NetworkingNode_Id?              DestinationId       = null,
+                               SourceRouting?                  Destination         = null,
 
                                IEnumerable<KeyPair>?           SignKeys            = null,
                                IEnumerable<SignInfo>?          SignInfos           = null,
@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 return NetworkingNode.OCPP.OUT.SecureDataTransfer(
                            SecureDataTransferRequest.Encrypt(
-                               DestinationId ?? NetworkingNode_Id.CSMS,
+                               Destination ?? SourceRouting.CSMS,
                                Parameter,
                                KeyId   ?? 0,
-                               Key     ?? NetworkingNode.GetEncryptionKey    (DestinationId ?? NetworkingNode_Id.CSMS, KeyId),
-                               Nonce   ?? NetworkingNode.GetEncryptionNonce  (DestinationId ?? NetworkingNode_Id.CSMS, KeyId),
-                               Counter ?? NetworkingNode.GetEncryptionCounter(DestinationId ?? NetworkingNode_Id.CSMS, KeyId),
+                               Key     ?? NetworkingNode.GetEncryptionKey    (Destination?.Last ?? NetworkingNode_Id.CSMS, KeyId),
+                               Nonce   ?? NetworkingNode.GetEncryptionNonce  (Destination?.Last ?? NetworkingNode_Id.CSMS, KeyId),
+                               Counter ?? NetworkingNode.GetEncryptionCounter(Destination?.Last ?? NetworkingNode_Id.CSMS, KeyId),
                                Payload,
 
                                SignKeys,
@@ -112,12 +112,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TransferSecureData          (DestinationId, Parameter, Payload, KeyId = null, Key = null, Nonce = null, Counter = null, ...)
+        #region TransferSecureData          (SourceRouting, Parameter, Payload, KeyId = null, Key = null, Nonce = null, Counter = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="SourceRouting">The networking node identification.</param>
         /// <param name="Parameter">Encryption parameters.</param>
         /// <param name="KeyId">The unique identification of the encryption key.</param>
         /// <param name="Payload">The unencrypted encapsulated security payload.</param>
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Task<SecureDataTransferResponse>
 
             TransferSecureData(this INetworkingNode     NetworkingNode,
-                               NetworkingNode_Id        DestinationId,
+                               SourceRouting            Destination,
                                UInt16                   Parameter,
                                Byte[]                   Payload,
                                UInt16?                  KeyId               = null,
@@ -160,12 +160,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 return NetworkingNode.OCPP.OUT.SecureDataTransfer(
                            SecureDataTransferRequest.Encrypt(
-                               DestinationId,
+                               Destination,
                                Parameter,
                                KeyId   ?? 0,
-                               Key     ?? NetworkingNode.GetEncryptionKey    (DestinationId, KeyId),
-                               Nonce   ?? NetworkingNode.GetEncryptionNonce  (DestinationId, KeyId),
-                               Counter ?? NetworkingNode.GetEncryptionCounter(DestinationId, KeyId),
+                               Key     ?? NetworkingNode.GetEncryptionKey    (Destination.Last, KeyId),
+                               Nonce   ?? NetworkingNode.GetEncryptionNonce  (Destination.Last, KeyId),
+                               Counter ?? NetworkingNode.GetEncryptionCounter(Destination.Last, KeyId),
                                Payload,
 
                                SignKeys,

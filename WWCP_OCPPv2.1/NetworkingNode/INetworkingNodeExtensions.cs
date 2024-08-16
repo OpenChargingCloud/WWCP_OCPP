@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Transfer the given data to the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public static Task<DataTransferResponse>
 
             TransferData(this INetworkingNode     NetworkingNode,
-                         NetworkingNode_Id        DestinationId,
+                         SourceRouting            Destination,
                          Vendor_Id                VendorId,
                          Message_Id?              MessageId           = null,
                          JToken?                  Data                = null,
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 => NetworkingNode.OCPP.OUT.DataTransfer(
                        new DataTransferRequest(
-                           DestinationId,
+                           Destination,
                            VendorId,
                            MessageId,
                            Data,

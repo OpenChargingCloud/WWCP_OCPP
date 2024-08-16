@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await localController.TransferData(
-                                           DestinationId:   NetworkingNode_Id.CSMS,
+                                           Destination:    SourceRouting.To( NetworkingNode_Id.CSMS),
                                            VendorId:        vendorId,
                                            MessageId:       messageId,
                                            Data:            data,
@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONMessageRequestsSent.      Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not leave the networking node!");
                     var nnJSONMessageRequestSent = nnJSONMessageRequestsSent.First();
-                    Assert.That(nnJSONMessageRequestSent.DestinationId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequestSent.Destination,                   Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequestSent.NetworkPath.Length,              Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequestSent.NetworkPath.Source,              Is.EqualTo(localController.Id));  // Because of "standard" networking mode!
                     Assert.That(nnJSONMessageRequestSent.NetworkPath.Last,                Is.EqualTo(localController.Id));  // Because of "standard" networking mode!

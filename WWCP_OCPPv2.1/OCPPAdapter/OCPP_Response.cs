@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region JSONResponse(...)
 
         public static OCPP_Response JSONResponse(EventTracking_Id                EventTrackingId,
-                                                 NetworkingNode_Id               DestinationId,
+                                                 SourceRouting                   Destination,
                                                  NetworkPath                     NetworkPath,
                                                  Request_Id                      RequestId,
                                                  JObject                         Payload,
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                        Timestamp.Now,
                        EventTrackingId,
                        NetworkingMode.Unknown,
-                       DestinationId,
+                       Destination,
                        NetworkPath,
                        RequestId,
                        Payload,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region JSONRequestError(...)
 
         public static OCPP_Response JSONRequestError(EventTracking_Id                EventTrackingId,
-                                                     NetworkingNode_Id               DestinationId,
+                                                     SourceRouting                   Destination,
                                                      NetworkPath                     NetworkPath,
                                                      Request_Id                      RequestId,
                                                      Func<SentMessageResult, Task>?  SentMessageLogger,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         Timestamp.Now,
                         EventTrackingId,
                         NetworkingMode.Unknown,
-                        DestinationId,
+                        Destination,
                         NetworkPath,
                         RequestId,
                         ErrorCode,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region BinaryResponse(...)
 
         public static OCPP_Response BinaryResponse(EventTracking_Id                EventTrackingId,
-                                                   NetworkingNode_Id               DestinationId,
+                                                   SourceRouting                   Destination,
                                                    NetworkPath                     NetworkPath,
                                                    Request_Id                      RequestId,
                                                    Byte[]                          Payload,
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         Timestamp.Now,
                         EventTrackingId,
                         NetworkingMode.Unknown,
-                        DestinationId,
+                        Destination,
                         NetworkPath,
                         RequestId,
                         Payload,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region BinaryRequestError(...)
 
         public static OCPP_Response BinaryRequestError(EventTracking_Id                EventTrackingId,
-                                                       NetworkingNode_Id               DestinationId,
+                                                       SourceRouting                   Destination,
                                                        NetworkPath                     NetworkPath,
                                                        Request_Id                      RequestId,
                                                        Func<SentMessageResult, Task>?  SentMessageLogger,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         Timestamp.Now,
                         EventTrackingId,
                         NetworkingMode.Unknown,
-                        DestinationId,
+                        Destination,
                         NetworkPath,
                         RequestId,
                         ErrorCode,

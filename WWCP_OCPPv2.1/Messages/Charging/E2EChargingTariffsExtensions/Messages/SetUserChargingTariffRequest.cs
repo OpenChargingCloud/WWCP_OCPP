@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set user charging tariff request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="IdToken">An identification token to which this charging tariff applies.</param>
         /// <param name="ChargingTariff">A charging tariff.</param>
         /// 
@@ -87,13 +87,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetUserChargingTariffRequest(NetworkingNode_Id        DestinationId,
+        public SetUserChargingTariffRequest(SourceRouting            Destination,
                                             IdToken                  IdToken,
                                             ChargingTariff           ChargingTariff,
 
                                             IEnumerable<KeyPair>?    SignKeys            = null,
                                             IEnumerable<SignInfo>?   SignInfos           = null,
-                                            IEnumerable<Signature>?       Signatures          = null,
+                                            IEnumerable<Signature>?  Signatures          = null,
 
                                             CustomData?              CustomData          = null,
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             NetworkPath?             NetworkPath         = null,
                                             CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(SetUserChargingTariffRequest)[..^7],
 
                    SignKeys,
@@ -145,19 +145,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetUserChargingTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetUserChargingTariffRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an SetUserChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSetUserChargingTariffRequestParser">A delegate to parse custom SetUserChargingTariff requests.</param>
         public static SetUserChargingTariffRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         NetworkingNode_Id                                           DestinationId,
+                                                         SourceRouting                                               SourceRouting,
                                                          NetworkPath                                                 NetworkPath,
                                                          CustomJObjectParserDelegate<SetUserChargingTariffRequest>?  CustomSetUserChargingTariffRequestParser   = null)
         {
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var setUserChargingTariffRequest,
                          out var errorResponse,
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetUserChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetUserChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -191,20 +191,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetUserChargingTariffRequest">The parsed SetUserChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       NetworkingNode_Id                  DestinationId,
+                                       SourceRouting                      SourceRouting,
                                        NetworkPath                        NetworkPath,
                                        out SetUserChargingTariffRequest?  SetUserChargingTariffRequest,
                                        out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        DestinationId,
+                            SourceRouting,
                         NetworkPath,
                         out SetUserChargingTariffRequest,
                         out ErrorResponse,
@@ -216,14 +216,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetUserChargingTariffRequest">The parsed SetUserChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetUserChargingTariffRequestParser">A delegate to parse custom SetUserChargingTariff requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       NetworkingNode_Id                                           DestinationId,
+                                       SourceRouting                                               SourceRouting,
                                        NetworkPath                                                 NetworkPath,
                                        out SetUserChargingTariffRequest?                           SetUserChargingTariffRequest,
                                        out String?                                                 ErrorResponse,
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetUserChargingTariffRequest = new SetUserChargingTariffRequest(
 
-                                                   DestinationId,
+                                                       SourceRouting,
                                                    IdToken,
                                                    ChargingTariff,
 

@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetTransactionStatus request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetTransactionStatusRequest(NetworkingNode_Id        DestinationId,
+        public GetTransactionStatusRequest(SourceRouting            Destination,
                                            Transaction_Id?          TransactionId       = null,
 
                                            IEnumerable<KeyPair>?    SignKeys            = null,
                                            IEnumerable<SignInfo>?   SignInfos           = null,
-                                           IEnumerable<Signature>?       Signatures          = null,
+                                           IEnumerable<Signature>?  Signatures          = null,
 
                                            CustomData?              CustomData          = null,
 
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            NetworkPath?             NetworkPath         = null,
                                            CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(GetTransactionStatusRequest)[..^7],
 
                    SignKeys,
@@ -164,14 +164,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetTransactionStatusRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetTransactionStatusRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetTransactionStatus request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom GetTransactionStatus requests.</param>
         public static GetTransactionStatusRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        NetworkingNode_Id                                          DestinationId,
+                                                        SourceRouting                                              SourceRouting,
                                                         NetworkPath                                                NetworkPath,
                                                         DateTime?                                                  RequestTimestamp                          = null,
                                                         TimeSpan?                                                  RequestTimeout                            = null,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var getTransactionStatusRequest,
                          out var errorResponse,
@@ -208,14 +208,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetTransactionStatusRequest, out ErrorResponse, CustomGetTransactionStatusRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetTransactionStatusRequest, out ErrorResponse, CustomGetTransactionStatusRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetTransactionStatus request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetTransactionStatusRequest">The parsed GetTransactionStatus request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom GetTransactionStatus requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       NetworkingNode_Id                                          DestinationId,
+                                       SourceRouting                                              SourceRouting,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetTransactionStatusRequest?      GetTransactionStatusRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetTransactionStatusRequest = new GetTransactionStatusRequest(
 
-                                                  DestinationId,
+                                                      SourceRouting,
                                                   TransactionId,
 
                                                   null,

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new RemoveDefaultChargingTariff request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="ChargingTariffId">The optional unique charging tariff identification of the default charging tariff to be removed.</param>
         /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff should be removed from.</param>
         /// 
@@ -86,13 +86,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public RemoveDefaultChargingTariffRequest(NetworkingNode_Id        DestinationId,
+        public RemoveDefaultChargingTariffRequest(SourceRouting            Destination,
                                                   ChargingTariff_Id?       ChargingTariffId    = null,
                                                   IEnumerable<EVSE_Id>?    EVSEIds             = null,
 
                                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                                   IEnumerable<SignInfo>?   SignInfos           = null,
-                                                  IEnumerable<Signature>?       Signatures          = null,
+                                                  IEnumerable<Signature>?  Signatures          = null,
 
                                                   CustomData?              CustomData          = null,
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   NetworkPath?             NetworkPath         = null,
                                                   CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(RemoveDefaultChargingTariffRequest)[..^7],
 
                    SignKeys,
@@ -142,14 +142,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomRemoveDefaultChargingTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomRemoveDefaultChargingTariffRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an removeDefaultChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomRemoveDefaultChargingTariffRequestParser">A delegate to parse custom removeDefaultChargingTariff requests.</param>
         public static RemoveDefaultChargingTariffRequest Parse(JObject                                                           JSON,
                                                                Request_Id                                                        RequestId,
-                                                               NetworkingNode_Id                                                 DestinationId,
+                                                               SourceRouting                                                     SourceRouting,
                                                                NetworkPath                                                       NetworkPath,
                                                                DateTime?                                                         RequestTimestamp                                 = null,
                                                                TimeSpan?                                                         RequestTimeout                                   = null,
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var removeDefaultChargingTariffRequest,
                          out var errorResponse,
@@ -187,21 +187,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out removeDefaultChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out removeDefaultChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a RemoveDefaultChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RemoveDefaultChargingTariffRequest">The parsed removeDefaultChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomRemoveDefaultChargingTariffRequestParser">A delegate to parse custom removeDefaultChargingTariff requests.</param>
         public static Boolean TryParse(JObject                                                           JSON,
                                        Request_Id                                                        RequestId,
-                                       NetworkingNode_Id                                                 DestinationId,
+                                       SourceRouting                                                     SourceRouting,
                                        NetworkPath                                                       NetworkPath,
                                        [NotNullWhen(true)]  out RemoveDefaultChargingTariffRequest?      RemoveDefaultChargingTariffRequest,
                                        [NotNullWhen(false)] out String?                                  ErrorResponse,
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 RemoveDefaultChargingTariffRequest = new RemoveDefaultChargingTariffRequest(
 
-                                                         DestinationId,
+                                                             SourceRouting,
                                                          ChargingTariffId,
                                                          EVSEIds,
 

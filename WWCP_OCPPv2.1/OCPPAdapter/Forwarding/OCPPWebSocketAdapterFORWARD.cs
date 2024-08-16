@@ -199,10 +199,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IWebSocketConnection     WebSocketConnection)
         {
 
-            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.Destination.Next))
                 return;
 
-            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONRequestMessage.Destination.Next))
                 return;
 
 
@@ -333,8 +333,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
-                if (forwardingDecision.NewDestinationId.HasValue)
-                    newJSONRequestMessage = newJSONRequestMessage.ChangeNetworking(forwardingDecision.NewDestinationId.Value);
+                if (forwardingDecision.NewDestination is not null)
+                    newJSONRequestMessage = newJSONRequestMessage.ChangeNetworking(forwardingDecision.NewDestination);
 
                 expectedResponses.TryAdd(
                     newJSONRequestMessage.RequestId,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       JSONRequestMessage.RequestTimestamp,
                                                       JSONRequestMessage.EventTrackingId,
                                                       JSONRequestMessage.NetworkingMode,
-                                                      forwardingDecision.NewDestinationId ?? JSONRequestMessage.DestinationId,
+                                                      forwardingDecision.NewDestination ?? JSONRequestMessage.Destination,
                                                       JSONRequestMessage.NetworkPath.Append(parentNetworkingNode.Id),
                                                       JSONRequestMessage.RequestId,
                                                       forwardingDecision.NewAction        ?? JSONRequestMessage.Action,
@@ -405,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               Timestamp.Now,
                               JSONRequestMessage.EventTrackingId,
                               NetworkingMode.Unknown,
-                              JSONRequestMessage.NetworkPath.Source,
-                              NetworkPath.From(parentNetworkingNode.Id),
+                              SourceRouting.To  (JSONRequestMessage.NetworkPath.Source),
+                              NetworkPath.  From(parentNetworkingNode.Id),
                               JSONRequestMessage.RequestId,
                               ResultCode.Filtered,
                               forwardingDecision.RejectMessage,
@@ -447,9 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
                               JSONResponseMessage.ChangeNetworking(
-                                  JSONResponseMessage.DestinationId == NetworkingNode_Id.Zero
-                                      ? responseInfo.       SourceNodeId
-                                      : JSONResponseMessage.DestinationId,
+                                  JSONResponseMessage.Destination.Next == NetworkingNode_Id.Zero
+                                      ? SourceRouting.To(responseInfo.SourceNodeId)
+                                      : JSONResponseMessage.Destination,
                                   JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
                               )
                           );
@@ -526,10 +526,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  IWebSocketConnection  WebSocketConnection)
         {
 
-            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONSendMessage.DestinationId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONSendMessage.Destination.Next))
                 return;
 
-            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONSendMessage.DestinationId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONSendMessage.Destination.Next))
                 return;
 
 
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               JSONSendMessage.MessageTimestamp,
                                                               JSONSendMessage.EventTrackingId,
                                                               JSONSendMessage.NetworkingMode,
-                                                              forwardingDecision.NewDestinationId ?? JSONSendMessage.DestinationId,
+                                                              forwardingDecision.NewDestination ?? JSONSendMessage.Destination,
                                                               JSONSendMessage.NetworkPath.Append(parentNetworkingNode.Id),
                                                               JSONSendMessage.MessageId,
                                                               forwardingDecision.NewAction        ?? JSONSendMessage.Action,
@@ -624,8 +624,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       Timestamp.Now,
                                       JSONSendMessage.EventTrackingId,
                                       NetworkingMode.Unknown,
-                                      JSONSendMessage.NetworkPath.Source,
-                                      NetworkPath.From(parentNetworkingNode.Id),
+                                      SourceRouting.To  (JSONSendMessage.NetworkPath.Source),
+                                      NetworkPath.  From(parentNetworkingNode.Id),
                                       JSONSendMessage.MessageId,
                                       ResultCode.Filtered,
                                       forwardingDecision.RejectMessage,
@@ -692,10 +692,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       IWebSocketConnection       WebSocketConnection)
         {
 
-            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.Destination.Next))
                 return;
 
-            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinaryRequestMessage.Destination.Next))
                 return;
 
             #region Do we have a general filter rule for any Binary request?
@@ -825,8 +825,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var newBinaryRequestMessage = BinaryRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
-                if (forwardingDecision.NewDestinationId.HasValue)
-                    newBinaryRequestMessage = newBinaryRequestMessage.ChangeNetworking(forwardingDecision.NewDestinationId.Value);
+                if (forwardingDecision.NewDestination is not null)
+                    newBinaryRequestMessage = newBinaryRequestMessage.ChangeNetworking(forwardingDecision.NewDestination);
 
                 expectedResponses.TryAdd(
                     newBinaryRequestMessage.RequestId,
@@ -858,7 +858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       BinaryRequestMessage.RequestTimestamp,
                                                       BinaryRequestMessage.EventTrackingId,
                                                       BinaryRequestMessage.NetworkingMode,
-                                                      forwardingDecision.NewDestinationId ?? BinaryRequestMessage.DestinationId,
+                                                      forwardingDecision.NewDestination ?? BinaryRequestMessage.Destination,
                                                       BinaryRequestMessage.NetworkPath.Append(parentNetworkingNode.Id),
                                                       BinaryRequestMessage.RequestId,
                                                       forwardingDecision.NewAction        ?? BinaryRequestMessage.Action,
@@ -897,7 +897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               Timestamp.Now,
                               BinaryRequestMessage.EventTrackingId,
                               NetworkingMode.Unknown,
-                              BinaryRequestMessage.NetworkPath.Source,
+                              SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
                               NetworkPath.From(parentNetworkingNode.Id),
                               BinaryRequestMessage.RequestId,
                               ResultCode.Filtered,
@@ -939,9 +939,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     await parentNetworkingNode.OCPP.OUT.SendBinaryResponse(
                               BinaryResponseMessage.ChangeNetworking(
-                                  BinaryResponseMessage.DestinationId == NetworkingNode_Id.Zero
-                                      ? responseInfo.       SourceNodeId
-                                      : BinaryResponseMessage.DestinationId,
+                                  BinaryResponseMessage.Destination.Next == NetworkingNode_Id.Zero
+                                      ? SourceRouting.To(responseInfo.SourceNodeId)
+                                      : BinaryResponseMessage.Destination,
                                   BinaryResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
                               )
                           );
@@ -1018,10 +1018,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    IWebSocketConnection    WebSocketConnection)
         {
 
-            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinarySendMessage.DestinationId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinarySendMessage.Destination.Next))
                 return;
 
-            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinarySendMessage.DestinationId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinarySendMessage.Destination.Next))
                 return;
 
             await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(BinarySendMessage);

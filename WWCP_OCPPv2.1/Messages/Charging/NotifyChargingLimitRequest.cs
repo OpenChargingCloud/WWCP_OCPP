@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a NotifyChargingLimit request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
         /// <param name="ChargingSchedules">Optional limits for the available power or current over time, as set by the external source.</param>
         /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyChargingLimitRequest(NetworkingNode_Id               DestinationId,
+        public NotifyChargingLimitRequest(SourceRouting                   SourceRouting,
                                           ChargingLimit                   ChargingLimit,
                                           IEnumerable<ChargingSchedule>?  ChargingSchedules   = null,
                                           EVSE_Id?                        EVSEId              = null,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           NetworkPath?                    NetworkPath         = null,
                                           CancellationToken               CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(NotifyChargingLimitRequest)[..^7],
 
                    SignKeys,
@@ -155,14 +155,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyChargingLimitRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyChargingLimitRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyChargingLimit request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom NotifyChargingLimit requests.</param>
         public static NotifyChargingLimitRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       NetworkingNode_Id                                         DestinationId,
+                                                       SourceRouting                                             SourceRouting,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifyChargingLimitRequest,
                          out var errorResponse,
@@ -199,14 +199,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyChargingLimitRequest, out ErrorResponse, CustomNotifyChargingLimitRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyChargingLimitRequest, out ErrorResponse, CustomNotifyChargingLimitRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyChargingLimit request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyChargingLimitRequest">The parsed NotifyChargingLimit request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom NotifyChargingLimit requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       NetworkingNode_Id                                         DestinationId,
+                                       SourceRouting                                             SourceRouting,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out NotifyChargingLimitRequest?      NotifyChargingLimitRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyChargingLimitRequest = new NotifyChargingLimitRequest(
 
-                                                 DestinationId,
+                                                     SourceRouting,
                                                  ChargingLimit,
                                                  ChargingSchedules,
                                                  EVSEId,

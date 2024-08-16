@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationId:  chargingStation.Id,
+                                           Destination:    SourceRouting.To(chargingStation.Id),
                                            ResetType:      resetType
                                        );
 
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Response FORWARD
                     Assert.That(nnJSONResponseMessagesSent.Count,                 Is.EqualTo(1), "The Reset JSON response did not leave the networking node!");
                     var nnJSONResponseMessage = nnJSONResponseMessagesSent.First();
-                    Assert.That(nnJSONResponseMessage.Item1.DestinationId,    Is.EqualTo(CSMS.Id));
+                    Assert.That(nnJSONResponseMessage.Item1.Destination.Next,     Is.EqualTo(CSMS.Id));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Source,   Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Last,     Is.EqualTo(localController.Id));
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await CSMS.TransferData(
-                                           DestinationId:  chargingStation.Id,
+                                           Destination:    SourceRouting.To(chargingStation.Id),
                                            VendorId:       vendorId,
                                            MessageId:      messageId,
                                            Data:           data,
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Response FORWARD
                     Assert.That(nnJSONResponseMessagesSent.Count,                 Is.EqualTo(1), "The DataTransfer JSON response did not leave the networking node!");
                     var nnJSONResponseMessage = nnJSONResponseMessagesSent.First();
-                    Assert.That(nnJSONResponseMessage.Item1.DestinationId,    Is.EqualTo(CSMS.Id));
+                    Assert.That(nnJSONResponseMessage.Item1.Destination.Next,     Is.EqualTo(CSMS.Id));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Source,   Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONResponseMessage.Item1.NetworkPath.Last,     Is.EqualTo(localController.Id));

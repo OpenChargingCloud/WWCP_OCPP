@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new CostUpdated request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
         /// <param name="TransactionId">The unique transaction identification the costs are asked for.</param>
         /// 
@@ -88,13 +88,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public CostUpdatedRequest(NetworkingNode_Id        DestinationId,
+        public CostUpdatedRequest(SourceRouting            Destination,
                                   Decimal                  TotalCost,
                                   Transaction_Id           TransactionId,
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<Signature>?  Signatures          = null,
 
                                   CustomData?              CustomData          = null,
 
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   NetworkPath?             NetworkPath         = null,
                                   CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(CostUpdatedRequest)[..^7],
 
                    SignKeys,
@@ -184,14 +184,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomCostUpdatedRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomCostUpdatedRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a CostUpdated request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom CostUpdated requests.</param>
         public static CostUpdatedRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               NetworkingNode_Id                                 DestinationId,
+                                               SourceRouting                                     SourceRouting,
                                                NetworkPath                                       NetworkPath,
                                                DateTime?                                         RequestTimestamp                 = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var costUpdatedRequest,
                          out var errorResponse,
@@ -228,14 +228,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out CostUpdatedRequest, out ErrorResponse, CustomCostUpdatedRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out CostUpdatedRequest, out ErrorResponse, CustomCostUpdatedRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a CostUpdated request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="CostUpdatedRequest">The parsed CostUpdated request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom CostUpdated requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       NetworkingNode_Id                                 DestinationId,
+                                       SourceRouting                                     SourceRouting,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out CostUpdatedRequest?      CostUpdatedRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 CostUpdatedRequest = new CostUpdatedRequest(
 
-                                         DestinationId,
+                                             SourceRouting,
                                          TotalCost,
                                          TransactionId,
 

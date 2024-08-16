@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a GetChargingProfiles request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="GetChargingProfilesRequestId">An unique identification of the GetChargingProfiles request.</param>
         /// <param name="ChargingProfile">Machting charging profiles.</param>
         /// <param name="EVSEId">Optional EVSE identification of the EVSE for which the installed charging profiles SHALL be reported. If 0, only charging profiles installed on the charging station itself (the grid connection) SHALL be reported.If omitted, all installed charging profiles SHALL be reported.</param>
@@ -98,25 +98,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetChargingProfilesRequest(NetworkingNode_Id             DestinationId,
-                                          Int64                         GetChargingProfilesRequestId,
-                                          ChargingProfileCriterion      ChargingProfile,
-                                          EVSE_Id?                      EVSEId              = null,
+        public GetChargingProfilesRequest(SourceRouting             Destination,
+                                          Int64                     GetChargingProfilesRequestId,
+                                          ChargingProfileCriterion  ChargingProfile,
+                                          EVSE_Id?                  EVSEId              = null,
 
-                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                          IEnumerable<Signature>?       Signatures          = null,
+                                          IEnumerable<KeyPair>?     SignKeys            = null,
+                                          IEnumerable<SignInfo>?    SignInfos           = null,
+                                          IEnumerable<Signature>?   Signatures          = null,
 
-                                          CustomData?                   CustomData          = null,
+                                          CustomData?               CustomData          = null,
 
-                                          Request_Id?                   RequestId           = null,
-                                          DateTime?                     RequestTimestamp    = null,
-                                          TimeSpan?                     RequestTimeout      = null,
-                                          EventTracking_Id?             EventTrackingId     = null,
-                                          NetworkPath?                  NetworkPath         = null,
-                                          CancellationToken             CancellationToken   = default)
+                                          Request_Id?               RequestId           = null,
+                                          DateTime?                 RequestTimestamp    = null,
+                                          TimeSpan?                 RequestTimeout      = null,
+                                          EventTracking_Id?         EventTrackingId     = null,
+                                          NetworkPath?              NetworkPath         = null,
+                                          CancellationToken         CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(GetChargingProfilesRequest)[..^7],
 
                    SignKeys,
@@ -262,14 +262,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetChargingProfilesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetChargingProfilesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetChargingProfiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetChargingProfilesRequestParser">A delegate to parse custom GetChargingProfiles requests.</param>
         public static GetChargingProfilesRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       NetworkingNode_Id                                         DestinationId,
+                                                       SourceRouting                                             SourceRouting,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var getChargingProfilesRequest,
                          out var errorResponse,
@@ -306,14 +306,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetChargingProfiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetChargingProfilesRequest">The parsed GetChargingProfiles request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetChargingProfilesRequestParser">A delegate to parse custom GetChargingProfiles requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       NetworkingNode_Id                                         DestinationId,
+                                       SourceRouting                                             SourceRouting,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out GetChargingProfilesRequest?      GetChargingProfilesRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetChargingProfilesRequest = new GetChargingProfilesRequest(
 
-                                                 DestinationId,
+                                                     SourceRouting,
                                                  GetChargingProfilesRequestId,
                                                  ChargingProfile,
                                                  EVSEId,

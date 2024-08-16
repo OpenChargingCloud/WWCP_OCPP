@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new SecureDataTransfer request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="Parameter">Encryption parameters.</param>
         /// <param name="KeyId">The unique identification of the encryption key.</param>
         /// <param name="Nonce">The first half of the cryptographic nonce.</param>
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SecureDataTransferRequest(NetworkingNode_Id        DestinationId,
+        public SecureDataTransferRequest(SourceRouting            SourceRouting,
                                          UInt16                   Parameter,
                                          UInt16                   KeyId,
                                          UInt64                   Nonce,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(SecureDataTransferRequest)[..^7],
 
                    SignKeys,
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new SecureDataTransferRequest and encrypt the given plaintext
         /// using the given cryptographic key.
         /// </summary>
-        /// <param name="DestinationId"></param>
+        /// <param name="SourceRouting"></param>
         /// <param name="Parameter"></param>
         /// <param name="KeyId"></param>
         /// <param name="Key"></param>
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId"></param>
         /// <param name="NetworkPath"></param>
         /// <param name="CancellationToken"></param>
-        public static SecureDataTransferRequest Encrypt(NetworkingNode_Id        DestinationId,
+        public static SecureDataTransferRequest Encrypt(SourceRouting            SourceRouting,
                                                         UInt16                   Parameter,
                                                         UInt16                   KeyId,
                                                         Byte[]                   Key,
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 return new SecureDataTransferRequest(
 
-                           DestinationId,
+                               SourceRouting,
                            Parameter,
                            KeyId,
                            Nonce,
@@ -292,20 +292,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (Secure, RequestId, DestinationId, NetworkPath, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (Secure, RequestId, SourceRouting, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SecureDataTransfer request.
         /// </summary>
         /// <param name="Secure">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static SecureDataTransferRequest Parse(Byte[]                                                  Secure,
                                                       Request_Id                                              RequestId,
-                                                      NetworkingNode_Id                                       DestinationId,
+                                                      SourceRouting                                           SourceRouting,
                                                       NetworkPath                                             NetworkPath,
                                                       DateTime?                                               RequestTimestamp                  = null,
                                                       TimeSpan?                                               RequestTimeout                    = null,
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (TryParse(Secure,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var secureDataTransferRequest,
                          out var errorResponse,
@@ -336,14 +336,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Secure, RequestId, DestinationId, NetworkPath, out SecureDataTransferRequest, out ErrorResponse, CustomSecureDataTransferRequestParser = null)
+        #region (static) TryParse(Secure, RequestId, SourceRouting, NetworkPath, out SecureDataTransferRequest, out ErrorResponse, CustomSecureDataTransferRequestParser = null)
 
         /// <summary>
         /// Try to parse the given binary representation of a SecureDataTransfer request.
         /// </summary>
         /// <param name="Secure">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SecureDataTransferRequest">The parsed SecureDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static Boolean TryParse(Byte[]                                                  Secure,
                                        Request_Id                                              RequestId,
-                                       NetworkingNode_Id                                       DestinationId,
+                                       SourceRouting                                           SourceRouting,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SecureDataTransferRequest?     SecureDataTransferRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SecureDataTransferRequest  = new SecureDataTransferRequest(
 
-                                                 DestinationId,
+                                                     SourceRouting,
                                                  parameter,
                                                  keyId,
                                                  nonce,

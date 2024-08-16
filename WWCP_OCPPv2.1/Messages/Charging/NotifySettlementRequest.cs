@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a NotifySettlement request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// 
         /// <param name="PaymentReference">The payment reference received from the payment terminal and is used as the value for idToken.</param>
         /// <param name="PaymentStatus">The status of the settlement attempt.</param>
@@ -141,33 +141,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifySettlementRequest(NetworkingNode_Id             DestinationId,
+        public NotifySettlementRequest(SourceRouting            Destination,
 
-                                       PaymentReference              PaymentReference,
-                                       PaymentStatus                 PaymentStatus,
-                                       Decimal                       SettlementAmount,
-                                       DateTime                      SettlementTimestamp,
+                                       PaymentReference         PaymentReference,
+                                       PaymentStatus            PaymentStatus,
+                                       Decimal                  SettlementAmount,
+                                       DateTime                 SettlementTimestamp,
 
-                                       Transaction_Id?               TransactionId       = null,
-                                       String?                       StatusInfo          = null,
-                                       ReceiptId?                    ReceiptId           = null,
-                                       URL?                          ReceiptURL          = null,
-                                       InvoiceNumber?                InvoiceNumber       = null,
+                                       Transaction_Id?          TransactionId       = null,
+                                       String?                  StatusInfo          = null,
+                                       ReceiptId?               ReceiptId           = null,
+                                       URL?                     ReceiptURL          = null,
+                                       InvoiceNumber?           InvoiceNumber       = null,
 
-                                       IEnumerable<KeyPair>?         SignKeys            = null,
-                                       IEnumerable<SignInfo>?        SignInfos           = null,
-                                       IEnumerable<Signature>?       Signatures          = null,
+                                       IEnumerable<KeyPair>?    SignKeys            = null,
+                                       IEnumerable<SignInfo>?   SignInfos           = null,
+                                       IEnumerable<Signature>?  Signatures          = null,
 
-                                       CustomData?                   CustomData          = null,
+                                       CustomData?              CustomData          = null,
 
-                                       Request_Id?                   RequestId           = null,
-                                       DateTime?                     RequestTimestamp    = null,
-                                       TimeSpan?                     RequestTimeout      = null,
-                                       EventTracking_Id?             EventTrackingId     = null,
-                                       NetworkPath?                  NetworkPath         = null,
-                                       CancellationToken             CancellationToken   = default)
+                                       Request_Id?              RequestId           = null,
+                                       DateTime?                RequestTimestamp    = null,
+                                       TimeSpan?                RequestTimeout      = null,
+                                       EventTracking_Id?        EventTrackingId     = null,
+                                       NetworkPath?             NetworkPath         = null,
+                                       CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(NotifySettlementRequest)[..^7],
 
                    SignKeys,
@@ -227,14 +227,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifySettlementRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifySettlementRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifySettlement request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifySettlementRequestParser">A delegate to parse custom NotifySettlement requests.</param>
         public static NotifySettlementRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    NetworkingNode_Id                                      DestinationId,
+                                                    SourceRouting                                          SourceRouting,
                                                     NetworkPath                                            NetworkPath,
                                                     DateTime?                                              RequestTimestamp                      = null,
                                                     TimeSpan?                                              RequestTimeout                        = null,
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifySettlementRequest,
                          out var errorResponse,
@@ -271,14 +271,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifySettlementRequest, out ErrorResponse, CustomNotifySettlementRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifySettlementRequest, out ErrorResponse, CustomNotifySettlementRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifySettlement request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifySettlementRequest">The parsed NotifySettlement request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifySettlementRequestParser">A delegate to parse custom NotifySettlement requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       NetworkingNode_Id                                      DestinationId,
+                                       SourceRouting                                          SourceRouting,
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out NotifySettlementRequest?      NotifySettlementRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifySettlementRequest = new NotifySettlementRequest(
 
-                                              DestinationId,
+                                                  SourceRouting,
 
                                               PaymentReference,
                                               PaymentStatus,

@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public class OCPP_BinaryRequestMessage(DateTime           RequestTimestamp,
                                            EventTracking_Id   EventTrackingId,
                                            NetworkingMode     NetworkingMode,
-                                           NetworkingNode_Id  DestinationId,
+                                           SourceRouting      Destination,
                                            NetworkPath        NetworkPath,
                                            Request_Id         RequestId,
                                            String             Action,
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
+        public SourceRouting      Destination          { get; }      = Destination;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     Request.EventTrackingId,
                     NetworkingMode.Unknown,
-                    Request.DestinationId,
+                    Request.Destination,
                     Request.NetworkPath,
                     Request.RequestId,
                     Request.Action,
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                    destinationNodeIdLength == 0 && networkPathLength == 0
                                                        ? NetworkingMode.Standard
                                                        : NetworkingMode.OverlayNetwork,
-                                                   destinationNodeId,
+                                                   SourceRouting.To(destinationNodeId),
                                                    new NetworkPath(networkPath),
                                                    requestId,
                                                    action,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             else if (NetworkingMode == NetworkingMode.OverlayNetwork)
             {
 
-                var destinationNodeIdBytes = DestinationId.ToString().ToUTF8Bytes();
+                var destinationNodeIdBytes = Destination.Last.ToString().ToUTF8Bytes();
                 binaryStream.WriteUInt16((UInt16) destinationNodeIdBytes.Length);
                 binaryStream.Write      (destinationNodeIdBytes);
 
@@ -369,14 +369,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="NewDestinationId">An optional new destination identification.</param>
         /// <param name="NewNetworkPath">An optional new (source) network path.</param>
         /// <param name="NewNetworkingMode">An optional new networking mode.</param>
-        public OCPP_BinaryRequestMessage ChangeNetworking(NetworkingNode_Id?  NewDestinationId    = null,
-                                                          NetworkPath?        NewNetworkPath      = null,
-                                                          NetworkingMode?     NewNetworkingMode   = null)
+        public OCPP_BinaryRequestMessage ChangeNetworking(SourceRouting?   NewDestination      = null,
+                                                          NetworkPath?     NewNetworkPath      = null,
+                                                          NetworkingMode?  NewNetworkingMode   = null)
 
             => new (RequestTimestamp,
                     EventTrackingId,
                     NewNetworkingMode ?? NetworkingMode,
-                    NewDestinationId  ?? DestinationId,
+                    NewDestination    ?? Destination,
                     NewNetworkPath    ?? NetworkPath,
                     RequestId,
                     Action,
@@ -390,15 +390,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region ChangeDestionationId(NewDestinationId)
 
         /// <summary>
-        /// Change the destination identification.
+        /// Change the destination.
         /// </summary>
-        /// <param name="NewDestinationId">A new destination identification.</param>
-        public OCPP_BinaryRequestMessage ChangeDestionationId(NetworkingNode_Id NewDestinationId)
+        /// <param name="NewDestination">A new destination.</param>
+        public OCPP_BinaryRequestMessage ChangeDestionationId(SourceRouting NewDestination)
 
             => new (RequestTimestamp,
                     EventTrackingId,
                     NetworkingMode,
-                    NewDestinationId,
+                    NewDestination,
                     NetworkPath,
                     RequestId,
                     Action,
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (RequestTimestamp,
                     EventTrackingId,
                     NetworkingMode,
-                    DestinationId,
+                    Destination,
                     NetworkPath.Append(NetworkingNodeId),
                     RequestId,
                     Action,

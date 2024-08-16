@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// Keeping track of a sent request and its response.
     /// </summary>
     /// <param name="RequestTimestamp">The time stamp of the request.</param>
-    /// <param name="DestinationId">The destination network node identification of the request and thus the expected source of the response.</param>
+    /// <param name="Destination">The destination network node identification of the request and thus the expected source of the response.</param>
     /// <param name="Timeout">The timeout of the request.</param>
     /// 
     /// <param name="JSONRequest">The JSON request message.</param>
@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="BinaryRequestErrorMessage">An optional binary request error message.</param>
     /// <param name="BinaryResponseErrorMessage">An optional binary response error message.</param>
     public class SendRequestState(DateTime                          RequestTimestamp,
-                                  NetworkingNode_Id                 DestinationId,
+                                  SourceRouting                     Destination,
                                   NetworkPath                       NetworkPath,
                                   DateTime                          Timeout,
 
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The destination network node identification of the request
         /// and thus the expected source of the response.
         /// </summary>
-        public NetworkingNode_Id                 DestinationIdSent             { get; }      = DestinationId;
+        public SourceRouting                     DestinationSent               { get; }      = Destination;
 
         /// <summary>
         /// The network (source) path of the response.
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// The destination network node identification of the request
         /// and thus the expected source of the response.
         /// </summary>
-        public NetworkingNode_Id                 DestinationIdReceived         { get; set; }
+        public SourceRouting                     DestinationReceived           { get; set; }
 
         /// <summary>
         /// The network (source) path of the response.
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FromJSONRequest  (...)
 
         public static SendRequestState FromJSONRequest(DateTime                       RequestTimestamp,
-                                                       NetworkingNode_Id              DestinationId,
+                                                       SourceRouting                  Destination,
                                                        DateTime                       Timeout,
 
                                                        OCPP_JSONRequestMessage        JSONRequest,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                        OCPP_BinaryResponseMessage?    BinaryResponse            = null)
 
             => new (RequestTimestamp,
-                    DestinationId,
+                    Destination,
                     NetworkPath.Empty,
                     Timeout,
 
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FromBinaryRequest(...)
 
         public static SendRequestState FromBinaryRequest(DateTime                       RequestTimestamp,
-                                                         NetworkingNode_Id              DestinationId,
+                                                         SourceRouting                  Destination,
                                                          DateTime                       Timeout,
 
                                                          OCPP_BinaryRequestMessage      BinaryRequest,
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                          OCPP_BinaryResponseMessage?    BinaryResponse            = null)
 
             => new (RequestTimestamp,
-                    DestinationId,
+                    Destination,
                     NetworkPath.Empty,
                     Timeout,
 

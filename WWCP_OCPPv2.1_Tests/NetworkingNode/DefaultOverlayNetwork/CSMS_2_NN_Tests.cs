@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationId:  localController.Id,
+                                           Destination:    SourceRouting.To(localController.Id),
                                            ResetType:      resetType
                                        );
 
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await CSMS.TransferData(
-                                           DestinationId:   localController.Id,
+                                           Destination:    SourceRouting.To( localController.Id),
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data,
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(localController.Id));
+                    Assert.That(nnJSONMessageRequest.Destination,                   Is.EqualTo(localController.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var data        = "Hello world!";
                 var response    = await CSMS.TransferSecureData(
-                                            DestinationId:  localController.Id,
+                                            Destination:    SourceRouting.To(localController.Id),
                                             Parameter:      0,
                                             KeyId:          1,
                                             Payload:        data.ToUTF8Bytes()
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Binary Request IN
                     Assert.That(nnBinaryMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON request did not reach the networking node!");
                     var nnBinaryMessageRequest = nnBinaryMessageRequestsReceived.First();
-                    Assert.That(nnBinaryMessageRequest.DestinationId,                       Is.EqualTo(localController.Id));
+                    Assert.That(nnBinaryMessageRequest.Destination,                         Is.EqualTo(localController.Id));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 //};
 
                 var reset = new ResetRequest(
-                                localController.Id,
+                                SourceRouting.To(localController.Id),
                                 ResetType.Immediate
                             ).ToJSON(
                                   CSMS.OCPP.CustomResetRequestSerializer,
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 new SecureRandom().NextBytes(key);
 
                 var secureDataTransfer = SecureDataTransferRequest.Encrypt(
-                                             localController.Id,
+                                             SourceRouting.To(localController.Id),
                                              0,
                                              1,
                                              key,
@@ -537,8 +537,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationId:  localController.Id,
-                                           ResetType:          resetType
+                                           Destination:  SourceRouting.To(localController.Id),
+                                           ResetType:    resetType
                                        );
 
 
@@ -642,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.Reset(
-                                           DestinationId:  localController.Id,
+                                           Destination:    SourceRouting.To(localController.Id),
                                            ResetType:          resetType
                                        );
 
@@ -750,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.DeleteFile(
-                                           DestinationId:  localController.Id,
+                                           Destination:    SourceRouting.To(localController.Id),
                                            FileName:           FilePath.Parse("/test.txt")
                                        );
 
@@ -855,7 +855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.GetFile(
-                                           DestinationId:  localController.Id,
+                                           Destination:    SourceRouting.To(localController.Id),
                                            FileName:       FilePath.Parse("/test.txt")
                                        );
 
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
                 var resetType  = ResetType.Immediate;
                 var response   = await CSMS.SendFile(
-                                           DestinationId:     localController.Id,
+                                           Destination:    SourceRouting.To(   localController.Id),
                                            FileName:          FilePath.Parse("/test.txt"),
                                            FileContent:       "Hello world!".ToUTF8Bytes(),
                                            FileContentType:   ContentType.Text.Plain

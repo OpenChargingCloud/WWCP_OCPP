@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
                 var resetType  = ResetType.Immediate;
                 var response   = await localController1.Reset(
-                                           DestinationId:  chargingStation1.Id,
+                                           Destination:    SourceRouting.To(chargingStation1.Id),
                                            ResetType:      resetType
                                        );
 
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 var reason    = BootReason.PowerUp;
                 var response  = await localController1.OCPP.OUT.NotifyNetworkTopology(
                                     new NotifyNetworkTopologyRequest(
-                                        NetworkingNode_Id.CSMS,
+                                        SourceRouting.CSMS,
                                         new NetworkTopologyInformation(
                                             RoutingNode:   localController1.Id,
                                             Routes:        [
@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     if (routes is not null)
                     {
 
-                        Assert.That(routes.Values.First().NetworkingNodeId,             Is.EqualTo(localController1.Id));
+                        Assert.That(routes.Values.First().DestinationId,             Is.EqualTo(localController1.Id));
                         Assert.That(routes.Values.First().Priority,                     Is.EqualTo(23));
 
                         Assert.That(routes.Values.First().Uplink,                       Is.Not.Null);
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
                 var reason    = BootReason.PowerUp;
                 var response  = await localController1.NotifyNetworkTopology(
-                                    DestinationId:                NetworkingNode_Id.CSMS,
+                                    Destination:                  SourceRouting.To(NetworkingNode_Id.CSMS),
                                     NetworkTopologyInformation:   new NetworkTopologyInformation(
                                                                       RoutingNode:   localController1.Id,
                                                                       Routes:        [
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     if (routes is not null)
                     {
 
-                        Assert.That(routes.Values.First().NetworkingNodeId,                    Is.EqualTo(localController1.Id));
+                        Assert.That(routes.Values.First().DestinationId,                    Is.EqualTo(localController1.Id));
                         Assert.That(routes.Values.First().Priority,                            Is.EqualTo(23));
 
                         Assert.That(routes.Values.First().Uplink,                              Is.Not.Null);

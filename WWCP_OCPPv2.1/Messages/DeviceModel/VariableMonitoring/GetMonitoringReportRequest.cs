@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetMonitoringReport request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="GetMonitoringReportRequestId">A GetMonitoringReport request identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetMonitoringReportRequest(NetworkingNode_Id                 DestinationId,
+        public GetMonitoringReportRequest(SourceRouting                     SourceRouting,
                                           Int32                             GetMonitoringReportRequestId,
                                           IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                           IEnumerable<ComponentVariable>    ComponentVariables,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           NetworkPath?                      NetworkPath         = null,
                                           CancellationToken                 CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(GetMonitoringReportRequest)[..^7],
 
                    SignKeys,
@@ -319,14 +319,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetMonitoringReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetMonitoringReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom GetMonitoringReport requests.</param>
         public static GetMonitoringReportRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       NetworkingNode_Id                                         DestinationId,
+                                                       SourceRouting                                             SourceRouting,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var getMonitoringReportRequest,
                          out var errorResponse,
@@ -363,14 +363,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetMonitoringReportRequest, out ErrorResponse, CustomGetMonitoringReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetMonitoringReportRequest, out ErrorResponse, CustomGetMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetMonitoringReport request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetMonitoringReportRequest">The parsed GetMonitoringReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom GetMonitoringReport requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       NetworkingNode_Id                                         DestinationId,
+                                       SourceRouting                                             SourceRouting,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out GetMonitoringReportRequest?      GetMonitoringReportRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetMonitoringReportRequest = new GetMonitoringReportRequest(
 
-                                                 DestinationId,
+                                                     SourceRouting,
                                                  GetMonitoringReportRequestId,
                                                  MonitoringCriterions,
                                                  ComponentVariables,

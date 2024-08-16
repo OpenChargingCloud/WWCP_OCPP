@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a NotifyDisplayMessages request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the NotifyDisplayMessages request.</param>
         /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyDisplayMessagesRequest(NetworkingNode_Id         DestinationId,
+        public NotifyDisplayMessagesRequest(SourceRouting             SourceRouting,
                                             Int32                     NotifyDisplayMessagesRequestId,
                                             IEnumerable<MessageInfo>  MessageInfos,
                                             Boolean?                  ToBeContinued       = null,
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             NetworkPath?              NetworkPath         = null,
                                             CancellationToken         CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(NotifyDisplayMessagesRequest)[..^7],
 
                    SignKeys,
@@ -367,14 +367,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyDisplayMessagesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyDisplayMessages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom NotifyDisplayMessages requests.</param>
         public static NotifyDisplayMessagesRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         NetworkingNode_Id                                           DestinationId,
+                                                         SourceRouting                                               SourceRouting,
                                                          NetworkPath                                                 NetworkPath,
                                                          DateTime?                                                   RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifyDisplayMessagesRequest,
                          out var errorResponse,
@@ -411,14 +411,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyDisplayMessages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyDisplayMessagesRequest">The parsed NotifyDisplayMessages request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom NotifyDisplayMessages requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       NetworkingNode_Id                                           DestinationId,
+                                       SourceRouting                                               SourceRouting,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out NotifyDisplayMessagesRequest?      NotifyDisplayMessagesRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyDisplayMessagesRequest = new NotifyDisplayMessagesRequest(
 
-                                                   DestinationId,
+                                                       SourceRouting,
                                                    NotifyDisplayMessagesRequestId,
                                                    MessageInfos,
                                                    ToBeContinued,

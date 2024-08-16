@@ -670,7 +670,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             where TDelegate : Delegate
 
-            => parentNetworkingNode.LogEvent(nameof(OCPPWebSocketAdapterOUT), Logger, LogHandler, EventName, OCPPCommand);
+            => parentNetworkingNode.LogEvent(
+                   nameof(OCPPWebSocketAdapterOUT),
+                   Logger,
+                   LogHandler,
+                   EventName,
+                   OCPPCommand
+               );
 
         #endregion
 
@@ -686,20 +692,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                );
 
         #endregion
-
-
-
-
-        [Obsolete]
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccured)
-
-            => parentNetworkingNode.HandleErrors(
-                   nameof(OCPPWebSocketAdapterOUT),
-                   Caller,
-                   ExceptionOccured
-               );
 
 
     }

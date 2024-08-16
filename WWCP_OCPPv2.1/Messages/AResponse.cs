@@ -49,12 +49,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Constructor(s)
 
+        ///// <summary>
+        ///// Create a new abstract generic response.
+        ///// </summary>
+        ///// <param name="Request">The request leading to this result.</param>
+        ///// <param name="Result">A generic result.</param>
+        ///// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        ///// 
+        ///// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        ///// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        ///// 
+        ///// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        //public AResponse(TRequest                 Request,
+        //                 Result                   Result,
+        //                 DateTime?                ResponseTimestamp   = null,
+
+        //                 NetworkingNode_Id?       DestinationId       = null,
+        //                 NetworkPath?             NetworkPath         = null,
+
+        //                 IEnumerable<KeyPair>?    SignKeys            = null,
+        //                 IEnumerable<SignInfo>?   SignInfos           = null,
+        //                 IEnumerable<Signature>?  Signatures          = null,
+
+        //                 CustomData?              CustomData          = null)
+
+        //    : this(Request,
+        //           Result,
+        //           ResponseTimestamp ?? Timestamp.Now,
+
+        //           DestinationId,
+        //           NetworkPath,
+
+        //           SignKeys,
+        //           SignInfos,
+        //           Signatures,
+
+        //           CustomData)
+
+        //{ }
+
+
         /// <summary>
         /// Create a new abstract generic response.
         /// </summary>
         /// <param name="Request">The request leading to this result.</param>
         /// <param name="Result">A generic result.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// 
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
@@ -65,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          Result                   Result,
                          DateTime?                ResponseTimestamp   = null,
 
-                         NetworkingNode_Id?       DestinationId       = null,
+                         SourceRouting?           SourceRouting       = null,
                          NetworkPath?             NetworkPath         = null,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -78,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Result,
                    ResponseTimestamp ?? Timestamp.Now,
 
-                   DestinationId,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -88,6 +131,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    CustomData)
 
         { }
+
+
+        ///// <summary>
+        ///// Create a new abstract generic response.
+        ///// </summary>
+        ///// <param name="Request">The request leading to this result.</param>
+        ///// <param name="Result">A generic result.</param>
+        ///// <param name="ResponseTimestamp">The response timestamp.</param>
+        ///// 
+        ///// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        ///// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        ///// 
+        ///// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        //public AResponse(TRequest                 Request,
+        //                 Result                   Result,
+        //                 DateTime                 ResponseTimestamp,
+
+        //                 NetworkingNode_Id?       DestinationId   = null,
+        //                 NetworkPath?             NetworkPath     = null,
+
+        //                 IEnumerable<KeyPair>?    SignKeys        = null,
+        //                 IEnumerable<SignInfo>?   SignInfos       = null,
+        //                 IEnumerable<Signature>?  Signatures      = null,
+
+        //                 CustomData?              CustomData      = null)
+
+        //    : base(Result,
+        //           ResponseTimestamp,
+        //           ResponseTimestamp  - Request.RequestTimestamp,
+
+        //           DestinationId ?? Request.NetworkPath.Source,
+        //           NetworkPath   ?? NetworkPath.Empty,
+
+        //           SignKeys,
+        //           SignInfos,
+        //           Signatures,
+
+        //           CustomData)
+
+        //{
+
+        //    this.Request = Request;
+
+        //    unchecked
+        //    {
+        //        hashCode = this.Request.GetHashCode() * 3 ^
+        //                   base.        GetHashCode();
+        //    }
+
+        //}
 
 
         /// <summary>
@@ -106,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          Result                   Result,
                          DateTime                 ResponseTimestamp,
 
-                         NetworkingNode_Id?       DestinationId   = null,
+                         SourceRouting?           SourceRouting   = null,
                          NetworkPath?             NetworkPath     = null,
 
                          IEnumerable<KeyPair>?    SignKeys        = null,
@@ -119,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ResponseTimestamp,
                    ResponseTimestamp  - Request.RequestTimestamp,
 
-                   DestinationId ?? Request.NetworkPath.Source,
+                   SourceRouting ?? SourceRouting.To(Request.NetworkPath.Source),
                    NetworkPath   ?? NetworkPath.Empty,
 
                    SignKeys,
@@ -234,10 +328,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public DateTime           ResponseTimestamp    { get; }
 
         /// <summary>
-        /// The destination identification of the message within the overlay network.
+        /// The networking node identification of the message destination.
         /// </summary>
         [Mandatory]
-        public NetworkingNode_Id  DestinationId    { get; }
+        public NetworkingNode_Id  DestinationId
+            => SourceRouting.Last();
+
+        /// <summary>
+        /// The alternative source routing path through the overlay network
+        /// towards the message destination.
+        /// </summary>
+        [Mandatory]
+        public SourceRouting      SourceRouting        { get; }
 
         /// <summary>
         /// The networking path of the message through the overlay network.
@@ -255,6 +357,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Constructor(s)
 
+        #region AResponse(Result, ResponseTimestamp, Runtime, DestinationId, NetworkPath, ...)
+
+        ///// <summary>
+        ///// Create a new abstract generic response.
+        ///// </summary>
+        ///// <param name="Result">A generic result.</param>
+        ///// <param name="ResponseTimestamp">The timestamp of the response.</param>
+        ///// <param name="Runtime">The runtime of the request.</param>
+        ///// 
+        ///// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        ///// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        ///// 
+        ///// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        ///// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        ///// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        ///// 
+        ///// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        //public AResponse(Result                   Result,
+        //                 DateTime                 ResponseTimestamp,
+        //                 TimeSpan                 Runtime,
+
+        //                 NetworkingNode_Id        DestinationId,
+        //                 NetworkPath              NetworkPath,
+
+        //                 IEnumerable<KeyPair>?    SignKeys     = null,
+        //                 IEnumerable<SignInfo>?   SignInfos    = null,
+        //                 IEnumerable<Signature>?  Signatures   = null,
+
+        //                 CustomData?              CustomData   = null)
+
+        //    : this(Result,
+        //           ResponseTimestamp,
+        //           Runtime,
+
+        //           SourceRouting.To(DestinationId),
+        //           NetworkPath,
+
+        //           SignKeys,
+        //           SignInfos,
+        //           Signatures,
+
+        //           CustomData)
+
+        //{ }
+
+        #endregion
+
+        #region AResponse(Result, ResponseTimestamp, Runtime, SourceRouting, NetworkPath, ...)
+
         /// <summary>
         /// Create a new abstract generic response.
         /// </summary>
@@ -262,8 +413,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ResponseTimestamp">The timestamp of the response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         /// 
-        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
-        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// <param name="Destination">An alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="NetworkPath">An networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
@@ -274,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          DateTime                 ResponseTimestamp,
                          TimeSpan                 Runtime,
 
-                         NetworkingNode_Id        DestinationId,
+                         SourceRouting            Destination,
                          NetworkPath              NetworkPath,
 
                          IEnumerable<KeyPair>?    SignKeys     = null,
@@ -295,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ResponseTimestamp  = ResponseTimestamp;
             this.Runtime            = Runtime;
 
-            this.DestinationId      = DestinationId;
+            this.SourceRouting      = Destination;
             this.NetworkPath        = NetworkPath;
 
             unchecked
@@ -304,12 +455,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 hashCode = this.Result.           GetHashCode() * 11 ^
                            this.ResponseTimestamp.GetHashCode() *  7 ^
                            this.Runtime.          GetHashCode() *  5 ^
-                           this.DestinationId.    GetHashCode() *  3 ^
+                           this.SourceRouting.    GetHashCode() *  3 ^
                            this.NetworkPath.      GetHashCode();
 
             }
 
         }
+
+        #endregion
 
         #endregion
 

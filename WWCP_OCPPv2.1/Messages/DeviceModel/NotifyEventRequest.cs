@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify event request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="EventData">The enumeration of event data.</param>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEventRequest(NetworkingNode_Id        DestinationId,
+        public NotifyEventRequest(SourceRouting            SourceRouting,
                                   DateTime                 GeneratedAt,
                                   UInt32                   SequenceNumber,
                                   IEnumerable<EventData>   EventData,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   NetworkPath?             NetworkPath         = null,
                                   CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(NotifyEventRequest)[..^7],
 
                    SignKeys,
@@ -398,14 +398,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyEventRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEventRequestParser">A delegate to parse custom notify event requests.</param>
         public static NotifyEventRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               NetworkingNode_Id                                 DestinationId,
+                                               SourceRouting                                     SourceRouting,
                                                NetworkPath                                       NetworkPath,
                                                DateTime?                                         RequestTimestamp                 = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifyEventRequest,
                          out var errorResponse,
@@ -442,14 +442,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyEventRequest">The parsed notify event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEventRequestParser">A delegate to parse custom notify event requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       NetworkingNode_Id                                 DestinationId,
+                                       SourceRouting                                     SourceRouting,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEventRequest?      NotifyEventRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
@@ -555,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyEventRequest = new NotifyEventRequest(
 
-                                         DestinationId,
+                                             SourceRouting,
                                          GeneratedAt,
                                          SequenceNumber,
                                          EventData,

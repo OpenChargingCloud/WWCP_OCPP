@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -76,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;
                 var response   = await testCSMS01.Reset(
-                                           DestinationId:   chargingStation1.Id,
+                                           Destination:    SourceRouting.To( chargingStation1.Id),
                                            ResetType:           resetType,
                                            SignInfos:           new[] {
                                                                     keyPair.ToSignInfo1(

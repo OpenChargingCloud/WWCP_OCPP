@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="SourceRouting">The destination identification of the message within the overlay network.</param>
         /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           Result?                    Result                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
-                                          NetworkingNode_Id?         DestinationId          = null,
+                                          SourceRouting?             SourceRouting          = null,
                                           NetworkPath?               NetworkPath            = null,
 
                                           IEnumerable<KeyPair>?      SignKeys               = null,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   DestinationId,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new SecureDataTransferRequest and encrypt the given plaintext
         /// using the given cryptographic key.
         /// </summary>
-        /// <param name="DestinationId"></param>
+        /// <param name="SourceRouting"></param>
         /// <param name="Parameter"></param>
         /// <param name="KeyId"></param>
         /// <param name="Key"></param>
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken"></param>
         public static SecureDataTransferResponse Encrypt(SecureDataTransferRequest  Request,
                                                          SecureDataTransferStatus   Status,
-                                                         NetworkingNode_Id          DestinationId,
+                                                         SourceRouting              Destination,
                                                          UInt16                     Parameter,
                                                          UInt16                     KeyId,
                                                          Byte[]                     Key,
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            Result.OK(),
                            ResponseTimestamp,
 
-                           DestinationId,
+                           Destination,
                            NetworkPath,
 
                            SignKeys,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static SecureDataTransferResponse Parse(SecureDataTransferRequest                                Request,
                                                        Byte[]                                                   SecureData,
-                                                       NetworkingNode_Id                                        DestinationId,
+                                                       SourceRouting                                            SourceRouting,
                                                        NetworkPath                                              NetworkPath,
                                                        DateTime?                                                ResponseTimestamp                        = null,
                                                        CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null,
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (TryParse(Request,
                          SecureData,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var secureDataTransferResponse,
                          out var errorResponse,
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static Boolean TryParse(SecureDataTransferRequest                                Request,
                                        Byte[]                                                   SecureData,
-                                       NetworkingNode_Id                                        DestinationId,
+                                       SourceRouting                                            SourceRouting,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SecureDataTransferResponse?     SecureDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       null,
                                                       ResponseTimestamp,
 
-                                                      DestinationId,
+                                                          SourceRouting,
                                                       NetworkPath,
 
                                                       null,
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               JObject?                   ErrorDetails        = null,
                                                               DateTime?                  ResponseTimestamp   = null,
 
-                                                              NetworkingNode_Id?         DestinationId       = null,
+                                                              SourceRouting?         SourceRouting       = null,
                                                               NetworkPath?               NetworkPath         = null,
 
                                                               IEnumerable<KeyPair>?      SignKeys            = null,
@@ -555,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,

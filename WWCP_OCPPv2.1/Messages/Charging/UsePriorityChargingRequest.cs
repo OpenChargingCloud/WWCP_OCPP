@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create an UsePriorityCharging request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -87,13 +87,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UsePriorityChargingRequest(NetworkingNode_Id        DestinationId,
+        public UsePriorityChargingRequest(SourceRouting            Destination,
                                           Transaction_Id           TransactionId,
                                           Boolean                  Activate,
 
                                           IEnumerable<KeyPair>?    SignKeys            = null,
                                           IEnumerable<SignInfo>?   SignInfos           = null,
-                                          IEnumerable<Signature>?       Signatures          = null,
+                                          IEnumerable<Signature>?  Signatures          = null,
 
                                           CustomData?              CustomData          = null,
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           NetworkPath?             NetworkPath         = null,
                                           CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(UsePriorityChargingRequest)[..^7],
 
                    SignKeys,
@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUsePriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an UsePriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom UsePriorityCharging requests.</param>
         public static UsePriorityChargingRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       NetworkingNode_Id                                         DestinationId,
+                                                       SourceRouting                                             SourceRouting,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var usePriorityChargingRequest,
                          out var errorResponse,
@@ -188,14 +188,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UsePriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UsePriorityChargingRequest">The parsed UsePriorityCharging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom UsePriorityCharging requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       NetworkingNode_Id                                         DestinationId,
+                                       SourceRouting                                             SourceRouting,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out UsePriorityChargingRequest?      UsePriorityChargingRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 UsePriorityChargingRequest = new UsePriorityChargingRequest(
 
-                                                 DestinationId,
+                                                     SourceRouting,
                                                  TransactionId,
                                                  Activate,
 

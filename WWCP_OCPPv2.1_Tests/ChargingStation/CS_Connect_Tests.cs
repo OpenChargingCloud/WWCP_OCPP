@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             // OnHTTPRequest
 
-            // OnValidateWebSocketConnection
+            // OnValidateWebSocketConnectionr
 
             testWebSocketServer01.OnNewWebSocketConnection      += (timestamp, server, newConnection, //networkingNodeId,
                                                                                                       sharedSubprotocols, eventTrackingId, cancellationToken) => {
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             };
 
 
-            testWebSocketServer01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
+            testWebSocketServer01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, frame, eventTrackingId, requestMessage, cancellationToken) => {
                 csmsWebSocketTextMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             //    return Task.CompletedTask;
             //};
 
-            testWebSocketServer01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
+            testWebSocketServer01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, frame, eventTrackingId, requestMessage, sentStatus, cancellationToken) => {
                 csmsWebSocketTextMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new GetCRL request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="GetCRLRequestId">The identification of this request.</param>
         /// <param name="CertificateHashData">Certificate hash data.</param>
         /// 
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetCRLRequest(NetworkingNode_Id        DestinationId,
+        public GetCRLRequest(SourceRouting            SourceRouting,
                              UInt32                   GetCRLRequestId,
                              CertificateHashData      CertificateHashData,
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                              NetworkPath?             NetworkPath         = null,
                              CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(GetCRLRequest)[..^7],
 
                    SignKeys,
@@ -145,14 +145,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetCRLRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetCRLRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCRL request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCRLRequestParser">A delegate to parse custom GetCRL requests.</param>
         public static GetCRLRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
-                                          NetworkingNode_Id                            DestinationId,
+                                          SourceRouting                                SourceRouting,
                                           NetworkPath                                  NetworkPath,
                                           DateTime?                                    RequestTimestamp            = null,
                                           TimeSpan?                                    RequestTimeout              = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
@@ -189,14 +189,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetCRLRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetCRLRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetCRL request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetCRLRequest">The parsed GetCRL request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCRLRequestParser">A delegate to parse custom GetCRL requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
-                                       NetworkingNode_Id                            DestinationId,
+                                       SourceRouting                                SourceRouting,
                                        NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out GetCRLRequest?      GetCRLRequest,
                                        [NotNullWhen(false)] out String?             ErrorResponse,
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 GetCRLRequest = new GetCRLRequest(
 
-                                    DestinationId,
+                                        SourceRouting,
                                     GetCRLRequestId,
                                     CertificateHashData,
 

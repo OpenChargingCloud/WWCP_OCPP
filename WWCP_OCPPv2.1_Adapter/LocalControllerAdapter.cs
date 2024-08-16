@@ -19,6 +19,7 @@
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Aegir;
@@ -551,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var response = await CSMS.StartCharging(
-                                     DestinationId:                      LocalControllerNode.Id,
+                                     Destination:                        SourceRouting.To(LocalControllerNode.Id),
                                      RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
                                      IdToken:                            new IdToken(
                                                                              Value:             RemoteAuthentication.RemoteIdentification.Value.ToString(),

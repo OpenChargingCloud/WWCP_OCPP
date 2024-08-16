@@ -50,10 +50,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public JSONLDContext      Context
             => DefaultJSONLDContext;
 
-        public NetworkingNode_Id  NetworkingNodeId    { get; }
-        public UInt16?            Priority            { get; }
-        public NetworkLinkInformation?   Uplink              { get; }
-        public NetworkLinkInformation?   Downlink            { get; }
+        public NetworkingNode_Id        DestinationId    { get; }
+        public UInt16?                  Priority            { get; }
+        public NetworkLinkInformation?  Uplink              { get; }
+        public NetworkLinkInformation?  Downlink            { get; }
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new OCPP CSE network routing information.
         /// </summary>
-        /// <param name="NetworkingNodeId"></param>
+        /// <param name="DestinationId"></param>
         /// <param name="Priority"></param>
         /// <param name="Uplink"></param>
         /// <param name="Downlink"></param>
@@ -79,19 +79,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.NetworkingNodeId  = NetworkingNodeId;
-            this.Priority          = Priority;
-            this.Uplink            = Uplink;
-            this.Downlink          = Downlink;
+            this.DestinationId  = DestinationId;
+            this.Priority       = Priority;
+            this.Uplink         = Uplink;
+            this.Downlink       = Downlink;
 
             unchecked
             {
 
-                hashCode = this.NetworkingNodeId.GetHashCode()       * 11 ^
-                          (this.Priority?.       GetHashCode() ?? 0) *  7 ^
-                          (this.Uplink?.         GetHashCode() ?? 0) *  5 ^
-                          (this.Downlink?.       GetHashCode() ?? 0) *  3 ^
-                           base.                 GetHashCode();
+                hashCode = this.DestinationId.GetHashCode()       * 11 ^
+                          (this.Priority?.    GetHashCode() ?? 0) *  7 ^
+                          (this.Uplink?.      GetHashCode() ?? 0) *  5 ^
+                          (this.Downlink?.    GetHashCode() ?? 0) *  3 ^
+                           base.              GetHashCode();
 
             }
 
@@ -171,10 +171,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 NetworkRoutingInformation = default;
 
-                #region NetworkingNodeId    [mandatory]
+                #region DestinationId    [mandatory]
 
-                if (!JSON.ParseMandatory("networkingNodeId",
-                                         "networking node identification",
+                if (!JSON.ParseMandatory("destinationId",
+                                         "destination networking node identification",
                                          NetworkingNode_Id.TryParse,
                                          out NetworkingNode_Id DestinationId,
                                          out ErrorResponse))
@@ -284,22 +284,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var json = JSONObject.Create(
 
-                                 new JProperty("networkingNodeId",   NetworkingNodeId.ToString()),
+                                 new JProperty("destinationId",   DestinationId.ToString()),
 
                            Priority.        HasValue
-                               ? new JProperty("priority",           Priority.        Value)
+                               ? new JProperty("priority",        Priority.     Value)
                                : null,
 
                            Uplink is not null
-                               ? new JProperty("uplink",             Uplink.          ToJSON(CustomNetworkLinkInformationSerializer))
+                               ? new JProperty("uplink",          Uplink.       ToJSON(CustomNetworkLinkInformationSerializer))
                                : null,
 
                            Downlink is not null
-                               ? new JProperty("downlink",           Downlink.        ToJSON(CustomNetworkLinkInformationSerializer))
+                               ? new JProperty("downlink",        Downlink.     ToJSON(CustomNetworkLinkInformationSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNetworkRoutingInformationSerializer is not null
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public override String ToString()
 
-            => $"{NetworkingNodeId}";
+            => $"{DestinationId}";
 
         #endregion
 

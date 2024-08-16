@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new update firmware request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateFirmwareRequest(NetworkingNode_Id        DestinationId,
+        public UpdateFirmwareRequest(SourceRouting            Destination,
                                      Firmware                 Firmware,
                                      Int32                    UpdateFirmwareRequestId,
                                      Byte?                    Retries             = null,
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
                                      IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
 
                                      CustomData?              CustomData          = null,
 
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      NetworkPath?             NetworkPath         = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(UpdateFirmwareRequest)[..^7],
 
                    SignKeys,
@@ -258,14 +258,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUpdateFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an update firmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static UpdateFirmwareRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  NetworkingNode_Id                                    DestinationId,
+                                                  SourceRouting                                        SourceRouting,
                                                   NetworkPath                                          NetworkPath,
                                                   DateTime?                                            RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var updateFirmwareRequest,
                          out var errorResponse,
@@ -302,14 +302,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an update firmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       NetworkingNode_Id                                    DestinationId,
+                                       SourceRouting                                        SourceRouting,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareRequest?      UpdateFirmwareRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 UpdateFirmwareRequest = new UpdateFirmwareRequest(
 
-                                            DestinationId,
+                                                SourceRouting,
                                             Firmware,
                                             UpdateFirmwareRequestId,
                                             Retries,

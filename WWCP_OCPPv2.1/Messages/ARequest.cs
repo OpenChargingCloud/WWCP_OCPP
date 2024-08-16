@@ -54,8 +54,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
+        [Obsolete]
+        public NetworkingNode_Id  DestinationId
+            => Destination.Last();
+
+        /// <summary>
+        /// The alternative source routing path through the overlay network
+        /// towards the message destination.
+        /// </summary>
         [Mandatory]
-        public NetworkingNode_Id  DestinationId        { get; }
+        public SourceRouting      Destination        { get; }
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -102,66 +110,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Constructor(s)
 
-        public ARequest(NetworkingNode_Id        DestinationId,
+        //public ARequest(NetworkingNode_Id        DestinationId,
+        //                String                   Action,
+
+        //                IEnumerable<KeyPair>?    SignKeys            = null,
+        //                IEnumerable<SignInfo>?   SignInfos           = null,
+        //                IEnumerable<Signature>?  Signatures          = null,
+
+        //                CustomData?              CustomData          = null,
+
+        //                Request_Id?              RequestId           = null,
+        //                DateTime?                RequestTimestamp    = null,
+        //                TimeSpan?                RequestTimeout      = null,
+        //                EventTracking_Id?        EventTrackingId     = null,
+        //                NetworkPath?             NetworkPath         = null,
+        //                CancellationToken        CancellationToken   = default)
+
+        //    : this(SourceRouting.To(DestinationId),
+        //           Action,
+
+        //           SignKeys,
+        //           SignInfos,
+        //           Signatures,
+
+        //           CustomData,
+
+        //           RequestId,
+        //           RequestTimestamp,
+        //           RequestTimeout,
+        //           EventTrackingId,
+        //           NetworkPath,
+        //           CancellationToken)
+
+        //{ }
+
+
+        public ARequest(SourceRouting            Destination,
                         String                   Action,
 
-                        IEnumerable<KeyPair>?    SignKeys            = null,
-                        IEnumerable<SignInfo>?   SignInfos           = null,
-                        IEnumerable<Signature>?  Signatures          = null,
-
-                        CustomData?              CustomData          = null,
-
-                        Request_Id?              RequestId           = null,
-                        DateTime?                RequestTimestamp    = null,
-                        TimeSpan?                RequestTimeout      = null,
-                        EventTracking_Id?        EventTrackingId     = null,
-                        NetworkPath?             NetworkPath         = null,
-                        CancellationToken        CancellationToken   = default)
-
-            : this(DestinationId,
-                   Action,
-
-                   null,
-                   null,
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData,
-
-                   RequestId,
-                   RequestTimestamp,
-                   RequestTimeout,
-                   EventTrackingId,
-                   NetworkPath,
-                   CancellationToken)
-
-        { }
-
-
-        /// <summary>
-        /// Create a new generic OCPP request message.
-        /// </summary>
-        /// <param name="DestinationId">The networking node identification of the message destination.</param>
-        /// <param name="Action">The OCPP HTTP Web Socket action.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this request.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">The timeout of this request.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="NetworkPath">An optional (recorded) path of the request through the overlay network.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(NetworkingNode_Id        DestinationId,
-                        String                   Action,
-
-                        String?                  EncryptionKey       = null,
-                        String?                  EncryptionNonce     = null,
                         IEnumerable<KeyPair>?    SignKeys            = null,
                         IEnumerable<SignInfo>?   SignInfos           = null,
                         IEnumerable<Signature>?  Signatures          = null,
@@ -182,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.DestinationId  = DestinationId;
+            this.Destination        = Destination;
             this.Action             = Action;
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
@@ -195,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.DestinationId.GetHashCode() * 17 ^
+                hashCode = this.Destination.      GetHashCode() * 17 ^
                            this.NetworkPath.      GetHashCode() * 13 ^
                            this.Action.           GetHashCode() * 11 ^
                            this.RequestId.        GetHashCode() *  7 ^

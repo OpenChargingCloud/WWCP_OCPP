@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SetNetworkProfile(DateTime              RequestTimestamp,
                                       IWebSocketConnection  WebSocketConnection,
-                                      NetworkingNode_Id     DestinationId,
+                                      SourceRouting         SourceRouting,
                                       NetworkPath           NetworkPath,
                                       EventTracking_Id      EventTrackingId,
                                       Request_Id            RequestId,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SetNetworkProfileRequest.TryParse(JSONRequest,
                                                       RequestId,
-                                                      DestinationId,
+                                                      SourceRouting,
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
-                                       NetworkPath.Source,
+                                       SourceRouting.To(NetworkPath.Source),
                                        NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SetNetworkProfileResponse(SetNetworkProfileRequest  Request,
                                               JObject                   ResponseJSON,
                                               IWebSocketConnection      WebSocketConnection,
-                                              NetworkingNode_Id         DestinationId,
+                                              SourceRouting             SourceRouting,
                                               NetworkPath               NetworkPath,
                                               EventTracking_Id          EventTrackingId,
                                               Request_Id                RequestId,
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SetNetworkProfileResponse.TryParse(Request,
                                                        ResponseJSON,
-                                                       DestinationId,
+                                                       SourceRouting,
                                                        NetworkPath,
                                                        out response,
                                                        out var errorResponse,
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SetNetworkProfileRequestError(SetNetworkProfileRequest      Request,
                                                   OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                   IWebSocketConnection          Connection,
-                                                  NetworkingNode_Id             DestinationId,
+                                                  SourceRouting                 SourceRouting,
                                                   NetworkPath                   NetworkPath,
                                                   EventTracking_Id              EventTrackingId,
                                                   Request_Id                    RequestId,
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                RequestErrorMessage.ErrorDescription,
                                RequestErrorMessage.ErrorDetails,
                                RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.Destination,
                                RequestErrorMessage.NetworkPath
                            );
 
@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    SetNetworkProfileResponse?     Response,
                                                    OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
                                                    IWebSocketConnection           Connection,
-                                                   NetworkingNode_Id              DestinationId,
+                                                   SourceRouting                  SourceRouting,
                                                    NetworkPath                    NetworkPath,
                                                    EventTracking_Id               EventTrackingId,
                                                    Request_Id                     RequestId,

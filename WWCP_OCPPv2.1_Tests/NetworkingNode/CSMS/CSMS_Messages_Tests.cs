@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     DestinationId:   chargingStation1.Id,
+                                     Destination:    SourceRouting.To( chargingStation1.Id),
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
 
                 var response   = await testCSMS01.TransferData(
-                                           DestinationId:   chargingStation1.Id,
+                                           Destination:    SourceRouting.To( chargingStation1.Id),
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
 
                 var response   = await testCSMS01.TransferBinaryData(
-                                           DestinationId:   chargingStation1.Id,
+                                           Destination:    SourceRouting.To( chargingStation1.Id),
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data,

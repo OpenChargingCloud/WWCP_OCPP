@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="DestinationId">The destination identification of the message within the overlay network.</param>
+        /// <param name="SourceRouting">The destination identification of the message within the overlay network.</param>
         /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          Result?                   Result              = null,
                                          DateTime?                 ResponseTimestamp   = null,
 
-                                         NetworkingNode_Id?        DestinationId       = null,
+                                         SourceRouting?        SourceRouting       = null,
                                          NetworkPath?              NetworkPath         = null,
 
                                          IEnumerable<KeyPair>?     SignKeys            = null,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
         public static SetDisplayMessageResponse Parse(SetDisplayMessageRequest                                 Request,
                                                       JObject                                                  JSON,
-                                                      NetworkingNode_Id                                        DestinationId,
+                                                      SourceRouting                                            SourceRouting,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                ResponseTimestamp                       = null,
                                                       CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null,
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(Request,
                          JSON,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var setDisplayMessageResponse,
                          out var errorResponse,
@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom SetDisplayMessage responses.</param>
         public static Boolean TryParse(SetDisplayMessageRequest                                 Request,
                                        JObject                                                  JSON,
-                                       NetworkingNode_Id                                        DestinationId,
+                                       SourceRouting                                            SourceRouting,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SetDisplayMessageResponse?      SetDisplayMessageResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -352,7 +352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 null,
                                                 ResponseTimestamp,
 
-                                                DestinationId,
+                                                    SourceRouting,
                                                 NetworkPath,
 
                                                 null,
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                              JObject?                  ErrorDetails        = null,
                                                              DateTime?                 ResponseTimestamp   = null,
 
-                                                             NetworkingNode_Id?        DestinationId       = null,
+                                                             SourceRouting?        SourceRouting       = null,
                                                              NetworkPath?              NetworkPath         = null,
 
                                                              IEnumerable<KeyPair>?     SignKeys            = null,
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,

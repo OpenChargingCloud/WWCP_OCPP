@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             this.RoutingNode  = RoutingNode;
-            this.Routes       = Routes.ToDictionary(networkRoutingInformation => networkRoutingInformation.NetworkingNodeId);
+            this.Routes       = Routes.ToDictionary(networkRoutingInformation => networkRoutingInformation.DestinationId);
             this.NotBefore    = NotBefore ?? Timestamp.Now;
             this.NotAfter     = NotAfter;
             this.Priority     = Priority;

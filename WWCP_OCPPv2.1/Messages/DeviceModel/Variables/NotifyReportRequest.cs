@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify report request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NotifyReportRequestId">The unique identification of the notify report request.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
@@ -112,27 +112,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyReportRequest(NetworkingNode_Id             DestinationId,
-                                   Int32                         NotifyReportRequestId,
-                                   UInt32                        SequenceNumber,
-                                   DateTime                      GeneratedAt,
-                                   IEnumerable<ReportData>       ReportData,
-                                   Boolean?                      ToBeContinued       = null,
+        public NotifyReportRequest(SourceRouting            Destination,
+                                   Int32                    NotifyReportRequestId,
+                                   UInt32                   SequenceNumber,
+                                   DateTime                 GeneratedAt,
+                                   IEnumerable<ReportData>  ReportData,
+                                   Boolean?                 ToBeContinued       = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   IEnumerable<Signature>?  Signatures          = null,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?              CustomData          = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   NetworkPath?                  NetworkPath         = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?              RequestId           = null,
+                                   DateTime?                RequestTimestamp    = null,
+                                   TimeSpan?                RequestTimeout      = null,
+                                   EventTracking_Id?        EventTrackingId     = null,
+                                   NetworkPath?             NetworkPath         = null,
+                                   CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(NotifyReportRequest)[..^7],
 
                    SignKeys,
@@ -463,14 +463,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify report request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyReportRequestParser">A delegate to parse custom notify report requests.</param>
         public static NotifyReportRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                NetworkingNode_Id                                  DestinationId,
+                                                SourceRouting                                      SourceRouting,
                                                 NetworkPath                                        NetworkPath,
                                                 DateTime?                                          RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
@@ -488,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifyReportRequest,
                          out var errorResponse,
@@ -507,14 +507,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyReportRequest, out ErrorResponse, CustomNotifyReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyReportRequest, out ErrorResponse, CustomNotifyReportRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify report request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyReportRequest">The parsed notify report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyReportRequestParser">A delegate to parse custom notify report requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       NetworkingNode_Id                                  DestinationId,
+                                       SourceRouting                                      SourceRouting,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out NotifyReportRequest?      NotifyReportRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
@@ -632,7 +632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyReportRequest = new NotifyReportRequest(
 
-                                          DestinationId,
+                                              SourceRouting,
                                           NotifyReportRequestId,
                                           SequenceNumber,
                                           GeneratedAt,

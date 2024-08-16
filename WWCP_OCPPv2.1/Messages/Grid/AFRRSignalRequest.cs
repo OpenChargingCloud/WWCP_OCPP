@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new automatic frequency restoration reserve (AFRR) signal request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">The value of the AFRRSignal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -86,24 +86,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AFRRSignalRequest(NetworkingNode_Id             DestinationId,
-                                 DateTime                      ActivationTimestamp,
-                                 AFRR_Signal                   Signal,
+        public AFRRSignalRequest(SourceRouting            Destination,
+                                 DateTime                 ActivationTimestamp,
+                                 AFRR_Signal              Signal,
 
-                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<Signature>?       Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
 
-                                 CustomData?                   CustomData          = null,
+                                 CustomData?              CustomData          = null,
 
-                                 Request_Id?                   RequestId           = null,
-                                 DateTime?                     RequestTimestamp    = null,
-                                 TimeSpan?                     RequestTimeout      = null,
-                                 EventTracking_Id?             EventTrackingId     = null,
-                                 NetworkPath?                  NetworkPath         = null,
-                                 CancellationToken             CancellationToken   = default)
+                                 Request_Id?              RequestId           = null,
+                                 DateTime?                RequestTimestamp    = null,
+                                 TimeSpan?                RequestTimeout      = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
+                                 NetworkPath?             NetworkPath         = null,
+                                 CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(AFRRSignalRequest)[..^7],
 
                    SignKeys,
@@ -145,14 +145,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomAFRRSignalRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomAFRRSignalRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an AFRRSignal request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRRSignal requests.</param>
         public static AFRRSignalRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              NetworkingNode_Id                                DestinationId,
+                                              SourceRouting                                    SourceRouting,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var afrrSignalRequest,
                          out var errorResponse,
@@ -189,14 +189,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON,  RequestId, DestinationId, NetworkPath, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
+        #region (static) TryParse(JSON,  RequestId, SourceRouting, NetworkPath, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an AFRRSignal request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AFRRSignalRequest">The parsed AFRRSignal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRRSignal requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       NetworkingNode_Id                                DestinationId,
+                                       SourceRouting                                    SourceRouting,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out AFRRSignalRequest?      AFRRSignalRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 AFRRSignalRequest = new AFRRSignalRequest(
 
-                                        DestinationId,
+                                            SourceRouting,
                                         ActivationTimestamp,
                                         Signal,
 

@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                     await OCPP.OUT.CertificateSigned(
                                               new CertificateSignedRequest(
-                                                  request.NetworkPath.Source,
+                                                  SourceRouting.To(request.NetworkPath.Source),
                                                   CertificateChain.From(ClientCACertificate, newClientCertificate),
                                                   request.CertificateType ?? CertificateSigningUse.ChargingStationCertificate
                                               )
@@ -1315,7 +1315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? SecureDataTransferResponse.Encrypt(
                                      Request:                request,
                                      Status:                 SecureDataTransferStatus.Accepted,
-                                     DestinationId:          request.NetworkPath.Source,
+                                     Destination:            SourceRouting.To(request.NetworkPath.Source),
                                      Parameter:              0,
                                      KeyId:                  keyId,
                                      Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),

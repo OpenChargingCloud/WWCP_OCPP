@@ -113,39 +113,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// An event sent whenever a text message was received.
         /// </summary>
-        event OnWebSocketTextMessageDelegate?         OnTextMessageReceived;
+        event OnWebSocketServerTextMessageReceivedDelegate?     OnTextMessageReceived;
 
         /// <summary>
         /// An event sent whenever a web socket frame was sent.
         /// </summary>
-        event OnWebSocketTextMessageDelegate?         OnTextMessageSent;
+        event OnWebSocketServerTextMessageSentDelegate?         OnTextMessageSent;
 
 
         /// <summary>
         /// An event sent whenever a binary message was received.
         /// </summary>
-        event OnWebSocketBinaryMessageDelegate?       OnBinaryMessageReceived;
+        event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
 
         /// <summary>
         /// An event sent whenever a web socket frame was sent.
         /// </summary>
-        event OnWebSocketBinaryMessageDelegate?       OnBinaryMessageSent;
+        event OnWebSocketServerBinaryMessageSentDelegate?       OnBinaryMessageSent;
 
 
         /// <summary>
         /// An event sent whenever a web socket ping frame was received.
         /// </summary>
-        event OnWebSocketFrameDelegate?               OnPingMessageReceived;
+        event OnWebSocketServerPingMessageReceivedDelegate?     OnPingMessageReceived;
 
         /// <summary>
         /// An event sent whenever a web socket ping frame was sent.
         /// </summary>
-        event OnWebSocketFrameDelegate?               OnPingMessageSent;
+        event OnWebSocketServerPingMessageSentDelegate?         OnPingMessageSent;
 
         /// <summary>
         /// An event sent whenever a web socket pong frame was received.
         /// </summary>
-        event OnWebSocketFrameDelegate?               OnPongMessageReceived;
+        event OnWebSocketServerPongMessageReceivedDelegate?     OnPongMessageReceived;
 
 
         ///// <summary>
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="TextMessage">The text message to send.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">A token to cancel the processing.</param>
-        Task<SendStatus> SendTextMessage   (WebSocketServerConnection  Connection,
+        Task<SentStatus> SendTextMessage   (WebSocketServerConnection  Connection,
                                             String                     TextMessage,
                                             EventTracking_Id?          EventTrackingId     = null,
                                             CancellationToken          CancellationToken   = default);
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="BinaryMessage">The binary message to send.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">A token to cancel the processing.</param>
-        Task<SendStatus> SendBinaryMessage (WebSocketServerConnection  Connection,
+        Task<SentStatus> SendBinaryMessage (WebSocketServerConnection  Connection,
                                             Byte[]                     BinaryMessage,
                                             EventTracking_Id?          EventTrackingId     = null,
                                             CancellationToken          CancellationToken   = default);
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="WebSocketFrame">The web socket frame to send.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">A token to cancel the processing.</param>
-        Task<SendStatus> SendWebSocketFrame(WebSocketServerConnection  Connection,
+        Task<SentStatus> SendWebSocketFrame(WebSocketServerConnection  Connection,
                                             WebSocketFrame             WebSocketFrame,
                                             EventTracking_Id?          EventTrackingId     = null,
                                             CancellationToken          CancellationToken   = default);

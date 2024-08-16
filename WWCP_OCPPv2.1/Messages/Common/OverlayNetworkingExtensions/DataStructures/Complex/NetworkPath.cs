@@ -23,8 +23,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -91,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An empty network path.
         /// </summary>
-        public static NetworkPath               Empty    { get; }
+        public static NetworkPath              Empty    { get; }
 
             = new();
 
@@ -267,6 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="NetworkingNodeId">A networking node identification.</param>
         public static NetworkPath From(NetworkingNode_Id NetworkingNodeId)
+
             => new (NetworkingNodeId);
 
         #endregion
@@ -307,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="NetworkPath1">A  network path.</param>
+        /// <param name="NetworkPath1">A network path.</param>
         /// <param name="NetworkPath2">Another network path.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (NetworkPath? NetworkPath1,
@@ -333,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="NetworkPath1">A  network path.</param>
+        /// <param name="NetworkPath1">A network path.</param>
         /// <param name="NetworkPath2">Another network path.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (NetworkPath? NetworkPath1,

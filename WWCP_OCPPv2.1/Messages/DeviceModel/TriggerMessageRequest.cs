@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new TriggerMessage request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomTrigger">An optional custom trigger, when requestedMessage == "CustomTrigger".</param>
@@ -94,14 +94,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TriggerMessageRequest(NetworkingNode_Id        DestinationId,
+        public TriggerMessageRequest(SourceRouting            Destination,
                                      MessageTrigger           RequestedMessage,
                                      EVSE?                    EVSE                = null,
                                      String?                  CustomTrigger       = null,
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
                                      IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
 
                                      CustomData?              CustomData          = null,
 
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      NetworkPath?             NetworkPath         = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(TriggerMessageRequest)[..^7],
 
                    SignKeys,
@@ -234,14 +234,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomTriggerMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a TriggerMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
         public static TriggerMessageRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  NetworkingNode_Id                                    DestinationId,
+                                                  SourceRouting                                        SourceRouting,
                                                   NetworkPath                                          NetworkPath,
                                                   DateTime?                                            RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var triggerMessageRequest,
                          out var errorResponse,
@@ -278,14 +278,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a TriggerMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TriggerMessageRequest">The parsed TriggerMessage request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       NetworkingNode_Id                                    DestinationId,
+                                       SourceRouting                                        SourceRouting,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out TriggerMessageRequest?      TriggerMessageRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 TriggerMessageRequest = new TriggerMessageRequest(
 
-                                            DestinationId,
+                                                SourceRouting,
                                             MessageTrigger,
                                             EVSE,
                                             CustomTrigger,

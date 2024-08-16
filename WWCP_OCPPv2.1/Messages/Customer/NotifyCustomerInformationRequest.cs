@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a NotifyCustomerInformation request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NotifyCustomerInformationRequestId">The unique identification of the NotifyCustomerInformation request.</param>
         /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
@@ -111,27 +111,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyCustomerInformationRequest(NetworkingNode_Id             DestinationId,
-                                                Int64                         NotifyCustomerInformationRequestId,
-                                                String                        Data,
-                                                UInt32                        SequenceNumber,
-                                                DateTime                      GeneratedAt,
-                                                Boolean?                      ToBeContinued       = null,
+        public NotifyCustomerInformationRequest(SourceRouting            Destination,
+                                                Int64                    NotifyCustomerInformationRequestId,
+                                                String                   Data,
+                                                UInt32                   SequenceNumber,
+                                                DateTime                 GeneratedAt,
+                                                Boolean?                 ToBeContinued       = null,
 
-                                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                                IEnumerable<Signature>?       Signatures          = null,
+                                                IEnumerable<KeyPair>?    SignKeys            = null,
+                                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                                IEnumerable<Signature>?  Signatures          = null,
 
-                                                CustomData?                   CustomData          = null,
+                                                CustomData?              CustomData          = null,
 
-                                                Request_Id?                   RequestId           = null,
-                                                DateTime?                     RequestTimestamp    = null,
-                                                TimeSpan?                     RequestTimeout      = null,
-                                                EventTracking_Id?             EventTrackingId     = null,
-                                                NetworkPath?                  NetworkPath         = null,
-                                                CancellationToken             CancellationToken   = default)
+                                                Request_Id?              RequestId           = null,
+                                                DateTime?                RequestTimestamp    = null,
+                                                TimeSpan?                RequestTimeout      = null,
+                                                EventTracking_Id?        EventTrackingId     = null,
+                                                NetworkPath?             NetworkPath         = null,
+                                                CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(NotifyCustomerInformationRequest)[..^7],
 
                    SignKeys,
@@ -235,14 +235,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyCustomerInformation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom NotifyCustomerInformation requests.</param>
         public static NotifyCustomerInformationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             NetworkingNode_Id                                               DestinationId,
+                                                             SourceRouting                                                   SourceRouting,
                                                              NetworkPath                                                     NetworkPath,
                                                              DateTime?                                                       RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifyCustomerInformationRequest,
                          out var errorResponse,
@@ -279,14 +279,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyCustomerInformation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyCustomerInformationRequest">The parsed NotifyCustomerInformation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom NotifyCustomerInformation requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       NetworkingNode_Id                                               DestinationId,
+                                       SourceRouting                                                   SourceRouting,
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCustomerInformationRequest?      NotifyCustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyCustomerInformationRequest = new NotifyCustomerInformationRequest(
 
-                                                       DestinationId,
+                                                           SourceRouting,
                                                        NotifyCustomerInformationRequestId,
                                                        Data,
                                                        SequenceNumber,

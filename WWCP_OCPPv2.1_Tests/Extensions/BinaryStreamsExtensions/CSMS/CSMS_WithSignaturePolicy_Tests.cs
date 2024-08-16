@@ -27,6 +27,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -182,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                                DestinationId:    chargingStation1.Id,
+                                                Destination:    SourceRouting.To(  chargingStation1.Id),
                                                 ChargingTariff:   chargingTariff,
                                                 CustomData:       null
                                             );

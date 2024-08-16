@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a StatusNotification request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="Timestamp">The time for which the status is reported.</param>
         /// <param name="ConnectorStatus">The current status of the connector.</param>
         /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
@@ -100,26 +100,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(NetworkingNode_Id             DestinationId,
-                                         DateTime                      Timestamp,
-                                         ConnectorStatus               ConnectorStatus,
-                                         EVSE_Id                       EVSEId,
-                                         Connector_Id                  ConnectorId,
+        public StatusNotificationRequest(SourceRouting            Destination,
+                                         DateTime                 Timestamp,
+                                         ConnectorStatus          ConnectorStatus,
+                                         EVSE_Id                  EVSEId,
+                                         Connector_Id             ConnectorId,
 
-                                         IEnumerable<KeyPair>?         SignKeys            = null,
-                                         IEnumerable<SignInfo>?        SignInfos           = null,
-                                         IEnumerable<Signature>?       Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                         IEnumerable<Signature>?  Signatures          = null,
 
-                                         CustomData?                   CustomData          = null,
+                                         CustomData?              CustomData          = null,
 
-                                         Request_Id?                   RequestId           = null,
-                                         DateTime?                     RequestTimestamp    = null,
-                                         TimeSpan?                     RequestTimeout      = null,
-                                         EventTracking_Id?             EventTrackingId     = null,
-                                         NetworkPath?                  NetworkPath         = null,
-                                         CancellationToken             CancellationToken   = default)
+                                         Request_Id?              RequestId           = null,
+                                         DateTime?                RequestTimestamp    = null,
+                                         TimeSpan?                RequestTimeout      = null,
+                                         EventTracking_Id?        EventTrackingId     = null,
+                                         NetworkPath?             NetworkPath         = null,
+                                         CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(StatusNotificationRequest)[..^7],
 
                    SignKeys,
@@ -227,14 +227,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      NetworkingNode_Id                                        DestinationId,
+                                                      SourceRouting                                            SourceRouting,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var statusNotificationRequest,
                          out var errorResponse,
@@ -271,14 +271,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       NetworkingNode_Id                                        DestinationId,
+                                       SourceRouting                                            SourceRouting,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out StatusNotificationRequest?      StatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 StatusNotificationRequest = new StatusNotificationRequest(
 
-                                                DestinationId,
+                                                    SourceRouting,
                                                 Timestamp,
                                                 ConnectorStatus,
                                                 EVSEId,

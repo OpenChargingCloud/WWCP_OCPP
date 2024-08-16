@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a SendLocalList request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="VersionNumber">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of authorization data elements is available in the configuration key: SendLocalListMaxLength.</param>
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SendLocalListRequest(NetworkingNode_Id                DestinationId,
+        public SendLocalListRequest(SourceRouting                    SourceRouting,
                                     UInt64                           VersionNumber,
                                     UpdateTypes                      UpdateType,
                                     IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     NetworkPath?                     NetworkPath              = null,
                                     CancellationToken                CancellationToken        = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(SendLocalListRequest)[..^7],
 
                    SignKeys,
@@ -418,14 +418,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSendLocalListRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSendLocalListRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SendLocalList request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
         public static SendLocalListRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 NetworkingNode_Id                                   DestinationId,
+                                                 SourceRouting                                       SourceRouting,
                                                  NetworkPath                                         NetworkPath,
                                                  DateTime?                                           RequestTimestamp                   = null,
                                                  TimeSpan?                                           RequestTimeout                     = null,
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var sendLocalListRequest,
                          out var errorResponse,
@@ -462,14 +462,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SendLocalListRequest, out ErrorResponse, CustomSendLocalListRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SendLocalListRequest, out ErrorResponse, CustomSendLocalListRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SendLocalList request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       NetworkingNode_Id                                   DestinationId,
+                                       SourceRouting                                       SourceRouting,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out SendLocalListRequest?      SendLocalListRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SendLocalListRequest = new SendLocalListRequest(
 
-                                           DestinationId,
+                                               SourceRouting,
                                            VersionNumber,
                                            UpdateType,
                                            LocalAuthorizationList,

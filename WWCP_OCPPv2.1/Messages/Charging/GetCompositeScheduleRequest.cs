@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetCompositeSchedule request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -95,14 +95,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetCompositeScheduleRequest(NetworkingNode_Id        DestinationId,
+        public GetCompositeScheduleRequest(SourceRouting            Destination,
                                            TimeSpan                 Duration,
                                            EVSE_Id                  EVSEId,
                                            ChargingRateUnits?       ChargingRateUnit    = null,
 
                                            IEnumerable<KeyPair>?    SignKeys            = null,
                                            IEnumerable<SignInfo>?   SignInfos           = null,
-                                           IEnumerable<Signature>?       Signatures          = null,
+                                           IEnumerable<Signature>?  Signatures          = null,
 
                                            CustomData?              CustomData          = null,
 
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            NetworkPath?             NetworkPath         = null,
                                            CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(GetCompositeScheduleRequest)[..^7],
 
                    SignKeys,
@@ -209,14 +209,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCompositeSchedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom GetCompositeSchedule requests.</param>
         public static GetCompositeScheduleRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        NetworkingNode_Id                                          DestinationId,
+                                                        SourceRouting                                              SourceRouting,
                                                         NetworkPath                                                NetworkPath,
                                                         DateTime?                                                  RequestTimestamp                          = null,
                                                         TimeSpan?                                                  RequestTimeout                            = null,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var getCompositeScheduleRequest,
                          out var errorResponse,
@@ -253,14 +253,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetCompositeSchedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetCompositeScheduleRequest">The parsed GetCompositeSchedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom GetCompositeSchedule requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       NetworkingNode_Id                                          DestinationId,
+                                       SourceRouting                                              SourceRouting,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetCompositeScheduleRequest?      GetCompositeScheduleRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetCompositeScheduleRequest = new GetCompositeScheduleRequest(
 
-                                                  DestinationId,
+                                                      SourceRouting,
                                                   Duration,
                                                   EVSEId,
                                                   ChargingRateUnit,

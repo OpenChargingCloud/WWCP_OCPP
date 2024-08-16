@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetVariables request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetVariablesRequest(NetworkingNode_Id             DestinationId,
+        public GetVariablesRequest(SourceRouting                 Destination,
                                    IEnumerable<GetVariableData>  VariableData,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    NetworkPath?                  NetworkPath         = null,
                                    CancellationToken             CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(GetVariablesRequest)[..^7],
 
                    SignKeys,
@@ -284,14 +284,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, ..., CustomGetVariablesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, ..., CustomGetVariablesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetVariables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetVariablesRequestParser">An optional delegate to parse custom GetVariables requests.</param>
         public static GetVariablesRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                NetworkingNode_Id                                  DestinationId,
+                                                SourceRouting                                      SourceRouting,
                                                 NetworkPath                                        NetworkPath,
                                                 DateTime?                                          RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var getVariablesRequest,
                          out var errorResponse,
@@ -328,14 +328,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out GetVariablesRequest, out ErrorResponse, ..., CustomGetVariablesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetVariablesRequest, out ErrorResponse, ..., CustomGetVariablesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetVariables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetVariablesRequest">The parsed GetVariables request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetVariablesRequestParser">An optional delegate to parse custom GetVariables requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       NetworkingNode_Id                                  DestinationId,
+                                       SourceRouting                                      SourceRouting,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out GetVariablesRequest?      GetVariablesRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetVariablesRequest = new GetVariablesRequest(
 
-                                          DestinationId,
+                                              SourceRouting,
                                           VariableData,
 
                                           null,

@@ -111,12 +111,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Disable all heartbeats.
         /// </summary>
-        public Boolean                  DisableSendHeartbeats       { get; set; }
+        public Boolean                     DisableSendHeartbeats      { get; set; }
 
         /// <summary>
         /// The time span between heartbeat requests.
         /// </summary>
-        public TimeSpan                 SendHeartbeatsEvery         { get; set; }
+        public TimeSpan                    SendHeartbeatsEvery        { get; set; }
 
 
 
@@ -137,20 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public DNSClient                   DNSClient                  { get; }
         public OCPPAdapter                 OCPP                       { get; }
 
-        public HTTPExtAPI?                 HTTPExtAPI                    { get; }
-
-
-        ///// <summary>
-        ///// The enumeration of all signature policies.
-        ///// </summary>
-        //public IEnumerable<SignaturePolicy>  SignaturePolicies
-        //    => signaturePolicies;
-
-        ///// <summary>
-        ///// The currently active signature policy.
-        ///// </summary>
-        //public SignaturePolicy               SignaturePolicy
-        //    => SignaturePolicies.First();
+        public HTTPExtAPI?                 HTTPExtAPI                 { get; }
 
 
         public String? ClientCloseMessage
@@ -208,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a web socket close frame was received.
         /// </summary>
-        public event OnCloseMessageReceivedDelegate?          OnWebSocketServerCloseMessageReceived;
+        public event OnWebSocketServerCloseMessageReceivedDelegate?          OnWebSocketServerCloseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a TCP connection was closed.
@@ -955,8 +942,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-
-
         #region (Timer) DoMaintenance(State)
 
         private void DoMaintenanceSync(Object? State)
@@ -1023,6 +1008,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+
+        #region LogEvent(OCPPIO, Logger, LogHandler, ...)
+
         public async Task LogEvent<TDelegate>(String                                             OCPPIO,
                                               TDelegate?                                         Logger,
                                               Func<TDelegate, Task>                              LogHandler,
@@ -1051,6 +1039,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
         }
 
+        #endregion
 
         #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
 
@@ -1058,6 +1047,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          String  Caller,
                                          String  ErrorResponse)
         {
+
+            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
 
             return Task.CompletedTask;
 
@@ -1071,6 +1062,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          String     Caller,
                                          Exception  ExceptionOccured)
         {
+
+            DebugX.LogException(ExceptionOccured, Caller);
 
             return Task.CompletedTask;
 

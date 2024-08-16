@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  CustomData?                CustomData          = null,
 
-                                 NetworkingNode_Id?         DestinationId       = null,
+                                 SourceRouting?             Destination         = null,
 
                                  IEnumerable<KeyPair>?      SignKeys            = null,
                                  IEnumerable<SignInfo>?     SignInfos           = null,
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.BootNotification(
                        new BootNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            new ChargingStation(
                                ChargingStation.Model,
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                            CustomData?                CustomData                = null,
 
-                                           NetworkingNode_Id?         DestinationId             = null,
+                                           SourceRouting?             Destination         = null,
 
                                            IEnumerable<KeyPair>?      SignKeys                  = null,
                                            IEnumerable<SignInfo>?     SignInfos                 = null,
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.FirmwareStatusNotification(
                        new FirmwareStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            UpdateFirmwareRequestId,
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                   CustomData?                CustomData          = null,
 
-                                                  NetworkingNode_Id?         DestinationId       = null,
+                                                  SourceRouting?             Destination         = null,
 
                                                   IEnumerable<KeyPair>?      SignKeys            = null,
                                                   IEnumerable<SignInfo>?     SignInfos           = null,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.PublishFirmwareStatusNotification(
                        new PublishFirmwareStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            PublishFirmwareStatusNotificationRequestId,
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                           CustomData?                CustomData          = null,
 
-                          NetworkingNode_Id?         DestinationId       = null,
+                          SourceRouting?             Destination         = null,
 
                           IEnumerable<KeyPair>?      SignKeys            = null,
                           IEnumerable<SignInfo>?     SignInfos           = null,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.Heartbeat(
                        new HeartbeatRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            SignKeys,
                            SignInfos,
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         CustomData?                CustomData          = null,
 
-                        NetworkingNode_Id?         DestinationId       = null,
+                        SourceRouting?             Destination         = null,
 
                         IEnumerable<KeyPair>?      SignKeys            = null,
                         IEnumerable<SignInfo>?     SignInfos           = null,
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyEvent(
                        new NotifyEventRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            GeneratedAt,
                            SequenceNumber,
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                           CustomData?                CustomData          = null,
 
-                                          NetworkingNode_Id?         DestinationId       = null,
+                                          SourceRouting?             Destination         = null,
 
                                           IEnumerable<KeyPair>?      SignKeys            = null,
                                           IEnumerable<SignInfo>?     SignInfos           = null,
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.SecurityEventNotification(
                        new SecurityEventNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Type,
                            Timestamp,
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                          CustomData?                CustomData          = null,
 
-                         NetworkingNode_Id?         DestinationId       = null,
+                         SourceRouting?             Destination         = null,
 
                          IEnumerable<KeyPair>?      SignKeys            = null,
                          IEnumerable<SignInfo>?     SignInfos           = null,
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyReport(
                        new NotifyReportRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyReportRequestId,
                            SequenceNumber,
@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                    CustomData?                  CustomData          = null,
 
-                                   NetworkingNode_Id?           DestinationId       = null,
+                                   SourceRouting?               Destination         = null,
 
                                    IEnumerable<KeyPair>?        SignKeys            = null,
                                    IEnumerable<SignInfo>?       SignInfos           = null,
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyMonitoringReport(
                        new NotifyMonitoringReportRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                       CustomData?                CustomData          = null,
 
-                                      NetworkingNode_Id?         DestinationId       = null,
+                                      SourceRouting?             Destination         = null,
 
                                       IEnumerable<KeyPair>?      SignKeys            = null,
                                       IEnumerable<SignInfo>?     SignInfos           = null,
@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.LogStatusNotification(
                        new LogStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            LogRequestId,
@@ -659,7 +659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.DataTransfer(
                        new DataTransferRequest(
 
-                           NetworkingNode_Id.CSMS,
+                           SourceRouting.CSMS,
 
                            VendorId,
                            MessageId,
@@ -709,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                           CustomData?                CustomData          = null,
 
-                                          NetworkingNode_Id?         DestinationId       = null,
+                                          SourceRouting?             Destination         = null,
 
                                           IEnumerable<KeyPair>?      SignKeys            = null,
                                           IEnumerable<SignInfo>?     SignInfos           = null,
@@ -725,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.SignCertificate(
                        new SignCertificateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            CSR,
                            SignCertificateRequestId,
@@ -778,7 +778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   CustomData?                CustomData                         = null,
 
-                                  NetworkingNode_Id?         DestinationId                      = null,
+                                  SourceRouting?             Destination                        = null,
 
                                   IEnumerable<KeyPair>?      SignKeys                           = null,
                                   IEnumerable<SignInfo>?     SignInfos                          = null,
@@ -794,7 +794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.Get15118EVCertificate(
                        new Get15118EVCertificateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ISO15118SchemaVersion,
                            CertificateAction,
@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  CustomData?                CustomData          = null,
 
-                                 NetworkingNode_Id?         DestinationId       = null,
+                                 SourceRouting?             Destination         = null,
 
                                  IEnumerable<KeyPair>?      SignKeys            = null,
                                  IEnumerable<SignInfo>?     SignInfos           = null,
@@ -857,7 +857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.GetCertificateStatus(
                        new GetCertificateStatusRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            OCSPRequestData,
 
@@ -903,7 +903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                           CustomData?                CustomData          = null,
 
-                          NetworkingNode_Id?         DestinationId       = null,
+                          SourceRouting?             Destination         = null,
 
                           IEnumerable<KeyPair>?      SignKeys            = null,
                           IEnumerable<SignInfo>?     SignInfos           = null,
@@ -919,7 +919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.GetCRL(
                        new GetCRLRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            GetCRLRequestId,
                            CertificateHashData,
@@ -966,7 +966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                         CustomData?                CustomData          = null,
 
-                                        NetworkingNode_Id?         DestinationId       = null,
+                                        SourceRouting?             Destination         = null,
 
                                         IEnumerable<KeyPair>?      SignKeys            = null,
                                         IEnumerable<SignInfo>?     SignInfos           = null,
@@ -982,7 +982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.ReservationStatusUpdate(
                        new ReservationStatusUpdateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ReservationId,
                            ReservationUpdateStatus,
@@ -1030,7 +1030,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                       CustomData?                    CustomData                    = null,
 
-                      NetworkingNode_Id?             DestinationId                 = null,
+                      SourceRouting?                 Destination                   = null,
 
                       IEnumerable<KeyPair>?          SignKeys                      = null,
                       IEnumerable<SignInfo>?         SignInfos                     = null,
@@ -1046,7 +1046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.Authorize(
                        new AuthorizeRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            IdToken,
                            Certificate,
@@ -1097,7 +1097,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   CustomData?                CustomData          = null,
 
-                                  NetworkingNode_Id?         DestinationId       = null,
+                                  SourceRouting?             Destination         = null,
 
                                   IEnumerable<KeyPair>?      SignKeys            = null,
                                   IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1113,7 +1113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyEVChargingNeeds(
                        new NotifyEVChargingNeedsRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EVSEId,
                            ChargingNeeds,
@@ -1185,7 +1185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  CustomData?                CustomData              = null,
 
-                                 NetworkingNode_Id?         DestinationId           = null,
+                                 SourceRouting?             Destination             = null,
 
                                  IEnumerable<KeyPair>?      SignKeys                = null,
                                  IEnumerable<SignInfo>?     SignInfos               = null,
@@ -1201,7 +1201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.TransactionEvent(
                        new TransactionEventRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EventType,
                            Timestamp,
@@ -1263,7 +1263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                    CustomData?                CustomData          = null,
 
-                                   NetworkingNode_Id?         DestinationId       = null,
+                                   SourceRouting?             Destination         = null,
 
                                    IEnumerable<KeyPair>?      SignKeys            = null,
                                    IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1279,7 +1279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.StatusNotification(
                        new StatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Timestamp,
                            Status,
@@ -1327,7 +1327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                             CustomData?                CustomData          = null,
 
-                            NetworkingNode_Id?         DestinationId       = null,
+                            SourceRouting?             Destination         = null,
 
                             IEnumerable<KeyPair>?      SignKeys            = null,
                             IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1343,7 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.MeterValues(
                        new MeterValuesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EVSEId,
                            MeterValues,
@@ -1391,7 +1391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                 CustomData?                    CustomData          = null,
 
-                                NetworkingNode_Id?             DestinationId       = null,
+                                SourceRouting?                 Destination         = null,
 
                                 IEnumerable<KeyPair>?          SignKeys            = null,
                                 IEnumerable<SignInfo>?         SignInfos           = null,
@@ -1407,7 +1407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyChargingLimit(
                        new NotifyChargingLimitRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ChargingLimit,
                            ChargingSchedules,
@@ -1454,7 +1454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                      CustomData?                CustomData          = null,
 
-                                     NetworkingNode_Id?         DestinationId       = null,
+                                     SourceRouting?             Destination         = null,
 
                                      IEnumerable<KeyPair>?      SignKeys            = null,
                                      IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1470,7 +1470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.ClearedChargingLimit(
                        new ClearedChargingLimitRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ChargingLimitSource,
                            EVSEId,
@@ -1522,7 +1522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                    CustomData?                   CustomData          = null,
 
-                                   NetworkingNode_Id?            DestinationId       = null,
+                                   SourceRouting?                Destination         = null,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
                                    IEnumerable<SignInfo>?        SignInfos           = null,
@@ -1538,7 +1538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.ReportChargingProfiles(
                        new ReportChargingProfilesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ReportChargingProfilesRequestId,
                            ChargingLimitSource,
@@ -1593,7 +1593,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                      CustomData?                CustomData                 = null,
 
-                                     NetworkingNode_Id?         DestinationId              = null,
+                                     SourceRouting?             Destination                = null,
 
                                      IEnumerable<KeyPair>?      SignKeys                   = null,
                                      IEnumerable<SignInfo>?     SignInfos                  = null,
@@ -1609,7 +1609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyEVChargingSchedule(
                        new NotifyEVChargingScheduleRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            TimeBase,
                            EVSEId,
@@ -1658,7 +1658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                    CustomData?                CustomData          = null,
 
-                                   NetworkingNode_Id?         DestinationId       = null,
+                                   SourceRouting?             Destination         = null,
 
                                    IEnumerable<KeyPair>?      SignKeys            = null,
                                    IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1674,7 +1674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyPriorityCharging(
                        new NotifyPriorityChargingRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            TransactionId,
                            Activated,
@@ -1737,7 +1737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                              CustomData?                CustomData          = null,
 
-                             NetworkingNode_Id?         DestinationId       = null,
+                             SourceRouting?             Destination         = null,
 
                              IEnumerable<KeyPair>?      SignKeys            = null,
                              IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1753,7 +1753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifySettlement(
                        new NotifySettlementRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            PaymentReference,
                            PaymentStatus,
@@ -1806,7 +1806,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                       CustomData?                CustomData          = null,
 
-                                      NetworkingNode_Id?         DestinationId       = null,
+                                      SourceRouting?             Destination         = null,
 
                                       IEnumerable<KeyPair>?      SignKeys            = null,
                                       IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1822,7 +1822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.PullDynamicScheduleUpdate(
                        new PullDynamicScheduleUpdateRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            ChargingProfileId,
 
@@ -1870,7 +1870,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   CustomData?                CustomData          = null,
 
-                                  NetworkingNode_Id?         DestinationId       = null,
+                                  SourceRouting?             Destination         = null,
 
                                   IEnumerable<KeyPair>?      SignKeys            = null,
                                   IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1886,7 +1886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyDisplayMessages(
                        new NotifyDisplayMessagesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,
@@ -1939,7 +1939,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                       CustomData?                CustomData          = null,
 
-                                      NetworkingNode_Id?         DestinationId       = null,
+                                      SourceRouting?             Destination         = null,
 
                                       IEnumerable<KeyPair>?      SignKeys            = null,
                                       IEnumerable<SignInfo>?     SignInfos           = null,
@@ -1955,7 +1955,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 => ChargingStation.OCPP.OUT.NotifyCustomerInformation(
                        new NotifyCustomerInformationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyCustomerInformationRequestId,
                            Data,

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The networking node identification of the message sender or destination.
         /// </summary>
         [Mandatory]
-        NetworkingNode_Id  DestinationId        { get; }
+        SourceRouting      Destination          { get; }
 
         /// <summary>
         /// The network path of the request.

@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (!BinaryDataTransferRequest.TryParse(BinaryRequestMessage.Payload,
                                                     BinaryRequestMessage.RequestId,
-                                                    BinaryRequestMessage.DestinationId,
+                                                    BinaryRequestMessage.Destination,
                                                     BinaryRequestMessage.NetworkPath,
                                                     out var request,
                                                     out var errorResponse,

@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     OCPP.OUT.Heartbeat(
                         new HeartbeatRequest(
 
-                           DestinationId:      NetworkingNode_Id.CSMS,
+                           Destination:        SourceRouting.CSMS,
 
                            SignKeys:           null, //SignKeys
                            SignInfos:          null, //SignInfos

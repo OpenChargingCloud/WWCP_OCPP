@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a transaction event request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
         /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
         /// <param name="TriggerReason">The reason the charging station sends this message.</param>
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TransactionEventRequest(NetworkingNode_Id             DestinationId,
+        public TransactionEventRequest(SourceRouting                 Destination,
                                        TransactionEvents             EventType,
                                        DateTime                      Timestamp,
                                        TriggerReason                 TriggerReason,
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath?                  NetworkPath             = null,
                                        CancellationToken             CancellationToken       = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(TransactionEventRequest)[..^7],
 
                    SignKeys,
@@ -756,14 +756,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomTransactionEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomTransactionEventRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a transaction event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static TransactionEventRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    NetworkingNode_Id                                      DestinationId,
+                                                    SourceRouting                                          SourceRouting,
                                                     NetworkPath                                            NetworkPath,
                                                     DateTime?                                              RequestTimestamp                      = null,
                                                     TimeSpan?                                              RequestTimeout                        = null,
@@ -781,7 +781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var transactionEventRequest,
                          out var errorResponse,
@@ -800,14 +800,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out TransactionEventRequest, out ErrorResponse, CustomTransactionEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out TransactionEventRequest, out ErrorResponse, CustomTransactionEventRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a transaction event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TransactionEventRequest">The parsed transaction event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -817,7 +817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       NetworkingNode_Id                                      DestinationId,
+                                       SourceRouting                                          SourceRouting,
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out TransactionEventRequest?      TransactionEventRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
@@ -1041,7 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 TransactionEventRequest = new TransactionEventRequest(
 
-                                              DestinationId,
+                                                  SourceRouting,
 
                                               EventType,
                                               Timestamp,

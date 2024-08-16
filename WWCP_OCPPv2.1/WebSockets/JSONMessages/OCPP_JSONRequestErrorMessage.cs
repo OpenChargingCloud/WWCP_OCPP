@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
-    /// <param name="DestinationId">The networking node identification of the message destination.</param>
+    /// <param name="Destination">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="ErrorCode">An OCPP error code.</param>
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public class OCPP_JSONRequestErrorMessage(DateTime           ResponseTimestamp,
                                               EventTracking_Id   EventTrackingId,
                                               NetworkingMode     NetworkingMode,
-                                              NetworkingNode_Id  DestinationId,
+                                              SourceRouting      Destination,
                                               NetworkPath        NetworkPath,
                                               Request_Id         RequestId,
                                               ResultCode         ErrorCode,
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
+        public SourceRouting      Destination          { get; }      = Destination;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.InternalError,
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.InternalError,
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -587,7 +587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                Timestamp.Now,
                                                EventTracking_Id.New,
                                                NetworkingMode.Standard,
-                                               NetworkingNode_Id.Zero,
+                                               SourceRouting.Zero,
                                                networkPath,
                                                requestId,
                                                wsErrorCode,
@@ -679,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                Timestamp.Now,
                                                EventTracking_Id.New,
                                                NetworkingMode.OverlayNetwork,
-                                               destinationId,
+                                               SourceRouting.To(destinationId),
                                                networkPath,
                                                requestId,
                                                wsErrorCode,
@@ -754,10 +754,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                    // ]
 
                    _ => new (4,
-                             DestinationId.ToString(),
-                             NetworkPath.  ToJSON(),
-                             RequestId.    ToString(),
-                             ErrorCode.    ToString(),
+                             Destination.Next.ToString(),
+                             NetworkPath.     ToJSON(),
+                             RequestId.       ToString(),
+                             ErrorCode.       ToString(),
                              ErrorDescription,
                              ErrorDetails)
 

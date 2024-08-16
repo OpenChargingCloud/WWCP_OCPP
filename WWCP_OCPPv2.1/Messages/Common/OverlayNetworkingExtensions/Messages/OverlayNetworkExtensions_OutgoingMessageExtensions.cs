@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                   CustomData?                     CustomData          = null,
 
-                                  NetworkingNode_Id?              DestinationId       = null,
+                                  SourceRouting?                  Destination         = null,
                                   NetworkPath?                    NetworkPath         = null,
 
                                   IEnumerable<KeyPair>?           SignKeys            = null,
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
                        new NotifyNetworkTopologyRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NetworkTopologyInformation,
 
@@ -110,30 +110,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<NotifyNetworkTopologyResponse>
 
-            NotifyNetworkTopology(this INetworkingNode          NetworkingNode,
+            NotifyNetworkTopology(this INetworkingNode        NetworkingNode,
 
-                                  NetworkTopologyInformation    NetworkTopologyInformation,
+                                  NetworkTopologyInformation  NetworkTopologyInformation,
 
-                                  CustomData?                   CustomData          = null,
+                                  CustomData?                 CustomData          = null,
 
-                                  NetworkingNode_Id?            DestinationId       = null,
-                                  NetworkPath?                  NetworkPath         = null,
+                                  SourceRouting?              Destination         = null,
+                                  NetworkPath?                NetworkPath         = null,
 
-                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<KeyPair>?       SignKeys            = null,
+                                  IEnumerable<SignInfo>?      SignInfos           = null,
+                                  IEnumerable<Signature>?     Signatures          = null,
 
-                                  Request_Id?                   RequestId           = null,
-                                  DateTime?                     RequestTimestamp    = null,
-                                  TimeSpan?                     RequestTimeout      = null,
-                                  EventTracking_Id?             EventTrackingId     = null,
-                                  CancellationToken             CancellationToken   = default)
+                                  Request_Id?                 RequestId           = null,
+                                  DateTime?                   RequestTimestamp    = null,
+                                  TimeSpan?                   RequestTimeout      = null,
+                                  EventTracking_Id?           EventTrackingId     = null,
+                                  CancellationToken           CancellationToken   = default)
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
                        new NotifyNetworkTopologyRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NetworkTopologyInformation,
 
@@ -175,14 +175,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         //    NotifyNetworkTopology(this INetworkingNode2         NetworkingNode,
 
-        //                          NetworkingNode_Id             DestinationId,
+        //                          SourceRouting                 Destination,
         //                          NetworkTopologyInformation    NetworkTopologyInformation,
 
         //                          CustomData?                   CustomData          = null,
 
         //                          IEnumerable<KeyPair>?         SignKeys            = null,
         //                          IEnumerable<SignInfo>?        SignInfos           = null,
-        //                          IEnumerable<Signature>?       Signatures          = null,
+        //                          IEnumerable<Signature>?  Signatures          = null,
 
         //                          Request_Id?                   RequestId           = null,
         //                          DateTime?                     RequestTimestamp    = null,
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //        => NetworkingNode.ocppOUT.NotifyNetworkTopology(
         //               new OCPP.NN.NotifyNetworkTopologyRequest(
 
-        //                   DestinationId,
+        //                       SourceRouting,
         //                   NetworkTopologyInformation,
 
         //                   SignKeys,

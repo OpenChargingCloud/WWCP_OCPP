@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public class OCPP_BinaryResponseErrorMessage(DateTime           ResponseTimestamp,
                                                  EventTracking_Id   EventTrackingId,
                                                  NetworkingMode     NetworkingMode,
-                                                 NetworkingNode_Id  DestinationId,
+                                                 SourceRouting      Destination,
                                                  NetworkPath        NetworkPath,
                                                  Request_Id         RequestId,
                                                  ResultCode         ErrorCode,
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationId    { get; }      = DestinationId;
+        public SourceRouting      Destination          { get; }      = Destination;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -115,14 +115,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) CouldNotParse     (RequestId, Action, JSONObjectRequest, ErrorResponse = null)
 
         public static OCPP_BinaryResponseErrorMessage CouldNotParse(Request_Id  RequestId,
-                                                          String      Action,
-                                                          JObject     JSONObjectRequest,
-                                                          String?     ErrorResponse   = null)
+                                                                    String      Action,
+                                                                    JObject     JSONObjectRequest,
+                                                                    String?     ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -138,15 +138,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                     ));
 
         public static OCPP_BinaryResponseErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
-                                                          Request_Id        RequestId,
-                                                          String            Action,
-                                                          JObject           JSONObjectRequest,
-                                                          String?           ErrorResponse   = null)
+                                                                    Request_Id        RequestId,
+                                                                    String            Action,
+                                                                    JObject           JSONObjectRequest,
+                                                                    String?           ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -166,14 +166,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) CouldNotParse     (RequestId, Action, JSONArrayRequest,  ErrorResponse = null)
 
         public static OCPP_BinaryResponseErrorMessage CouldNotParse(Request_Id  RequestId,
-                                                          String      Action,
-                                                          JArray      JSONArrayRequest,
-                                                          String?     ErrorResponse   = null)
+                                                                    String      Action,
+                                                                    JArray      JSONArrayRequest,
+                                                                    String?     ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -193,14 +193,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) CouldNotParse     (RequestId, Action, BinaryRequest,     ErrorResponse = null)
 
         public static OCPP_BinaryResponseErrorMessage CouldNotParse(Request_Id  RequestId,
-                                                          String      Action,
-                                                          Byte[]      BinaryRequest,
-                                                          String?     ErrorResponse   = null)
+                                                                    String      Action,
+                                                                    Byte[]      BinaryRequest,
+                                                                    String?     ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -217,15 +217,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         public static OCPP_BinaryResponseErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
-                                                          Request_Id        RequestId,
-                                                          String            Action,
-                                                          Byte[]            BinaryRequest,
-                                                          String?           ErrorResponse   = null)
+                                                                    Request_Id        RequestId,
+                                                                    String            Action,
+                                                                    Byte[]            BinaryRequest,
+                                                                    String?           ErrorResponse   = null)
 
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -246,14 +246,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FormationViolation(RequestId, Action, JSONObjectRequest, Exception)
 
         public static OCPP_BinaryResponseErrorMessage FormationViolation(Request_Id  RequestId,
-                                                               String      Action,
-                                                               JObject     JSONObjectRequest,
-                                                               Exception   Exception)
+                                                                         String      Action,
+                                                                         JObject     JSONObjectRequest,
+                                                                         Exception   Exception)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -266,15 +266,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         public static OCPP_BinaryResponseErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
-                                                               Request_Id        RequestId,
-                                                               String            Action,
-                                                               JObject           JSONObjectRequest,
-                                                               Exception         Exception)
+                                                                         Request_Id        RequestId,
+                                                                         String            Action,
+                                                                         JObject           JSONObjectRequest,
+                                                                         Exception         Exception)
 
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -290,14 +290,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FormationViolation(RequestId, Action, JSONArrayRequest,  Exception)
 
         public static OCPP_BinaryResponseErrorMessage FormationViolation(Request_Id  RequestId,
-                                                               String      Action,
-                                                               JArray      JSONArrayRequest,
-                                                               Exception   Exception)
+                                                                         String      Action,
+                                                                         JArray      JSONArrayRequest,
+                                                                         Exception   Exception)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -313,14 +313,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) FormationViolation(RequestId, Action, BinaryRequest,     Exception)
 
         public static OCPP_BinaryResponseErrorMessage FormationViolation(Request_Id  RequestId,
-                                                               String      Action,
-                                                               Byte[]      BinaryRequest,
-                                                               Exception   Exception)
+                                                                         String      Action,
+                                                                         Byte[]      BinaryRequest,
+                                                                         Exception   Exception)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -333,15 +333,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
         public static OCPP_BinaryResponseErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
-                                                               Request_Id        RequestId,
-                                                               String            Action,
-                                                               Byte[]            BinaryRequest,
-                                                               Exception         Exception)
+                                                                         Request_Id        RequestId,
+                                                                         String            Action,
+                                                                         Byte[]            BinaryRequest,
+                                                                         Exception         Exception)
 
             => new (Timestamp.Now,
                     EventTrackingId,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
@@ -358,15 +358,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, JSONTextRequest,   Exception, RequestId = null)
 
         public static OCPP_BinaryResponseErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          String            JSONTextRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                    EventTracking_Id  EventTrackingId,
+                                                                    String            JSONTextRequest,
+                                                                    Exception         Exception,
+                                                                    Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -383,15 +383,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, JSONObjectRequest, Exception, RequestId = null)
 
         public static OCPP_BinaryResponseErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          JObject           JSONObjectRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                    EventTracking_Id  EventTrackingId,
+                                                                    JObject           JSONObjectRequest,
+                                                                    Exception         Exception,
+                                                                    Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -408,15 +408,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, OCPPArrayRequest,  Exception, RequestId = null)
 
         public static OCPP_BinaryResponseErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          JArray            OCPPArrayRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                    EventTracking_Id  EventTrackingId,
+                                                                    JArray            OCPPArrayRequest,
+                                                                    Exception         Exception,
+                                                                    Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -433,15 +433,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region (static) InternalError     (Sender, EventTrackingId, OCPPBinaryRequest, Exception, RequestId = null)
 
         public static OCPP_BinaryResponseErrorMessage InternalError(String            Sender,
-                                                          EventTracking_Id  EventTrackingId,
-                                                          Byte[]            OCPPBinaryRequest,
-                                                          Exception         Exception,
-                                                          Request_Id?       RequestId   = null)
+                                                                    EventTracking_Id  EventTrackingId,
+                                                                    Byte[]            OCPPBinaryRequest,
+                                                                    Exception         Exception,
+                                                                    Request_Id?       RequestId   = null)
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
                     NetworkingMode.Standard,
-                    NetworkingNode_Id.Zero,
+                    SourceRouting.Zero,
                     NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                    Timestamp.Now,
                                    EventTracking_Id.New,
                                    NetworkingMode.Standard,
-                                   NetworkingNode_Id.Zero,
+                                   SourceRouting.Zero,
                                    NetworkPath.Empty,
                                    Request_Id.Zero,
                                    ResultCode.InternalError,

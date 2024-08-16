@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_GetMonitoringReport(DateTime              RequestTimestamp,
                                         IWebSocketConnection  WebSocketConnection,
-                                        NetworkingNode_Id     DestinationId,
+                                        SourceRouting         SourceRouting,
                                         NetworkPath           NetworkPath,
                                         EventTracking_Id      EventTrackingId,
                                         Request_Id            RequestId,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (GetMonitoringReportRequest.TryParse(JSONRequest,
                                                         RequestId,
-                                                        DestinationId,
+                                                        SourceRouting,
                                                         NetworkPath,
                                                         out var request,
                                                         out var errorResponse,
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
-                                       NetworkPath.Source,
+                                       SourceRouting.To(NetworkPath.Source),
                                        NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_GetMonitoringReportResponse(GetMonitoringReportRequest  Request,
                                                 JObject                     ResponseJSON,
                                                 IWebSocketConnection        WebSocketConnection,
-                                                NetworkingNode_Id           DestinationId,
+                                                SourceRouting               SourceRouting,
                                                 NetworkPath                 NetworkPath,
                                                 EventTracking_Id            EventTrackingId,
                                                 Request_Id                  RequestId,
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (GetMonitoringReportResponse.TryParse(Request,
                                                          ResponseJSON,
-                                                         DestinationId,
+                                                         SourceRouting,
                                                          NetworkPath,
                                                          out response,
                                                          out var errorResponse,
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_GetMonitoringReportRequestError(GetMonitoringReportRequest    Request,
                                                     OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                     IWebSocketConnection          Connection,
-                                                    NetworkingNode_Id             DestinationId,
+                                                    SourceRouting                 SourceRouting,
                                                     NetworkPath                   NetworkPath,
                                                     EventTracking_Id              EventTrackingId,
                                                     Request_Id                    RequestId,
@@ -494,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                RequestErrorMessage.ErrorDescription,
                                RequestErrorMessage.ErrorDetails,
                                RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.DestinationId,
+                               RequestErrorMessage.Destination,
                                RequestErrorMessage.NetworkPath
                            );
 
@@ -535,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      GetMonitoringReportResponse?   Response,
                                                      OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
                                                      IWebSocketConnection           Connection,
-                                                     NetworkingNode_Id              DestinationId,
+                                                     SourceRouting                  SourceRouting,
                                                      NetworkPath                    NetworkPath,
                                                      EventTracking_Id               EventTrackingId,
                                                      Request_Id                     RequestId,

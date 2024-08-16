@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                  CustomData?              CustomData          = null,
 
-                                 NetworkingNode_Id?       DestinationId       = null,
+                                 SourceRouting?           Destination         = null,
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
                                  IEnumerable<SignInfo>?   SignInfos           = null,
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.BootNotification(
                        new BootNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            new ChargingStation(
                                EnergyMeter.Model,
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                            CustomData?              CustomData                = null,
 
-                                           NetworkingNode_Id?       DestinationId             = null,
+                                           SourceRouting?           Destination               = null,
 
                                            IEnumerable<KeyPair>?    SignKeys                  = null,
                                            IEnumerable<SignInfo>?   SignInfos                 = null,
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.FirmwareStatusNotification(
                        new FirmwareStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            UpdateFirmwareRequestId,
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                           CustomData?              CustomData          = null,
 
-                          NetworkingNode_Id?       DestinationId       = null,
+                          SourceRouting?           Destination         = null,
 
                           IEnumerable<KeyPair>?    SignKeys            = null,
                           IEnumerable<SignInfo>?   SignInfos           = null,
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.Heartbeat(
                        new HeartbeatRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            SignKeys,
                            SignInfos,
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                         CustomData?              CustomData          = null,
 
-                        NetworkingNode_Id?       DestinationId       = null,
+                        SourceRouting?           Destination         = null,
 
                         IEnumerable<KeyPair>?    SignKeys            = null,
                         IEnumerable<SignInfo>?   SignInfos           = null,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.NotifyEvent(
                        new NotifyEventRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            GeneratedAt,
                            SequenceNumber,
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                           CustomData?              CustomData          = null,
 
-                                          NetworkingNode_Id?       DestinationId       = null,
+                                          SourceRouting?           Destination         = null,
 
                                           IEnumerable<KeyPair>?    SignKeys            = null,
                                           IEnumerable<SignInfo>?   SignInfos           = null,
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.SecurityEventNotification(
                        new SecurityEventNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Type,
                            Timestamp,
@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                          CustomData?              CustomData          = null,
 
-                         NetworkingNode_Id?       DestinationId       = null,
+                         SourceRouting?           Destination         = null,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
                          IEnumerable<SignInfo>?   SignInfos           = null,
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.NotifyReport(
                        new NotifyReportRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyReportRequestId,
                            SequenceNumber,
@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                    CustomData?                  CustomData          = null,
 
-                                   NetworkingNode_Id?           DestinationId       = null,
+                                   SourceRouting?               Destination         = null,
 
                                    IEnumerable<KeyPair>?        SignKeys            = null,
                                    IEnumerable<SignInfo>?       SignInfos           = null,
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.NotifyMonitoringReport(
                        new NotifyMonitoringReportRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                       CustomData?              CustomData          = null,
 
-                                      NetworkingNode_Id?       DestinationId       = null,
+                                      SourceRouting?           Destination         = null,
 
                                       IEnumerable<KeyPair>?    SignKeys            = null,
                                       IEnumerable<SignInfo>?   SignInfos           = null,
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.LogStatusNotification(
                        new LogStatusNotificationRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            Status,
                            LogRequestId,
@@ -594,7 +594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.DataTransfer(
                        new DataTransferRequest(
 
-                           NetworkingNode_Id.CSMS,
+                           SourceRouting.CSMS,
 
                            VendorId,
                            MessageId,
@@ -642,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                             CustomData?              CustomData          = null,
 
-                            NetworkingNode_Id?       DestinationId       = null,
+                            SourceRouting?           Destination         = null,
 
                             IEnumerable<KeyPair>?    SignKeys            = null,
                             IEnumerable<SignInfo>?   SignInfos           = null,
@@ -658,7 +658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.MeterValues(
                        new MeterValuesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            EVSEId,
                            MeterValues,
@@ -707,7 +707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                   CustomData?               CustomData          = null,
 
-                                  NetworkingNode_Id?        DestinationId       = null,
+                                  SourceRouting?            Destination         = null,
 
                                   IEnumerable<KeyPair>?     SignKeys            = null,
                                   IEnumerable<SignInfo>?    SignInfos           = null,
@@ -723,7 +723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                 => EnergyMeter.OCPP.OUT.NotifyDisplayMessages(
                        new NotifyDisplayMessagesRequest(
 
-                           DestinationId ?? NetworkingNode_Id.CSMS,
+                           Destination ?? SourceRouting.CSMS,
 
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,

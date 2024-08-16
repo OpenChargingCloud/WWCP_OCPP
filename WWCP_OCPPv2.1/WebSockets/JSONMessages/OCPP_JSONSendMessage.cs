@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public class OCPP_JSONSendMessage(DateTime           MessageTimestamp,
                                       EventTracking_Id   EventTrackingId,
                                       NetworkingMode     NetworkingMode,
-                                      NetworkingNode_Id  DestinationId,
+                                      SourceRouting      Destination,
                                       NetworkPath        NetworkPath,
                                       Request_Id         MessageId,
                                       String             Action,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The networking node identification or Any- or Multicast address of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
+        public SourceRouting      Destination          { get; }      = Destination;
 
         /// <summary>
         /// The (recorded) path of the message through the overlay network.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (Timestamp.Now,
                     Message.EventTrackingId,
                     NetworkingMode.Unknown,
-                    Message.DestinationId,
+                    Message.Destination,
                     Message.NetworkPath,
                     Message.RequestId,
                     Message.Action,
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                          MessageTimestamp ?? Timestamp.Now,
                                          EventTrackingId  ?? EventTracking_Id.New,
                                          NetworkingMode.Standard,
-                                         NetworkingNode_Id.Zero,
+                                         SourceRouting.Zero,
                                          networkPath,
                                          messageId,
                                          action,
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                          Timestamp.Now,
                                          EventTracking_Id.New,
                                          NetworkingMode.OverlayNetwork,
-                                         destinationId,
+                                         SourceRouting.To(destinationId),
                                          networkPath,
                                          messageId,
                                          action,
@@ -391,9 +391,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                    //    }
                    // ]
                    _   => new (6,
-                               DestinationId.ToString(),
-                               NetworkPath.  ToJSON(),
-                               MessageId.    ToString(),
+                               Destination.ToString(),
+                               NetworkPath.ToJSON(),
+                               MessageId.  ToString(),
                                Action,
                                Payload)
 
@@ -412,14 +412,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="NewDestinationId">An optional new destination identification.</param>
         /// <param name="NewNetworkPath">An optional new (source) network path.</param>
         /// <param name="NewNetworkingMode">An optional new networking mode.</param>
-        public OCPP_JSONSendMessage ChangeNetworking(NetworkingNode_Id?  NewDestinationId    = null,
-                                                     NetworkPath?        NewNetworkPath      = null,
-                                                     NetworkingMode?     NewNetworkingMode   = null)
+        public OCPP_JSONSendMessage ChangeNetworking(SourceRouting?   NewDestination      = null,
+                                                     NetworkPath?     NewNetworkPath      = null,
+                                                     NetworkingMode?  NewNetworkingMode   = null)
 
             => new (MessageTimestamp,
                     EventTrackingId,
                     NewNetworkingMode ?? NetworkingMode,
-                    NewDestinationId  ?? DestinationId,
+                    NewDestination    ?? Destination,
                     NewNetworkPath    ?? NetworkPath,
                     MessageId,
                     Action,
@@ -429,18 +429,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #endregion
 
-        #region ChangeDestionationId(NewDestinationId)
+        #region ChangeDestionation(NewDestination)
 
         /// <summary>
         /// Change the destination identification.
         /// </summary>
         /// <param name="NewDestinationId">A new destination identification.</param>
-        public OCPP_JSONSendMessage ChangeDestionationId(NetworkingNode_Id NewDestinationId)
+        public OCPP_JSONSendMessage ChangeDestionation(SourceRouting NewDestination)
 
             => new (MessageTimestamp,
                     EventTrackingId,
                     NetworkingMode,
-                    NewDestinationId,
+                    NewDestination,
                     NetworkPath,
                     MessageId,
                     Action,
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (MessageTimestamp,
                     EventTrackingId,
                     NetworkingMode,
-                    DestinationId,
+                    Destination,
                     NetworkPath.Append(NetworkingNodeId),
                     MessageId,
                     Action,

@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a NotifyPriorityCharging request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -87,24 +87,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyPriorityChargingRequest(NetworkingNode_Id             DestinationId,
-                                             Transaction_Id                TransactionId,
-                                             Boolean                       Activated,
+        public NotifyPriorityChargingRequest(SourceRouting            Destination,
+                                             Transaction_Id           TransactionId,
+                                             Boolean                  Activated,
 
-                                             IEnumerable<KeyPair>?         SignKeys            = null,
-                                             IEnumerable<SignInfo>?        SignInfos           = null,
-                                             IEnumerable<Signature>?       Signatures          = null,
+                                             IEnumerable<KeyPair>?    SignKeys            = null,
+                                             IEnumerable<SignInfo>?   SignInfos           = null,
+                                             IEnumerable<Signature>?  Signatures          = null,
 
-                                             CustomData?                   CustomData          = null,
+                                             CustomData?              CustomData          = null,
 
-                                             Request_Id?                   RequestId           = null,
-                                             DateTime?                     RequestTimestamp    = null,
-                                             TimeSpan?                     RequestTimeout      = null,
-                                             EventTracking_Id?             EventTrackingId     = null,
-                                             NetworkPath?                  NetworkPath         = null,
-                                             CancellationToken             CancellationToken   = default)
+                                             Request_Id?              RequestId           = null,
+                                             DateTime?                RequestTimestamp    = null,
+                                             TimeSpan?                RequestTimeout      = null,
+                                             EventTracking_Id?        EventTrackingId     = null,
+                                             NetworkPath?             NetworkPath         = null,
+                                             CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(NotifyPriorityChargingRequest)[..^7],
 
                    SignKeys,
@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyPriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom NotifyPriorityCharging requests.</param>
         public static NotifyPriorityChargingRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          NetworkingNode_Id                                            DestinationId,
+                                                          SourceRouting                                                SourceRouting,
                                                           NetworkPath                                                  NetworkPath,
                                                           DateTime?                                                    RequestTimestamp                            = null,
                                                           TimeSpan?                                                    RequestTimeout                              = null,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var notifyPriorityChargingRequest,
                          out var errorResponse,
@@ -188,14 +188,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyPriorityCharging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPriorityChargingRequest">The parsed NotifyPriorityCharging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom NotifyPriorityCharging requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       NetworkingNode_Id                                            DestinationId,
+                                       SourceRouting                                                SourceRouting,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out NotifyPriorityChargingRequest?      NotifyPriorityChargingRequest,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyPriorityChargingRequest = new NotifyPriorityChargingRequest(
 
-                                                    DestinationId,
+                                                        SourceRouting,
                                                     TransactionId,
                                                     Activated,
 

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get periodic event stream request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="StreamId">The unique identification of the data stream to throttle.</param>
         /// <param name="Parameters">The updated rate of sending data.</param>
         /// 
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ThrottlePeriodicEventStreamRequest(NetworkingNode_Id              DestinationId,
+        public ThrottlePeriodicEventStreamRequest(SourceRouting                  SourceRouting,
                                                   PeriodicEventStream_Id         StreamId,
                                                   PeriodicEventStreamParameters  Parameters,
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   NetworkPath?                   NetworkPath         = null,
                                                   CancellationToken              CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(ThrottlePeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
@@ -143,19 +143,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomThrottlePeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomThrottlePeriodicEventStreamRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an ThrottlePeriodicEventStreams request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
         public static ThrottlePeriodicEventStreamRequest Parse(JObject                                                           JSON,
                                                                Request_Id                                                        RequestId,
-                                                               NetworkingNode_Id                                                 DestinationId,
+                                                               SourceRouting                                                     SourceRouting,
                                                                NetworkPath                                                       NetworkPath,
                                                                CustomJObjectParserDelegate<ThrottlePeriodicEventStreamRequest>?  CustomThrottlePeriodicEventStreamRequestParser   = null)
         {
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var throttlePeriodicEventStreamsRequest,
                          out var errorResponse,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ThrottlePeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ThrottlePeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -189,20 +189,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       NetworkingNode_Id                                             DestinationId,
+                                       SourceRouting                                                 SourceRouting,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out ThrottlePeriodicEventStreamRequest?  ThrottlePeriodicEventStreamRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        DestinationId,
+                            SourceRouting,
                         NetworkPath,
                         out ThrottlePeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -214,14 +214,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
         public static Boolean TryParse(JObject                                                           JSON,
                                        Request_Id                                                        RequestId,
-                                       NetworkingNode_Id                                                 DestinationId,
+                                       SourceRouting                                                     SourceRouting,
                                        NetworkPath                                                       NetworkPath,
                                        [NotNullWhen(true)]  out ThrottlePeriodicEventStreamRequest?      ThrottlePeriodicEventStreamRequest,
                                        [NotNullWhen(false)] out String?                                  ErrorResponse,
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ThrottlePeriodicEventStreamRequest = new ThrottlePeriodicEventStreamRequest(
 
-                                                    DestinationId,
+                                                        SourceRouting,
                                                     StreamId,
                                                     Parameters,
 

@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppTextMessage = JSONRequestMessage.ToJSON().ToString(Formatting.None);
 
-                if (SendStatus.Success == await SendTextMessage(
+                if (SentStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
                                                     JSONRequestMessage.EventTrackingId,
                                                     JSONRequestMessage.CancellationToken
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppTextMessage = JSONResponseMessage.ToJSON().ToString(Formatting.None);
 
-                if (SendStatus.Success == await SendTextMessage(
+                if (SentStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
                                                     JSONResponseMessage.EventTrackingId,
                                                     JSONResponseMessage.CancellationToken
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppTextMessage = JSONRequestErrorMessage.ToJSON().ToString(Formatting.None);
 
-                if (SendStatus.Success == await SendTextMessage(
+                if (SentStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
                                                     JSONRequestErrorMessage.EventTrackingId,
                                                     JSONRequestErrorMessage.CancellationToken
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppTextMessage = JSONResponseErrorMessage.ToJSON().ToString(Formatting.None);
 
-                if (SendStatus.Success == await SendTextMessage(
+                if (SentStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
                                                     JSONResponseErrorMessage.EventTrackingId,
                                                     JSONResponseErrorMessage.CancellationToken
@@ -612,7 +612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppTextMessage = JSONSendMessage.ToJSON().ToString(Formatting.None);
 
-                if (SendStatus.Success == await SendTextMessage(
+                if (SentStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
                                                     JSONSendMessage.EventTrackingId,
                                                     JSONSendMessage.CancellationToken
@@ -688,7 +688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppBinaryMessage = BinaryRequestMessage.ToByteArray();
 
-                if (SendStatus.Success == await SendBinaryMessage(
+                if (SentStatus.Success == await SendBinaryMessage(
                                                     ocppBinaryMessage,
                                                     BinaryRequestMessage.EventTrackingId,
                                                     BinaryRequestMessage.CancellationToken
@@ -763,7 +763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppBinaryMessage = BinaryResponseMessage.ToByteArray();
 
-                if (SendStatus.Success == await SendBinaryMessage(
+                if (SentStatus.Success == await SendBinaryMessage(
                                                     ocppBinaryMessage,
                                                     BinaryResponseMessage.EventTrackingId,
                                                     BinaryResponseMessage.CancellationToken
@@ -838,7 +838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppBinaryMessage = BinaryRequestErrorMessage.ToByteArray();
 
-                if (SendStatus.Success == await SendBinaryMessage(
+                if (SentStatus.Success == await SendBinaryMessage(
                                                     ocppBinaryMessage,
                                                     BinaryRequestErrorMessage.EventTrackingId,
                                                     BinaryRequestErrorMessage.CancellationToken
@@ -913,7 +913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppBinaryMessage = BinaryResponseErrorMessage.ToByteArray();
 
-                if (SendStatus.Success == await SendBinaryMessage(
+                if (SentStatus.Success == await SendBinaryMessage(
                                                     ocppBinaryMessage,
                                                     BinaryResponseErrorMessage.EventTrackingId,
                                                     BinaryResponseErrorMessage.CancellationToken
@@ -988,7 +988,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var ocppBinaryMessage = BinarySendMessage.ToByteArray();
 
-                if (SendStatus.Success == await SendBinaryMessage(
+                if (SentStatus.Success == await SendBinaryMessage(
                                                     ocppBinaryMessage,
                                                     BinarySendMessage.EventTrackingId,
                                                     BinarySendMessage.CancellationToken

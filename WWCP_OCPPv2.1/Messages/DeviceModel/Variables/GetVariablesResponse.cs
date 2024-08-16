@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     Result?                         Result              = null,
                                     DateTime?                       ResponseTimestamp   = null,
 
-                                    NetworkingNode_Id?              DestinationId       = null,
+                                    SourceRouting?              SourceRouting       = null,
                                     NetworkPath?                    NetworkPath         = null,
 
                                     IEnumerable<KeyPair>?           SignKeys            = null,
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
         public static GetVariablesResponse Parse(GetVariablesRequest                                 Request,
                                                  JObject                                             JSON,
-                                                 NetworkingNode_Id                                   DestinationId,
+                                                 SourceRouting                                       SourceRouting,
                                                  NetworkPath                                         NetworkPath,
                                                  DateTime?                                           ResponseTimestamp                  = null,
                                                  CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null,
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(Request,
                          JSON,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var getVariablesResponse,
                          out var errorResponse,
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom GetVariables responses.</param>
         public static Boolean TryParse(GetVariablesRequest                                 Request,
                                        JObject                                             JSON,
-                                       NetworkingNode_Id                                   DestinationId,
+                                       SourceRouting                                       SourceRouting,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out GetVariablesResponse?      GetVariablesResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            null,
                                            ResponseTimestamp,
 
-                                           DestinationId,
+                                               SourceRouting,
                                            NetworkPath,
 
                                            null,
@@ -557,7 +557,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                         JObject?                 ErrorDetails        = null,
                                                         DateTime?                ResponseTimestamp   = null,
 
-                                                        NetworkingNode_Id?       DestinationId       = null,
+                                                        SourceRouting?       SourceRouting       = null,
                                                         NetworkPath?             NetworkPath         = null,
 
                                                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -577,7 +577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,

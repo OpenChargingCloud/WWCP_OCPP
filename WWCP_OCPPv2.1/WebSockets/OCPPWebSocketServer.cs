@@ -666,11 +666,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #endregion
 
-        #region (protected) ProcessCloseMessage           (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason, CancellationToken)
+        #region (protected) ProcessCloseMessage           (LogTimestamp, Server, Connection, Frame, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected async Task ProcessCloseMessage(DateTime                          LogTimestamp,
                                                  IWebSocketServer                  Server,
                                                  WebSocketServerConnection         Connection,
+                                                 WebSocketFrame                    Frame,
                                                  EventTracking_Id                  EventTrackingId,
                                                  WebSocketFrame.ClosingStatusCode  StatusCode,
                                                  String?                           Reason,
@@ -925,7 +926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestMessage.Destination.Next))
                 {
 
                     JSONRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -970,7 +971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1001,7 +1002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseMessage.Destination.Next))
                 {
 
                     JSONResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1046,7 +1047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1077,7 +1078,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestErrorMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next))
                 {
 
                     JSONRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1122,7 +1123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                         #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1153,7 +1154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseErrorMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next))
                 {
 
                     JSONResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1198,7 +1199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1229,7 +1230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONSendMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(JSONSendMessage.Destination.Next))
                 {
 
                     JSONSendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1274,7 +1275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1306,7 +1307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestMessage.Destination.Next))
                 {
 
                     BinaryRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1351,7 +1352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1382,7 +1383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseMessage.Destination.Next))
                 {
 
                     BinaryResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1427,7 +1428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1458,7 +1459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestErrorMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next))
                 {
 
                     BinaryRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1503,7 +1504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1534,7 +1535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseErrorMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next))
                 {
 
                     BinaryResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1579,7 +1580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1610,7 +1611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinarySendMessage.DestinationId))
+                foreach (var webSocketConnection in LookupNetworkingNode(BinarySendMessage.Destination.Next))
                 {
 
                     BinarySendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
@@ -1655,7 +1656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     #endregion
 
-                    if (sendStatus == SendStatus.Success)
+                    if (sendStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);

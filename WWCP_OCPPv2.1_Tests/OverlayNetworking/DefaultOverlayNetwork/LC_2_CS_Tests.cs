@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var resetType  = ResetType.Immediate;
                 var response   = await localController.Reset(
-                                           DestinationId:  chargingStation.Id,
+                                           Destination:    SourceRouting.To(chargingStation.Id),
                                            ResetType:          resetType
                                        );
 
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await localController.TransferData(
-                                           DestinationId:   chargingStation.Id,
+                                           Destination:    SourceRouting.To( chargingStation.Id),
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
                                            Data:                data,

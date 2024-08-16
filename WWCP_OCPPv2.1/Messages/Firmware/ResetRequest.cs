@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new Reset request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="ResetType">The type of Reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -86,30 +86,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ResetRequest(NetworkingNode_Id             DestinationId,
-                            ResetType                     ResetType,
-                            EVSE_Id?                      EVSEId              = null,
+        public ResetRequest(SourceRouting            Destination,
+                            ResetType                ResetType,
+                            EVSE_Id?                 EVSEId              = null,
 
-                            String?                       EncryptionKey       = null,
-                            String?                       EncryptionNonce     = null,
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<Signature>?       Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            IEnumerable<Signature>?  Signatures          = null,
 
-                            CustomData?                   CustomData          = null,
+                            CustomData?              CustomData          = null,
 
-                            Request_Id?                   RequestId           = null,
-                            DateTime?                     RequestTimestamp    = null,
-                            TimeSpan?                     RequestTimeout      = null,
-                            EventTracking_Id?             EventTrackingId     = null,
-                            NetworkPath?                  NetworkPath         = null,
-                            CancellationToken             CancellationToken   = default)
+                            Request_Id?              RequestId           = null,
+                            DateTime?                RequestTimestamp    = null,
+                            TimeSpan?                RequestTimeout      = null,
+                            EventTracking_Id?        EventTrackingId     = null,
+                            NetworkPath?             NetworkPath         = null,
+                            CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(ResetRequest)[..^7],
 
-                   EncryptionKey,
-                   EncryptionNonce,
                    SignKeys,
                    SignInfos,
                    Signatures,
@@ -193,14 +189,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomResetRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomResetRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a Reset request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -208,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
-                                         NetworkingNode_Id                           DestinationId,
+                                         SourceRouting                               SourceRouting,
                                          NetworkPath                                 NetworkPath,
                                          DateTime?                                   RequestTimestamp           = null,
                                          TimeSpan?                                   RequestTimeout             = null,
@@ -218,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var ResetRequest,
                          out var errorResponse,
@@ -237,14 +233,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Reset request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResetRequest">The parsed Reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -254,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
-                                       NetworkingNode_Id                           DestinationId,
+                                       SourceRouting                               SourceRouting,
                                        NetworkPath                                 NetworkPath,
                                        [NotNullWhen(true)]  out ResetRequest?      ResetRequest,
                                        [NotNullWhen(false)] out String?            ErrorResponse,
@@ -327,12 +323,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ResetRequest = new ResetRequest(
 
-                                   DestinationId,
+                                       SourceRouting,
                                    ResetType,
                                    EVSEId,
-
-                                   null,
-                                   null,
 
                                    null,
                                    null,

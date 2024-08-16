@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.      Count,                    Is.EqualTo(1), "The BootNotification JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationId,                       Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.Destination,                       Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                      Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                      Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                        Is.EqualTo(chargingStation.Id));
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.Destination,                   Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(chargingStation.Id));
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node Binary Request IN
                     Assert.That(nnBinaryMessageRequestsReceived.      Count,                Is.EqualTo(1), "The BinaryDataTransfer Binary request did not reach the networking node!");
                     var nnBinaryMessageRequest = nnBinaryMessageRequestsReceived.First();
-                    Assert.That(nnBinaryMessageRequest.DestinationId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBinaryMessageRequest.Destination,                     Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(chargingStation.Id));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(chargingStation.Id));

@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new authorize request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AuthorizeRequest(NetworkingNode_Id              DestinationId,
+        public AuthorizeRequest(SourceRouting                  Destination,
                                 IdToken                        IdToken,
                                 Certificate?                   Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 NetworkPath?                   NetworkPath                   = null,
                                 CancellationToken              CancellationToken             = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(AuthorizeRequest)[..^7],
 
                    SignKeys,
@@ -325,14 +325,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomAuthorizeRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             NetworkingNode_Id                               DestinationId,
+                                             SourceRouting                                   SourceRouting,
                                              NetworkPath                                     NetworkPath,
                                              DateTime?                                       RequestTimestamp               = null,
                                              TimeSpan?                                       RequestTimeout                 = null,
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var authorizeRequest,
                          out var errorResponse,
@@ -369,14 +369,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       NetworkingNode_Id                               DestinationId,
+                                       SourceRouting                                   SourceRouting,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out AuthorizeRequest?      AuthorizeRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 AuthorizeRequest = new AuthorizeRequest(
 
-                                       DestinationId,
+                                           SourceRouting,
                                        IdToken,
                                        Certificate,
                                        ISO15118CertificateHashData,

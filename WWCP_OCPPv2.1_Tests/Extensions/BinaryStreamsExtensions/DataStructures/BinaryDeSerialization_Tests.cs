@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
             var data                       = "Hello world!".ToUTF8Bytes();
 
             var binaryDataTransferRequest  = new BinaryDataTransferRequest(
-                                                 chargingStationId,
+                                                 SourceRouting.To(chargingStationId),
                                                  vendorId,
                                                  messageId,
                                                  data,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
             var success                    = BinaryDataTransferRequest.TryParse(
                                                  serializedRequest,
                                                  Request_Id.Parse("2"),
-                                                 chargingStationId,
+                                                 SourceRouting.To(chargingStationId),
                                                  NetworkPath.Empty,
                                                  out var parsedBinaryDataTransferRequest,
                                                  out var errorResponse2

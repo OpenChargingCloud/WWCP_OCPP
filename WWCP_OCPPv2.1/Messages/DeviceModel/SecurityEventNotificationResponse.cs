@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Result?                           Result              = null,
                                                  DateTime?                         ResponseTimestamp   = null,
 
-                                                 NetworkingNode_Id?                DestinationId       = null,
+                                                 SourceRouting?                SourceRouting       = null,
                                                  NetworkPath?                      NetworkPath         = null,
 
                                                  IEnumerable<KeyPair>?             SignKeys            = null,
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
         public static SecurityEventNotificationResponse Parse(SecurityEventNotificationRequest                                 Request,
                                                               JObject                                                          JSON,
-                                                              NetworkingNode_Id                                                DestinationId,
+                                                              SourceRouting                                                    SourceRouting,
                                                               NetworkPath                                                      NetworkPath,
                                                               DateTime?                                                        ResponseTimestamp                               = null,
                                                               CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(Request,
                          JSON,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var securityEventNotificationResponse,
                          out var errorResponse,
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom SecurityEventNotification responses.</param>
         public static Boolean TryParse(SecurityEventNotificationRequest                                 Request,
                                        JObject                                                          JSON,
-                                       NetworkingNode_Id                                                DestinationId,
+                                       SourceRouting                                                    SourceRouting,
                                        NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out SecurityEventNotificationResponse?      SecurityEventNotificationResponse,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         null,
                                                         ResponseTimestamp,
 
-                                                        DestinationId,
+                                                            SourceRouting,
                                                         NetworkPath,
 
                                                         null,
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      JObject?                          ErrorDetails        = null,
                                                                      DateTime?                         ResponseTimestamp   = null,
 
-                                                                     NetworkingNode_Id?                DestinationId       = null,
+                                                                     SourceRouting?                SourceRouting       = null,
                                                                      NetworkPath?                      NetworkPath         = null,
 
                                                                      IEnumerable<KeyPair>?             SignKeys            = null,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    ),
                    ResponseTimestamp,
 
-                   DestinationId,
+                       SourceRouting,
                    NetworkPath,
 
                    SignKeys,

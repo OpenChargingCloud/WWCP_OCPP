@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new open periodic event stream request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="ConstantStreamData">A constant stream data object.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -77,23 +77,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public OpenPeriodicEventStreamRequest(NetworkingNode_Id             DestinationId,
-                                              ConstantStreamData            ConstantStreamData,
+        public OpenPeriodicEventStreamRequest(SourceRouting            Destination,
+                                              ConstantStreamData       ConstantStreamData,
 
-                                              IEnumerable<KeyPair>?         SignKeys            = null,
-                                              IEnumerable<SignInfo>?        SignInfos           = null,
-                                              IEnumerable<Signature>?       Signatures          = null,
+                                              IEnumerable<KeyPair>?    SignKeys            = null,
+                                              IEnumerable<SignInfo>?   SignInfos           = null,
+                                              IEnumerable<Signature>?  Signatures          = null,
 
-                                              CustomData?                   CustomData          = null,
+                                              CustomData?              CustomData          = null,
 
-                                              Request_Id?                   RequestId           = null,
-                                              DateTime?                     RequestTimestamp    = null,
-                                              TimeSpan?                     RequestTimeout      = null,
-                                              EventTracking_Id?             EventTrackingId     = null,
-                                              NetworkPath?                  NetworkPath         = null,
-                                              CancellationToken             CancellationToken   = default)
+                                              Request_Id?              RequestId           = null,
+                                              DateTime?                RequestTimestamp    = null,
+                                              TimeSpan?                RequestTimeout      = null,
+                                              EventTracking_Id?        EventTrackingId     = null,
+                                              NetworkPath?             NetworkPath         = null,
+                                              CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(OpenPeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
@@ -131,19 +131,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomOpenPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomOpenPeriodicEventStreamRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an OpenPeriodicEventStream request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomOpenPeriodicEventStreamRequestParser">A delegate to parse custom OpenPeriodicEventStream requests.</param>
         public static OpenPeriodicEventStreamRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           NetworkingNode_Id                                             DestinationId,
+                                                           SourceRouting                                                 SourceRouting,
                                                            NetworkPath                                                   NetworkPath,
                                                            CustomJObjectParserDelegate<OpenPeriodicEventStreamRequest>?  CustomOpenPeriodicEventStreamRequestParser   = null)
         {
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var openPeriodicEventStreamRequest,
                          out var errorResponse,
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out OpenPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out OpenPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -177,20 +177,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="OpenPeriodicEventStreamRequest">The parsed OpenPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        Request_Id                           RequestId,
-                                       NetworkingNode_Id                    DestinationId,
+                                       SourceRouting                        SourceRouting,
                                        NetworkPath                          NetworkPath,
                                        out OpenPeriodicEventStreamRequest?  OpenPeriodicEventStreamRequest,
                                        out String?                          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        DestinationId,
+                            SourceRouting,
                         NetworkPath,
                         out OpenPeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -202,14 +202,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="OpenPeriodicEventStreamRequest">The parsed OpenPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomOpenPeriodicEventStreamRequestParser">A delegate to parse custom OpenPeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       NetworkingNode_Id                                             DestinationId,
+                                       SourceRouting                                                 SourceRouting,
                                        NetworkPath                                                   NetworkPath,
                                        out OpenPeriodicEventStreamRequest?                           OpenPeriodicEventStreamRequest,
                                        out String?                                                   ErrorResponse,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OpenPeriodicEventStreamRequest = new OpenPeriodicEventStreamRequest(
 
-                                                     DestinationId,
+                                                         SourceRouting,
                                                      ConstantStreamData,
 
                                                      null,

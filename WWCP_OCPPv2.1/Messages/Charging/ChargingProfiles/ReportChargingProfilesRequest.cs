@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a ReportChargingProfiles request.
         /// </summary>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
         /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
         /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ReportChargingProfilesRequest(NetworkingNode_Id             DestinationId,
+        public ReportChargingProfilesRequest(SourceRouting                 Destination,
                                              Int32                         ReportChargingProfilesRequestId,
                                              ChargingLimitSource           ChargingLimitSource,
                                              EVSE_Id                       EVSEId,
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              NetworkPath?                  NetworkPath         = null,
                                              CancellationToken             CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(ReportChargingProfilesRequest)[..^7],
 
                    SignKeys,
@@ -588,14 +588,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomReportChargingProfilesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomReportChargingProfilesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a ReportChargingProfiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The destination networking node identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -603,7 +603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom ReportChargingProfiles requests.</param>
         public static ReportChargingProfilesRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          NetworkingNode_Id                                            DestinationId,
+                                                          SourceRouting                                                SourceRouting,
                                                           NetworkPath                                                  NetworkPath,
                                                           DateTime?                                                    RequestTimestamp                            = null,
                                                           TimeSpan?                                                    RequestTimeout                              = null,
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var reportChargingProfilesRequest,
                          out var errorResponse,
@@ -632,7 +632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out ReportChargingProfilesRequest, out ErrorResponse, CustomReportChargingProfilesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ReportChargingProfilesRequest, out ErrorResponse, CustomReportChargingProfilesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ReportChargingProfiles request.
@@ -648,7 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom ReportChargingProfiles requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       NetworkingNode_Id                                            DestinationId,
+                                       SourceRouting                                                SourceRouting,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out ReportChargingProfilesRequest?      ReportChargingProfilesRequest,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
@@ -758,7 +758,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 ReportChargingProfilesRequest = new ReportChargingProfilesRequest(
 
-                                                    DestinationId,
+                                                        SourceRouting,
                                                     ReportChargingProfilesRequestId,
                                                     ChargingLimitSource,
                                                     EVSEId,

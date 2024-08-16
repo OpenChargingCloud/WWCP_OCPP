@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (!Get15118EVCertificateRequest.TryParse(JSONRequestMessage.Payload,
                                                        JSONRequestMessage.RequestId,
-                                                       JSONRequestMessage.DestinationId,
+                                                       JSONRequestMessage.Destination,
                                                        JSONRequestMessage.NetworkPath,
                                                        out var request,
                                                        out var errorResponse,

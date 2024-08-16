@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new UpdateUserRole request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this UpdateUserRole to the CSMS.</param>
         /// 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateUserRoleRequest(NetworkingNode_Id        DestinationId,
+        public UpdateUserRoleRequest(SourceRouting            SourceRouting,
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
                                      IEnumerable<SignInfo>?   SignInfos           = null,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      NetworkPath?             NetworkPath         = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(UpdateUserRoleRequest)[..^7],
 
                    SignKeys,
@@ -237,14 +237,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomUpdateUserRoleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomUpdateUserRoleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an UpdateUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomUpdateUserRoleRequestParser">An optional delegate to parse custom UpdateUserRole requests.</param>
         public static UpdateUserRoleRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  NetworkingNode_Id                                    DestinationId,
+                                                  SourceRouting                                        SourceRouting,
                                                   NetworkPath                                          NetworkPath,
                                                   DateTime?                                            RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var updateUserRoleRequest,
                          out var errorResponse,
@@ -282,14 +282,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out UpdateUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out UpdateUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UpdateUserRole request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UpdateUserRoleRequest">The parsed UpdateUserRole request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomUpdateUserRoleRequestParser">An optional delegate to parse custom UpdateUserRole requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       NetworkingNode_Id                                    DestinationId,
+                                       SourceRouting                                        SourceRouting,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out UpdateUserRoleRequest?      UpdateUserRoleRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 UpdateUserRoleRequest = new UpdateUserRoleRequest(
 
-                                            DestinationId,
+                                                SourceRouting,
 
 
                                             null,

@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new BinaryDataTransfer request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific binary data.</param>
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public BinaryDataTransferRequest(NetworkingNode_Id        DestinationId,
+        public BinaryDataTransferRequest(SourceRouting            SourceRouting,
                                          Vendor_Id                VendorId,
                                          Message_Id?              MessageId           = null,
                                          Byte[]?                  Data                = null,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(SourceRouting,
                    nameof(BinaryDataTransferRequest)[..^7],
 
                    SignKeys,
@@ -156,14 +156,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (Binary, RequestId, DestinationId, NetworkPath, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (Binary, RequestId, SourceRouting, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a BinaryDataTransfer request.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom BinaryDataTransfer requests.</param>
         public static BinaryDataTransferRequest Parse(Byte[]                                                  Binary,
                                                       Request_Id                                              RequestId,
-                                                      NetworkingNode_Id                                       DestinationId,
+                                                      SourceRouting                                           SourceRouting,
                                                       NetworkPath                                             NetworkPath,
                                                       DateTime?                                               RequestTimestamp                  = null,
                                                       TimeSpan?                                               RequestTimeout                    = null,
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(Binary,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var binaryDataTransferRequest,
                          out var errorResponse,
@@ -200,14 +200,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(Binary, RequestId, DestinationId, NetworkPath, out BinaryDataTransferRequest, out ErrorResponse, CustomBinaryDataTransferRequestParser = null)
+        #region (static) TryParse(Binary, RequestId, SourceRouting, NetworkPath, out BinaryDataTransferRequest, out ErrorResponse, CustomBinaryDataTransferRequestParser = null)
 
         /// <summary>
         /// Try to parse the given binary representation of a BinaryDataTransfer request.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BinaryDataTransferRequest">The parsed BinaryDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomBinaryDataTransferRequestParser">An optional delegate to parse custom BinaryDataTransfer requests.</param>
         public static Boolean TryParse(Byte[]                                                  Binary,
                                        Request_Id                                              RequestId,
-                                       NetworkingNode_Id                                       DestinationId,
+                                       SourceRouting                                           SourceRouting,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BinaryDataTransferRequest?     BinaryDataTransferRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     BinaryDataTransferRequest = new BinaryDataTransferRequest(
 
-                                                    DestinationId,
+                                                        SourceRouting,
                                                     vendorId,
                                                     messageId,
                                                     data,

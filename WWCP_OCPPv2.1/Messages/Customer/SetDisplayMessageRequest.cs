@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new SetDisplayMessage request.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="Message">A display message to be shown at the charging station.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -79,12 +79,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetDisplayMessageRequest(NetworkingNode_Id        DestinationId,
+        public SetDisplayMessageRequest(SourceRouting            Destination,
                                         MessageInfo              Message,
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
                                         IEnumerable<SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?       Signatures          = null,
+                                        IEnumerable<Signature>?  Signatures          = null,
 
                                         CustomData?              CustomData          = null,
 
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         NetworkPath?             NetworkPath         = null,
                                         CancellationToken        CancellationToken   = default)
 
-            : base(DestinationId,
+            : base(Destination,
                    nameof(SetDisplayMessageRequest)[..^7],
 
                    SignKeys,
@@ -324,14 +324,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, DestinationId, NetworkPath, CustomSetDisplayMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetDisplayMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SetDisplayMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom SetDisplayMessage requests.</param>
         public static SetDisplayMessageRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     NetworkingNode_Id                                       DestinationId,
+                                                     SourceRouting                                           SourceRouting,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               RequestTimestamp                       = null,
                                                      TimeSpan?                                               RequestTimeout                         = null,
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                         DestinationId,
+                             SourceRouting,
                          NetworkPath,
                          out var setDisplayMessageRequest,
                          out var errorResponse,
@@ -368,14 +368,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, DestinationId, NetworkPath, out SetDisplayMessageRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetDisplayMessageRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetDisplayMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetDisplayMessageRequest">The parsed SetDisplayMessage request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom SetDisplayMessage requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       NetworkingNode_Id                                       DestinationId,
+                                       SourceRouting                                           SourceRouting,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetDisplayMessageRequest?      SetDisplayMessageRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetDisplayMessageRequest = new SetDisplayMessageRequest(
 
-                                               DestinationId,
+                                                   SourceRouting,
                                                Message,
 
                                                null,
