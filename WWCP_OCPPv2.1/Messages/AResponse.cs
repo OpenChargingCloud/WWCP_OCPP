@@ -77,7 +77,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          IEnumerable<Signature>?  Signatures            = null,
 
                          CustomData?              CustomData            = null,
-                         SerializationFormats?    SerializationFormat   = null)
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
             : this(Request,
                    Result,
@@ -91,7 +92,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Signatures,
 
                    CustomData,
-                   SerializationFormat)
+                   SerializationFormat,
+                   CancellationToken)
 
         { }
 
@@ -123,7 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          IEnumerable<Signature>?  Signatures            = null,
 
                          CustomData?              CustomData            = null,
-                         SerializationFormats?    SerializationFormat   = null)
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
             : base(Result,
                    ResponseTimestamp,
@@ -137,7 +140,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Signatures,
 
                    CustomData,
-                   SerializationFormat)
+                   SerializationFormat,
+                   CancellationToken)
 
         {
 
@@ -251,14 +255,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Mandatory]
         public NetworkingNode_Id     DestinationId
-            => SourceRouting.Last();
+            => Destination.Last();
 
         /// <summary>
         /// The alternative source routing path through the overlay network
         /// towards the message destination.
         /// </summary>
         [Mandatory]
-        public SourceRouting         SourceRouting          { get; }
+        public SourceRouting         Destination          { get; }
 
         /// <summary>
         /// The networking path of the message through the overlay network.
@@ -276,6 +280,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Mandatory]
         public TimeSpan              Runtime                { get; }
+
+        /// <summary>
+        /// The Cancellation Token.
+        /// </summary>
+        [Mandatory]
+        public CancellationToken     CancellationToken      { get; }
 
         #endregion
 
@@ -308,7 +318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          IEnumerable<Signature>?  Signatures            = null,
 
                          CustomData?              CustomData            = null,
-                         SerializationFormats?    SerializationFormat   = null)
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
             : base(SignKeys,
                    SignInfos,
@@ -322,9 +333,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ResponseTimestamp    = ResponseTimestamp;
             this.Runtime              = Runtime;
 
-            this.SourceRouting        = Destination;
+            this.Destination        = Destination;
             this.NetworkPath          = NetworkPath;
+
             this.SerializationFormat  = SerializationFormat ?? SerializationFormats.Default;
+            this.CancellationToken    = CancellationToken;
 
             unchecked
             {
@@ -332,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 hashCode = this.Result.           GetHashCode() * 11 ^
                            this.ResponseTimestamp.GetHashCode() *  7 ^
                            this.Runtime.          GetHashCode() *  5 ^
-                           this.SourceRouting.    GetHashCode() *  3 ^
+                           this.Destination.      GetHashCode() *  3 ^
                            this.NetworkPath.      GetHashCode();
 
             }

@@ -852,11 +852,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 return Task.FromResult(
                            new BootNotificationResponse(
-                               Request:       request,
-                               NetworkPath:   NetworkPath.From(Id),
-                               Status:        RegistrationStatus.Accepted,
-                               CurrentTime:   Timestamp.Now,
-                               Interval:      TimeSpan.FromMinutes(5)
+                               Request:               request,
+                               NetworkPath:           NetworkPath.From(Id),
+                               Status:                RegistrationStatus.Accepted,
+                               CurrentTime:           Timestamp.Now,
+                               Interval:              TimeSpan.FromMinutes(5),
+                               SerializationFormat:   request.SerializationFormat
                            )
                        );
 

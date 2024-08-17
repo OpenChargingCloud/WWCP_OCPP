@@ -106,7 +106,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           BinaryDataTransferStatus   Status,
                                           String?                    AdditionalStatusInfo   = null,
                                           Byte[]?                    Data                   = null,
-                                          SerializationFormats?             Format                 = null,
 
                                           Result?                    Result                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
@@ -116,25 +115,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                           IEnumerable<KeyPair>?      SignKeys               = null,
                                           IEnumerable<SignInfo>?     SignInfos              = null,
-                                          IEnumerable<Signature>?    Signatures             = null)
+                                          IEnumerable<Signature>?    Signatures             = null,
+
+                                          SerializationFormats?      SerializationFormat    = null,
+                                          CancellationToken          CancellationToken      = default)
 
             : base(Request,
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
-                   Signatures)
+                   Signatures,
+
+                   null,
+
+                   SerializationFormat ?? SerializationFormats.BinaryTextIds,
+                   CancellationToken)
 
         {
 
             this.Status                = Status;
             this.AdditionalStatusInfo  = AdditionalStatusInfo;
             this.Data                  = Data;
-            this.Format                = Format ?? SerializationFormats.BinaryTextIds;
 
         }
 
@@ -170,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(Request,
                          Binary,
-                             SourceRouting,
+                         SourceRouting,
                          NetworkPath,
                          out var binaryDataTransferResponse,
                          out var errorResponse,
@@ -251,17 +257,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              binaryDataTransferStatus,
                                                              additionalStatusInfo,
                                                              data,
-                                                             format,
 
                                                              null,
                                                              ResponseTimestamp,
 
-                                                                 SourceRouting,
+                                                             SourceRouting,
                                                              NetworkPath,
 
                                                              null,
                                                              null,
-                                                             null //Signatures
+                                                             null, //Signatures
+
+                                                             format
 
                                                          );
 
@@ -295,17 +302,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              binaryDataTransferStatus,
                                                              additionalStatusInfo,
                                                              data,
-                                                             format,
 
                                                              null,
                                                              ResponseTimestamp,
 
-                                                                 SourceRouting,
+                                                             SourceRouting,
                                                              NetworkPath,
 
                                                              null,
                                                              null,
-                                                             null //Signatures
+                                                             null, //Signatures
+
+                                                             format
 
                                                          );
 
@@ -459,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               JObject?                   ErrorDetails        = null,
                                                               DateTime?                  ResponseTimestamp   = null,
 
-                                                              SourceRouting?         SourceRouting       = null,
+                                                              SourceRouting?             SourceRouting       = null,
                                                               NetworkPath?               NetworkPath         = null,
 
                                                               IEnumerable<KeyPair>?      SignKeys            = null,
@@ -472,7 +480,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    BinaryDataTransferStatus.Rejected,
                    null,
                    null,
-                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -480,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,

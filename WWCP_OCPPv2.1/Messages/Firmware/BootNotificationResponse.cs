@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using System.Data;
 
 #endregion
 
@@ -117,32 +118,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         RegistrationStatus       Status,
                                         DateTime                 CurrentTime,
                                         TimeSpan                 Interval,
-                                        StatusInfo?              StatusInfo          = null,
+                                        StatusInfo?              StatusInfo            = null,
 
-                                        Result?                  Result              = null,
-                                        DateTime?                ResponseTimestamp   = null,
+                                        Result?                  Result                = null,
+                                        DateTime?                ResponseTimestamp     = null,
 
-                                        SourceRouting?       SourceRouting       = null,
-                                        NetworkPath?             NetworkPath         = null,
+                                        SourceRouting?           SourceRouting         = null,
+                                        NetworkPath?             NetworkPath           = null,
 
-                                        IEnumerable<KeyPair>?    SignKeys            = null,
-                                        IEnumerable<SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?  Signatures          = null,
+                                        IEnumerable<KeyPair>?    SignKeys              = null,
+                                        IEnumerable<SignInfo>?   SignInfos             = null,
+                                        IEnumerable<Signature>?  Signatures            = null,
 
-                                        CustomData?              CustomData          = null)
+                                        CustomData?              CustomData            = null,
+
+                                        SerializationFormats?    SerializationFormat   = null,
+                                        CancellationToken        CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -548,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 BootNotificationResponse = null;
 
-                var JSON = new JObject();
+                var JSON = JObject.Parse(Binary.ToUTF8String());
 
                 #region Status         [mandatory]
 
@@ -724,6 +731,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region ToJSON(CustomBinaryBootNotificationResponseSerializer = null, CustomBinaryStatusInfoSerializer = null, ...)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomBinaryBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomBinaryStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomBinaryCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="IncludeSignatures"></param>
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<BootNotificationResponse>?  CustomBinaryBootNotificationResponseSerializer   = null,
+                               CustomBinarySerializerDelegate<StatusInfo>?                CustomBinaryStatusInfoSerializer                 = null,
+                               CustomBinarySerializerDelegate<Signature>?                 CustomBinarySignatureSerializer                  = null,
+                               CustomBinarySerializerDelegate<CustomData>?                CustomBinaryCustomDataSerializer                 = null,
+                               Boolean                                                    IncludeSignatures                                = true)
+        {
+
+            var binaryStream = new MemoryStream();
+
+            switch (SerializationFormat)
+            {
+
+                case SerializationFormats.JSON_UTF8_Binary:
+                    var json = ToJSON();
+                    if (!IncludeSignatures)
+                        json.Remove("signatures");
+                    binaryStream.Write(json.ToUTF8Bytes());
+                    break;
+
+            }
+
+            var binary = binaryStream.ToArray();
+
+            return CustomBinaryBootNotificationResponseSerializer is not null
+                       ? CustomBinaryBootNotificationResponseSerializer(this, binary)
+                       : binary;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 
@@ -785,9 +833,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Rejected,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:  Result.FormationViolation(
-                                 $"Invalid data format: {ErrorDescription}"
-                             ));
+                    Result:               Result.FormationViolation(
+                                              $"Invalid data format: {ErrorDescription}"
+                                          ),
+                    SerializationFormat:  Request.SerializationFormat);
 
 
         /// <summary>
@@ -802,9 +851,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.SignatureError,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:  Result.SignatureError(
-                                 $"Invalid signature(s): {ErrorDescription}"
-                             ));
+                    Result:               Result.SignatureError(
+                                              $"Invalid signature(s): {ErrorDescription}"
+                                          ),
+                    SerializationFormat:  Request.SerializationFormat);
 
 
         /// <summary>
@@ -819,7 +869,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Error,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:  Result.Server(Description));
+                    Result:               Result.Server(Description),
+                    SerializationFormat:  Request.SerializationFormat);
 
 
         /// <summary>
@@ -834,7 +885,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Error,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:  Result.FromException(Exception));
+                    Result:               Result.FromException(Exception),
+                    SerializationFormat:  Request.SerializationFormat);
 
         #endregion
 

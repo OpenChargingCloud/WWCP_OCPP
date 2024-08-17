@@ -144,7 +144,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                           IEnumerable<KeyPair>?      SignKeys               = null,
                                           IEnumerable<SignInfo>?     SignInfos              = null,
-                                          IEnumerable<Signature>?    Signatures             = null)
+                                          IEnumerable<Signature>?    Signatures             = null,
+
+                                          SerializationFormats?      SerializationFormat    = null,
+                                          CancellationToken          CancellationToken      = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -155,7 +158,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    SignKeys,
                    SignInfos,
-                   Signatures)
+                   Signatures,
+
+                   null,
+
+                   SerializationFormat ?? SerializationFormats.BinaryTextIds,
+                   CancellationToken)
 
         {
 
@@ -167,7 +175,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Nonce                 = Nonce;
             this.Counter               = Counter;
             this.Ciphertext            = Ciphertext;
-
 
             unchecked
             {

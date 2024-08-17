@@ -98,31 +98,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public DeleteFileResponse(DeleteFileRequest        Request,
                                   FilePath                 FileName,
                                   DeleteFileStatus         Status,
-                                  StatusInfo?              StatusInfo          = null,
-                                  Result?                  Result              = null,
-                                  DateTime?                ResponseTimestamp   = null,
+                                  StatusInfo?              StatusInfo            = null,
 
-                                  SourceRouting?       SourceRouting       = null,
-                                  NetworkPath?             NetworkPath         = null,
+                                  Result?                  Result                = null,
+                                  DateTime?                ResponseTimestamp     = null,
 
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
+                                  SourceRouting?           SourceRouting         = null,
+                                  NetworkPath?             NetworkPath           = null,
 
-                                  CustomData?              CustomData          = null)
+                                  IEnumerable<KeyPair>?    SignKeys              = null,
+                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  IEnumerable<Signature>?  Signatures            = null,
+
+                                  CustomData?              CustomData            = null,
+
+                                  SerializationFormats?    SerializationFormat   = null,
+                                  CancellationToken        CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -387,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       JObject?                 ErrorDetails        = null,
                                                       DateTime?                ResponseTimestamp   = null,
 
-                                                      SourceRouting?       SourceRouting       = null,
+                                                      SourceRouting?           SourceRouting       = null,
                                                       NetworkPath?             NetworkPath         = null,
 
                                                       IEnumerable<KeyPair>?    SignKeys            = null,
@@ -409,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,

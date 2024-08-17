@@ -100,32 +100,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public GetCertificateStatusResponse(CS.GetCertificateStatusRequest  Request,
                                             GetCertificateStatus            Status,
                                             OCSPResult                      OCSPResult,
-                                            StatusInfo?                     StatusInfo          = null,
+                                            StatusInfo?                     StatusInfo            = null,
 
-                                            Result?                         Result              = null,
-                                            DateTime?                       ResponseTimestamp   = null,
+                                            Result?                         Result                = null,
+                                            DateTime?                       ResponseTimestamp     = null,
 
-                                            SourceRouting?              SourceRouting       = null,
-                                            NetworkPath?                    NetworkPath         = null,
+                                            SourceRouting?                  SourceRouting         = null,
+                                            NetworkPath?                    NetworkPath           = null,
 
-                                            IEnumerable<KeyPair>?           SignKeys            = null,
-                                            IEnumerable<SignInfo>?          SignInfos           = null,
-                                            IEnumerable<Signature>?         Signatures          = null,
+                                            IEnumerable<KeyPair>?           SignKeys              = null,
+                                            IEnumerable<SignInfo>?          SignInfos             = null,
+                                            IEnumerable<Signature>?         Signatures            = null,
 
-                                            CustomData?                     CustomData          = null)
+                                            CustomData?                     CustomData            = null,
+
+                                            SerializationFormats?           SerializationFormat   = null,
+                                            CancellationToken               CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 

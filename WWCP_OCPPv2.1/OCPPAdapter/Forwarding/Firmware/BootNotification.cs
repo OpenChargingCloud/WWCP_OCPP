@@ -181,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
+                                        // NewRequest: request.Clone()//.SerializationFormat = SerializationFormats.JSON
                                      );
 
             if (forwardingDecision is null ||

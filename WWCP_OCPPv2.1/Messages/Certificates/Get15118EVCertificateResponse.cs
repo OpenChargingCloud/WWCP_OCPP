@@ -107,20 +107,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public Get15118EVCertificateResponse(CS.Get15118EVCertificateRequest  Request,
                                              ISO15118EVCertificateStatus      Status,
                                              EXIData                          EXIResponse,
-                                             UInt32?                          RemainingContracts   = null,
-                                             StatusInfo?                      StatusInfo           = null,
+                                             UInt32?                          RemainingContracts    = null,
+                                             StatusInfo?                      StatusInfo            = null,
 
-                                             Result?                          Result               = null,
-                                             DateTime?                        ResponseTimestamp    = null,
+                                             Result?                          Result                = null,
+                                             DateTime?                        ResponseTimestamp     = null,
 
-                                             SourceRouting?                   SourceRouting        = null,
-                                             NetworkPath?                     NetworkPath          = null,
+                                             SourceRouting?                   SourceRouting         = null,
+                                             NetworkPath?                     NetworkPath           = null,
 
-                                             IEnumerable<KeyPair>?            SignKeys             = null,
-                                             IEnumerable<SignInfo>?           SignInfos            = null,
-                                             IEnumerable<Signature>?          Signatures           = null,
+                                             IEnumerable<KeyPair>?            SignKeys              = null,
+                                             IEnumerable<SignInfo>?           SignInfos             = null,
+                                             IEnumerable<Signature>?          Signatures            = null,
 
-                                             CustomData?                      CustomData           = null)
+                                             CustomData?                      CustomData            = null,
+
+                                             SerializationFormats?            SerializationFormat   = null,
+                                             CancellationToken                CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -133,7 +136,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 

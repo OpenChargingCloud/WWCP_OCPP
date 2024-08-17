@@ -222,7 +222,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new DataTransferResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     DataTransferStatus.Rejected,
+                                     Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }

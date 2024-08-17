@@ -18,14 +18,13 @@
 #region Usings
 
 using System.Security.Cryptography;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -502,9 +501,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="ChargingTariff">The parsed charging tariff.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out ChargingTariff?  ChargingTariff,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out ChargingTariff?  ChargingTariff,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingTariff,
@@ -521,8 +520,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TariffIdURL">An optional charging tariff identification, e.g. from the HTTP URL.</param>
         /// <param name="CustomChargingTariffParser">A delegate to parse custom charging tariff JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out ChargingTariff?                           ChargingTariff,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingTariff?      ChargingTariff,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        ChargingTariff_Id?                            TariffIdURL                  = null,
                                        CustomJObjectParserDelegate<ChargingTariff>?  CustomChargingTariffParser   = null)
         {

@@ -617,7 +617,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               RequestTimestamp,
                                               RequestTimeout,
                                               EventTrackingId,
-                                              NetworkPath
+                                              NetworkPath,
+
+                                              SerializationFormats.JSON_UTF8_Binary
 
                                           );
 
@@ -699,7 +701,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 case SerializationFormats.JSON_UTF8_Binary:
-                    binaryStream.Write(ToJSON().ToUTF8Bytes());
+                    var json = ToJSON();
+                    if (!IncludeSignatures)
+                        json.Remove("signatures");
+                    binaryStream.Write(json.ToUTF8Bytes());
                     break;
 
             }

@@ -462,7 +462,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     var response = new DataTransferResponse(
                                        request,
-                                       Result.Filtered("This message is not allowed!")
+                                       DataTransferStatus.Rejected,
+                                       Result: Result.Filtered("This message is not allowed!")
                                    );
 
                     return Task.FromResult(

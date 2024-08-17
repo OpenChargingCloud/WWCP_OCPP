@@ -77,8 +77,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Constructor(s)
 
-        #region DataTransferResponse(Request, Status, Data = null, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new DataTransfer response.
         /// </summary>
@@ -93,33 +91,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public DataTransferResponse(DataTransferRequest           Request,
-                                    DataTransferStatus            Status,
-                                    JToken?                       Data                = null,
-                                    StatusInfo?                   StatusInfo          = null,
-                                    DateTime?                     ResponseTimestamp   = null,
+        public DataTransferResponse(DataTransferRequest      Request,
+                                    DataTransferStatus       Status,
+                                    JToken?                  Data                  = null,
+                                    StatusInfo?              StatusInfo            = null,
 
-                                    SourceRouting?                SourceRouting   = null,
-                                    NetworkPath?                  NetworkPath         = null,
+                                    Result?                  Result                = null,
+                                    DateTime?                ResponseTimestamp     = null,
 
-                                    IEnumerable<KeyPair>?         SignKeys            = null,
-                                    IEnumerable<SignInfo>?        SignInfos           = null,
-                                    IEnumerable<Signature>?  Signatures          = null,
+                                    SourceRouting?           SourceRouting         = null,
+                                    NetworkPath?             NetworkPath           = null,
 
-                                    CustomData?                   CustomData          = null)
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
+
+                                    CustomData?              CustomData            = null,
+
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -128,49 +134,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.StatusInfo  = StatusInfo;
 
         }
-
-        #endregion
-
-        #region DataTransferResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new DataTransfer response.
-        /// </summary>
-        /// <param name="Request">The DataTransfer request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public DataTransferResponse(DataTransferRequest      Request,
-                                    Result                   Result,
-                                    DateTime?                ResponseTimestamp   = null,
-
-                                    SourceRouting?       SourceRouting       = null,
-                                    NetworkPath?             NetworkPath         = null,
-
-                                    IEnumerable<KeyPair>?    SignKeys            = null,
-                                    IEnumerable<SignInfo>?   SignInfos           = null,
-                                    IEnumerable<Signature>?  Signatures          = null,
-
-                                    CustomData?              CustomData          = null)
-
-            : base(Request,
-                   Result,
-                   ResponseTimestamp,
-
-                       SourceRouting,
-                   NetworkPath,
-
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
-
-                   CustomData)
-
-        {
-
-            this.Status = DataTransferStatus.Rejected;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -292,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (TryParse(Request,
                          JSON,
-                             SourceRouting,
+                         SourceRouting,
                          NetworkPath,
                          out var dataTransferResponse,
                          out var errorResponse,
@@ -414,9 +377,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            DataTransferStatus,
                                            Data,
                                            StatusInfo,
+
+                                           null,
                                            ResponseTimestamp,
 
-                                               SourceRouting,
+                                           SourceRouting,
                                            NetworkPath,
 
                                            null,
@@ -506,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         JObject?                 ErrorDetails        = null,
                                                         DateTime?                ResponseTimestamp   = null,
 
-                                                        SourceRouting?       SourceRouting       = null,
+                                                        SourceRouting?           SourceRouting       = null,
                                                         NetworkPath?             NetworkPath         = null,
 
                                                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -518,6 +483,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
 
                    Request,
+                   DataTransferStatus.Rejected,
+                   null,
+                   null,
                    Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
@@ -525,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -546,9 +514,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               String               ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
-                        $"Invalid data format: {ErrorDescription}"
-                    ));
+                    DataTransferStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -560,9 +529,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           String               ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
-                        $"Invalid signature(s): {ErrorDescription}"
-                    ));
+                    DataTransferStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -574,7 +544,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                   String?              Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    DataTransferStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -586,7 +557,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                             Exception            Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    DataTransferStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

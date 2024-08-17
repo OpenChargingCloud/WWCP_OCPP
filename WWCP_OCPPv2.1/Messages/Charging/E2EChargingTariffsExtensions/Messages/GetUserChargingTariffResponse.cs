@@ -17,9 +17,13 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -70,51 +74,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region GetUserChargingTariffResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new get user charging tariff response.
         /// </summary>
         /// <param name="Request">The get user charging tariff request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="SourceRouting">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetUserChargingTariffResponse(CS.GetUserChargingTariffRequest  Request,
                                              GenericStatus                    Status,
-                                             StatusInfo?                      StatusInfo          = null,
-                                             DateTime?                        ResponseTimestamp   = null,
+                                             StatusInfo?                      StatusInfo            = null,
 
-                                             IEnumerable<KeyPair>?            SignKeys            = null,
-                                             IEnumerable<SignInfo>?           SignInfos           = null,
-                                             IEnumerable<Signature>?          Signatures          = null,
+                                             Result?                          Result                = null,
+                                             DateTime?                        ResponseTimestamp     = null,
 
-                                             CustomData?                      CustomData          = null)
+                                             SourceRouting?                   SourceRouting         = null,
+                                             NetworkPath?                     NetworkPath           = null,
+
+                                             IEnumerable<KeyPair>?            SignKeys              = null,
+                                             IEnumerable<SignInfo>?           SignInfos             = null,
+                                             IEnumerable<Signature>?          Signatures            = null,
+
+                                             CustomData?                      CustomData            = null,
+
+                                             SerializationFormats?            SerializationFormat   = null,
+                                             CancellationToken                CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   SourceRouting,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status             = Status;
             this.StatusInfo         = StatusInfo;
 
-
             unchecked
             {
 
@@ -125,39 +142,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
         }
-
-        #endregion
-
-        #region GetUserChargingTariffResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get user charging tariff response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public GetUserChargingTariffResponse(CS.GetUserChargingTariffRequest  Request,
-                                             Result                           Result)
-
-            : base(Request,
-                   Result)
-
-        {
-
-            this.Status  = GenericStatus.Rejected;
-
-
-            unchecked
-            {
-
-                hashCode = this.Status.     GetHashCode()       * 5 ^
-                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                           base.            GetHashCode();
-
-            }
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -178,16 +162,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetUserChargingTariffResponseParser">A delegate to parse custom get user charging tariff responses.</param>
         public static GetUserChargingTariffResponse Parse(CS.GetUserChargingTariffRequest                              Request,
                                                           JObject                                                      JSON,
-                                                          CustomJObjectParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null)
+                                                          SourceRouting                                                SourceRouting,
+                                                          NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          CustomJObjectParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null,
+                                                          CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                                          CustomJObjectParserDelegate<ChargingTariff>?                 CustomChargingTariffParser                  = null,
+                                                          CustomJObjectParserDelegate<Price>?                          CustomPriceParser                           = null,
+                                                          CustomJObjectParserDelegate<TariffElement>?                  CustomTariffElementParser                   = null,
+                                                          CustomJObjectParserDelegate<PriceComponent>?                 CustomPriceComponentParser                  = null,
+                                                          CustomJObjectParserDelegate<TaxRate>?                        CustomTaxRateParser                         = null,
+                                                          CustomJObjectParserDelegate<TariffRestrictions>?             CustomTariffRestrictionsParser              = null,
+                                                          CustomJObjectParserDelegate<EnergyMix>?                      CustomEnergyMixParser                       = null,
+                                                          CustomJObjectParserDelegate<EnergySource>?                   CustomEnergySourceParser                    = null,
+                                                          CustomJObjectParserDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactParser             = null,
+                                                          CustomJObjectParserDelegate<IdToken>?                        CustomIdTokenParser                         = null,
+                                                          CustomJObjectParserDelegate<AdditionalInfo>?                 CustomAdditionalInfoParser                  = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         SourceRouting,
+                         NetworkPath,
                          out var getUserChargingTariffResponse,
                          out var errorResponse,
-                         CustomGetUserChargingTariffResponseParser) &&
-                getUserChargingTariffResponse is not null)
+                         ResponseTimestamp,
+                         CustomGetUserChargingTariffResponseParser,
+                         CustomStatusInfoParser,
+                         CustomChargingTariffParser,
+                         CustomPriceParser,
+                         CustomTariffElementParser,
+                         CustomPriceComponentParser,
+                         CustomTaxRateParser,
+                         CustomTariffRestrictionsParser,
+                         CustomEnergyMixParser,
+                         CustomEnergySourceParser,
+                         CustomEnvironmentalImpactParser,
+                         CustomIdTokenParser,
+                         CustomAdditionalInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getUserChargingTariffResponse;
             }
@@ -211,9 +228,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetUserChargingTariffResponseParser">A delegate to parse custom get user charging tariff responses.</param>
         public static Boolean TryParse(CS.GetUserChargingTariffRequest                              Request,
                                        JObject                                                      JSON,
-                                       out GetUserChargingTariffResponse?                           GetUserChargingTariffResponse,
-                                       out String?                                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null)
+                                       SourceRouting                                                SourceRouting,
+                                       NetworkPath                                                  NetworkPath,
+                                       [NotNullWhen(true)]  out GetUserChargingTariffResponse?      GetUserChargingTariffResponse,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
+                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       CustomJObjectParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                       CustomJObjectParserDelegate<ChargingTariff>?                 CustomChargingTariffParser                  = null,
+                                       CustomJObjectParserDelegate<Price>?                          CustomPriceParser                           = null,
+                                       CustomJObjectParserDelegate<TariffElement>?                  CustomTariffElementParser                   = null,
+                                       CustomJObjectParserDelegate<PriceComponent>?                 CustomPriceComponentParser                  = null,
+                                       CustomJObjectParserDelegate<TaxRate>?                        CustomTaxRateParser                         = null,
+                                       CustomJObjectParserDelegate<TariffRestrictions>?             CustomTariffRestrictionsParser              = null,
+                                       CustomJObjectParserDelegate<EnergyMix>?                      CustomEnergyMixParser                       = null,
+                                       CustomJObjectParserDelegate<EnergySource>?                   CustomEnergySourceParser                    = null,
+                                       CustomJObjectParserDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactParser             = null,
+                                       CustomJObjectParserDelegate<IdToken>?                        CustomIdTokenParser                         = null,
+                                       CustomJObjectParserDelegate<AdditionalInfo>?                 CustomAdditionalInfoParser                  = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -239,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "status info",
                                            OCPPv2_1.StatusInfo.TryParse,
-                                           out StatusInfo StatusInfo,
+                                           out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -348,7 +382,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     StatusInfo,
                                                     //ChargingTariffs,
                                                     //new ReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(ChargingTariffMap),
+
                                                     null,
+                                                    ResponseTimestamp,
+
+                                                    SourceRouting,
+                                                    NetworkPath,
 
                                                     null,
                                                     null,
@@ -397,20 +436,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
-                              CustomJObjectSerializerDelegate<ChargingTariff>?                    CustomChargingTariffSerializer                     = null,
-                              CustomJObjectSerializerDelegate<Price>?                             CustomPriceSerializer                              = null,
-                              CustomJObjectSerializerDelegate<TariffElement>?                     CustomTariffElementSerializer                      = null,
-                              CustomJObjectSerializerDelegate<PriceComponent>?                    CustomPriceComponentSerializer                     = null,
-                              CustomJObjectSerializerDelegate<TaxRate>?                           CustomTaxRateSerializer                            = null,
-                              CustomJObjectSerializerDelegate<TariffRestrictions>?                CustomTariffRestrictionsSerializer                 = null,
-                              CustomJObjectSerializerDelegate<EnergyMix>?                         CustomEnergyMixSerializer                          = null,
-                              CustomJObjectSerializerDelegate<EnergySource>?                      CustomEnergySourceSerializer                       = null,
-                              CustomJObjectSerializerDelegate<EnvironmentalImpact>?               CustomEnvironmentalImpactSerializer                = null,
-                              CustomJObjectSerializerDelegate<IdToken>?                           CustomIdTokenSerializer                            = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?                    CustomAdditionalInfoSerializer                     = null,
-                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?                     CustomStatusInfoSerializer                      = null,
+                              CustomJObjectSerializerDelegate<ChargingTariff>?                 CustomChargingTariffSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Price>?                          CustomPriceSerializer                           = null,
+                              CustomJObjectSerializerDelegate<TariffElement>?                  CustomTariffElementSerializer                   = null,
+                              CustomJObjectSerializerDelegate<PriceComponent>?                 CustomPriceComponentSerializer                  = null,
+                              CustomJObjectSerializerDelegate<TaxRate>?                        CustomTaxRateSerializer                         = null,
+                              CustomJObjectSerializerDelegate<TariffRestrictions>?             CustomTariffRestrictionsSerializer              = null,
+                              CustomJObjectSerializerDelegate<EnergyMix>?                      CustomEnergyMixSerializer                       = null,
+                              CustomJObjectSerializerDelegate<EnergySource>?                   CustomEnergySourceSerializer                    = null,
+                              CustomJObjectSerializerDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactSerializer             = null,
+                              CustomJObjectSerializerDelegate<IdToken>?                        CustomIdTokenSerializer                         = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?                 CustomAdditionalInfoSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Signature>?                      CustomSignatureSerializer                       = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
             var json = JSONObject.Create(
@@ -466,12 +505,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The get user charging tariff failed.
+        /// The GetDefaultChargingTariff failed because of a request error.
         /// </summary>
-        public static GetUserChargingTariffResponse Failed(CS.GetUserChargingTariffRequest Request)
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        public static GetUserChargingTariffResponse RequestError(CS.GetUserChargingTariffRequest  Request,
+                                                                 EventTracking_Id                 EventTrackingId,
+                                                                 ResultCode                       ErrorCode,
+                                                                 String?                          ErrorDescription    = null,
+                                                                 JObject?                         ErrorDetails        = null,
+                                                                 DateTime?                        ResponseTimestamp   = null,
+
+                                                                 SourceRouting?                   SourceRouting       = null,
+                                                                 NetworkPath?                     NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
+                                                                 IEnumerable<Signature>?          Signatures          = null,
+
+                                                                 CustomData?                      CustomData          = null)
+
+            => new (
+
+                   Request,
+                   GenericStatus.Rejected,
+                   null,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   SourceRouting,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetUserChargingTariffResponse FormationViolation(CS.GetUserChargingTariffRequest  Request,
+                                                                       String                           ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetUserChargingTariffResponse SignatureError(CS.GetUserChargingTariffRequest  Request,
+                                                                   String                           ErrorDescription)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static GetUserChargingTariffResponse Failed(CS.GetUserChargingTariffRequest  Request,
+                                                           String?                          Description   = null)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetUserChargingTariffResponse ExceptionOccured(CS.GetUserChargingTariffRequest  Request,
+                                                                     Exception                        Exception)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

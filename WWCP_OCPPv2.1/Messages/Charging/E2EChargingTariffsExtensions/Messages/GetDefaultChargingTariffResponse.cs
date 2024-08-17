@@ -105,34 +105,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetDefaultChargingTariffResponse(GetDefaultChargingTariffRequest                                Request,
                                                 GenericStatus                                                  Status,
-                                                StatusInfo?                                                    StatusInfo          = null,
-                                                IEnumerable<ChargingTariff>?                                   ChargingTariffs     = null,
-                                                IReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>?  ChargingTariffMap   = null,
+                                                StatusInfo?                                                    StatusInfo            = null,
+                                                IEnumerable<ChargingTariff>?                                   ChargingTariffs       = null,
+                                                IReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>?  ChargingTariffMap     = null,
 
-                                                Result?                                                        Result              = null,
-                                                DateTime?                                                      ResponseTimestamp   = null,
+                                                Result?                                                        Result                = null,
+                                                DateTime?                                                      ResponseTimestamp     = null,
 
-                                                SourceRouting?                                             SourceRouting       = null,
-                                                NetworkPath?                                                   NetworkPath         = null,
+                                                SourceRouting?                                                 SourceRouting         = null,
+                                                NetworkPath?                                                   NetworkPath           = null,
 
-                                                IEnumerable<KeyPair>?                                          SignKeys            = null,
-                                                IEnumerable<SignInfo>?                                         SignInfos           = null,
-                                                IEnumerable<Signature>?                                        Signatures          = null,
+                                                IEnumerable<KeyPair>?                                          SignKeys              = null,
+                                                IEnumerable<SignInfo>?                                         SignInfos             = null,
+                                                IEnumerable<Signature>?                                        Signatures            = null,
 
-                                                CustomData?                                                    CustomData          = null)
+                                                CustomData?                                                    CustomData            = null,
+
+                                                SerializationFormats?                                          SerializationFormat   = null,
+                                                CancellationToken                                              CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -197,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(Request,
                          JSON,
-                             SourceRouting,
+                         SourceRouting,
                          NetworkPath,
                          out var getDefaultChargingTariffResponse,
                          out var errorResponse,
@@ -398,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        null,
                                                        ResponseTimestamp,
 
-                                                           SourceRouting,
+                                                       SourceRouting,
                                                        NetworkPath,
 
                                                        null,
@@ -521,20 +527,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetDefaultChargingTariff request.</param>
         public static GetDefaultChargingTariffResponse RequestError(GetDefaultChargingTariffRequest  Request,
-                                                                    EventTracking_Id                      EventTrackingId,
-                                                                    ResultCode                            ErrorCode,
-                                                                    String?                               ErrorDescription    = null,
-                                                                    JObject?                              ErrorDetails        = null,
-                                                                    DateTime?                             ResponseTimestamp   = null,
+                                                                    EventTracking_Id                 EventTrackingId,
+                                                                    ResultCode                       ErrorCode,
+                                                                    String?                          ErrorDescription    = null,
+                                                                    JObject?                         ErrorDetails        = null,
+                                                                    DateTime?                        ResponseTimestamp   = null,
 
-                                                                    SourceRouting?                    SourceRouting       = null,
-                                                                    NetworkPath?                          NetworkPath         = null,
+                                                                    SourceRouting?                   SourceRouting       = null,
+                                                                    NetworkPath?                     NetworkPath         = null,
 
-                                                                    IEnumerable<KeyPair>?                 SignKeys            = null,
-                                                                    IEnumerable<SignInfo>?                SignInfos           = null,
-                                                                    IEnumerable<Signature>?               Signatures          = null,
+                                                                    IEnumerable<KeyPair>?            SignKeys            = null,
+                                                                    IEnumerable<SignInfo>?           SignInfos           = null,
+                                                                    IEnumerable<Signature>?          Signatures          = null,
 
-                                                                    CustomData?                           CustomData          = null)
+                                                                    CustomData?                      CustomData          = null)
 
             => new (
 
@@ -550,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
@@ -570,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public static GetDefaultChargingTariffResponse FormationViolation(GetDefaultChargingTariffRequest  Request,
                                                                           String                           ErrorDescription)
 
-            => new(Request,
+            => new (Request,
                     GenericStatus.Rejected,
                     Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
@@ -585,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public static GetDefaultChargingTariffResponse SignatureError(GetDefaultChargingTariffRequest  Request,
                                                                       String                           ErrorDescription)
 
-            => new(Request,
+            => new (Request,
                     GenericStatus.Rejected,
                     Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"

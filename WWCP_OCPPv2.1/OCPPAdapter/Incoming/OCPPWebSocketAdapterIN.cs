@@ -207,8 +207,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var processorName = methodInfo.Name[8..];
 
-                if (incomingJSONMessageProcessorsLookup.ContainsKey(processorName))
-                    throw new ArgumentException("Duplicate processor name: " + processorName);
+                if (incomingJSONMessageProcessorsLookup.ContainsKey(processorName) &&
+                    incomingBinaryMessageProcessorsLookup.ContainsKey(processorName))
+                {
+                    throw new ArgumentException($"Duplicate processor name: '{processorName}'!");
+                }
 
                 var parameterInfos = methodInfo.GetParameters();
 
@@ -227,7 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             methodInfo
                         );
 
+                    else
+                        throw new ArgumentException($"Invalid method found: '{methodInfo.Name}'!");
+
                 }
+                else
+                    throw new ArgumentException($"Invalid method found: '{methodInfo.Name}'!");
 
             }
 

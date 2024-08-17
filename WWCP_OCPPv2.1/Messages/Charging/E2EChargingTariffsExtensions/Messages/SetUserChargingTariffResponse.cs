@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System.Collections.ObjectModel;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -74,8 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region SetUserChargingTariffResponse(Request, Status, StatusInfo = null, ...)
-
         /// <summary>
         /// Create a new set user charging tariff response.
         /// </summary>
@@ -91,34 +87,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SetUserChargingTariffResponse(CSMS.SetUserChargingTariffRequest  Request,
                                              GenericStatus                      Status,
-                                             StatusInfo?                        StatusInfo          = null,
-                                             DateTime?                          ResponseTimestamp   = null,
+                                             StatusInfo?                        StatusInfo            = null,
 
-                                             IEnumerable<KeyPair>?              SignKeys            = null,
-                                             IEnumerable<SignInfo>?             SignInfos           = null,
-                                             IEnumerable<Signature>?            Signatures          = null,
+                                             Result?                            Result                = null,
+                                             DateTime?                          ResponseTimestamp     = null,
 
-                                             CustomData?                        CustomData          = null)
+                                             SourceRouting?                     SourceRouting         = null,
+                                             NetworkPath?                       NetworkPath           = null,
+
+                                             IEnumerable<KeyPair>?              SignKeys              = null,
+                                             IEnumerable<SignInfo>?             SignInfos             = null,
+                                             IEnumerable<Signature>?            Signatures            = null,
+
+                                             CustomData?                        CustomData            = null,
+
+                                             SerializationFormats?              SerializationFormat   = null,
+                                             CancellationToken                  CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   SourceRouting,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status             = Status;
             this.StatusInfo         = StatusInfo;
 
-
             unchecked
             {
 
@@ -129,39 +135,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
         }
-
-        #endregion
-
-        #region SetUserChargingTariffResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new set user charging tariff response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public SetUserChargingTariffResponse(CSMS.SetUserChargingTariffRequest  Request,
-                                             Result                             Result)
-
-            : base(Request,
-                   Result)
-
-        {
-
-            this.Status  = GenericStatus.Rejected;
-
-
-            unchecked
-            {
-
-                hashCode = this.Status.     GetHashCode()       * 5 ^
-                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                           base.            GetHashCode();
-
-            }
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -182,15 +155,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetUserChargingTariffResponseParser">A delegate to parse custom set user charging tariff responses.</param>
         public static SetUserChargingTariffResponse Parse(CSMS.SetUserChargingTariffRequest                            Request,
                                                           JObject                                                      JSON,
-                                                          CustomJObjectParserDelegate<SetUserChargingTariffResponse>?  CustomSetUserChargingTariffResponseParser   = null)
+                                                          SourceRouting                                                SourceRouting,
+                                                          NetworkPath                                                  NetworkPath,
+                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          CustomJObjectParserDelegate<SetUserChargingTariffResponse>?  CustomSetUserChargingTariffResponseParser   = null,
+                                                          CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         SourceRouting,
+                         NetworkPath,
                          out var setUserChargingTariffResponse,
                          out var errorResponse,
-                         CustomSetUserChargingTariffResponseParser) &&
+                         ResponseTimestamp,
+                         CustomSetUserChargingTariffResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser) &&
                 setUserChargingTariffResponse is not null)
             {
                 return setUserChargingTariffResponse;
@@ -215,9 +200,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetUserChargingTariffResponseParser">A delegate to parse custom set user charging tariff responses.</param>
         public static Boolean TryParse(CSMS.SetUserChargingTariffRequest                            Request,
                                        JObject                                                      JSON,
+                                       SourceRouting                                                SourceRouting,
+                                       NetworkPath                                                  NetworkPath,
                                        out SetUserChargingTariffResponse?                           SetUserChargingTariffResponse,
                                        out String?                                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<SetUserChargingTariffResponse>?  CustomSetUserChargingTariffResponseParser   = null)
+                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       CustomJObjectParserDelegate<SetUserChargingTariffResponse>?  CustomSetUserChargingTariffResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -286,7 +277,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     Request,
                                                     Status,
                                                     StatusInfo,
+
                                                     null,
+                                                    ResponseTimestamp,
+
+                                                    SourceRouting,
+                                                    NetworkPath,
 
                                                     null,
                                                     null,
@@ -361,12 +357,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The set user charging tariff failed.
+        /// The SetUserChargingTariffResponse failed because of a request error.
         /// </summary>
-        public static SetUserChargingTariffResponse Failed(CSMS.SetUserChargingTariffRequest Request)
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        public static SetUserChargingTariffResponse RequestError(CSMS.SetUserChargingTariffRequest  Request,
+                                                                 EventTracking_Id                   EventTrackingId,
+                                                                 ResultCode                         ErrorCode,
+                                                                 String?                            ErrorDescription    = null,
+                                                                 JObject?                           ErrorDetails        = null,
+                                                                 DateTime?                          ResponseTimestamp   = null,
+
+                                                                 SourceRouting?                     SourceRouting       = null,
+                                                                 NetworkPath?                       NetworkPath         = null,
+
+                                                                 IEnumerable<KeyPair>?              SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?             SignInfos           = null,
+                                                                 IEnumerable<Signature>?            Signatures          = null,
+
+                                                                 CustomData?                        CustomData          = null)
+
+            => new (
+
+                   Request,
+                   GenericStatus.Rejected,
+                   null,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   SourceRouting,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SetUserChargingTariffResponse FormationViolation(CSMS.SetUserChargingTariffRequest  Request,
+                                                                       String                             ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    GenericStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SetUserChargingTariffResponse SignatureError(CSMS.SetUserChargingTariffRequest  Request,
+                                                                   String                             ErrorDescription)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static SetUserChargingTariffResponse Failed(CSMS.SetUserChargingTariffRequest  Request,
+                                                           String?                            Description   = null)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetDefaultChargingTariff failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetDefaultChargingTariff request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SetUserChargingTariffResponse ExceptionOccured(CSMS.SetUserChargingTariffRequest  Request,
+                                                                     Exception                          Exception)
+
+            => new (Request,
+                    GenericStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

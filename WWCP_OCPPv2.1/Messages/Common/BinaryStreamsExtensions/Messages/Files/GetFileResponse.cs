@@ -129,36 +129,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                FilePath                 FileName,
                                GetFileStatus            Status,
-                               Byte[]?                  FileContent         = null,
-                               ContentType?             FileContentType     = null,
-                               Byte[]?                  FileSHA256          = null,
-                               Byte[]?                  FileSHA512          = null,
-                               IEnumerable<Signature>?  FileSignatures      = null,
+                               Byte[]?                  FileContent           = null,
+                               ContentType?             FileContentType       = null,
+                               Byte[]?                  FileSHA256            = null,
+                               Byte[]?                  FileSHA512            = null,
+                               IEnumerable<Signature>?  FileSignatures        = null,
 
-                               Result?                  Result              = null,
-                               DateTime?                ResponseTimestamp   = null,
+                               Result?                  Result                = null,
+                               DateTime?                ResponseTimestamp     = null,
 
-                               SourceRouting?       SourceRouting       = null,
-                               NetworkPath?             NetworkPath         = null,
+                               SourceRouting?           SourceRouting         = null,
+                               NetworkPath?             NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               CustomData?              CustomData          = null)
+                               CustomData?              CustomData            = null,
+
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   SourceRouting,
                    NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.BinaryTextIds,
+                   CancellationToken)
 
         {
 

@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Wired via reflection!
 
-        #region Receive BootNotification request
+        #region Receive BootNotification request (JSON)
 
         /// <summary>
         /// An event sent whenever a BootNotification request was received.
@@ -325,7 +325,192 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Receive BootNotification response
+        #region Receive BootNotification request (binary)
+
+        public async Task<OCPP_Response>
+
+            Receive_BootNotification(DateTime              RequestTimestamp,
+                                     IWebSocketConnection  WebSocketConnection,
+                                     SourceRouting         SourceRouting,
+                                     NetworkPath           NetworkPath,
+                                     EventTracking_Id      EventTrackingId,
+                                     Request_Id            RequestId,
+                                     Byte[]                BinaryRequest,
+                                     CancellationToken     CancellationToken)
+
+        {
+
+            OCPP_Response? ocppResponse = null;
+
+            try
+            {
+
+                if (BootNotificationRequest.TryParse(BinaryRequest,
+                                                     RequestId,
+                                                     SourceRouting,
+                                                     NetworkPath,
+                                                     out var request,
+                                                     out var errorResponse,
+                                                     RequestTimestamp,
+                                                     parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                     EventTrackingId,
+                                                     parentNetworkingNode.OCPP.CustomBootNotificationRequestParser)) {
+
+                    BootNotificationResponse? response = null;
+
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToBinary(
+                            //parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                            //parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                            //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            //parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            IncludeSignatures: false
+                        ),
+                        out errorResponse))
+                    {
+
+                        response = BootNotificationResponse.SignatureError(
+                                       request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                    #region Send OnBootNotificationRequestReceived event
+
+                    await LogEvent(
+                              OnBootNotificationRequestReceived,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  parentNetworkingNode,
+                                  WebSocketConnection,
+                                  request,
+                                  CancellationToken
+                              )
+                          );
+
+                    #endregion
+
+
+                    #region Call async subscribers
+
+                    if (response is null)
+                    {
+                        try
+                        {
+
+                            var responseTasks = OnBootNotification?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  parentNetworkingNode,
+                                                                                  WebSocketConnection,
+                                                                                  request,
+                                                                                  CancellationToken
+                                                                              )).
+                                                    ToArray();
+
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : BootNotificationResponse.Failed(request, $"Undefined {nameof(OnBootNotification)}!");
+
+                        }
+                        catch (Exception e)
+                        {
+
+                            response = BootNotificationResponse.ExceptionOccured(request, e);
+
+                            await HandleErrors(
+                                      nameof(OnBootNotification),
+                                      e
+                                  );
+
+                        }
+                    }
+
+                    response ??= BootNotificationResponse.Failed(request);
+
+                    #endregion
+
+                    #region Sign response message
+
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToBinary(
+                            //parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
+                            //parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            //parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            IncludeSignatures: false
+                        ),
+                        out var errorResponse2
+                    );
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.BinaryResponse(
+                                       EventTrackingId,
+                                       SourceRouting.To(NetworkPath.Source),
+                                       NetworkPath.From(parentNetworkingNode.Id),
+                                       RequestId,
+                                       response.ToBinary(
+                                           //parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
+                                           //parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                           //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                           //parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                           IncludeSignatures: true
+                                       ),
+                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnBootNotificationResponseSent(
+                                                                            Timestamp.Now,
+                                                                            parentNetworkingNode,
+                                                                            sentMessageResult.Connection,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime,
+                                                                            sentMessageResult.Result,
+                                                                            CancellationToken
+                                                                        ),
+                                       CancellationToken
+                                   );
+
+                }
+
+                else
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_BootNotification)[8..],
+                                       BinaryRequest,
+                                       errorResponse
+                                   );
+
+            }
+            catch (Exception e)
+            {
+
+                ocppResponse = OCPP_Response.ExceptionOccurred(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_BootNotification)[8..],
+                                   BinaryRequest,
+                                   e
+                               );
+
+            }
+
+            return ocppResponse;
+
+        }
+
+        #endregion
+
+
+        #region Receive BootNotification response (JSON)
 
         /// <summary>
         /// An event fired whenever a BootNotification response was received.
@@ -428,6 +613,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+        #endregion
+
+        #region Receive BootNotification response (binary)
 
         public async Task<BootNotificationResponse>
 
@@ -527,6 +715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
 
         #region Receive BootNotification request error
 
@@ -757,6 +946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
 
     }
 

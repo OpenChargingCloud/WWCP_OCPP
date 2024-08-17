@@ -52,9 +52,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The networking node identification of the message destination.
+        /// The networking node identification of the final message destination.
         /// </summary>
-        [Obsolete]
         public NetworkingNode_Id     DestinationId
             => Destination.Last();
 

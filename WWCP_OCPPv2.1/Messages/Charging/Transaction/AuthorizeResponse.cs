@@ -121,7 +121,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  IEnumerable<SignInfo>?       SignInfos               = null,
                                  IEnumerable<Signature>?      Signatures              = null,
 
-                                 CustomData?                  CustomData              = null)
+                                 CustomData?                  CustomData              = null,
+
+                                 SerializationFormats?        SerializationFormat     = null,
+                                 CancellationToken            CancellationToken       = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -134,7 +137,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -142,7 +148,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.CertificateStatus      = CertificateStatus;
             this.AllowedEnergyTransfer  = AllowedEnergyTransfer;
             this.TransactionLimits      = TransactionLimits;
-
 
             unchecked
             {
