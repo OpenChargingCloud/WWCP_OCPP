@@ -339,11 +339,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
 
                 var response   = await testCSMS01.TransferBinaryData(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           VendorId:            vendorId,
-                                           MessageId:           messageId,
-                                           Data:                data,
-                                           Format:              BinaryFormats.TextIds
+                                           Destination:          SourceRouting.To(chargingStation1.Id),
+                                           VendorId:             vendorId,
+                                           MessageId:            messageId,
+                                           Data:                 data,
+                                           SerializationFormat:  SerializationFormats.BinaryTextIds
                                        );
 
 

@@ -68,12 +68,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         [Optional]
         public Byte[]?        Data         { get; }
 
-        /// <summary>
-        /// The binary format of the given message.
-        /// </summary>
-        [Mandatory]
-        public BinaryFormats  Format       { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -96,20 +90,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public BinaryDataTransferRequest(SourceRouting            SourceRouting,
                                          Vendor_Id                VendorId,
-                                         Message_Id?              MessageId           = null,
-                                         Byte[]?                  Data                = null,
-                                         BinaryFormats?           Format              = null,
+                                         Message_Id?              MessageId             = null,
+                                         Byte[]?                  Data                  = null,
 
-                                         IEnumerable<KeyPair>?    SignKeys            = null,
-                                         IEnumerable<SignInfo>?   SignInfos           = null,
-                                         IEnumerable<Signature>?  Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys              = null,
+                                         IEnumerable<SignInfo>?   SignInfos             = null,
+                                         IEnumerable<Signature>?  Signatures            = null,
 
-                                         Request_Id?              RequestId           = null,
-                                         DateTime?                RequestTimestamp    = null,
-                                         TimeSpan?                RequestTimeout      = null,
-                                         EventTracking_Id?        EventTrackingId     = null,
-                                         NetworkPath?             NetworkPath         = null,
-                                         CancellationToken        CancellationToken   = default)
+                                         Request_Id?              RequestId             = null,
+                                         DateTime?                RequestTimestamp      = null,
+                                         TimeSpan?                RequestTimeout        = null,
+                                         EventTracking_Id?        EventTrackingId       = null,
+                                         NetworkPath?             NetworkPath           = null,
+                                         SerializationFormats?    SerializationFormat   = null,
+                                         CancellationToken        CancellationToken     = default)
 
             : base(SourceRouting,
                    nameof(BinaryDataTransferRequest)[..^7],
@@ -125,6 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.BinaryTextIds,
                    CancellationToken)
 
         {
@@ -132,15 +127,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
-            this.Format     = Format ?? BinaryFormats.TextIds;
 
             unchecked
             {
 
-                hashCode = this.VendorId.  GetHashCode()       * 11 ^
-                          (this.MessageId?.GetHashCode() ?? 0) *  7 ^
-                          (this.Data?.     GetHashCode() ?? 0) *  5 ^
-                           this.Format.    GetHashCode()       *  3 ^
+                hashCode = this.VendorId.  GetHashCode()       * 7 ^
+                          (this.MessageId?.GetHashCode() ?? 0) * 5 ^
+                          (this.Data?.     GetHashCode() ?? 0) * 3 ^
                            base.           GetHashCode();
 
             }
@@ -233,11 +226,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 BinaryDataTransferRequest = null;
 
                 var stream  = new MemoryStream(Binary);
-                var format  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
+                var format  = SerializationFormatsExtensions.Parse(stream.ReadUInt16());
 
                 #region Compact Format
 
-                if (format == BinaryFormats.Compact)
+                if (format == SerializationFormats.BinaryCompact)
                 {
 
                     //var vendorId         = Vendor_Id. Parse(BitConverter.ToUInt32(span.Slice( 2, 4)));
@@ -321,11 +314,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     BinaryDataTransferRequest = new BinaryDataTransferRequest(
 
-                                                        SourceRouting,
+                                                    SourceRouting,
                                                     vendorId,
                                                     messageId,
                                                     data,
-                                                    format,
 
                                                     null,
                                                     null,
@@ -335,7 +327,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     RequestTimestamp,
                                                     RequestTimeout,
                                                     EventTrackingId,
-                                                    NetworkPath
+                                                    NetworkPath,
+                                                    format
 
                                                 );
 
@@ -376,12 +369,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var binaryStream = new MemoryStream();
 
-            binaryStream.Write(Format.AsBytes(), 0, 2);
+            binaryStream.Write(SerializationFormat.AsBytes(), 0, 2);
 
-            switch (Format)
+            switch (SerializationFormat)
             {
 
-                case BinaryFormats.Compact: {
+                case SerializationFormats.BinaryCompact: {
 
                     binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId));
                     binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0));
@@ -405,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
                 break;
 
-                case BinaryFormats.TextIds: {
+                case SerializationFormats.BinaryTextIds: {
 
                     var vendorIdBytes  = VendorId.  TextId.ToUTF8Bytes();
                     binaryStream.WriteUInt16((UInt16) vendorIdBytes. Length);
@@ -431,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
                 break;
 
-                case BinaryFormats.TagLengthValue: {
+                case SerializationFormats.BinaryTLV: {
 
                     var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
                     binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);

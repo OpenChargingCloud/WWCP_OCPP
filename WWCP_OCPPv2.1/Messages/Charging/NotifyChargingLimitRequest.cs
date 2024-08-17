@@ -95,20 +95,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyChargingLimitRequest(SourceRouting                   SourceRouting,
                                           ChargingLimit                   ChargingLimit,
-                                          IEnumerable<ChargingSchedule>?  ChargingSchedules   = null,
-                                          EVSE_Id?                        EVSEId              = null,
+                                          IEnumerable<ChargingSchedule>?  ChargingSchedules     = null,
+                                          EVSE_Id?                        EVSEId                = null,
 
-                                          IEnumerable<KeyPair>?           SignKeys            = null,
-                                          IEnumerable<SignInfo>?          SignInfos           = null,
-                                          IEnumerable<Signature>?         Signatures          = null,
-                                          CustomData?                     CustomData          = null,
+                                          IEnumerable<KeyPair>?           SignKeys              = null,
+                                          IEnumerable<SignInfo>?          SignInfos             = null,
+                                          IEnumerable<Signature>?         Signatures            = null,
+                                          CustomData?                     CustomData            = null,
 
-                                          Request_Id?                     RequestId           = null,
-                                          DateTime?                       RequestTimestamp    = null,
-                                          TimeSpan?                       RequestTimeout      = null,
-                                          EventTracking_Id?               EventTrackingId     = null,
-                                          NetworkPath?                    NetworkPath         = null,
-                                          CancellationToken               CancellationToken   = default)
+                                          Request_Id?                     RequestId             = null,
+                                          DateTime?                       RequestTimestamp      = null,
+                                          TimeSpan?                       RequestTimeout        = null,
+                                          EventTracking_Id?               EventTrackingId       = null,
+                                          NetworkPath?                    NetworkPath           = null,
+                                          SerializationFormats?           SerializationFormat   = null,
+                                          CancellationToken               CancellationToken     = default)
 
             : base(SourceRouting,
                    nameof(NotifyChargingLimitRequest)[..^7],
@@ -124,6 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -131,7 +133,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.ChargingLimit      = ChargingLimit;
             this.ChargingSchedules  = ChargingSchedules?.Distinct() ?? Array.Empty<ChargingSchedule>();
             this.EVSEId             = EVSEId;
-
 
             unchecked
             {

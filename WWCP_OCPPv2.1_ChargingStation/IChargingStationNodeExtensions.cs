@@ -55,19 +55,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  BootReason                 BootReason,
 
-                                 CustomData?                CustomData          = null,
+                                 CustomData?                CustomData            = null,
 
-                                 SourceRouting?             Destination         = null,
+                                 SourceRouting?             Destination           = null,
 
-                                 IEnumerable<KeyPair>?      SignKeys            = null,
-                                 IEnumerable<SignInfo>?     SignInfos           = null,
-                                 IEnumerable<Signature>?    Signatures          = null,
+                                 IEnumerable<KeyPair>?      SignKeys              = null,
+                                 IEnumerable<SignInfo>?     SignInfos             = null,
+                                 IEnumerable<Signature>?    Signatures            = null,
 
-                                 Request_Id?                RequestId           = null,
-                                 DateTime?                  RequestTimestamp    = null,
-                                 TimeSpan?                  RequestTimeout      = null,
-                                 EventTracking_Id?          EventTrackingId     = null,
-                                 CancellationToken          CancellationToken   = default)
+                                 Request_Id?                RequestId             = null,
+                                 DateTime?                  RequestTimestamp      = null,
+                                 TimeSpan?                  RequestTimeout        = null,
+                                 EventTracking_Id?          EventTrackingId       = null,
+                                 SerializationFormats?      SerializationFormat   = null,
+                                 CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.BootNotification(
@@ -96,6 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -126,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                            CustomData?                CustomData                = null,
 
-                                           SourceRouting?             Destination         = null,
+                                           SourceRouting?             Destination               = null,
 
                                            IEnumerable<KeyPair>?      SignKeys                  = null,
                                            IEnumerable<SignInfo>?     SignInfos                 = null,
@@ -136,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            DateTime?                  RequestTimestamp          = null,
                                            TimeSpan?                  RequestTimeout            = null,
                                            EventTracking_Id?          EventTrackingId           = null,
+                                           SerializationFormats?      SerializationFormat       = null,
                                            CancellationToken          CancellationToken         = default)
 
 
@@ -158,6 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -188,19 +192,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   Int32?                     PublishFirmwareStatusNotificationRequestId,
                                                   IEnumerable<URL>?          DownloadLocations,
 
-                                                  CustomData?                CustomData          = null,
+                                                  CustomData?                CustomData            = null,
 
-                                                  SourceRouting?             Destination         = null,
+                                                  SourceRouting?             Destination           = null,
 
-                                                  IEnumerable<KeyPair>?      SignKeys            = null,
-                                                  IEnumerable<SignInfo>?     SignInfos           = null,
-                                                  IEnumerable<Signature>?    Signatures          = null,
+                                                  IEnumerable<KeyPair>?      SignKeys              = null,
+                                                  IEnumerable<SignInfo>?     SignInfos             = null,
+                                                  IEnumerable<Signature>?    Signatures            = null,
 
-                                                  Request_Id?                RequestId           = null,
-                                                  DateTime?                  RequestTimestamp    = null,
-                                                  TimeSpan?                  RequestTimeout      = null,
-                                                  EventTracking_Id?          EventTrackingId     = null,
-                                                  CancellationToken          CancellationToken   = default)
+                                                  Request_Id?                RequestId             = null,
+                                                  DateTime?                  RequestTimestamp      = null,
+                                                  TimeSpan?                  RequestTimeout        = null,
+                                                  EventTracking_Id?          EventTrackingId       = null,
+                                                  SerializationFormats?      SerializationFormat   = null,
+                                                  CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.PublishFirmwareStatusNotification(
@@ -223,6 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -246,19 +252,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             SendHeartbeat(this IChargingStationNode  ChargingStation,
 
-                          CustomData?                CustomData          = null,
+                          CustomData?                CustomData            = null,
 
-                          SourceRouting?             Destination         = null,
+                          SourceRouting?             Destination           = null,
 
-                          IEnumerable<KeyPair>?      SignKeys            = null,
-                          IEnumerable<SignInfo>?     SignInfos           = null,
-                          IEnumerable<Signature>?    Signatures          = null,
+                          IEnumerable<KeyPair>?      SignKeys              = null,
+                          IEnumerable<SignInfo>?     SignInfos             = null,
+                          IEnumerable<Signature>?    Signatures            = null,
 
-                          Request_Id?                RequestId           = null,
-                          DateTime?                  RequestTimestamp    = null,
-                          TimeSpan?                  RequestTimeout      = null,
-                          EventTracking_Id?          EventTrackingId     = null,
-                          CancellationToken          CancellationToken   = default)
+                          Request_Id?                RequestId             = null,
+                          DateTime?                  RequestTimestamp      = null,
+                          TimeSpan?                  RequestTimeout        = null,
+                          EventTracking_Id?          EventTrackingId       = null,
+                          SerializationFormats?      SerializationFormat   = null,
+                          CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.Heartbeat(
@@ -277,6 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -307,21 +315,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         DateTime                   GeneratedAt,
                         UInt32                     SequenceNumber,
                         IEnumerable<EventData>     EventData,
-                        Boolean?                   ToBeContinued       = null,
+                        Boolean?                   ToBeContinued         = null,
 
-                        CustomData?                CustomData          = null,
+                        CustomData?                CustomData            = null,
 
-                        SourceRouting?             Destination         = null,
+                        SourceRouting?             Destination           = null,
 
-                        IEnumerable<KeyPair>?      SignKeys            = null,
-                        IEnumerable<SignInfo>?     SignInfos           = null,
-                        IEnumerable<Signature>?    Signatures          = null,
+                        IEnumerable<KeyPair>?      SignKeys              = null,
+                        IEnumerable<SignInfo>?     SignInfos             = null,
+                        IEnumerable<Signature>?    Signatures            = null,
 
-                        Request_Id?                RequestId           = null,
-                        DateTime?                  RequestTimestamp    = null,
-                        TimeSpan?                  RequestTimeout      = null,
-                        EventTracking_Id?          EventTrackingId     = null,
-                        CancellationToken          CancellationToken   = default)
+                        Request_Id?                RequestId             = null,
+                        DateTime?                  RequestTimestamp      = null,
+                        TimeSpan?                  RequestTimeout        = null,
+                        EventTracking_Id?          EventTrackingId       = null,
+                        SerializationFormats?      SerializationFormat   = null,
+                        CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyEvent(
@@ -345,6 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -373,21 +383,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                           SecurityEventType          Type,
                                           DateTime                   Timestamp,
-                                          String?                    TechInfo            = null,
+                                          String?                    TechInfo              = null,
 
-                                          CustomData?                CustomData          = null,
+                                          CustomData?                CustomData            = null,
 
-                                          SourceRouting?             Destination         = null,
+                                          SourceRouting?             Destination           = null,
 
-                                          IEnumerable<KeyPair>?      SignKeys            = null,
-                                          IEnumerable<SignInfo>?     SignInfos           = null,
-                                          IEnumerable<Signature>?    Signatures          = null,
+                                          IEnumerable<KeyPair>?      SignKeys              = null,
+                                          IEnumerable<SignInfo>?     SignInfos             = null,
+                                          IEnumerable<Signature>?    Signatures            = null,
 
-                                          Request_Id?                RequestId           = null,
-                                          DateTime?                  RequestTimestamp    = null,
-                                          TimeSpan?                  RequestTimeout      = null,
-                                          EventTracking_Id?          EventTrackingId     = null,
-                                          CancellationToken          CancellationToken   = default)
+                                          Request_Id?                RequestId             = null,
+                                          DateTime?                  RequestTimestamp      = null,
+                                          TimeSpan?                  RequestTimeout        = null,
+                                          EventTracking_Id?          EventTrackingId       = null,
+                                          SerializationFormats?      SerializationFormat   = null,
+                                          CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.SecurityEventNotification(
@@ -410,6 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -442,21 +454,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          UInt32                     SequenceNumber,
                          DateTime                   GeneratedAt,
                          IEnumerable<ReportData>    ReportData,
-                         Boolean?                   ToBeContinued       = null,
+                         Boolean?                   ToBeContinued         = null,
 
-                         CustomData?                CustomData          = null,
+                         CustomData?                CustomData            = null,
 
-                         SourceRouting?             Destination         = null,
+                         SourceRouting?             Destination           = null,
 
-                         IEnumerable<KeyPair>?      SignKeys            = null,
-                         IEnumerable<SignInfo>?     SignInfos           = null,
-                         IEnumerable<Signature>?    Signatures          = null,
+                         IEnumerable<KeyPair>?      SignKeys              = null,
+                         IEnumerable<SignInfo>?     SignInfos             = null,
+                         IEnumerable<Signature>?    Signatures            = null,
 
-                         Request_Id?                RequestId           = null,
-                         DateTime?                  RequestTimestamp    = null,
-                         TimeSpan?                  RequestTimeout      = null,
-                         EventTracking_Id?          EventTrackingId     = null,
-                         CancellationToken          CancellationToken   = default)
+                         Request_Id?                RequestId             = null,
+                         DateTime?                  RequestTimestamp      = null,
+                         TimeSpan?                  RequestTimeout        = null,
+                         EventTracking_Id?          EventTrackingId       = null,
+                         SerializationFormats?      SerializationFormat   = null,
+                         CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyReport(
@@ -481,6 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -513,21 +527,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    UInt32                       SequenceNumber,
                                    DateTime                     GeneratedAt,
                                    IEnumerable<MonitoringData>  MonitoringData,
-                                   Boolean?                     ToBeContinued       = null,
+                                   Boolean?                     ToBeContinued         = null,
 
-                                   CustomData?                  CustomData          = null,
+                                   CustomData?                  CustomData            = null,
 
-                                   SourceRouting?               Destination         = null,
+                                   SourceRouting?               Destination           = null,
 
-                                   IEnumerable<KeyPair>?        SignKeys            = null,
-                                   IEnumerable<SignInfo>?       SignInfos           = null,
-                                   IEnumerable<Signature>?      Signatures          = null,
+                                   IEnumerable<KeyPair>?        SignKeys              = null,
+                                   IEnumerable<SignInfo>?       SignInfos             = null,
+                                   IEnumerable<Signature>?      Signatures            = null,
 
-                                   Request_Id?                  RequestId           = null,
-                                   DateTime?                    RequestTimestamp    = null,
-                                   TimeSpan?                    RequestTimeout      = null,
-                                   EventTracking_Id?            EventTrackingId     = null,
-                                   CancellationToken            CancellationToken   = default)
+                                   Request_Id?                  RequestId             = null,
+                                   DateTime?                    RequestTimestamp      = null,
+                                   TimeSpan?                    RequestTimeout        = null,
+                                   EventTracking_Id?            EventTrackingId       = null,
+                                   SerializationFormats?        SerializationFormat   = null,
+                                   CancellationToken            CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyMonitoringReport(
@@ -552,6 +567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -578,21 +594,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             SendLogStatusNotification(this IChargingStationNode  ChargingStation,
 
                                       UploadLogStatus            Status,
-                                      Int32?                     LogRequestId        = null,
+                                      Int32?                     LogRequestId          = null,
 
-                                      CustomData?                CustomData          = null,
+                                      CustomData?                CustomData            = null,
 
-                                      SourceRouting?             Destination         = null,
+                                      SourceRouting?             Destination           = null,
 
-                                      IEnumerable<KeyPair>?      SignKeys            = null,
-                                      IEnumerable<SignInfo>?     SignInfos           = null,
-                                      IEnumerable<Signature>?    Signatures          = null,
+                                      IEnumerable<KeyPair>?      SignKeys              = null,
+                                      IEnumerable<SignInfo>?     SignInfos             = null,
+                                      IEnumerable<Signature>?    Signatures            = null,
 
-                                      Request_Id?                RequestId           = null,
-                                      DateTime?                  RequestTimestamp    = null,
-                                      TimeSpan?                  RequestTimeout      = null,
-                                      EventTracking_Id?          EventTrackingId     = null,
-                                      CancellationToken          CancellationToken   = default)
+                                      Request_Id?                RequestId             = null,
+                                      DateTime?                  RequestTimestamp      = null,
+                                      TimeSpan?                  RequestTimeout        = null,
+                                      EventTracking_Id?          EventTrackingId       = null,
+                                      SerializationFormats?      SerializationFormat   = null,
+                                      CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.LogStatusNotification(
@@ -614,6 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -641,19 +659,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             TransferData(this IChargingStationNode  ChargingStation,
 
                          Vendor_Id                  VendorId,
-                         Message_Id?                MessageId           = null,
-                         JToken?                    Data                = null,
-                         CustomData?                CustomData          = null,
+                         Message_Id?                MessageId             = null,
+                         JToken?                    Data                  = null,
+                         CustomData?                CustomData            = null,
 
-                         IEnumerable<KeyPair>?      SignKeys            = null,
-                         IEnumerable<SignInfo>?     SignInfos           = null,
-                         IEnumerable<Signature>?    Signatures          = null,
+                         IEnumerable<KeyPair>?      SignKeys              = null,
+                         IEnumerable<SignInfo>?     SignInfos             = null,
+                         IEnumerable<Signature>?    Signatures            = null,
 
-                         Request_Id?                RequestId           = null,
-                         DateTime?                  RequestTimestamp    = null,
-                         TimeSpan?                  RequestTimeout      = null,
-                         EventTracking_Id?          EventTrackingId     = null,
-                         CancellationToken          CancellationToken   = default)
+                         Request_Id?                RequestId             = null,
+                         DateTime?                  RequestTimestamp      = null,
+                         TimeSpan?                  RequestTimeout        = null,
+                         EventTracking_Id?          EventTrackingId       = null,
+                         SerializationFormats?      SerializationFormat   = null,
+                         CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.DataTransfer(
@@ -676,6 +695,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -705,21 +725,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                           String                     CSR,
                                           Int32                      SignCertificateRequestId,
-                                          CertificateSigningUse?     CertificateType     = null,
+                                          CertificateSigningUse?     CertificateType       = null,
 
-                                          CustomData?                CustomData          = null,
+                                          CustomData?                CustomData            = null,
 
-                                          SourceRouting?             Destination         = null,
+                                          SourceRouting?             Destination           = null,
 
-                                          IEnumerable<KeyPair>?      SignKeys            = null,
-                                          IEnumerable<SignInfo>?     SignInfos           = null,
-                                          IEnumerable<Signature>?    Signatures          = null,
+                                          IEnumerable<KeyPair>?      SignKeys              = null,
+                                          IEnumerable<SignInfo>?     SignInfos             = null,
+                                          IEnumerable<Signature>?    Signatures            = null,
 
-                                          Request_Id?                RequestId           = null,
-                                          DateTime?                  RequestTimestamp    = null,
-                                          TimeSpan?                  RequestTimeout      = null,
-                                          EventTracking_Id?          EventTrackingId     = null,
-                                          CancellationToken          CancellationToken   = default)
+                                          Request_Id?                RequestId             = null,
+                                          DateTime?                  RequestTimestamp      = null,
+                                          TimeSpan?                  RequestTimeout        = null,
+                                          EventTracking_Id?          EventTrackingId       = null,
+                                          SerializationFormats?      SerializationFormat   = null,
+                                          CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.SignCertificate(
@@ -742,6 +763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -788,6 +810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   DateTime?                  RequestTimestamp                   = null,
                                   TimeSpan?                  RequestTimeout                     = null,
                                   EventTracking_Id?          EventTrackingId                    = null,
+                                  SerializationFormats?      SerializationFormat                = null,
                                   CancellationToken          CancellationToken                  = default)
 
 
@@ -813,6 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -839,19 +863,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  OCSPRequestData            OCSPRequestData,
 
-                                 CustomData?                CustomData          = null,
+                                 CustomData?                CustomData            = null,
 
-                                 SourceRouting?             Destination         = null,
+                                 SourceRouting?             Destination           = null,
 
-                                 IEnumerable<KeyPair>?      SignKeys            = null,
-                                 IEnumerable<SignInfo>?     SignInfos           = null,
-                                 IEnumerable<Signature>?    Signatures          = null,
+                                 IEnumerable<KeyPair>?      SignKeys              = null,
+                                 IEnumerable<SignInfo>?     SignInfos             = null,
+                                 IEnumerable<Signature>?    Signatures            = null,
 
-                                 Request_Id?                RequestId           = null,
-                                 DateTime?                  RequestTimestamp    = null,
-                                 TimeSpan?                  RequestTimeout      = null,
-                                 EventTracking_Id?          EventTrackingId     = null,
-                                 CancellationToken          CancellationToken   = default)
+                                 Request_Id?                RequestId             = null,
+                                 DateTime?                  RequestTimestamp      = null,
+                                 TimeSpan?                  RequestTimeout        = null,
+                                 EventTracking_Id?          EventTrackingId       = null,
+                                 SerializationFormats?      SerializationFormat   = null,
+                                 CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.GetCertificateStatus(
@@ -872,6 +897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -901,19 +927,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                           UInt32                     GetCRLRequestId,
                           CertificateHashData        CertificateHashData,
 
-                          CustomData?                CustomData          = null,
+                          CustomData?                CustomData            = null,
 
-                          SourceRouting?             Destination         = null,
+                          SourceRouting?             Destination           = null,
 
-                          IEnumerable<KeyPair>?      SignKeys            = null,
-                          IEnumerable<SignInfo>?     SignInfos           = null,
-                          IEnumerable<Signature>?    Signatures          = null,
+                          IEnumerable<KeyPair>?      SignKeys              = null,
+                          IEnumerable<SignInfo>?     SignInfos             = null,
+                          IEnumerable<Signature>?    Signatures            = null,
 
-                          Request_Id?                RequestId           = null,
-                          DateTime?                  RequestTimestamp    = null,
-                          TimeSpan?                  RequestTimeout      = null,
-                          EventTracking_Id?          EventTrackingId     = null,
-                          CancellationToken          CancellationToken   = default)
+                          Request_Id?                RequestId             = null,
+                          DateTime?                  RequestTimestamp      = null,
+                          TimeSpan?                  RequestTimeout        = null,
+                          EventTracking_Id?          EventTrackingId       = null,
+                          SerializationFormats?      SerializationFormat   = null,
+                          CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.GetCRL(
@@ -935,6 +962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -964,19 +992,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         Reservation_Id             ReservationId,
                                         ReservationUpdateStatus    ReservationUpdateStatus,
 
-                                        CustomData?                CustomData          = null,
+                                        CustomData?                CustomData            = null,
 
-                                        SourceRouting?             Destination         = null,
+                                        SourceRouting?             Destination           = null,
 
-                                        IEnumerable<KeyPair>?      SignKeys            = null,
-                                        IEnumerable<SignInfo>?     SignInfos           = null,
-                                        IEnumerable<Signature>?    Signatures          = null,
+                                        IEnumerable<KeyPair>?      SignKeys              = null,
+                                        IEnumerable<SignInfo>?     SignInfos             = null,
+                                        IEnumerable<Signature>?    Signatures            = null,
 
-                                        Request_Id?                RequestId           = null,
-                                        DateTime?                  RequestTimestamp    = null,
-                                        TimeSpan?                  RequestTimeout      = null,
-                                        EventTracking_Id?          EventTrackingId     = null,
-                                        CancellationToken          CancellationToken   = default)
+                                        Request_Id?                RequestId             = null,
+                                        DateTime?                  RequestTimestamp      = null,
+                                        TimeSpan?                  RequestTimeout        = null,
+                                        EventTracking_Id?          EventTrackingId       = null,
+                                        SerializationFormats?      SerializationFormat   = null,
+                                        CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.ReservationStatusUpdate(
@@ -998,6 +1027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1040,6 +1070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                       DateTime?                      RequestTimestamp              = null,
                       TimeSpan?                      RequestTimeout                = null,
                       EventTracking_Id?              EventTrackingId               = null,
+                      SerializationFormats?          SerializationFormat           = null,
                       CancellationToken              CancellationToken             = default)
 
 
@@ -1063,6 +1094,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1092,22 +1124,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   EVSE_Id                    EVSEId,
                                   ChargingNeeds              ChargingNeeds,
-                                  DateTime?                  ReceivedTimestamp   = null,
-                                  UInt16?                    MaxScheduleTuples   = null,
+                                  DateTime?                  ReceivedTimestamp     = null,
+                                  UInt16?                    MaxScheduleTuples     = null,
 
-                                  CustomData?                CustomData          = null,
+                                  CustomData?                CustomData            = null,
 
-                                  SourceRouting?             Destination         = null,
+                                  SourceRouting?             Destination           = null,
 
-                                  IEnumerable<KeyPair>?      SignKeys            = null,
-                                  IEnumerable<SignInfo>?     SignInfos           = null,
-                                  IEnumerable<Signature>?    Signatures          = null,
+                                  IEnumerable<KeyPair>?      SignKeys              = null,
+                                  IEnumerable<SignInfo>?     SignInfos             = null,
+                                  IEnumerable<Signature>?    Signatures            = null,
 
-                                  Request_Id?                RequestId           = null,
-                                  DateTime?                  RequestTimestamp    = null,
-                                  TimeSpan?                  RequestTimeout      = null,
-                                  EventTracking_Id?          EventTrackingId     = null,
-                                  CancellationToken          CancellationToken   = default)
+                                  Request_Id?                RequestId             = null,
+                                  DateTime?                  RequestTimestamp      = null,
+                                  TimeSpan?                  RequestTimeout        = null,
+                                  EventTracking_Id?          EventTrackingId       = null,
+                                  SerializationFormats?      SerializationFormat   = null,
+                                  CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyEVChargingNeeds(
@@ -1131,6 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1195,6 +1229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  DateTime?                  RequestTimestamp        = null,
                                  TimeSpan?                  RequestTimeout          = null,
                                  EventTracking_Id?          EventTrackingId         = null,
+                                 SerializationFormats?      SerializationFormat     = null,
                                  CancellationToken          CancellationToken       = default)
 
 
@@ -1229,6 +1264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1261,19 +1297,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    DateTime                   Timestamp,
                                    ConnectorStatus            Status,
 
-                                   CustomData?                CustomData          = null,
+                                   CustomData?                CustomData            = null,
 
-                                   SourceRouting?             Destination         = null,
+                                   SourceRouting?             Destination           = null,
 
-                                   IEnumerable<KeyPair>?      SignKeys            = null,
-                                   IEnumerable<SignInfo>?     SignInfos           = null,
-                                   IEnumerable<Signature>?    Signatures          = null,
+                                   IEnumerable<KeyPair>?      SignKeys              = null,
+                                   IEnumerable<SignInfo>?     SignInfos             = null,
+                                   IEnumerable<Signature>?    Signatures            = null,
 
-                                   Request_Id?                RequestId           = null,
-                                   DateTime?                  RequestTimestamp    = null,
-                                   TimeSpan?                  RequestTimeout      = null,
-                                   EventTracking_Id?          EventTrackingId     = null,
-                                   CancellationToken          CancellationToken   = default)
+                                   Request_Id?                RequestId             = null,
+                                   DateTime?                  RequestTimestamp      = null,
+                                   TimeSpan?                  RequestTimeout        = null,
+                                   EventTracking_Id?          EventTrackingId       = null,
+                                   SerializationFormats?      SerializationFormat   = null,
+                                   CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.StatusNotification(
@@ -1297,6 +1334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1325,19 +1363,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             EVSE_Id                    EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>    MeterValues,
 
-                            CustomData?                CustomData          = null,
+                            CustomData?                CustomData            = null,
 
-                            SourceRouting?             Destination         = null,
+                            SourceRouting?             Destination           = null,
 
-                            IEnumerable<KeyPair>?      SignKeys            = null,
-                            IEnumerable<SignInfo>?     SignInfos           = null,
-                            IEnumerable<Signature>?    Signatures          = null,
+                            IEnumerable<KeyPair>?      SignKeys              = null,
+                            IEnumerable<SignInfo>?     SignInfos             = null,
+                            IEnumerable<Signature>?    Signatures            = null,
 
-                            Request_Id?                RequestId           = null,
-                            DateTime?                  RequestTimestamp    = null,
-                            TimeSpan?                  RequestTimeout      = null,
-                            EventTracking_Id?          EventTrackingId     = null,
-                            CancellationToken          CancellationToken   = default)
+                            Request_Id?                RequestId             = null,
+                            DateTime?                  RequestTimestamp      = null,
+                            TimeSpan?                  RequestTimeout        = null,
+                            EventTracking_Id?          EventTrackingId       = null,
+                            SerializationFormats?      SerializationFormat   = null,
+                            CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.MeterValues(
@@ -1359,6 +1398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1387,21 +1427,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
-                                EVSE_Id?                       EVSEId              = null,
+                                EVSE_Id?                       EVSEId                = null,
 
-                                CustomData?                    CustomData          = null,
+                                CustomData?                    CustomData            = null,
 
-                                SourceRouting?                 Destination         = null,
+                                SourceRouting?                 Destination           = null,
 
-                                IEnumerable<KeyPair>?          SignKeys            = null,
-                                IEnumerable<SignInfo>?         SignInfos           = null,
-                                IEnumerable<Signature>?        Signatures          = null,
+                                IEnumerable<KeyPair>?          SignKeys              = null,
+                                IEnumerable<SignInfo>?         SignInfos             = null,
+                                IEnumerable<Signature>?        Signatures            = null,
 
-                                Request_Id?                    RequestId           = null,
-                                DateTime?                      RequestTimestamp    = null,
-                                TimeSpan?                      RequestTimeout      = null,
-                                EventTracking_Id?              EventTrackingId     = null,
-                                CancellationToken              CancellationToken   = default)
+                                Request_Id?                    RequestId             = null,
+                                DateTime?                      RequestTimestamp      = null,
+                                TimeSpan?                      RequestTimeout        = null,
+                                EventTracking_Id?              EventTrackingId       = null,
+                                SerializationFormats?          SerializationFormat   = null,
+                                CancellationToken              CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyChargingLimit(
@@ -1424,6 +1465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1452,19 +1494,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      ChargingLimitSource        ChargingLimitSource,
                                      EVSE_Id?                   EVSEId,
 
-                                     CustomData?                CustomData          = null,
+                                     CustomData?                CustomData            = null,
 
-                                     SourceRouting?             Destination         = null,
+                                     SourceRouting?             Destination           = null,
 
-                                     IEnumerable<KeyPair>?      SignKeys            = null,
-                                     IEnumerable<SignInfo>?     SignInfos           = null,
-                                     IEnumerable<Signature>?    Signatures          = null,
+                                     IEnumerable<KeyPair>?      SignKeys              = null,
+                                     IEnumerable<SignInfo>?     SignInfos             = null,
+                                     IEnumerable<Signature>?    Signatures            = null,
 
-                                     Request_Id?                RequestId           = null,
-                                     DateTime?                  RequestTimestamp    = null,
-                                     TimeSpan?                  RequestTimeout      = null,
-                                     EventTracking_Id?          EventTrackingId     = null,
-                                     CancellationToken          CancellationToken   = default)
+                                     Request_Id?                RequestId             = null,
+                                     DateTime?                  RequestTimestamp      = null,
+                                     TimeSpan?                  RequestTimeout        = null,
+                                     EventTracking_Id?          EventTrackingId       = null,
+                                     SerializationFormats?      SerializationFormat   = null,
+                                     CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.ClearedChargingLimit(
@@ -1486,6 +1529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1518,21 +1562,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    ChargingLimitSource           ChargingLimitSource,
                                    EVSE_Id                       EVSEId,
                                    IEnumerable<ChargingProfile>  ChargingProfiles,
-                                   Boolean?                      ToBeContinued       = null,
+                                   Boolean?                      ToBeContinued         = null,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?                   CustomData            = null,
 
-                                   SourceRouting?                Destination         = null,
+                                   SourceRouting?                Destination           = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?         SignKeys              = null,
+                                   IEnumerable<SignInfo>?        SignInfos             = null,
+                                   IEnumerable<Signature>?       Signatures            = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?                   RequestId             = null,
+                                   DateTime?                     RequestTimestamp      = null,
+                                   TimeSpan?                     RequestTimeout        = null,
+                                   EventTracking_Id?             EventTrackingId       = null,
+                                   SerializationFormats?         SerializationFormat   = null,
+                                   CancellationToken             CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.ReportChargingProfiles(
@@ -1557,6 +1602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1603,6 +1649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      DateTime?                  RequestTimestamp           = null,
                                      TimeSpan?                  RequestTimeout             = null,
                                      EventTracking_Id?          EventTrackingId            = null,
+                                     SerializationFormats?      SerializationFormat        = null,
                                      CancellationToken          CancellationToken          = default)
 
 
@@ -1628,6 +1675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1656,19 +1704,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    Transaction_Id             TransactionId,
                                    Boolean                    Activated,
 
-                                   CustomData?                CustomData          = null,
+                                   CustomData?                CustomData            = null,
 
-                                   SourceRouting?             Destination         = null,
+                                   SourceRouting?             Destination           = null,
 
-                                   IEnumerable<KeyPair>?      SignKeys            = null,
-                                   IEnumerable<SignInfo>?     SignInfos           = null,
-                                   IEnumerable<Signature>?    Signatures          = null,
+                                   IEnumerable<KeyPair>?      SignKeys              = null,
+                                   IEnumerable<SignInfo>?     SignInfos             = null,
+                                   IEnumerable<Signature>?    Signatures            = null,
 
-                                   Request_Id?                RequestId           = null,
-                                   DateTime?                  RequestTimestamp    = null,
-                                   TimeSpan?                  RequestTimeout      = null,
-                                   EventTracking_Id?          EventTrackingId     = null,
-                                   CancellationToken          CancellationToken   = default)
+                                   Request_Id?                RequestId             = null,
+                                   DateTime?                  RequestTimestamp      = null,
+                                   TimeSpan?                  RequestTimeout        = null,
+                                   EventTracking_Id?          EventTrackingId       = null,
+                                   SerializationFormats?      SerializationFormat   = null,
+                                   CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyPriorityCharging(
@@ -1690,6 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1729,25 +1779,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                              Decimal                    SettlementAmount,
                              DateTime                   SettlementTimestamp,
 
-                             Transaction_Id?            TransactionId       = null,
-                             String?                    StatusInfo          = null,
-                             ReceiptId?                 ReceiptId           = null,
-                             URL?                       ReceiptURL          = null,
-                             InvoiceNumber?             InvoiceNumber       = null,
+                             Transaction_Id?            TransactionId         = null,
+                             String?                    StatusInfo            = null,
+                             ReceiptId?                 ReceiptId             = null,
+                             URL?                       ReceiptURL            = null,
+                             InvoiceNumber?             InvoiceNumber         = null,
 
-                             CustomData?                CustomData          = null,
+                             CustomData?                CustomData            = null,
 
-                             SourceRouting?             Destination         = null,
+                             SourceRouting?             Destination           = null,
 
-                             IEnumerable<KeyPair>?      SignKeys            = null,
-                             IEnumerable<SignInfo>?     SignInfos           = null,
-                             IEnumerable<Signature>?    Signatures          = null,
+                             IEnumerable<KeyPair>?      SignKeys              = null,
+                             IEnumerable<SignInfo>?     SignInfos             = null,
+                             IEnumerable<Signature>?    Signatures            = null,
 
-                             Request_Id?                RequestId           = null,
-                             DateTime?                  RequestTimestamp    = null,
-                             TimeSpan?                  RequestTimeout      = null,
-                             EventTracking_Id?          EventTrackingId     = null,
-                             CancellationToken          CancellationToken   = default)
+                             Request_Id?                RequestId             = null,
+                             DateTime?                  RequestTimestamp      = null,
+                             TimeSpan?                  RequestTimeout        = null,
+                             EventTracking_Id?          EventTrackingId       = null,
+                             SerializationFormats?      SerializationFormat   = null,
+                             CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifySettlement(
@@ -1777,6 +1828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1804,19 +1856,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                       ChargingProfile_Id         ChargingProfileId,
 
-                                      CustomData?                CustomData          = null,
+                                      CustomData?                CustomData            = null,
 
-                                      SourceRouting?             Destination         = null,
+                                      SourceRouting?             Destination           = null,
 
-                                      IEnumerable<KeyPair>?      SignKeys            = null,
-                                      IEnumerable<SignInfo>?     SignInfos           = null,
-                                      IEnumerable<Signature>?    Signatures          = null,
+                                      IEnumerable<KeyPair>?      SignKeys              = null,
+                                      IEnumerable<SignInfo>?     SignInfos             = null,
+                                      IEnumerable<Signature>?    Signatures            = null,
 
-                                      Request_Id?                RequestId           = null,
-                                      DateTime?                  RequestTimestamp    = null,
-                                      TimeSpan?                  RequestTimeout      = null,
-                                      EventTracking_Id?          EventTrackingId     = null,
-                                      CancellationToken          CancellationToken   = default)
+                                      Request_Id?                RequestId             = null,
+                                      DateTime?                  RequestTimestamp      = null,
+                                      TimeSpan?                  RequestTimeout        = null,
+                                      EventTracking_Id?          EventTrackingId       = null,
+                                      SerializationFormats?      SerializationFormat   = null,
+                                      CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.PullDynamicScheduleUpdate(
@@ -1837,6 +1890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1866,21 +1920,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   Int32                      NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>   MessageInfos,
-                                  Boolean?                   ToBeContinued       = null,
+                                  Boolean?                   ToBeContinued         = null,
 
-                                  CustomData?                CustomData          = null,
+                                  CustomData?                CustomData            = null,
 
-                                  SourceRouting?             Destination         = null,
+                                  SourceRouting?             Destination           = null,
 
-                                  IEnumerable<KeyPair>?      SignKeys            = null,
-                                  IEnumerable<SignInfo>?     SignInfos           = null,
-                                  IEnumerable<Signature>?    Signatures          = null,
+                                  IEnumerable<KeyPair>?      SignKeys              = null,
+                                  IEnumerable<SignInfo>?     SignInfos             = null,
+                                  IEnumerable<Signature>?    Signatures            = null,
 
-                                  Request_Id?                RequestId           = null,
-                                  DateTime?                  RequestTimestamp    = null,
-                                  TimeSpan?                  RequestTimeout      = null,
-                                  EventTracking_Id?          EventTrackingId     = null,
-                                  CancellationToken          CancellationToken   = default)
+                                  Request_Id?                RequestId             = null,
+                                  DateTime?                  RequestTimestamp      = null,
+                                  TimeSpan?                  RequestTimeout        = null,
+                                  EventTracking_Id?          EventTrackingId       = null,
+                                  SerializationFormats?      SerializationFormat   = null,
+                                  CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyDisplayMessages(
@@ -1903,6 +1958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1935,21 +1991,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       String                     Data,
                                       UInt32                     SequenceNumber,
                                       DateTime                   GeneratedAt,
-                                      Boolean?                   ToBeContinued       = null,
+                                      Boolean?                   ToBeContinued         = null,
 
-                                      CustomData?                CustomData          = null,
+                                      CustomData?                CustomData            = null,
 
-                                      SourceRouting?             Destination         = null,
+                                      SourceRouting?             Destination           = null,
 
-                                      IEnumerable<KeyPair>?      SignKeys            = null,
-                                      IEnumerable<SignInfo>?     SignInfos           = null,
-                                      IEnumerable<Signature>?    Signatures          = null,
+                                      IEnumerable<KeyPair>?      SignKeys              = null,
+                                      IEnumerable<SignInfo>?     SignInfos             = null,
+                                      IEnumerable<Signature>?    Signatures            = null,
 
-                                      Request_Id?                RequestId           = null,
-                                      DateTime?                  RequestTimestamp    = null,
-                                      TimeSpan?                  RequestTimeout      = null,
-                                      EventTracking_Id?          EventTrackingId     = null,
-                                      CancellationToken          CancellationToken   = default)
+                                      Request_Id?                RequestId             = null,
+                                      DateTime?                  RequestTimestamp      = null,
+                                      TimeSpan?                  RequestTimeout        = null,
+                                      EventTracking_Id?          EventTrackingId       = null,
+                                      SerializationFormats?      SerializationFormat   = null,
+                                      CancellationToken          CancellationToken     = default)
 
 
                 => ChargingStation.OCPP.OUT.NotifyCustomerInformation(
@@ -1974,6 +2031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )

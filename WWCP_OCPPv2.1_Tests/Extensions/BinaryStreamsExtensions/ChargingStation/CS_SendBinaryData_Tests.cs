@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
 
                 var response   = await chargingStation1.TransferBinaryData(
-                                           VendorId:     vendorId,
-                                           MessageId:    messageId,
-                                           Data:         data,
-                                           Format:       BinaryFormats.TextIds
+                                           VendorId:             vendorId,
+                                           MessageId:            messageId,
+                                           Data:                 data,
+                                           SerializationFormat:  SerializationFormats.BinaryTextIds
                                        );
 
 

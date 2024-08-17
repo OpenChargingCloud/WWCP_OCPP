@@ -55,22 +55,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             TransferSecureData(this INetworkingNodeButNotCSMS  NetworkingNode,
                                UInt16                          Parameter,
                                Byte[]                          Payload,
-                               UInt16?                         KeyId               = null,
-                               Byte[]?                         Key                 = null,
-                               UInt64?                         Nonce               = null,
-                               UInt64?                         Counter             = null,
+                               UInt16?                         KeyId                 = null,
+                               Byte[]?                         Key                   = null,
+                               UInt64?                         Nonce                 = null,
+                               UInt64?                         Counter               = null,
 
-                               SourceRouting?                  Destination         = null,
+                               SourceRouting?                  Destination           = null,
 
-                               IEnumerable<KeyPair>?           SignKeys            = null,
-                               IEnumerable<SignInfo>?          SignInfos           = null,
-                               IEnumerable<Signature>?         Signatures          = null,
+                               IEnumerable<KeyPair>?           SignKeys              = null,
+                               IEnumerable<SignInfo>?          SignInfos             = null,
+                               IEnumerable<Signature>?         Signatures            = null,
 
-                               Request_Id?                     RequestId           = null,
-                               DateTime?                       RequestTimestamp    = null,
-                               TimeSpan?                       RequestTimeout      = null,
-                               EventTracking_Id?               EventTrackingId     = null,
-                               CancellationToken               CancellationToken   = default)
+                               Request_Id?                     RequestId             = null,
+                               DateTime?                       RequestTimestamp      = null,
+                               TimeSpan?                       RequestTimeout        = null,
+                               EventTracking_Id?               EventTrackingId       = null,
+                               SerializationFormats?           SerializationFormat   = null,
+                               CancellationToken               CancellationToken     = default)
 
         {
 
@@ -96,6 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                                EventTrackingId  ?? EventTracking_Id.New,
                                NetworkPath.From(NetworkingNode.Id),
+                               SerializationFormat,
                                CancellationToken
                            )
                        );
@@ -138,20 +140,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                SourceRouting            Destination,
                                UInt16                   Parameter,
                                Byte[]                   Payload,
-                               UInt16?                  KeyId               = null,
-                               Byte[]?                  Key                 = null,
-                               UInt64?                  Nonce               = null,
-                               UInt64?                  Counter             = null,
+                               UInt16?                  KeyId                 = null,
+                               Byte[]?                  Key                   = null,
+                               UInt64?                  Nonce                 = null,
+                               UInt64?                  Counter               = null,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?              RequestId             = null,
+                               DateTime?                RequestTimestamp      = null,
+                               TimeSpan?                RequestTimeout        = null,
+                               EventTracking_Id?        EventTrackingId       = null,
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
         {
 
@@ -177,6 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                                EventTrackingId  ?? EventTracking_Id.New,
                                NetworkPath.From(NetworkingNode.Id),
+                               SerializationFormat,
                                CancellationToken
                            )
                        );

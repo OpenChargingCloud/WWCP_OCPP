@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The binary format of the given message.
         /// </summary>
         [Mandatory]
-        public BinaryFormats             Format                  { get; }
+        public SerializationFormats             Format                  { get; }
 
         #endregion
 
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           BinaryDataTransferStatus   Status,
                                           String?                    AdditionalStatusInfo   = null,
                                           Byte[]?                    Data                   = null,
-                                          BinaryFormats?             Format                 = null,
+                                          SerializationFormats?             Format                 = null,
 
                                           Result?                    Result                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.Status                = Status;
             this.AdditionalStatusInfo  = AdditionalStatusInfo;
             this.Data                  = Data;
-            this.Format                = Format ?? BinaryFormats.TextIds;
+            this.Format                = Format ?? SerializationFormats.BinaryTextIds;
 
         }
 
@@ -220,12 +220,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 BinaryDataTransferResponse = null;
 
                 var stream  = new MemoryStream(Binary);
-                var format  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
+                var format  = SerializationFormatsExtensions.Parse(stream.ReadUInt16());
 
                 switch (format)
                 {
 
-                    case BinaryFormats.Compact:
+                    case SerializationFormats.BinaryCompact:
                         {
 
                             var binaryDataTransferStatusByte    = stream.ReadByte();
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         break;
 
-                    case BinaryFormats.TextIds:
+                    case SerializationFormats.BinaryTextIds:
                         {
 
                             var binaryDataTransferStatusLength  = stream.ReadUInt16();
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             switch (Format)
             {
 
-                case BinaryFormats.Compact: {
+                case SerializationFormats.BinaryCompact: {
 
                     binaryStream.WriteByte(Status.ToString().ToUTF8Bytes()[0]);
 
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
                 break;
 
-                case BinaryFormats.TextIds: {
+                case SerializationFormats.BinaryTextIds: {
 
                     var statusBytes                = Status.    ToString().ToUTF8Bytes();
                     binaryStream.WriteUInt16((UInt16) statusBytes.              Length);
@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
                 break;
 
-                case BinaryFormats.TagLengthValue: {
+                case SerializationFormats.BinaryTLV: {
 
                     var data = Data                                          ?? [];
                     binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);

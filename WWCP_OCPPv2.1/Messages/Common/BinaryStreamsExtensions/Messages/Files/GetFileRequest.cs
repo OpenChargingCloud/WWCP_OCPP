@@ -86,20 +86,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetFileRequest(SourceRouting            SourceRouting,
                               FilePath                 FileName,
-                              Byte?                    Priority            = null,
+                              Byte?                    Priority              = null,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?              CustomData            = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              NetworkPath?             NetworkPath         = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?              RequestId             = null,
+                              DateTime?                RequestTimestamp      = null,
+                              TimeSpan?                RequestTimeout        = null,
+                              EventTracking_Id?        EventTrackingId       = null,
+                              NetworkPath?             NetworkPath           = null,
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
             : base(SourceRouting,
                    nameof(GetFileRequest)[..^7],
@@ -115,6 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {

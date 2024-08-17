@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class BinaryStreamsExtensions_OutgoingMessageExtensions
     {
 
-        #region TransferBinaryData                    (VendorId, MessageId = null, Data = null, ...)
+        #region TransferBinaryData          (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the CSMS.
@@ -50,21 +50,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             TransferBinaryData(this INetworkingNodeButNotCSMS  NetworkingNode,
 
                                Vendor_Id                       VendorId,
-                               Message_Id?                     MessageId           = null,
-                               Byte[]?                         Data                = null,
-                               BinaryFormats?                  Format              = null,
+                               Message_Id?                     MessageId             = null,
+                               Byte[]?                         Data                  = null,
 
-                               SourceRouting?                  SourceRouting       = null,
+                               SourceRouting?                  SourceRouting         = null,
 
-                               IEnumerable<KeyPair>?           SignKeys            = null,
-                               IEnumerable<SignInfo>?          SignInfos           = null,
-                               IEnumerable<Signature>?         Signatures          = null,
+                               IEnumerable<KeyPair>?           SignKeys              = null,
+                               IEnumerable<SignInfo>?          SignInfos             = null,
+                               IEnumerable<Signature>?         Signatures            = null,
 
-                               Request_Id?                     RequestId           = null,
-                               DateTime?                       RequestTimestamp    = null,
-                               TimeSpan?                       RequestTimeout      = null,
-                               EventTracking_Id?               EventTrackingId     = null,
-                               CancellationToken               CancellationToken   = default)
+                               Request_Id?                     RequestId             = null,
+                               DateTime?                       RequestTimestamp      = null,
+                               TimeSpan?                       RequestTimeout        = null,
+                               EventTracking_Id?               EventTrackingId       = null,
+                               SerializationFormats?           SerializationFormat   = null,
+                               CancellationToken               CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.BinaryDataTransfer(
@@ -75,7 +75,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            VendorId,
                            MessageId,
                            Data,
-                           Format,
 
                            SignKeys,
                            SignInfos,
@@ -86,6 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -116,21 +116,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                SourceRouting            Destination,
                                Vendor_Id                VendorId,
-                               Message_Id?              MessageId           = null,
-                               Byte[]?                  Data                = null,
-                               BinaryFormats?           Format              = null,
+                               Message_Id?              MessageId             = null,
+                               Byte[]?                  Data                  = null,
 
-                               NetworkPath?             NetworkPath         = null,
+                               NetworkPath?             NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?              RequestId             = null,
+                               DateTime?                RequestTimestamp      = null,
+                               TimeSpan?                RequestTimeout        = null,
+                               EventTracking_Id?        EventTrackingId       = null,
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.BinaryDataTransfer(
@@ -139,7 +139,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            VendorId,
                            MessageId,
                            Data,
-                           Format,
 
                            SignKeys,
                            SignInfos,
@@ -150,6 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Request to download the given file from the given networking node.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="Priority">The optional priority of the file request.</param>
         /// 
@@ -179,21 +179,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     SourceRouting            Destination,
                     FilePath                 FileName,
-                    Byte?                    Priority            = null,
+                    Byte?                    Priority              = null,
 
-                    CustomData?              CustomData          = null,
+                    CustomData?              CustomData            = null,
 
-                    NetworkPath?             NetworkPath         = null,
+                    NetworkPath?             NetworkPath           = null,
 
-                    IEnumerable<KeyPair>?    SignKeys            = null,
-                    IEnumerable<SignInfo>?   SignInfos           = null,
-                    IEnumerable<Signature>?  Signatures          = null,
+                    IEnumerable<KeyPair>?    SignKeys              = null,
+                    IEnumerable<SignInfo>?   SignInfos             = null,
+                    IEnumerable<Signature>?  Signatures            = null,
 
-                    Request_Id?              RequestId           = null,
-                    DateTime?                RequestTimestamp    = null,
-                    TimeSpan?                RequestTimeout      = null,
-                    EventTracking_Id?        EventTrackingId     = null,
-                    CancellationToken        CancellationToken   = default)
+                    Request_Id?              RequestId             = null,
+                    DateTime?                RequestTimestamp      = null,
+                    TimeSpan?                RequestTimeout        = null,
+                    EventTracking_Id?        EventTrackingId       = null,
+                    SerializationFormats?    SerializationFormat   = null,
+                    CancellationToken        CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.GetFile(
@@ -213,6 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -224,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Send the given file to the given networking node.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
@@ -247,25 +249,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                      SourceRouting            Destination,
                      FilePath                 FileName,
                      Byte[]                   FileContent,
-                     ContentType?             FileContentType     = null,
-                     Byte[]?                  FileSHA256          = null,
-                     Byte[]?                  FileSHA512          = null,
-                     IEnumerable<Signature>?  FileSignatures      = null,
-                     Byte?                    Priority            = null,
+                     ContentType?             FileContentType       = null,
+                     Byte[]?                  FileSHA256            = null,
+                     Byte[]?                  FileSHA512            = null,
+                     IEnumerable<Signature>?  FileSignatures        = null,
+                     Byte?                    Priority              = null,
 
-                     CustomData?              CustomData          = null,
+                     CustomData?              CustomData            = null,
 
-                     NetworkPath?             NetworkPath         = null,
+                     NetworkPath?             NetworkPath           = null,
 
-                     IEnumerable<KeyPair>?    SignKeys            = null,
-                     IEnumerable<SignInfo>?   SignInfos           = null,
-                     IEnumerable<Signature>?  Signatures          = null,
+                     IEnumerable<KeyPair>?    SignKeys              = null,
+                     IEnumerable<SignInfo>?   SignInfos             = null,
+                     IEnumerable<Signature>?  Signatures            = null,
 
-                     Request_Id?              RequestId           = null,
-                     DateTime?                RequestTimestamp    = null,
-                     TimeSpan?                RequestTimeout      = null,
-                     EventTracking_Id?        EventTrackingId     = null,
-                     CancellationToken        CancellationToken   = default)
+                     Request_Id?              RequestId             = null,
+                     DateTime?                RequestTimestamp      = null,
+                     TimeSpan?                RequestTimeout        = null,
+                     EventTracking_Id?        EventTrackingId       = null,
+                     SerializationFormats?    SerializationFormat   = null,
+                     CancellationToken        CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.SendFile(
@@ -290,6 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -301,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Delete the given file from the given networking node.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
         /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
@@ -320,22 +324,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        SourceRouting            Destination,
                        FilePath                 FileName,
-                       Byte[]?                  FileSHA256          = null,
-                       Byte[]?                  FileSHA512          = null,
+                       Byte[]?                  FileSHA256            = null,
+                       Byte[]?                  FileSHA512            = null,
 
-                       CustomData?              CustomData          = null,
+                       CustomData?              CustomData            = null,
 
-                       NetworkPath?             NetworkPath         = null,
+                       NetworkPath?             NetworkPath           = null,
 
-                       IEnumerable<KeyPair>?    SignKeys            = null,
-                       IEnumerable<SignInfo>?   SignInfos           = null,
-                       IEnumerable<Signature>?  Signatures          = null,
+                       IEnumerable<KeyPair>?    SignKeys              = null,
+                       IEnumerable<SignInfo>?   SignInfos             = null,
+                       IEnumerable<Signature>?  Signatures            = null,
 
-                       Request_Id?              RequestId           = null,
-                       DateTime?                RequestTimestamp    = null,
-                       TimeSpan?                RequestTimeout      = null,
-                       EventTracking_Id?        EventTrackingId     = null,
-                       CancellationToken        CancellationToken   = default)
+                       Request_Id?              RequestId             = null,
+                       DateTime?                RequestTimestamp      = null,
+                       TimeSpan?                RequestTimeout        = null,
+                       EventTracking_Id?        EventTrackingId       = null,
+                       SerializationFormats?    SerializationFormat   = null,
+                       CancellationToken        CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.DeleteFile(
@@ -356,6 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -367,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// List the given directory of the given networking node.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="DirectoryPath">The absolute path of the directory to list.</param>
         /// <param name="Format">The optional response format of the directory listing.</param>
         /// 
@@ -402,6 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           DateTime?                RequestTimestamp       = null,
                           TimeSpan?                RequestTimeout         = null,
                           EventTracking_Id?        EventTrackingId        = null,
+                          SerializationFormats?    SerializationFormat    = null,
                           CancellationToken        CancellationToken      = default)
 
 
@@ -426,6 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );

@@ -57,20 +57,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                  BootReason                    BootReason,
 
-                                 CustomData?                   CustomData           = null,
+                                 CustomData?                   CustomData            = null,
 
-                                 SourceRouting?                Destination         = null,
-                                 NetworkPath?                  NetworkPath          = null,
+                                 SourceRouting?                Destination           = null,
+                                 NetworkPath?                  NetworkPath           = null,
 
-                                 IEnumerable<KeyPair>?         SignKeys             = null,
-                                 IEnumerable<SignInfo>?        SignInfos            = null,
-                                 IEnumerable<Signature>?       Signatures           = null,
+                                 IEnumerable<KeyPair>?         SignKeys              = null,
+                                 IEnumerable<SignInfo>?        SignInfos             = null,
+                                 IEnumerable<Signature>?       Signatures            = null,
 
-                                 Request_Id?                   RequestId            = null,
-                                 DateTime?                     RequestTimestamp     = null,
-                                 TimeSpan?                     RequestTimeout       = null,
-                                 EventTracking_Id?             EventTrackingId      = null,
-                                 CancellationToken             CancellationToken    = default)
+                                 Request_Id?                   RequestId             = null,
+                                 DateTime?                     RequestTimestamp      = null,
+                                 TimeSpan?                     RequestTimeout        = null,
+                                 EventTracking_Id?             EventTrackingId       = null,
+                                 SerializationFormats?         SerializationFormat   = null,
+                                 CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.BootNotification(
@@ -99,6 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -140,6 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                            DateTime?                     RequestTimestamp          = null,
                                            TimeSpan?                     RequestTimeout            = null,
                                            EventTracking_Id?             EventTrackingId           = null,
+                                           SerializationFormats?         SerializationFormat       = null,
                                            CancellationToken             CancellationToken         = default)
 
 
@@ -162,6 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -192,20 +196,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                                   Int32?                        PublishFirmwareStatusNotificationRequestId,
                                                   IEnumerable<URL>?             DownloadLocations,
 
-                                                  CustomData?                   CustomData          = null,
+                                                  CustomData?                   CustomData            = null,
 
-                                                  SourceRouting?                Destination         = null,
-                                                  NetworkPath?                  NetworkPath         = null,
+                                                  SourceRouting?                Destination           = null,
+                                                  NetworkPath?                  NetworkPath           = null,
 
-                                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                                  IEnumerable<Signature>?       Signatures          = null,
+                                                  IEnumerable<KeyPair>?         SignKeys              = null,
+                                                  IEnumerable<SignInfo>?        SignInfos             = null,
+                                                  IEnumerable<Signature>?       Signatures            = null,
 
-                                                  Request_Id?                   RequestId           = null,
-                                                  DateTime?                     RequestTimestamp    = null,
-                                                  TimeSpan?                     RequestTimeout      = null,
-                                                  EventTracking_Id?             EventTrackingId     = null,
-                                                  CancellationToken             CancellationToken   = default)
+                                                  Request_Id?                   RequestId             = null,
+                                                  DateTime?                     RequestTimestamp      = null,
+                                                  TimeSpan?                     RequestTimeout        = null,
+                                                  EventTracking_Id?             EventTrackingId       = null,
+                                                  SerializationFormats?         SerializationFormat   = null,
+                                                  CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.PublishFirmwareStatusNotification(
@@ -228,6 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -251,20 +257,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             SendHeartbeat(this ILocalControllerNode     LocalController,
 
-                          CustomData?                   CustomData          = null,
+                          CustomData?                   CustomData            = null,
 
-                          SourceRouting?                Destination         = null,
-                          NetworkPath?                  NetworkPath         = null,
+                          SourceRouting?                Destination           = null,
+                          NetworkPath?                  NetworkPath           = null,
 
-                          IEnumerable<KeyPair>?         SignKeys            = null,
-                          IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<Signature>?       Signatures          = null,
+                          IEnumerable<KeyPair>?         SignKeys              = null,
+                          IEnumerable<SignInfo>?        SignInfos             = null,
+                          IEnumerable<Signature>?       Signatures            = null,
 
-                          Request_Id?                   RequestId           = null,
-                          DateTime?                     RequestTimestamp    = null,
-                          TimeSpan?                     RequestTimeout      = null,
-                          EventTracking_Id?             EventTrackingId     = null,
-                          CancellationToken             CancellationToken   = default)
+                          Request_Id?                   RequestId             = null,
+                          DateTime?                     RequestTimestamp      = null,
+                          TimeSpan?                     RequestTimeout        = null,
+                          EventTracking_Id?             EventTrackingId       = null,
+                          SerializationFormats?         SerializationFormat   = null,
+                          CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.Heartbeat(
@@ -283,6 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -313,22 +321,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                         DateTime                      GeneratedAt,
                         UInt32                        SequenceNumber,
                         IEnumerable<EventData>        EventData,
-                        Boolean?                      ToBeContinued       = null,
+                        Boolean?                      ToBeContinued         = null,
 
-                        CustomData?                   CustomData          = null,
+                        CustomData?                   CustomData            = null,
 
-                        SourceRouting?                Destination         = null,
-                        NetworkPath?                  NetworkPath         = null,
+                        SourceRouting?                Destination           = null,
+                        NetworkPath?                  NetworkPath           = null,
 
-                        IEnumerable<KeyPair>?         SignKeys            = null,
-                        IEnumerable<SignInfo>?        SignInfos           = null,
-                        IEnumerable<Signature>?       Signatures          = null,
+                        IEnumerable<KeyPair>?         SignKeys              = null,
+                        IEnumerable<SignInfo>?        SignInfos             = null,
+                        IEnumerable<Signature>?       Signatures            = null,
 
-                        Request_Id?                   RequestId           = null,
-                        DateTime?                     RequestTimestamp    = null,
-                        TimeSpan?                     RequestTimeout      = null,
-                        EventTracking_Id?             EventTrackingId     = null,
-                        CancellationToken             CancellationToken   = default)
+                        Request_Id?                   RequestId             = null,
+                        DateTime?                     RequestTimestamp      = null,
+                        TimeSpan?                     RequestTimeout        = null,
+                        EventTracking_Id?             EventTrackingId       = null,
+                        SerializationFormats?         SerializationFormat   = null,
+                        CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyEvent(
@@ -352,6 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -380,22 +390,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                           SecurityEventType             Type,
                                           DateTime                      Timestamp,
-                                          String?                       TechInfo            = null,
+                                          String?                       TechInfo              = null,
 
-                                          CustomData?                   CustomData          = null,
+                                          CustomData?                   CustomData            = null,
 
-                                          SourceRouting?                Destination         = null,
-                                          NetworkPath?                  NetworkPath         = null,
+                                          SourceRouting?                Destination           = null,
+                                          NetworkPath?                  NetworkPath           = null,
 
-                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                          IEnumerable<Signature>?       Signatures          = null,
+                                          IEnumerable<KeyPair>?         SignKeys              = null,
+                                          IEnumerable<SignInfo>?        SignInfos             = null,
+                                          IEnumerable<Signature>?       Signatures            = null,
 
-                                          Request_Id?                   RequestId           = null,
-                                          DateTime?                     RequestTimestamp    = null,
-                                          TimeSpan?                     RequestTimeout      = null,
-                                          EventTracking_Id?             EventTrackingId     = null,
-                                          CancellationToken             CancellationToken   = default)
+                                          Request_Id?                   RequestId             = null,
+                                          DateTime?                     RequestTimestamp      = null,
+                                          TimeSpan?                     RequestTimeout        = null,
+                                          EventTracking_Id?             EventTrackingId       = null,
+                                          SerializationFormats?         SerializationFormat   = null,
+                                          CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SecurityEventNotification(
@@ -418,6 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -450,22 +462,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          UInt32                        SequenceNumber,
                          DateTime                      GeneratedAt,
                          IEnumerable<ReportData>       ReportData,
-                         Boolean?                      ToBeContinued       = null,
+                         Boolean?                      ToBeContinued         = null,
 
-                         CustomData?                   CustomData          = null,
+                         CustomData?                   CustomData            = null,
 
-                         SourceRouting?                Destination         = null,
-                         NetworkPath?                  NetworkPath         = null,
+                         SourceRouting?                Destination           = null,
+                         NetworkPath?                  NetworkPath           = null,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<KeyPair>?         SignKeys              = null,
+                         IEnumerable<SignInfo>?        SignInfos             = null,
+                         IEnumerable<Signature>?       Signatures            = null,
 
-                         Request_Id?                   RequestId           = null,
-                         DateTime?                     RequestTimestamp    = null,
-                         TimeSpan?                     RequestTimeout      = null,
-                         EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken             CancellationToken   = default)
+                         Request_Id?                   RequestId             = null,
+                         DateTime?                     RequestTimestamp      = null,
+                         TimeSpan?                     RequestTimeout        = null,
+                         EventTracking_Id?             EventTrackingId       = null,
+                         SerializationFormats?         SerializationFormat   = null,
+                         CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyReport(
@@ -490,6 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -522,22 +536,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    UInt32                        SequenceNumber,
                                    DateTime                      GeneratedAt,
                                    IEnumerable<MonitoringData>   MonitoringData,
-                                   Boolean?                      ToBeContinued       = null,
+                                   Boolean?                      ToBeContinued         = null,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?                   CustomData            = null,
 
-                                   SourceRouting?                Destination         = null,
-                                   NetworkPath?                  NetworkPath         = null,
+                                   SourceRouting?                Destination           = null,
+                                   NetworkPath?                  NetworkPath           = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?         SignKeys              = null,
+                                   IEnumerable<SignInfo>?        SignInfos             = null,
+                                   IEnumerable<Signature>?       Signatures            = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?                   RequestId             = null,
+                                   DateTime?                     RequestTimestamp      = null,
+                                   TimeSpan?                     RequestTimeout        = null,
+                                   EventTracking_Id?             EventTrackingId       = null,
+                                   SerializationFormats?         SerializationFormat   = null,
+                                   CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyMonitoringReport(
@@ -562,6 +577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -588,22 +604,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             SendLogStatusNotification(this ILocalControllerNode     LocalController,
 
                                       UploadLogStatus               Status,
-                                      Int32?                        LogRequestId        = null,
+                                      Int32?                        LogRequestId          = null,
 
-                                      CustomData?                   CustomData          = null,
+                                      CustomData?                   CustomData            = null,
 
-                                      SourceRouting?                Destination         = null,
-                                      NetworkPath?                  NetworkPath         = null,
+                                      SourceRouting?                Destination           = null,
+                                      NetworkPath?                  NetworkPath           = null,
 
-                                      IEnumerable<KeyPair>?         SignKeys            = null,
-                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                      IEnumerable<Signature>?       Signatures          = null,
+                                      IEnumerable<KeyPair>?         SignKeys              = null,
+                                      IEnumerable<SignInfo>?        SignInfos             = null,
+                                      IEnumerable<Signature>?       Signatures            = null,
 
-                                      Request_Id?                   RequestId           = null,
-                                      DateTime?                     RequestTimestamp    = null,
-                                      TimeSpan?                     RequestTimeout      = null,
-                                      EventTracking_Id?             EventTrackingId     = null,
-                                      CancellationToken             CancellationToken   = default)
+                                      Request_Id?                   RequestId             = null,
+                                      DateTime?                     RequestTimestamp      = null,
+                                      TimeSpan?                     RequestTimeout        = null,
+                                      EventTracking_Id?             EventTrackingId       = null,
+                                      SerializationFormats?         SerializationFormat   = null,
+                                      CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.LogStatusNotification(
@@ -625,6 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -654,22 +672,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                           String                        CSR,
                                           Int32                         SignCertificateRequestId,
-                                          CertificateSigningUse?        CertificateType     = null,
+                                          CertificateSigningUse?        CertificateType       = null,
 
-                                          CustomData?                   CustomData          = null,
+                                          CustomData?                   CustomData            = null,
 
-                                          SourceRouting?                Destination         = null,
-                                          NetworkPath?                  NetworkPath         = null,
+                                          SourceRouting?                Destination           = null,
+                                          NetworkPath?                  NetworkPath           = null,
 
-                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                          IEnumerable<Signature>?       Signatures          = null,
+                                          IEnumerable<KeyPair>?         SignKeys              = null,
+                                          IEnumerable<SignInfo>?        SignInfos             = null,
+                                          IEnumerable<Signature>?       Signatures            = null,
 
-                                          Request_Id?                   RequestId           = null,
-                                          DateTime?                     RequestTimestamp    = null,
-                                          TimeSpan?                     RequestTimeout      = null,
-                                          EventTracking_Id?             EventTrackingId     = null,
-                                          CancellationToken             CancellationToken   = default)
+                                          Request_Id?                   RequestId             = null,
+                                          DateTime?                     RequestTimestamp      = null,
+                                          TimeSpan?                     RequestTimeout        = null,
+                                          EventTracking_Id?             EventTrackingId       = null,
+                                          SerializationFormats?         SerializationFormat   = null,
+                                          CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SignCertificate(
@@ -692,6 +711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -739,6 +759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   DateTime?                     RequestTimestamp                   = null,
                                   TimeSpan?                     RequestTimeout                     = null,
                                   EventTracking_Id?             EventTrackingId                    = null,
+                                  SerializationFormats?         SerializationFormat                = null,
                                   CancellationToken             CancellationToken                  = default)
 
 
@@ -764,6 +785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -790,20 +812,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                  OCSPRequestData               OCSPRequestData,
 
-                                 CustomData?                   CustomData          = null,
+                                 CustomData?                   CustomData            = null,
 
-                                 SourceRouting?                Destination         = null,
-                                 NetworkPath?                  NetworkPath         = null,
+                                 SourceRouting?                Destination           = null,
+                                 NetworkPath?                  NetworkPath           = null,
 
-                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<Signature>?       Signatures          = null,
+                                 IEnumerable<KeyPair>?         SignKeys              = null,
+                                 IEnumerable<SignInfo>?        SignInfos             = null,
+                                 IEnumerable<Signature>?       Signatures            = null,
 
-                                 Request_Id?                   RequestId           = null,
-                                 DateTime?                     RequestTimestamp    = null,
-                                 TimeSpan?                     RequestTimeout      = null,
-                                 EventTracking_Id?             EventTrackingId     = null,
-                                 CancellationToken             CancellationToken   = default)
+                                 Request_Id?                   RequestId             = null,
+                                 DateTime?                     RequestTimestamp      = null,
+                                 TimeSpan?                     RequestTimeout        = null,
+                                 EventTracking_Id?             EventTrackingId       = null,
+                                 SerializationFormats?         SerializationFormat   = null,
+                                 CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetCertificateStatus(
@@ -824,6 +847,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -853,20 +877,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           UInt32                        GetCRLRequestId,
                           CertificateHashData           CertificateHashData,
 
-                          CustomData?                   CustomData          = null,
+                          CustomData?                   CustomData            = null,
 
-                          SourceRouting?                Destination         = null,
-                          NetworkPath?                  NetworkPath         = null,
+                          SourceRouting?                Destination           = null,
+                          NetworkPath?                  NetworkPath           = null,
 
-                          IEnumerable<KeyPair>?         SignKeys            = null,
-                          IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<Signature>?       Signatures          = null,
+                          IEnumerable<KeyPair>?         SignKeys              = null,
+                          IEnumerable<SignInfo>?        SignInfos             = null,
+                          IEnumerable<Signature>?       Signatures            = null,
 
-                          Request_Id?                   RequestId           = null,
-                          DateTime?                     RequestTimestamp    = null,
-                          TimeSpan?                     RequestTimeout      = null,
-                          EventTracking_Id?             EventTrackingId     = null,
-                          CancellationToken             CancellationToken   = default)
+                          Request_Id?                   RequestId             = null,
+                          DateTime?                     RequestTimestamp      = null,
+                          TimeSpan?                     RequestTimeout        = null,
+                          EventTracking_Id?             EventTrackingId       = null,
+                          SerializationFormats?         SerializationFormat   = null,
+                          CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetCRL(
@@ -888,6 +913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -917,20 +943,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                         Reservation_Id                ReservationId,
                                         ReservationUpdateStatus       ReservationUpdateStatus,
 
-                                        CustomData?                   CustomData          = null,
+                                        CustomData?                   CustomData            = null,
 
-                                        SourceRouting?                Destination         = null,
-                                        NetworkPath?                  NetworkPath         = null,
+                                        SourceRouting?                Destination           = null,
+                                        NetworkPath?                  NetworkPath           = null,
 
-                                        IEnumerable<KeyPair>?         SignKeys            = null,
-                                        IEnumerable<SignInfo>?        SignInfos           = null,
-                                        IEnumerable<Signature>?       Signatures          = null,
+                                        IEnumerable<KeyPair>?         SignKeys              = null,
+                                        IEnumerable<SignInfo>?        SignInfos             = null,
+                                        IEnumerable<Signature>?       Signatures            = null,
 
-                                        Request_Id?                   RequestId           = null,
-                                        DateTime?                     RequestTimestamp    = null,
-                                        TimeSpan?                     RequestTimeout      = null,
-                                        EventTracking_Id?             EventTrackingId     = null,
-                                        CancellationToken             CancellationToken   = default)
+                                        Request_Id?                   RequestId             = null,
+                                        DateTime?                     RequestTimestamp      = null,
+                                        TimeSpan?                     RequestTimeout        = null,
+                                        EventTracking_Id?             EventTrackingId       = null,
+                                        SerializationFormats?         SerializationFormat   = null,
+                                        CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ReservationStatusUpdate(
@@ -952,6 +979,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -995,6 +1023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                       DateTime?                      RequestTimestamp              = null,
                       TimeSpan?                      RequestTimeout                = null,
                       EventTracking_Id?              EventTrackingId               = null,
+                      SerializationFormats?          SerializationFormat           = null,
                       CancellationToken              CancellationToken             = default)
 
 
@@ -1018,6 +1047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1047,23 +1077,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                   EVSE_Id                       EVSEId,
                                   ChargingNeeds                 ChargingNeeds,
-                                  DateTime?                     ReceivedTimestamp   = null,
-                                  UInt16?                       MaxScheduleTuples   = null,
+                                  DateTime?                     ReceivedTimestamp     = null,
+                                  UInt16?                       MaxScheduleTuples     = null,
 
-                                  CustomData?                   CustomData          = null,
+                                  CustomData?                   CustomData            = null,
 
-                                  SourceRouting?                Destination         = null,
-                                  NetworkPath?                  NetworkPath         = null,
+                                  SourceRouting?                Destination           = null,
+                                  NetworkPath?                  NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<KeyPair>?         SignKeys              = null,
+                                  IEnumerable<SignInfo>?        SignInfos             = null,
+                                  IEnumerable<Signature>?       Signatures            = null,
 
-                                  Request_Id?                   RequestId           = null,
-                                  DateTime?                     RequestTimestamp    = null,
-                                  TimeSpan?                     RequestTimeout      = null,
-                                  EventTracking_Id?             EventTrackingId     = null,
-                                  CancellationToken             CancellationToken   = default)
+                                  Request_Id?                   RequestId             = null,
+                                  DateTime?                     RequestTimestamp      = null,
+                                  TimeSpan?                     RequestTimeout        = null,
+                                  EventTracking_Id?             EventTrackingId       = null,
+                                  SerializationFormats?         SerializationFormat   = null,
+                                  CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyEVChargingNeeds(
@@ -1087,6 +1118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1152,6 +1184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  DateTime?                     RequestTimestamp        = null,
                                  TimeSpan?                     RequestTimeout          = null,
                                  EventTracking_Id?             EventTrackingId         = null,
+                                 SerializationFormats?         SerializationFormat     = null,
                                  CancellationToken             CancellationToken       = default)
 
 
@@ -1186,6 +1219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1218,20 +1252,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    DateTime                      Timestamp,
                                    ConnectorStatus               Status,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?                   CustomData            = null,
 
-                                   SourceRouting?                Destination         = null,
-                                   NetworkPath?                  NetworkPath         = null,
+                                   SourceRouting?                Destination           = null,
+                                   NetworkPath?                  NetworkPath           = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?         SignKeys              = null,
+                                   IEnumerable<SignInfo>?        SignInfos             = null,
+                                   IEnumerable<Signature>?       Signatures            = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?                   RequestId             = null,
+                                   DateTime?                     RequestTimestamp      = null,
+                                   TimeSpan?                     RequestTimeout        = null,
+                                   EventTracking_Id?             EventTrackingId       = null,
+                                   SerializationFormats?         SerializationFormat   = null,
+                                   CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.StatusNotification(
@@ -1255,6 +1290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1283,20 +1319,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             EVSE_Id                       EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>       MeterValues,
 
-                            CustomData?                   CustomData          = null,
+                            CustomData?                   CustomData            = null,
 
-                            SourceRouting?                Destination         = null,
-                            NetworkPath?                  NetworkPath         = null,
+                            SourceRouting?                Destination           = null,
+                            NetworkPath?                  NetworkPath           = null,
 
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<Signature>?       Signatures          = null,
+                            IEnumerable<KeyPair>?         SignKeys              = null,
+                            IEnumerable<SignInfo>?        SignInfos             = null,
+                            IEnumerable<Signature>?       Signatures            = null,
 
-                            Request_Id?                   RequestId           = null,
-                            DateTime?                     RequestTimestamp    = null,
-                            TimeSpan?                     RequestTimeout      = null,
-                            EventTracking_Id?             EventTrackingId     = null,
-                            CancellationToken             CancellationToken   = default)
+                            Request_Id?                   RequestId             = null,
+                            DateTime?                     RequestTimestamp      = null,
+                            TimeSpan?                     RequestTimeout        = null,
+                            EventTracking_Id?             EventTrackingId       = null,
+                            SerializationFormats?         SerializationFormat   = null,
+                            CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.MeterValues(
@@ -1318,6 +1355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1346,22 +1384,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
-                                EVSE_Id?                       EVSEId              = null,
+                                EVSE_Id?                       EVSEId                = null,
 
-                                CustomData?                    CustomData          = null,
+                                CustomData?                    CustomData            = null,
 
-                                SourceRouting?                 Destination         = null,
-                                NetworkPath?                   NetworkPath         = null,
+                                SourceRouting?                 Destination           = null,
+                                NetworkPath?                   NetworkPath           = null,
 
-                                IEnumerable<KeyPair>?          SignKeys            = null,
-                                IEnumerable<SignInfo>?         SignInfos           = null,
-                                IEnumerable<Signature>?        Signatures          = null,
+                                IEnumerable<KeyPair>?          SignKeys              = null,
+                                IEnumerable<SignInfo>?         SignInfos             = null,
+                                IEnumerable<Signature>?        Signatures            = null,
 
-                                Request_Id?                    RequestId           = null,
-                                DateTime?                      RequestTimestamp    = null,
-                                TimeSpan?                      RequestTimeout      = null,
-                                EventTracking_Id?              EventTrackingId     = null,
-                                CancellationToken              CancellationToken   = default)
+                                Request_Id?                    RequestId             = null,
+                                DateTime?                      RequestTimestamp      = null,
+                                TimeSpan?                      RequestTimeout        = null,
+                                EventTracking_Id?              EventTrackingId       = null,
+                                SerializationFormats?          SerializationFormat   = null,
+                                CancellationToken              CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyChargingLimit(
@@ -1384,6 +1423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1412,20 +1452,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                      ChargingLimitSource           ChargingLimitSource,
                                      EVSE_Id?                      EVSEId,
 
-                                     CustomData?                   CustomData          = null,
+                                     CustomData?                   CustomData            = null,
 
-                                     SourceRouting?                Destination         = null,
-                                     NetworkPath?                  NetworkPath         = null,
+                                     SourceRouting?                Destination           = null,
+                                     NetworkPath?                  NetworkPath           = null,
 
-                                     IEnumerable<KeyPair>?         SignKeys            = null,
-                                     IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     IEnumerable<KeyPair>?         SignKeys              = null,
+                                     IEnumerable<SignInfo>?        SignInfos             = null,
+                                     IEnumerable<Signature>?       Signatures            = null,
 
-                                     Request_Id?                   RequestId           = null,
-                                     DateTime?                     RequestTimestamp    = null,
-                                     TimeSpan?                     RequestTimeout      = null,
-                                     EventTracking_Id?             EventTrackingId     = null,
-                                     CancellationToken             CancellationToken   = default)
+                                     Request_Id?                   RequestId             = null,
+                                     DateTime?                     RequestTimestamp      = null,
+                                     TimeSpan?                     RequestTimeout        = null,
+                                     EventTracking_Id?             EventTrackingId       = null,
+                                     SerializationFormats?         SerializationFormat   = null,
+                                     CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ClearedChargingLimit(
@@ -1447,6 +1488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1479,22 +1521,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    ChargingLimitSource           ChargingLimitSource,
                                    EVSE_Id                       EVSEId,
                                    IEnumerable<ChargingProfile>  ChargingProfiles,
-                                   Boolean?                      ToBeContinued       = null,
+                                   Boolean?                      ToBeContinued         = null,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?                   CustomData            = null,
 
-                                   SourceRouting?                Destination         = null,
-                                   NetworkPath?                  NetworkPath         = null,
+                                   SourceRouting?                Destination           = null,
+                                   NetworkPath?                  NetworkPath           = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?         SignKeys              = null,
+                                   IEnumerable<SignInfo>?        SignInfos             = null,
+                                   IEnumerable<Signature>?       Signatures            = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?                   RequestId             = null,
+                                   DateTime?                     RequestTimestamp      = null,
+                                   TimeSpan?                     RequestTimeout        = null,
+                                   EventTracking_Id?             EventTrackingId       = null,
+                                   SerializationFormats?         SerializationFormat   = null,
+                                   CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ReportChargingProfiles(
@@ -1519,6 +1562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1566,6 +1610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                      DateTime?                     RequestTimestamp           = null,
                                      TimeSpan?                     RequestTimeout             = null,
                                      EventTracking_Id?             EventTrackingId            = null,
+                                     SerializationFormats?         SerializationFormat        = null,
                                      CancellationToken             CancellationToken          = default)
 
 
@@ -1591,6 +1636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1619,20 +1665,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    Transaction_Id                TransactionId,
                                    Boolean                       Activated,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?                   CustomData            = null,
 
-                                   SourceRouting?                Destination         = null,
-                                   NetworkPath?                  NetworkPath         = null,
+                                   SourceRouting?                Destination           = null,
+                                   NetworkPath?                  NetworkPath           = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?         SignKeys              = null,
+                                   IEnumerable<SignInfo>?        SignInfos             = null,
+                                   IEnumerable<Signature>?       Signatures            = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?                   RequestId             = null,
+                                   DateTime?                     RequestTimestamp      = null,
+                                   TimeSpan?                     RequestTimeout        = null,
+                                   EventTracking_Id?             EventTrackingId       = null,
+                                   SerializationFormats?         SerializationFormat   = null,
+                                   CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyPriorityCharging(
@@ -1654,6 +1701,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1680,20 +1728,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                       ChargingProfile_Id            ChargingProfileId,
 
-                                      CustomData?                   CustomData          = null,
+                                      CustomData?                   CustomData            = null,
 
-                                      SourceRouting?                Destination         = null,
-                                      NetworkPath?                  NetworkPath         = null,
+                                      SourceRouting?                Destination           = null,
+                                      NetworkPath?                  NetworkPath           = null,
 
-                                      IEnumerable<KeyPair>?         SignKeys            = null,
-                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                      IEnumerable<Signature>?       Signatures          = null,
+                                      IEnumerable<KeyPair>?         SignKeys              = null,
+                                      IEnumerable<SignInfo>?        SignInfos             = null,
+                                      IEnumerable<Signature>?       Signatures            = null,
 
-                                      Request_Id?                   RequestId           = null,
-                                      DateTime?                     RequestTimestamp    = null,
-                                      TimeSpan?                     RequestTimeout      = null,
-                                      EventTracking_Id?             EventTrackingId     = null,
-                                      CancellationToken             CancellationToken   = default)
+                                      Request_Id?                   RequestId             = null,
+                                      DateTime?                     RequestTimestamp      = null,
+                                      TimeSpan?                     RequestTimeout        = null,
+                                      EventTracking_Id?             EventTrackingId       = null,
+                                      SerializationFormats?         SerializationFormat   = null,
+                                      CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.PullDynamicScheduleUpdate(
@@ -1714,6 +1763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1743,22 +1793,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                   Int32                         NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>      MessageInfos,
-                                  Boolean?                      ToBeContinued       = null,
+                                  Boolean?                      ToBeContinued         = null,
 
-                                  CustomData?                   CustomData          = null,
+                                  CustomData?                   CustomData            = null,
 
-                                  SourceRouting?                Destination         = null,
-                                  NetworkPath?                  NetworkPath         = null,
+                                  SourceRouting?                Destination           = null,
+                                  NetworkPath?                  NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<KeyPair>?         SignKeys              = null,
+                                  IEnumerable<SignInfo>?        SignInfos             = null,
+                                  IEnumerable<Signature>?       Signatures            = null,
 
-                                  Request_Id?                   RequestId           = null,
-                                  DateTime?                     RequestTimestamp    = null,
-                                  TimeSpan?                     RequestTimeout      = null,
-                                  EventTracking_Id?             EventTrackingId     = null,
-                                  CancellationToken             CancellationToken   = default)
+                                  Request_Id?                   RequestId             = null,
+                                  DateTime?                     RequestTimestamp      = null,
+                                  TimeSpan?                     RequestTimeout        = null,
+                                  EventTracking_Id?             EventTrackingId       = null,
+                                  SerializationFormats?         SerializationFormat   = null,
+                                  CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyDisplayMessages(
@@ -1781,6 +1832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1813,22 +1865,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                       String                        Data,
                                       UInt32                        SequenceNumber,
                                       DateTime                      GeneratedAt,
-                                      Boolean?                      ToBeContinued       = null,
+                                      Boolean?                      ToBeContinued         = null,
 
-                                      CustomData?                   CustomData          = null,
+                                      CustomData?                   CustomData            = null,
 
-                                      SourceRouting?                Destination         = null,
-                                      NetworkPath?                  NetworkPath         = null,
+                                      SourceRouting?                Destination           = null,
+                                      NetworkPath?                  NetworkPath           = null,
 
-                                      IEnumerable<KeyPair>?         SignKeys            = null,
-                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                      IEnumerable<Signature>?       Signatures          = null,
+                                      IEnumerable<KeyPair>?         SignKeys              = null,
+                                      IEnumerable<SignInfo>?        SignInfos             = null,
+                                      IEnumerable<Signature>?       Signatures            = null,
 
-                                      Request_Id?                   RequestId           = null,
-                                      DateTime?                     RequestTimestamp    = null,
-                                      TimeSpan?                     RequestTimeout      = null,
-                                      EventTracking_Id?             EventTrackingId     = null,
-                                      CancellationToken             CancellationToken   = default)
+                                      Request_Id?                   RequestId             = null,
+                                      DateTime?                     RequestTimestamp      = null,
+                                      TimeSpan?                     RequestTimeout        = null,
+                                      EventTracking_Id?             EventTrackingId       = null,
+                                      SerializationFormats?         SerializationFormat   = null,
+                                      CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyCustomerInformation(
@@ -1853,6 +1906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -1886,21 +1940,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             Reset(this ILocalControllerNode     LocalController,
                   SourceRouting                 Destination,
                   ResetType                     ResetType,
-                  EVSE_Id?                      EVSEId              = null,
+                  EVSE_Id?                      EVSEId                = null,
 
-                  CustomData?                   CustomData          = null,
+                  CustomData?                   CustomData            = null,
 
-                  NetworkPath?                  NetworkPath         = null,
+                  NetworkPath?                  NetworkPath           = null,
 
-                  IEnumerable<KeyPair>?         SignKeys            = null,
-                  IEnumerable<SignInfo>?        SignInfos           = null,
-                  IEnumerable<Signature>?       Signatures          = null,
+                  IEnumerable<KeyPair>?         SignKeys              = null,
+                  IEnumerable<SignInfo>?        SignInfos             = null,
+                  IEnumerable<Signature>?       Signatures            = null,
 
-                  Request_Id?                   RequestId           = null,
-                  DateTime?                     RequestTimestamp    = null,
-                  TimeSpan?                     RequestTimeout      = null,
-                  EventTracking_Id?             EventTrackingId     = null,
-                  CancellationToken             CancellationToken   = default)
+                  Request_Id?                   RequestId             = null,
+                  DateTime?                     RequestTimestamp      = null,
+                  TimeSpan?                     RequestTimeout        = null,
+                  EventTracking_Id?             EventTrackingId       = null,
+                  SerializationFormats?         SerializationFormat   = null,
+                  CancellationToken             CancellationToken     = default)
 
                 => LocalController.OCPP.OUT.Reset(
                        new ResetRequest(
@@ -1919,6 +1974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1950,22 +2006,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            SourceRouting                 Destination,
                            Firmware                      Firmware,
                            Int32                         UpdateFirmwareRequestId,
-                           Byte?                         Retries             = null,
-                           TimeSpan?                     RetryInterval       = null,
+                           Byte?                         Retries               = null,
+                           TimeSpan?                     RetryInterval         = null,
 
-                           CustomData?                   CustomData          = null,
+                           CustomData?                   CustomData            = null,
 
-                           NetworkPath?                  NetworkPath         = null,
+                           NetworkPath?                  NetworkPath           = null,
 
-                           IEnumerable<KeyPair>?         SignKeys            = null,
-                           IEnumerable<SignInfo>?        SignInfos           = null,
-                           IEnumerable<Signature>?       Signatures          = null,
+                           IEnumerable<KeyPair>?         SignKeys              = null,
+                           IEnumerable<SignInfo>?        SignInfos             = null,
+                           IEnumerable<Signature>?       Signatures            = null,
 
-                           Request_Id?                   RequestId           = null,
-                           DateTime?                     RequestTimestamp    = null,
-                           TimeSpan?                     RequestTimeout      = null,
-                           EventTracking_Id?             EventTrackingId     = null,
-                           CancellationToken             CancellationToken   = default)
+                           Request_Id?                   RequestId             = null,
+                           DateTime?                     RequestTimestamp      = null,
+                           TimeSpan?                     RequestTimeout        = null,
+                           EventTracking_Id?             EventTrackingId       = null,
+                           SerializationFormats?         SerializationFormat   = null,
+                           CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.UpdateFirmware(
@@ -1987,6 +2044,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2020,22 +2078,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             Int32                         PublishFirmwareRequestId,
                             URL                           DownloadLocation,
                             String                        MD5Checksum,
-                            Byte?                         Retries             = null,
-                            TimeSpan?                     RetryInterval       = null,
+                            Byte?                         Retries               = null,
+                            TimeSpan?                     RetryInterval         = null,
 
-                            CustomData?                   CustomData          = null,
+                            CustomData?                   CustomData            = null,
 
-                            NetworkPath?                  NetworkPath         = null,
+                            NetworkPath?                  NetworkPath           = null,
 
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<Signature>?       Signatures          = null,
+                            IEnumerable<KeyPair>?         SignKeys              = null,
+                            IEnumerable<SignInfo>?        SignInfos             = null,
+                            IEnumerable<Signature>?       Signatures            = null,
 
-                            Request_Id?                   RequestId           = null,
-                            DateTime?                     RequestTimestamp    = null,
-                            TimeSpan?                     RequestTimeout      = null,
-                            EventTracking_Id?             EventTrackingId     = null,
-                            CancellationToken             CancellationToken   = default)
+                            Request_Id?                   RequestId             = null,
+                            DateTime?                     RequestTimestamp      = null,
+                            TimeSpan?                     RequestTimeout        = null,
+                            EventTracking_Id?             EventTrackingId       = null,
+                            SerializationFormats?         SerializationFormat   = null,
+                            CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.PublishFirmware(
@@ -2058,6 +2117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2086,19 +2146,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               SourceRouting                 Destination,
                               String                        MD5Checksum,
 
-                              CustomData?                   CustomData          = null,
+                              CustomData?                   CustomData            = null,
 
-                              NetworkPath?                  NetworkPath         = null,
+                              NetworkPath?                  NetworkPath           = null,
 
-                              IEnumerable<KeyPair>?         SignKeys            = null,
-                              IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys              = null,
+                              IEnumerable<SignInfo>?        SignInfos             = null,
+                              IEnumerable<Signature>?       Signatures            = null,
 
-                              Request_Id?                   RequestId           = null,
-                              DateTime?                     RequestTimestamp    = null,
-                              TimeSpan?                     RequestTimeout      = null,
-                              EventTracking_Id?             EventTrackingId     = null,
-                              CancellationToken             CancellationToken   = default)
+                              Request_Id?                   RequestId             = null,
+                              DateTime?                     RequestTimestamp      = null,
+                              TimeSpan?                     RequestTimeout        = null,
+                              EventTracking_Id?             EventTrackingId       = null,
+                              SerializationFormats?         SerializationFormat   = null,
+                              CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.UnpublishFirmware(
@@ -2117,6 +2178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2147,19 +2209,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           Int64                         GetBaseReportRequestId,
                           ReportBase                    ReportBase,
 
-                          CustomData?                   CustomData          = null,
+                          CustomData?                   CustomData            = null,
 
-                          NetworkPath?                  NetworkPath         = null,
+                          NetworkPath?                  NetworkPath           = null,
 
-                          IEnumerable<KeyPair>?         SignKeys            = null,
-                          IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<Signature>?       Signatures          = null,
+                          IEnumerable<KeyPair>?         SignKeys              = null,
+                          IEnumerable<SignInfo>?        SignInfos             = null,
+                          IEnumerable<Signature>?       Signatures            = null,
 
-                          Request_Id?                   RequestId           = null,
-                          DateTime?                     RequestTimestamp    = null,
-                          TimeSpan?                     RequestTimeout      = null,
-                          EventTracking_Id?             EventTrackingId     = null,
-                          CancellationToken             CancellationToken   = default)
+                          Request_Id?                   RequestId             = null,
+                          DateTime?                     RequestTimestamp      = null,
+                          TimeSpan?                     RequestTimeout        = null,
+                          EventTracking_Id?             EventTrackingId       = null,
+                          SerializationFormats?         SerializationFormat   = null,
+                          CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetBaseReport(
@@ -2179,6 +2242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2211,19 +2275,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
 
-                      CustomData?                     CustomData          = null,
+                      CustomData?                     CustomData            = null,
 
-                      NetworkPath?                    NetworkPath         = null,
+                      NetworkPath?                    NetworkPath           = null,
 
-                      IEnumerable<KeyPair>?           SignKeys            = null,
-                      IEnumerable<SignInfo>?          SignInfos           = null,
-                      IEnumerable<Signature>?         Signatures          = null,
+                      IEnumerable<KeyPair>?           SignKeys              = null,
+                      IEnumerable<SignInfo>?          SignInfos             = null,
+                      IEnumerable<Signature>?         Signatures            = null,
 
-                      Request_Id?                     RequestId           = null,
-                      DateTime?                       RequestTimestamp    = null,
-                      TimeSpan?                       RequestTimeout      = null,
-                      EventTracking_Id?               EventTrackingId     = null,
-                      CancellationToken               CancellationToken   = default)
+                      Request_Id?                     RequestId             = null,
+                      DateTime?                       RequestTimestamp      = null,
+                      TimeSpan?                       RequestTimeout        = null,
+                      EventTracking_Id?               EventTrackingId       = null,
+                      SerializationFormats?           SerializationFormat   = null,
+                      CancellationToken               CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetReport(
@@ -2244,6 +2309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2277,22 +2343,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                    LogType                       LogType,
                    Int32                         LogRequestId,
                    LogParameters                 Log,
-                   Byte?                         Retries             = null,
-                   TimeSpan?                     RetryInterval       = null,
+                   Byte?                         Retries               = null,
+                   TimeSpan?                     RetryInterval         = null,
 
-                   CustomData?                   CustomData          = null,
+                   CustomData?                   CustomData            = null,
 
-                   NetworkPath?                  NetworkPath         = null,
+                   NetworkPath?                  NetworkPath           = null,
 
-                   IEnumerable<KeyPair>?         SignKeys            = null,
-                   IEnumerable<SignInfo>?        SignInfos           = null,
-                   IEnumerable<Signature>?       Signatures          = null,
+                   IEnumerable<KeyPair>?         SignKeys              = null,
+                   IEnumerable<SignInfo>?        SignInfos             = null,
+                   IEnumerable<Signature>?       Signatures            = null,
 
-                   Request_Id?                   RequestId           = null,
-                   DateTime?                     RequestTimestamp    = null,
-                   TimeSpan?                     RequestTimeout      = null,
-                   EventTracking_Id?             EventTrackingId     = null,
-                   CancellationToken             CancellationToken   = default)
+                   Request_Id?                   RequestId             = null,
+                   DateTime?                     RequestTimestamp      = null,
+                   TimeSpan?                     RequestTimeout        = null,
+                   EventTracking_Id?             EventTrackingId       = null,
+                   SerializationFormats?         SerializationFormat   = null,
+                   CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetLog(
@@ -2315,6 +2382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2358,6 +2426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          DateTime?                     RequestTimestamp       = null,
                          TimeSpan?                     RequestTimeout         = null,
                          EventTracking_Id?             EventTrackingId        = null,
+                         SerializationFormats?         SerializationFormat    = null,
                          CancellationToken             CancellationToken      = default)
 
 
@@ -2378,6 +2447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2406,19 +2476,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          SourceRouting                 Destination,
                          IEnumerable<GetVariableData>  VariableData,
 
-                         CustomData?                   CustomData          = null,
+                         CustomData?                   CustomData            = null,
 
-                         NetworkPath?                  NetworkPath         = null,
+                         NetworkPath?                  NetworkPath           = null,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<KeyPair>?         SignKeys              = null,
+                         IEnumerable<SignInfo>?        SignInfos             = null,
+                         IEnumerable<Signature>?       Signatures            = null,
 
-                         Request_Id?                   RequestId           = null,
-                         DateTime?                     RequestTimestamp    = null,
-                         TimeSpan?                     RequestTimeout      = null,
-                         EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken             CancellationToken   = default)
+                         Request_Id?                   RequestId             = null,
+                         DateTime?                     RequestTimestamp      = null,
+                         TimeSpan?                     RequestTimeout        = null,
+                         EventTracking_Id?             EventTrackingId       = null,
+                         SerializationFormats?         SerializationFormat   = null,
+                         CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetVariables(
@@ -2437,6 +2508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2465,19 +2537,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               SourceRouting                 Destination,
                               MonitoringBase                MonitoringBase,
 
-                              CustomData?                   CustomData          = null,
+                              CustomData?                   CustomData            = null,
 
-                              NetworkPath?                  NetworkPath         = null,
+                              NetworkPath?                  NetworkPath           = null,
 
-                              IEnumerable<KeyPair>?         SignKeys            = null,
-                              IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys              = null,
+                              IEnumerable<SignInfo>?        SignInfos             = null,
+                              IEnumerable<Signature>?       Signatures            = null,
 
-                              Request_Id?                   RequestId           = null,
-                              DateTime?                     RequestTimestamp    = null,
-                              TimeSpan?                     RequestTimeout      = null,
-                              EventTracking_Id?             EventTrackingId     = null,
-                              CancellationToken             CancellationToken   = default)
+                              Request_Id?                   RequestId             = null,
+                              DateTime?                     RequestTimestamp      = null,
+                              TimeSpan?                     RequestTimeout        = null,
+                              EventTracking_Id?             EventTrackingId       = null,
+                              SerializationFormats?         SerializationFormat   = null,
+                              CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetMonitoringBase(
@@ -2496,6 +2569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2528,19 +2602,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>    ComponentVariables,
 
-                                CustomData?                       CustomData          = null,
+                                CustomData?                       CustomData            = null,
 
-                                NetworkPath?                      NetworkPath         = null,
+                                NetworkPath?                      NetworkPath           = null,
 
-                                IEnumerable<KeyPair>?             SignKeys            = null,
-                                IEnumerable<SignInfo>?            SignInfos           = null,
-                                IEnumerable<Signature>?           Signatures          = null,
+                                IEnumerable<KeyPair>?             SignKeys              = null,
+                                IEnumerable<SignInfo>?            SignInfos             = null,
+                                IEnumerable<Signature>?           Signatures            = null,
 
-                                Request_Id?                       RequestId           = null,
-                                DateTime?                         RequestTimestamp    = null,
-                                TimeSpan?                         RequestTimeout      = null,
-                                EventTracking_Id?                 EventTrackingId     = null,
-                                CancellationToken                 CancellationToken   = default)
+                                Request_Id?                       RequestId             = null,
+                                DateTime?                         RequestTimestamp      = null,
+                                TimeSpan?                         RequestTimeout        = null,
+                                EventTracking_Id?                 EventTrackingId       = null,
+                                SerializationFormats?             SerializationFormat   = null,
+                                CancellationToken                 CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetMonitoringReport(
@@ -2561,6 +2636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2589,19 +2665,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                SourceRouting                 Destination,
                                Severities                    Severity,
 
-                               CustomData?                   CustomData          = null,
+                               CustomData?                   CustomData            = null,
 
-                               NetworkPath?                  NetworkPath         = null,
+                               NetworkPath?                  NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?         SignKeys            = null,
-                               IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<Signature>?       Signatures          = null,
+                               IEnumerable<KeyPair>?         SignKeys              = null,
+                               IEnumerable<SignInfo>?        SignInfos             = null,
+                               IEnumerable<Signature>?       Signatures            = null,
 
-                               Request_Id?                   RequestId           = null,
-                               DateTime?                     RequestTimestamp    = null,
-                               TimeSpan?                     RequestTimeout      = null,
-                               EventTracking_Id?             EventTrackingId     = null,
-                               CancellationToken             CancellationToken   = default)
+                               Request_Id?                   RequestId             = null,
+                               DateTime?                     RequestTimestamp      = null,
+                               TimeSpan?                     RequestTimeout        = null,
+                               EventTracking_Id?             EventTrackingId       = null,
+                               SerializationFormats?         SerializationFormat   = null,
+                               CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetMonitoringLevel(
@@ -2620,6 +2697,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2648,19 +2726,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   SourceRouting                   Destination,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
-                                  CustomData?                     CustomData          = null,
+                                  CustomData?                     CustomData            = null,
 
-                                  NetworkPath?                    NetworkPath         = null,
+                                  NetworkPath?                    NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?           SignKeys            = null,
-                                  IEnumerable<SignInfo>?          SignInfos           = null,
-                                  IEnumerable<Signature>?         Signatures          = null,
+                                  IEnumerable<KeyPair>?           SignKeys              = null,
+                                  IEnumerable<SignInfo>?          SignInfos             = null,
+                                  IEnumerable<Signature>?         Signatures            = null,
 
-                                  Request_Id?                     RequestId           = null,
-                                  DateTime?                       RequestTimestamp    = null,
-                                  TimeSpan?                       RequestTimeout      = null,
-                                  EventTracking_Id?               EventTrackingId     = null,
-                                  CancellationToken               CancellationToken   = default)
+                                  Request_Id?                     RequestId             = null,
+                                  DateTime?                       RequestTimestamp      = null,
+                                  TimeSpan?                       RequestTimeout        = null,
+                                  EventTracking_Id?               EventTrackingId       = null,
+                                  SerializationFormats?           SerializationFormat   = null,
+                                  CancellationToken               CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetVariableMonitoring(
@@ -2679,6 +2758,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2707,19 +2787,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                     SourceRouting                       Destination,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
-                                    CustomData?                         CustomData          = null,
+                                    CustomData?                         CustomData            = null,
 
-                                    NetworkPath?                        NetworkPath         = null,
+                                    NetworkPath?                        NetworkPath           = null,
 
-                                    IEnumerable<KeyPair>?               SignKeys            = null,
-                                    IEnumerable<SignInfo>?              SignInfos           = null,
-                                    IEnumerable<Signature>?             Signatures          = null,
+                                    IEnumerable<KeyPair>?               SignKeys              = null,
+                                    IEnumerable<SignInfo>?              SignInfos             = null,
+                                    IEnumerable<Signature>?             Signatures            = null,
 
-                                    Request_Id?                         RequestId           = null,
-                                    DateTime?                           RequestTimestamp    = null,
-                                    TimeSpan?                           RequestTimeout      = null,
-                                    EventTracking_Id?                   EventTrackingId     = null,
-                                    CancellationToken                   CancellationToken   = default)
+                                    Request_Id?                         RequestId             = null,
+                                    DateTime?                           RequestTimestamp      = null,
+                                    TimeSpan?                           RequestTimeout        = null,
+                                    EventTracking_Id?                   EventTrackingId       = null,
+                                    SerializationFormats?               SerializationFormat   = null,
+                                    CancellationToken                   CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ClearVariableMonitoring(
@@ -2738,6 +2819,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2768,19 +2850,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               Int32                         ConfigurationSlot,
                               NetworkConnectionProfile      NetworkConnectionProfile,
 
-                              CustomData?                   CustomData          = null,
+                              CustomData?                   CustomData            = null,
 
-                              NetworkPath?                  NetworkPath         = null,
+                              NetworkPath?                  NetworkPath           = null,
 
-                              IEnumerable<KeyPair>?         SignKeys            = null,
-                              IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys              = null,
+                              IEnumerable<SignInfo>?        SignInfos             = null,
+                              IEnumerable<Signature>?       Signatures            = null,
 
-                              Request_Id?                   RequestId           = null,
-                              DateTime?                     RequestTimestamp    = null,
-                              TimeSpan?                     RequestTimeout      = null,
-                              EventTracking_Id?             EventTrackingId     = null,
-                              CancellationToken             CancellationToken   = default)
+                              Request_Id?                   RequestId             = null,
+                              DateTime?                     RequestTimestamp      = null,
+                              TimeSpan?                     RequestTimeout        = null,
+                              EventTracking_Id?             EventTrackingId       = null,
+                              SerializationFormats?         SerializationFormat   = null,
+                              CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetNetworkProfile(
@@ -2800,6 +2883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2830,21 +2914,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                SourceRouting                 Destination,
                                OperationalStatus             OperationalStatus,
 
-                               EVSE?                         EVSE                = null,
+                               EVSE?                         EVSE                  = null,
 
-                               CustomData?                   CustomData          = null,
+                               CustomData?                   CustomData            = null,
 
-                               NetworkPath?                  NetworkPath         = null,
+                               NetworkPath?                  NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?         SignKeys            = null,
-                               IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<Signature>?       Signatures          = null,
+                               IEnumerable<KeyPair>?         SignKeys              = null,
+                               IEnumerable<SignInfo>?        SignInfos             = null,
+                               IEnumerable<Signature>?       Signatures            = null,
 
-                               Request_Id?                   RequestId           = null,
-                               DateTime?                     RequestTimestamp    = null,
-                               TimeSpan?                     RequestTimeout      = null,
-                               EventTracking_Id?             EventTrackingId     = null,
-                               CancellationToken             CancellationToken   = default)
+                               Request_Id?                   RequestId             = null,
+                               DateTime?                     RequestTimestamp      = null,
+                               TimeSpan?                     RequestTimeout        = null,
+                               EventTracking_Id?             EventTrackingId       = null,
+                               SerializationFormats?         SerializationFormat   = null,
+                               CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ChangeAvailability(
@@ -2864,6 +2949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2893,22 +2979,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             TriggerMessage(this ILocalControllerNode     LocalController,
                            SourceRouting                 Destination,
                            MessageTrigger                RequestedMessage,
-                           EVSE?                         EVSE                = null,
-                           String?                       CustomTrigger       = null,
+                           EVSE?                         EVSE                  = null,
+                           String?                       CustomTrigger         = null,
 
-                           CustomData?                   CustomData          = null,
+                           CustomData?                   CustomData            = null,
 
-                           NetworkPath?                  NetworkPath         = null,
+                           NetworkPath?                  NetworkPath           = null,
 
-                           IEnumerable<KeyPair>?         SignKeys            = null,
-                           IEnumerable<SignInfo>?        SignInfos           = null,
-                           IEnumerable<Signature>?       Signatures          = null,
+                           IEnumerable<KeyPair>?         SignKeys              = null,
+                           IEnumerable<SignInfo>?        SignInfos             = null,
+                           IEnumerable<Signature>?       Signatures            = null,
 
-                           Request_Id?                   RequestId           = null,
-                           DateTime?                     RequestTimestamp    = null,
-                           TimeSpan?                     RequestTimeout      = null,
-                           EventTracking_Id?             EventTrackingId     = null,
-                           CancellationToken             CancellationToken   = default)
+                           Request_Id?                   RequestId             = null,
+                           DateTime?                     RequestTimestamp      = null,
+                           TimeSpan?                     RequestTimeout        = null,
+                           EventTracking_Id?             EventTrackingId       = null,
+                           SerializationFormats?         SerializationFormat   = null,
+                           CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.TriggerMessage(
@@ -2929,6 +3016,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2957,21 +3045,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             SendSignedCertificate(this ILocalControllerNode     LocalController,
                                   SourceRouting                 Destination,
                                   CertificateChain              CertificateChain,
-                                  CertificateSigningUse?        CertificateType     = null,
+                                  CertificateSigningUse?        CertificateType       = null,
 
-                                  CustomData?                   CustomData          = null,
+                                  CustomData?                   CustomData            = null,
 
-                                  NetworkPath?                  NetworkPath         = null,
+                                  NetworkPath?                  NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<KeyPair>?         SignKeys              = null,
+                                  IEnumerable<SignInfo>?        SignInfos             = null,
+                                  IEnumerable<Signature>?       Signatures            = null,
 
-                                  Request_Id?                   RequestId           = null,
-                                  DateTime?                     RequestTimestamp    = null,
-                                  TimeSpan?                     RequestTimeout      = null,
-                                  EventTracking_Id?             EventTrackingId     = null,
-                                  CancellationToken             CancellationToken   = default)
+                                  Request_Id?                   RequestId             = null,
+                                  DateTime?                     RequestTimestamp      = null,
+                                  TimeSpan?                     RequestTimeout        = null,
+                                  EventTracking_Id?             EventTrackingId       = null,
+                                  SerializationFormats?         SerializationFormat   = null,
+                                  CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.CertificateSigned(
@@ -2991,6 +3080,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3021,19 +3111,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                InstallCertificateUse         CertificateType,
                                Certificate                   Certificate,
 
-                               CustomData?                   CustomData          = null,
+                               CustomData?                   CustomData            = null,
 
-                               NetworkPath?                  NetworkPath         = null,
+                               NetworkPath?                  NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?         SignKeys            = null,
-                               IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<Signature>?       Signatures          = null,
+                               IEnumerable<KeyPair>?         SignKeys              = null,
+                               IEnumerable<SignInfo>?        SignInfos             = null,
+                               IEnumerable<Signature>?       Signatures            = null,
 
-                               Request_Id?                   RequestId           = null,
-                               DateTime?                     RequestTimestamp    = null,
-                               TimeSpan?                     RequestTimeout      = null,
-                               EventTracking_Id?             EventTrackingId     = null,
-                               CancellationToken             CancellationToken   = default)
+                               Request_Id?                   RequestId             = null,
+                               DateTime?                     RequestTimestamp      = null,
+                               TimeSpan?                     RequestTimeout        = null,
+                               EventTracking_Id?             EventTrackingId       = null,
+                               SerializationFormats?         SerializationFormat   = null,
+                               CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.InstallCertificate(
@@ -3053,6 +3144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3079,21 +3171,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             GetInstalledCertificateIds(this ILocalControllerNode          LocalController,
                                        SourceRouting                      Destination,
-                                       IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
+                                       IEnumerable<GetCertificateIdUse>?  CertificateTypes      = null,
 
-                                       CustomData?                        CustomData          = null,
+                                       CustomData?                        CustomData            = null,
 
-                                       NetworkPath?                       NetworkPath         = null,
+                                       NetworkPath?                       NetworkPath           = null,
 
-                                       IEnumerable<KeyPair>?              SignKeys            = null,
-                                       IEnumerable<SignInfo>?             SignInfos           = null,
-                                       IEnumerable<Signature>?            Signatures          = null,
+                                       IEnumerable<KeyPair>?              SignKeys              = null,
+                                       IEnumerable<SignInfo>?             SignInfos             = null,
+                                       IEnumerable<Signature>?            Signatures            = null,
 
-                                       Request_Id?                        RequestId           = null,
-                                       DateTime?                          RequestTimestamp    = null,
-                                       TimeSpan?                          RequestTimeout      = null,
-                                       EventTracking_Id?                  EventTrackingId     = null,
-                                       CancellationToken                  CancellationToken   = default)
+                                       Request_Id?                        RequestId             = null,
+                                       DateTime?                          RequestTimestamp      = null,
+                                       TimeSpan?                          RequestTimeout        = null,
+                                       EventTracking_Id?                  EventTrackingId       = null,
+                                       SerializationFormats?              SerializationFormat   = null,
+                                       CancellationToken                  CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetInstalledCertificateIds(
@@ -3112,6 +3205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3140,19 +3234,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               SourceRouting                 Destination,
                               CertificateHashData           CertificateHashData,
 
-                              CustomData?                   CustomData          = null,
+                              CustomData?                   CustomData            = null,
 
-                              NetworkPath?                  NetworkPath         = null,
+                              NetworkPath?                  NetworkPath           = null,
 
-                              IEnumerable<KeyPair>?         SignKeys            = null,
-                              IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys              = null,
+                              IEnumerable<SignInfo>?        SignInfos             = null,
+                              IEnumerable<Signature>?       Signatures            = null,
 
-                              Request_Id?                   RequestId           = null,
-                              DateTime?                     RequestTimestamp    = null,
-                              TimeSpan?                     RequestTimeout      = null,
-                              EventTracking_Id?             EventTrackingId     = null,
-                              CancellationToken             CancellationToken   = default)
+                              Request_Id?                   RequestId             = null,
+                              DateTime?                     RequestTimestamp      = null,
+                              TimeSpan?                     RequestTimeout        = null,
+                              EventTracking_Id?             EventTrackingId       = null,
+                              SerializationFormats?         SerializationFormat   = null,
+                              CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.DeleteCertificate(
@@ -3171,6 +3266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3203,19 +3299,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   NotifyCRLStatus               Availability,
                                   URL?                          Location,
 
-                                  CustomData?                   CustomData          = null,
+                                  CustomData?                   CustomData            = null,
 
-                                  NetworkPath?                  NetworkPath         = null,
+                                  NetworkPath?                  NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                  IEnumerable<Signature>?       Signatures          = null,
+                                  IEnumerable<KeyPair>?         SignKeys              = null,
+                                  IEnumerable<SignInfo>?        SignInfos             = null,
+                                  IEnumerable<Signature>?       Signatures            = null,
 
-                                  Request_Id?                   RequestId           = null,
-                                  DateTime?                     RequestTimestamp    = null,
-                                  TimeSpan?                     RequestTimeout      = null,
-                                  EventTracking_Id?             EventTrackingId     = null,
-                                  CancellationToken             CancellationToken   = default)
+                                  Request_Id?                   RequestId             = null,
+                                  DateTime?                     RequestTimestamp      = null,
+                                  TimeSpan?                     RequestTimeout        = null,
+                                  EventTracking_Id?             EventTrackingId       = null,
+                                  SerializationFormats?         SerializationFormat   = null,
+                                  CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyCRL(
@@ -3236,6 +3333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3263,19 +3361,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             GetLocalListVersion(this ILocalControllerNode     LocalController,
                                 SourceRouting                 Destination,
 
-                                CustomData?                   CustomData          = null,
+                                CustomData?                   CustomData            = null,
 
-                                NetworkPath?                  NetworkPath         = null,
+                                NetworkPath?                  NetworkPath           = null,
 
-                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<Signature>?       Signatures          = null,
+                                IEnumerable<KeyPair>?         SignKeys              = null,
+                                IEnumerable<SignInfo>?        SignInfos             = null,
+                                IEnumerable<Signature>?       Signatures            = null,
 
-                                Request_Id?                   RequestId           = null,
-                                DateTime?                     RequestTimestamp    = null,
-                                TimeSpan?                     RequestTimeout      = null,
-                                EventTracking_Id?             EventTrackingId     = null,
-                                CancellationToken             CancellationToken   = default)
+                                Request_Id?                   RequestId             = null,
+                                DateTime?                     RequestTimestamp      = null,
+                                TimeSpan?                     RequestTimeout        = null,
+                                EventTracking_Id?             EventTrackingId       = null,
+                                SerializationFormats?         SerializationFormat   = null,
+                                CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetLocalListVersion(
@@ -3293,6 +3392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3337,6 +3437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           DateTime?                        RequestTimestamp         = null,
                           TimeSpan?                        RequestTimeout           = null,
                           EventTracking_Id?                EventTrackingId          = null,
+                          SerializationFormats?            SerializationFormat      = null,
                           CancellationToken                CancellationToken        = default)
 
 
@@ -3358,6 +3459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3384,19 +3486,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             ClearCache(this ILocalControllerNode     LocalController,
                        SourceRouting                 Destination,
 
-                       CustomData?                   CustomData          = null,
+                       CustomData?                   CustomData            = null,
 
-                       NetworkPath?                  NetworkPath         = null,
+                       NetworkPath?                  NetworkPath           = null,
 
-                       IEnumerable<KeyPair>?         SignKeys            = null,
-                       IEnumerable<SignInfo>?        SignInfos           = null,
-                       IEnumerable<Signature>?       Signatures          = null,
+                       IEnumerable<KeyPair>?         SignKeys              = null,
+                       IEnumerable<SignInfo>?        SignInfos             = null,
+                       IEnumerable<Signature>?       Signatures            = null,
 
-                       Request_Id?                   RequestId           = null,
-                       DateTime?                     RequestTimestamp    = null,
-                       TimeSpan?                     RequestTimeout      = null,
-                       EventTracking_Id?             EventTrackingId     = null,
-                       CancellationToken             CancellationToken   = default)
+                       Request_Id?                   RequestId             = null,
+                       DateTime?                     RequestTimestamp      = null,
+                       TimeSpan?                     RequestTimeout        = null,
+                       EventTracking_Id?             EventTrackingId       = null,
+                       SerializationFormats?         SerializationFormat   = null,
+                       CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ClearCache(
@@ -3414,6 +3517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3449,23 +3553,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                        Reservation_Id                ReservationId,
                        DateTime                      ExpiryDate,
                        IdToken                       IdToken,
-                       ConnectorType?                ConnectorType       = null,
-                       EVSE_Id?                      EVSEId              = null,
-                       IdToken?                      GroupIdToken        = null,
+                       ConnectorType?                ConnectorType         = null,
+                       EVSE_Id?                      EVSEId                = null,
+                       IdToken?                      GroupIdToken          = null,
 
-                       CustomData?                   CustomData          = null,
+                       CustomData?                   CustomData            = null,
 
-                       NetworkPath?                  NetworkPath         = null,
+                       NetworkPath?                  NetworkPath           = null,
 
-                       IEnumerable<KeyPair>?         SignKeys            = null,
-                       IEnumerable<SignInfo>?        SignInfos           = null,
-                       IEnumerable<Signature>?       Signatures          = null,
+                       IEnumerable<KeyPair>?         SignKeys              = null,
+                       IEnumerable<SignInfo>?        SignInfos             = null,
+                       IEnumerable<Signature>?       Signatures            = null,
 
-                       Request_Id?                   RequestId           = null,
-                       DateTime?                     RequestTimestamp    = null,
-                       TimeSpan?                     RequestTimeout      = null,
-                       EventTracking_Id?             EventTrackingId     = null,
-                       CancellationToken             CancellationToken   = default)
+                       Request_Id?                   RequestId             = null,
+                       DateTime?                     RequestTimestamp      = null,
+                       TimeSpan?                     RequestTimeout        = null,
+                       EventTracking_Id?             EventTrackingId       = null,
+                       SerializationFormats?         SerializationFormat   = null,
+                       CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ReserveNow(
@@ -3489,6 +3594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3517,19 +3623,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               SourceRouting                 Destination,
                               Reservation_Id                ReservationId,
 
-                              CustomData?                   CustomData          = null,
+                              CustomData?                   CustomData            = null,
 
-                              NetworkPath?                  NetworkPath         = null,
+                              NetworkPath?                  NetworkPath           = null,
 
-                              IEnumerable<KeyPair>?         SignKeys            = null,
-                              IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys              = null,
+                              IEnumerable<SignInfo>?        SignInfos             = null,
+                              IEnumerable<Signature>?       Signatures            = null,
 
-                              Request_Id?                   RequestId           = null,
-                              DateTime?                     RequestTimestamp    = null,
-                              TimeSpan?                     RequestTimeout      = null,
-                              EventTracking_Id?             EventTrackingId     = null,
-                              CancellationToken             CancellationToken   = default)
+                              Request_Id?                   RequestId             = null,
+                              DateTime?                     RequestTimestamp      = null,
+                              TimeSpan?                     RequestTimeout        = null,
+                              EventTracking_Id?             EventTrackingId       = null,
+                              SerializationFormats?         SerializationFormat   = null,
+                              CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.CancelReservation(
@@ -3548,6 +3655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3581,24 +3689,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           SourceRouting                 Destination,
                           RemoteStart_Id                RequestStartTransactionRequestId,
                           IdToken                       IdToken,
-                          EVSE_Id?                      EVSEId              = null,
-                          ChargingProfile?              ChargingProfile     = null,
-                          IdToken?                      GroupIdToken        = null,
-                          TransactionLimits?            TransactionLimits   = null,
+                          EVSE_Id?                      EVSEId                = null,
+                          ChargingProfile?              ChargingProfile       = null,
+                          IdToken?                      GroupIdToken          = null,
+                          TransactionLimits?            TransactionLimits     = null,
 
-                          CustomData?                   CustomData          = null,
+                          CustomData?                   CustomData            = null,
 
-                          NetworkPath?                  NetworkPath         = null,
+                          NetworkPath?                  NetworkPath           = null,
 
-                          IEnumerable<KeyPair>?         SignKeys            = null,
-                          IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<Signature>?       Signatures          = null,
+                          IEnumerable<KeyPair>?         SignKeys              = null,
+                          IEnumerable<SignInfo>?        SignInfos             = null,
+                          IEnumerable<Signature>?       Signatures            = null,
 
-                          Request_Id?                   RequestId           = null,
-                          DateTime?                     RequestTimestamp    = null,
-                          TimeSpan?                     RequestTimeout      = null,
-                          EventTracking_Id?             EventTrackingId     = null,
-                          CancellationToken             CancellationToken   = default)
+                          Request_Id?                   RequestId             = null,
+                          DateTime?                     RequestTimestamp      = null,
+                          TimeSpan?                     RequestTimeout        = null,
+                          EventTracking_Id?             EventTrackingId       = null,
+                          SerializationFormats?         SerializationFormat   = null,
+                          CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.RequestStartTransaction(
@@ -3622,6 +3731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3650,19 +3760,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          SourceRouting                 Destination,
                          Transaction_Id                TransactionId,
 
-                         CustomData?                   CustomData          = null,
+                         CustomData?                   CustomData            = null,
 
-                         NetworkPath?                  NetworkPath         = null,
+                         NetworkPath?                  NetworkPath           = null,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<KeyPair>?         SignKeys              = null,
+                         IEnumerable<SignInfo>?        SignInfos             = null,
+                         IEnumerable<Signature>?       Signatures            = null,
 
-                         Request_Id?                   RequestId           = null,
-                         DateTime?                     RequestTimestamp    = null,
-                         TimeSpan?                     RequestTimeout      = null,
-                         EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken             CancellationToken   = default)
+                         Request_Id?                   RequestId             = null,
+                         DateTime?                     RequestTimestamp      = null,
+                         TimeSpan?                     RequestTimeout        = null,
+                         EventTracking_Id?             EventTrackingId       = null,
+                         SerializationFormats?         SerializationFormat   = null,
+                         CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.RequestStopTransaction(
@@ -3681,6 +3792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3707,21 +3819,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             GetTransactionStatus(this ILocalControllerNode     LocalController,
                                  SourceRouting                 Destination,
-                                 Transaction_Id?               TransactionId       = null,
+                                 Transaction_Id?               TransactionId         = null,
 
-                                 CustomData?                   CustomData          = null,
+                                 CustomData?                   CustomData            = null,
 
-                                 NetworkPath?                  NetworkPath         = null,
+                                 NetworkPath?                  NetworkPath           = null,
 
-                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<Signature>?       Signatures          = null,
+                                 IEnumerable<KeyPair>?         SignKeys              = null,
+                                 IEnumerable<SignInfo>?        SignInfos             = null,
+                                 IEnumerable<Signature>?       Signatures            = null,
 
-                                 Request_Id?                   RequestId           = null,
-                                 DateTime?                     RequestTimestamp    = null,
-                                 TimeSpan?                     RequestTimeout      = null,
-                                 EventTracking_Id?             EventTrackingId     = null,
-                                 CancellationToken             CancellationToken   = default)
+                                 Request_Id?                   RequestId             = null,
+                                 DateTime?                     RequestTimestamp      = null,
+                                 TimeSpan?                     RequestTimeout        = null,
+                                 EventTracking_Id?             EventTrackingId       = null,
+                                 SerializationFormats?         SerializationFormat   = null,
+                                 CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetTransactionStatus(
@@ -3740,6 +3853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3770,19 +3884,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                EVSE_Id                       EVSEId,
                                ChargingProfile               ChargingProfile,
 
-                               CustomData?                   CustomData          = null,
+                               CustomData?                   CustomData            = null,
 
-                               NetworkPath?                  NetworkPath         = null,
+                               NetworkPath?                  NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?         SignKeys            = null,
-                               IEnumerable<SignInfo>?        SignInfos           = null,
-                               IEnumerable<Signature>?       Signatures          = null,
+                               IEnumerable<KeyPair>?         SignKeys              = null,
+                               IEnumerable<SignInfo>?        SignInfos             = null,
+                               IEnumerable<Signature>?       Signatures            = null,
 
-                               Request_Id?                   RequestId           = null,
-                               DateTime?                     RequestTimestamp    = null,
-                               TimeSpan?                     RequestTimeout      = null,
-                               EventTracking_Id?             EventTrackingId     = null,
-                               CancellationToken             CancellationToken   = default)
+                               Request_Id?                   RequestId             = null,
+                               DateTime?                     RequestTimestamp      = null,
+                               TimeSpan?                     RequestTimeout        = null,
+                               EventTracking_Id?             EventTrackingId       = null,
+                               SerializationFormats?         SerializationFormat   = null,
+                               CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetChargingProfile(
@@ -3802,6 +3917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3831,21 +3947,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 SourceRouting                 Destination,
                                 Int64                         GetChargingProfilesRequestId,
                                 ChargingProfileCriterion      ChargingProfile,
-                                EVSE_Id?                      EVSEId              = null,
+                                EVSE_Id?                      EVSEId                = null,
 
-                                CustomData?                   CustomData          = null,
+                                CustomData?                   CustomData            = null,
 
-                                NetworkPath?                  NetworkPath         = null,
+                                NetworkPath?                  NetworkPath           = null,
 
-                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<Signature>?       Signatures          = null,
+                                IEnumerable<KeyPair>?         SignKeys              = null,
+                                IEnumerable<SignInfo>?        SignInfos             = null,
+                                IEnumerable<Signature>?       Signatures            = null,
 
-                                Request_Id?                   RequestId           = null,
-                                DateTime?                     RequestTimestamp    = null,
-                                TimeSpan?                     RequestTimeout      = null,
-                                EventTracking_Id?             EventTrackingId     = null,
-                                CancellationToken             CancellationToken   = default)
+                                Request_Id?                   RequestId             = null,
+                                DateTime?                     RequestTimestamp      = null,
+                                TimeSpan?                     RequestTimeout        = null,
+                                EventTracking_Id?             EventTrackingId       = null,
+                                SerializationFormats?         SerializationFormat   = null,
+                                CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetChargingProfiles(
@@ -3866,6 +3983,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3908,6 +4026,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  DateTime?                     RequestTimestamp          = null,
                                  TimeSpan?                     RequestTimeout            = null,
                                  EventTracking_Id?             EventTrackingId           = null,
+                                 SerializationFormats?         SerializationFormat       = null,
                                  CancellationToken             CancellationToken         = default)
 
 
@@ -3928,6 +4047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3958,21 +4078,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  SourceRouting                 Destination,
                                  TimeSpan                      Duration,
                                  EVSE_Id                       EVSEId,
-                                 ChargingRateUnits?            ChargingRateUnit    = null,
+                                 ChargingRateUnits?            ChargingRateUnit      = null,
 
-                                 CustomData?                   CustomData          = null,
+                                 CustomData?                   CustomData            = null,
 
-                                 NetworkPath?                  NetworkPath         = null,
+                                 NetworkPath?                  NetworkPath           = null,
 
-                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<Signature>?       Signatures          = null,
+                                 IEnumerable<KeyPair>?         SignKeys              = null,
+                                 IEnumerable<SignInfo>?        SignInfos             = null,
+                                 IEnumerable<Signature>?       Signatures            = null,
 
-                                 Request_Id?                   RequestId           = null,
-                                 DateTime?                     RequestTimestamp    = null,
-                                 TimeSpan?                     RequestTimeout      = null,
-                                 EventTracking_Id?             EventTrackingId     = null,
-                                 CancellationToken             CancellationToken   = default)
+                                 Request_Id?                   RequestId             = null,
+                                 DateTime?                     RequestTimestamp      = null,
+                                 TimeSpan?                     RequestTimeout        = null,
+                                 EventTracking_Id?             EventTrackingId       = null,
+                                 SerializationFormats?         SerializationFormat   = null,
+                                 CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetCompositeSchedule(
@@ -3993,6 +4114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4065,6 +4187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   DateTime?                     RequestTimestamp      = null,
                                   TimeSpan?                     RequestTimeout        = null,
                                   EventTracking_Id?             EventTrackingId       = null,
+                                  SerializationFormats?         SerializationFormat   = null,
                                   CancellationToken             CancellationToken     = default)
 
 
@@ -4101,6 +4224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -4130,19 +4254,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                         SourceRouting                    Destination,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
-                                        CustomData?                      CustomData          = null,
+                                        CustomData?                      CustomData            = null,
 
-                                        NetworkPath?                     NetworkPath         = null,
+                                        NetworkPath?                     NetworkPath           = null,
 
-                                        IEnumerable<KeyPair>?            SignKeys            = null,
-                                        IEnumerable<SignInfo>?           SignInfos           = null,
-                                        IEnumerable<Signature>?          Signatures          = null,
+                                        IEnumerable<KeyPair>?            SignKeys              = null,
+                                        IEnumerable<SignInfo>?           SignInfos             = null,
+                                        IEnumerable<Signature>?          Signatures            = null,
 
-                                        Request_Id?                      RequestId           = null,
-                                        DateTime?                        RequestTimestamp    = null,
-                                        TimeSpan?                        RequestTimeout      = null,
-                                        EventTracking_Id?                EventTrackingId     = null,
-                                        CancellationToken                CancellationToken   = default)
+                                        Request_Id?                      RequestId             = null,
+                                        DateTime?                        RequestTimestamp      = null,
+                                        TimeSpan?                        RequestTimeout        = null,
+                                        EventTracking_Id?                EventTrackingId       = null,
+                                        SerializationFormats?            SerializationFormat   = null,
+                                        CancellationToken                CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.NotifyAllowedEnergyTransfer(
@@ -4161,6 +4286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4191,19 +4317,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 Transaction_Id                TransactionId,
                                 Boolean                       Activate,
 
-                                CustomData?                   CustomData          = null,
+                                CustomData?                   CustomData            = null,
 
-                                NetworkPath?                  NetworkPath         = null,
+                                NetworkPath?                  NetworkPath           = null,
 
-                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<Signature>?       Signatures          = null,
+                                IEnumerable<KeyPair>?         SignKeys              = null,
+                                IEnumerable<SignInfo>?        SignInfos             = null,
+                                IEnumerable<Signature>?       Signatures            = null,
 
-                                Request_Id?                   RequestId           = null,
-                                DateTime?                     RequestTimestamp    = null,
-                                TimeSpan?                     RequestTimeout      = null,
-                                EventTracking_Id?             EventTrackingId     = null,
-                                CancellationToken             CancellationToken   = default)
+                                Request_Id?                   RequestId             = null,
+                                DateTime?                     RequestTimestamp      = null,
+                                TimeSpan?                     RequestTimeout        = null,
+                                EventTracking_Id?             EventTrackingId       = null,
+                                SerializationFormats?         SerializationFormat   = null,
+                                CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.UsePriorityCharging(
@@ -4223,6 +4350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4252,19 +4380,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             EVSE_Id                       EVSEId,
                             Connector_Id                  ConnectorId,
 
-                            CustomData?                   CustomData          = null,
+                            CustomData?                   CustomData            = null,
 
-                            NetworkPath?                  NetworkPath         = null,
+                            NetworkPath?                  NetworkPath           = null,
 
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<Signature>?       Signatures          = null,
+                            IEnumerable<KeyPair>?         SignKeys              = null,
+                            IEnumerable<SignInfo>?        SignInfos             = null,
+                            IEnumerable<Signature>?       Signatures            = null,
 
-                            Request_Id?                   RequestId           = null,
-                            DateTime?                     RequestTimestamp    = null,
-                            TimeSpan?                     RequestTimeout      = null,
-                            EventTracking_Id?             EventTrackingId     = null,
-                            CancellationToken             CancellationToken   = default)
+                            Request_Id?                   RequestId             = null,
+                            DateTime?                     RequestTimestamp      = null,
+                            TimeSpan?                     RequestTimeout        = null,
+                            EventTracking_Id?             EventTrackingId       = null,
+                            SerializationFormats?         SerializationFormat   = null,
+                            CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.UnlockConnector(
@@ -4284,6 +4413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4317,19 +4447,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            DateTime                      ActivationTimestamp,
                            AFRR_Signal                   Signal,
 
-                           CustomData?                   CustomData          = null,
+                           CustomData?                   CustomData            = null,
 
-                           NetworkPath?                  NetworkPath         = null,
+                           NetworkPath?                  NetworkPath           = null,
 
-                           IEnumerable<KeyPair>?         SignKeys            = null,
-                           IEnumerable<SignInfo>?        SignInfos           = null,
-                           IEnumerable<Signature>?       Signatures          = null,
+                           IEnumerable<KeyPair>?         SignKeys              = null,
+                           IEnumerable<SignInfo>?        SignInfos             = null,
+                           IEnumerable<Signature>?       Signatures            = null,
 
-                           Request_Id?                   RequestId           = null,
-                           DateTime?                     RequestTimestamp    = null,
-                           TimeSpan?                     RequestTimeout      = null,
-                           EventTracking_Id?             EventTrackingId     = null,
-                           CancellationToken             CancellationToken   = default)
+                           Request_Id?                   RequestId             = null,
+                           DateTime?                     RequestTimestamp      = null,
+                           TimeSpan?                     RequestTimeout        = null,
+                           EventTracking_Id?             EventTrackingId       = null,
+                           SerializationFormats?         SerializationFormat   = null,
+                           CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.AFRRSignal(
@@ -4349,6 +4480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4377,19 +4509,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               SourceRouting                 Destination,
                               MessageInfo                   Message,
 
-                              CustomData?                   CustomData          = null,
+                              CustomData?                   CustomData            = null,
 
-                              NetworkPath?                  NetworkPath         = null,
+                              NetworkPath?                  NetworkPath           = null,
 
-                              IEnumerable<KeyPair>?         SignKeys            = null,
-                              IEnumerable<SignInfo>?        SignInfos           = null,
-                              IEnumerable<Signature>?       Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys              = null,
+                              IEnumerable<SignInfo>?        SignInfos             = null,
+                              IEnumerable<Signature>?       Signatures            = null,
 
-                              Request_Id?                   RequestId           = null,
-                              DateTime?                     RequestTimestamp    = null,
-                              TimeSpan?                     RequestTimeout      = null,
-                              EventTracking_Id?             EventTrackingId     = null,
-                              CancellationToken             CancellationToken   = default)
+                              Request_Id?                   RequestId             = null,
+                              DateTime?                     RequestTimestamp      = null,
+                              TimeSpan?                     RequestTimeout        = null,
+                              EventTracking_Id?             EventTrackingId       = null,
+                              SerializationFormats?         SerializationFormat   = null,
+                              CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetDisplayMessage(
@@ -4408,6 +4541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4437,23 +4571,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             GetDisplayMessages(this ILocalControllerNode        LocalController,
                                SourceRouting                    Destination,
                                Int32                            GetDisplayMessagesRequestId,
-                               IEnumerable<DisplayMessage_Id>?  Ids                 = null,
-                               MessagePriority?                 Priority            = null,
-                               MessageState?                    State               = null,
+                               IEnumerable<DisplayMessage_Id>?  Ids                   = null,
+                               MessagePriority?                 Priority              = null,
+                               MessageState?                    State                 = null,
 
-                               CustomData?                      CustomData          = null,
+                               CustomData?                      CustomData            = null,
 
-                               NetworkPath?                     NetworkPath         = null,
+                               NetworkPath?                     NetworkPath           = null,
 
-                               IEnumerable<KeyPair>?            SignKeys            = null,
-                               IEnumerable<SignInfo>?           SignInfos           = null,
-                               IEnumerable<Signature>?          Signatures          = null,
+                               IEnumerable<KeyPair>?            SignKeys              = null,
+                               IEnumerable<SignInfo>?           SignInfos             = null,
+                               IEnumerable<Signature>?          Signatures            = null,
 
-                               Request_Id?                      RequestId           = null,
-                               DateTime?                        RequestTimestamp    = null,
-                               TimeSpan?                        RequestTimeout      = null,
-                               EventTracking_Id?                EventTrackingId     = null,
-                               CancellationToken                CancellationToken   = default)
+                               Request_Id?                      RequestId             = null,
+                               DateTime?                        RequestTimestamp      = null,
+                               TimeSpan?                        RequestTimeout        = null,
+                               EventTracking_Id?                EventTrackingId       = null,
+                               SerializationFormats?            SerializationFormat   = null,
+                               CancellationToken                CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetDisplayMessages(
@@ -4475,6 +4610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4502,19 +4638,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 SourceRouting                 Destination,
                                 DisplayMessage_Id             DisplayMessageId,
 
-                                CustomData?                   CustomData          = null,
+                                CustomData?                   CustomData            = null,
 
-                                NetworkPath?                  NetworkPath         = null,
+                                NetworkPath?                  NetworkPath           = null,
 
-                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                IEnumerable<Signature>?       Signatures          = null,
+                                IEnumerable<KeyPair>?         SignKeys              = null,
+                                IEnumerable<SignInfo>?        SignInfos             = null,
+                                IEnumerable<Signature>?       Signatures            = null,
 
-                                Request_Id?                   RequestId           = null,
-                                DateTime?                     RequestTimestamp    = null,
-                                TimeSpan?                     RequestTimeout      = null,
-                                EventTracking_Id?             EventTrackingId     = null,
-                                CancellationToken             CancellationToken   = default)
+                                Request_Id?                   RequestId             = null,
+                                DateTime?                     RequestTimestamp      = null,
+                                TimeSpan?                     RequestTimeout        = null,
+                                EventTracking_Id?             EventTrackingId       = null,
+                                SerializationFormats?         SerializationFormat   = null,
+                                CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.ClearDisplayMessage(
@@ -4533,6 +4670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4562,19 +4700,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             Decimal                       TotalCost,
                             Transaction_Id                TransactionId,
 
-                            CustomData?                   CustomData          = null,
+                            CustomData?                   CustomData            = null,
 
-                            NetworkPath?                  NetworkPath         = null,
+                            NetworkPath?                  NetworkPath           = null,
 
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<Signature>?       Signatures          = null,
+                            IEnumerable<KeyPair>?         SignKeys              = null,
+                            IEnumerable<SignInfo>?        SignInfos             = null,
+                            IEnumerable<Signature>?       Signatures            = null,
 
-                            Request_Id?                   RequestId           = null,
-                            DateTime?                     RequestTimestamp    = null,
-                            TimeSpan?                     RequestTimeout      = null,
-                            EventTracking_Id?             EventTrackingId     = null,
-                            CancellationToken             CancellationToken   = default)
+                            Request_Id?                   RequestId             = null,
+                            DateTime?                     RequestTimestamp      = null,
+                            TimeSpan?                     RequestTimeout        = null,
+                            EventTracking_Id?             EventTrackingId       = null,
+                            SerializationFormats?         SerializationFormat   = null,
+                            CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.CostUpdated(
@@ -4594,6 +4733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4643,6 +4783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                        DateTime?                     RequestTimestamp      = null,
                                        TimeSpan?                     RequestTimeout        = null,
                                        EventTracking_Id?             EventTrackingId       = null,
+                                       SerializationFormats?         SerializationFormat   = null,
                                        CancellationToken             CancellationToken     = default)
 
 
@@ -4667,6 +4808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4700,21 +4842,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             SetDefaultChargingTariff(this ILocalControllerNode     LocalController,
                                      SourceRouting                 Destination,
                                      ChargingTariff                ChargingTariff,
-                                     IEnumerable<EVSE_Id>?         EVSEIds             = null,
+                                     IEnumerable<EVSE_Id>?         EVSEIds               = null,
 
-                                     CustomData?                   CustomData          = null,
+                                     CustomData?                   CustomData            = null,
 
-                                     NetworkPath?                  NetworkPath         = null,
+                                     NetworkPath?                  NetworkPath           = null,
 
-                                     IEnumerable<KeyPair>?         SignKeys            = null,
-                                     IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     IEnumerable<KeyPair>?         SignKeys              = null,
+                                     IEnumerable<SignInfo>?        SignInfos             = null,
+                                     IEnumerable<Signature>?       Signatures            = null,
 
-                                     Request_Id?                   RequestId           = null,
-                                     DateTime?                     RequestTimestamp    = null,
-                                     TimeSpan?                     RequestTimeout      = null,
-                                     EventTracking_Id?             EventTrackingId     = null,
-                                     CancellationToken             CancellationToken   = default)
+                                     Request_Id?                   RequestId             = null,
+                                     DateTime?                     RequestTimestamp      = null,
+                                     TimeSpan?                     RequestTimeout        = null,
+                                     EventTracking_Id?             EventTrackingId       = null,
+                                     SerializationFormats?         SerializationFormat   = null,
+                                     CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.SetDefaultChargingTariff(
@@ -4734,6 +4877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4759,21 +4903,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             GetDefaultChargingTariff(this ILocalControllerNode     LocalController,
                                      SourceRouting                 Destination,
-                                     IEnumerable<EVSE_Id>?         EVSEIds             = null,
+                                     IEnumerable<EVSE_Id>?         EVSEIds               = null,
 
-                                     CustomData?                   CustomData          = null,
+                                     CustomData?                   CustomData            = null,
 
-                                     NetworkPath?                  NetworkPath         = null,
+                                     NetworkPath?                  NetworkPath           = null,
 
-                                     IEnumerable<KeyPair>?         SignKeys            = null,
-                                     IEnumerable<SignInfo>?        SignInfos           = null,
-                                     IEnumerable<Signature>?       Signatures          = null,
+                                     IEnumerable<KeyPair>?         SignKeys              = null,
+                                     IEnumerable<SignInfo>?        SignInfos             = null,
+                                     IEnumerable<Signature>?       Signatures            = null,
 
-                                     Request_Id?                   RequestId           = null,
-                                     DateTime?                     RequestTimestamp    = null,
-                                     TimeSpan?                     RequestTimeout      = null,
-                                     EventTracking_Id?             EventTrackingId     = null,
-                                     CancellationToken             CancellationToken   = default)
+                                     Request_Id?                   RequestId             = null,
+                                     DateTime?                     RequestTimestamp      = null,
+                                     TimeSpan?                     RequestTimeout        = null,
+                                     EventTracking_Id?             EventTrackingId       = null,
+                                     SerializationFormats?         SerializationFormat   = null,
+                                     CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.GetDefaultChargingTariff(
@@ -4792,6 +4937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -4819,22 +4965,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             RemoveDefaultChargingTariff(this ILocalControllerNode     LocalController,
                                         SourceRouting                 Destination,
-                                        ChargingTariff_Id?            ChargingTariffId    = null,
-                                        IEnumerable<EVSE_Id>?         EVSEIds             = null,
+                                        ChargingTariff_Id?            ChargingTariffId      = null,
+                                        IEnumerable<EVSE_Id>?         EVSEIds               = null,
 
-                                        CustomData?                   CustomData          = null,
+                                        CustomData?                   CustomData            = null,
 
-                                        NetworkPath?                  NetworkPath         = null,
+                                        NetworkPath?                  NetworkPath           = null,
 
-                                        IEnumerable<KeyPair>?         SignKeys            = null,
-                                        IEnumerable<SignInfo>?        SignInfos           = null,
-                                        IEnumerable<Signature>?       Signatures          = null,
+                                        IEnumerable<KeyPair>?         SignKeys              = null,
+                                        IEnumerable<SignInfo>?        SignInfos             = null,
+                                        IEnumerable<Signature>?       Signatures            = null,
 
-                                        Request_Id?                   RequestId           = null,
-                                        DateTime?                     RequestTimestamp    = null,
-                                        TimeSpan?                     RequestTimeout      = null,
-                                        EventTracking_Id?             EventTrackingId     = null,
-                                        CancellationToken             CancellationToken   = default)
+                                        Request_Id?                   RequestId             = null,
+                                        DateTime?                     RequestTimestamp      = null,
+                                        TimeSpan?                     RequestTimeout        = null,
+                                        EventTracking_Id?             EventTrackingId       = null,
+                                        SerializationFormats?         SerializationFormat   = null,
+                                        CancellationToken             CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.RemoveDefaultChargingTariff(
@@ -4854,6 +5001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );

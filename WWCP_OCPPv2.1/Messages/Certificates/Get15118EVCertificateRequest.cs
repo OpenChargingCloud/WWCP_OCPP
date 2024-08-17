@@ -128,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             TimeSpan?                RequestTimeout                     = null,
                                             EventTracking_Id?        EventTrackingId                    = null,
                                             NetworkPath?             NetworkPath                        = null,
+                                            SerializationFormats?    SerializationFormat                = null,
                                             CancellationToken        CancellationToken                  = default)
 
             : base(SourceRouting,
@@ -144,6 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -153,7 +155,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.EXIRequest                        = EXIRequest;
             this.MaximumContractCertificateChains  = MaximumContractCertificateChains;
             this.PrioritizedEMAIds                 = PrioritizedEMAIds?.Distinct() ?? Array.Empty<EMA_Id>();
-
 
             unchecked
             {

@@ -329,14 +329,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 var stream        = new MemoryStream(Binary);
-                var binaryFormat  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
+                var binaryFormat  = SerializationFormatsExtensions.Parse(stream.ReadUInt16());
 
                 switch (binaryFormat)
                 {
 
                     #region Compact Format
 
-                    case BinaryFormats.Compact:
+                    case SerializationFormats.BinaryCompact:
                     {
 
                         var modelLength            = (Byte) stream.ReadByte();
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var binaryStream          = new MemoryStream();
 
-            var binaryFormat          = BinaryFormats.Compact;
+            var binaryFormat          = SerializationFormats.BinaryCompact;
             binaryStream.Write    (binaryFormat.AsBytes(), 0, 2);
 
 

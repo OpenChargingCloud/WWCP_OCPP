@@ -51,20 +51,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                   NetworkTopologyInformation      NetworkTopologyInformation,
 
-                                  CustomData?                     CustomData          = null,
+                                  CustomData?                     CustomData            = null,
 
-                                  SourceRouting?                  Destination         = null,
-                                  NetworkPath?                    NetworkPath         = null,
+                                  SourceRouting?                  Destination           = null,
+                                  NetworkPath?                    NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?           SignKeys            = null,
-                                  IEnumerable<SignInfo>?          SignInfos           = null,
-                                  IEnumerable<Signature>?         Signatures          = null,
+                                  IEnumerable<KeyPair>?           SignKeys              = null,
+                                  IEnumerable<SignInfo>?          SignInfos             = null,
+                                  IEnumerable<Signature>?         Signatures            = null,
 
-                                  Request_Id?                     RequestId           = null,
-                                  DateTime?                       RequestTimestamp    = null,
-                                  TimeSpan?                       RequestTimeout      = null,
-                                  EventTracking_Id?               EventTrackingId     = null,
-                                  CancellationToken               CancellationToken   = default)
+                                  Request_Id?                     RequestId             = null,
+                                  DateTime?                       RequestTimestamp      = null,
+                                  TimeSpan?                       RequestTimeout        = null,
+                                  EventTracking_Id?               EventTrackingId       = null,
+                                  SerializationFormats?           SerializationFormat   = null,
+                                  CancellationToken               CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
@@ -85,6 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -114,20 +116,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                   NetworkTopologyInformation  NetworkTopologyInformation,
 
-                                  CustomData?                 CustomData          = null,
+                                  CustomData?                 CustomData            = null,
 
-                                  SourceRouting?              Destination         = null,
-                                  NetworkPath?                NetworkPath         = null,
+                                  SourceRouting?              Destination           = null,
+                                  NetworkPath?                NetworkPath           = null,
 
-                                  IEnumerable<KeyPair>?       SignKeys            = null,
-                                  IEnumerable<SignInfo>?      SignInfos           = null,
-                                  IEnumerable<Signature>?     Signatures          = null,
+                                  IEnumerable<KeyPair>?       SignKeys              = null,
+                                  IEnumerable<SignInfo>?      SignInfos             = null,
+                                  IEnumerable<Signature>?     Signatures            = null,
 
-                                  Request_Id?                 RequestId           = null,
-                                  DateTime?                   RequestTimestamp    = null,
-                                  TimeSpan?                   RequestTimeout      = null,
-                                  EventTracking_Id?           EventTrackingId     = null,
-                                  CancellationToken           CancellationToken   = default)
+                                  Request_Id?                 RequestId             = null,
+                                  DateTime?                   RequestTimestamp      = null,
+                                  TimeSpan?                   RequestTimeout        = null,
+                                  EventTracking_Id?           EventTrackingId       = null,
+                                  SerializationFormats?       SerializationFormat   = null,
+                                  CancellationToken           CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
@@ -148,6 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )

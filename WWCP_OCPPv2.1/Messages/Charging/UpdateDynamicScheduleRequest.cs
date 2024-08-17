@@ -201,6 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             TimeSpan?                RequestTimeout        = null,
                                             EventTracking_Id?        EventTrackingId       = null,
                                             NetworkPath?             NetworkPath           = null,
+                                            SerializationFormats?    SerializationFormat   = null,
                                             CancellationToken        CancellationToken     = default)
 
             : base(SourceRouting,
@@ -217,6 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {

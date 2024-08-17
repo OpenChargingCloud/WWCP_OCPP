@@ -98,20 +98,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public NotifyDisplayMessagesRequest(SourceRouting             SourceRouting,
                                             Int32                     NotifyDisplayMessagesRequestId,
                                             IEnumerable<MessageInfo>  MessageInfos,
-                                            Boolean?                  ToBeContinued       = null,
+                                            Boolean?                  ToBeContinued         = null,
 
-                                            IEnumerable<KeyPair>?     SignKeys            = null,
-                                            IEnumerable<SignInfo>?    SignInfos           = null,
-                                            IEnumerable<Signature>?        Signatures          = null,
+                                            IEnumerable<KeyPair>?     SignKeys              = null,
+                                            IEnumerable<SignInfo>?    SignInfos             = null,
+                                            IEnumerable<Signature>?   Signatures            = null,
 
-                                            CustomData?               CustomData          = null,
+                                            CustomData?               CustomData            = null,
 
-                                            Request_Id?               RequestId           = null,
-                                            DateTime?                 RequestTimestamp    = null,
-                                            TimeSpan?                 RequestTimeout      = null,
-                                            EventTracking_Id?         EventTrackingId     = null,
-                                            NetworkPath?              NetworkPath         = null,
-                                            CancellationToken         CancellationToken   = default)
+                                            Request_Id?               RequestId             = null,
+                                            DateTime?                 RequestTimestamp      = null,
+                                            TimeSpan?                 RequestTimeout        = null,
+                                            EventTracking_Id?         EventTrackingId       = null,
+                                            NetworkPath?              NetworkPath           = null,
+                                            SerializationFormats?     SerializationFormat   = null,
+                                            CancellationToken         CancellationToken     = default)
 
             : base(SourceRouting,
                    nameof(NotifyDisplayMessagesRequest)[..^7],
@@ -127,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {

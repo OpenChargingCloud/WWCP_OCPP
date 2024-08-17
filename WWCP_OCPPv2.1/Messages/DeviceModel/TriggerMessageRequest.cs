@@ -96,21 +96,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TriggerMessageRequest(SourceRouting            Destination,
                                      MessageTrigger           RequestedMessage,
-                                     EVSE?                    EVSE                = null,
-                                     String?                  CustomTrigger       = null,
+                                     EVSE?                    EVSE                  = null,
+                                     String?                  CustomTrigger         = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
+                                     IEnumerable<KeyPair>?    SignKeys              = null,
+                                     IEnumerable<SignInfo>?   SignInfos             = null,
+                                     IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData          = null,
+                                     CustomData?              CustomData            = null,
 
-                                     Request_Id?              RequestId           = null,
-                                     DateTime?                RequestTimestamp    = null,
-                                     TimeSpan?                RequestTimeout      = null,
-                                     EventTracking_Id?        EventTrackingId     = null,
-                                     NetworkPath?             NetworkPath         = null,
-                                     CancellationToken        CancellationToken   = default)
+                                     Request_Id?              RequestId             = null,
+                                     DateTime?                RequestTimestamp      = null,
+                                     TimeSpan?                RequestTimeout        = null,
+                                     EventTracking_Id?        EventTrackingId       = null,
+                                     NetworkPath?             NetworkPath           = null,
+                                     SerializationFormats?    SerializationFormat   = null,
+                                     CancellationToken        CancellationToken     = default)
 
             : base(Destination,
                    nameof(TriggerMessageRequest)[..^7],
@@ -126,6 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {

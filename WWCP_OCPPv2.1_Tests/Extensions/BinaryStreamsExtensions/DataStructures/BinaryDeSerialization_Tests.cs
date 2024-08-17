@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                  vendorId,
                                                  messageId,
                                                  data,
-                                                 BinaryFormats.Compact
+                                                 SerializationFormat: SerializationFormats.BinaryCompact
                                              );
 
             var signSuccess                = binaryDataTransferRequest.Sign(

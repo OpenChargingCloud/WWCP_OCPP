@@ -55,19 +55,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                  BootReason               BootReason,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?              CustomData            = null,
 
-                                 SourceRouting?           Destination         = null,
+                                 SourceRouting?           Destination           = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?              RequestId             = null,
+                                 DateTime?                RequestTimestamp      = null,
+                                 TimeSpan?                RequestTimeout        = null,
+                                 EventTracking_Id?        EventTrackingId       = null,
+                                 SerializationFormats?    SerializationFormat   = null,
+                                 CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.BootNotification(
@@ -96,6 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -136,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                                            DateTime?                RequestTimestamp          = null,
                                            TimeSpan?                RequestTimeout            = null,
                                            EventTracking_Id?        EventTrackingId           = null,
+                                           SerializationFormats?    SerializationFormat       = null,
                                            CancellationToken        CancellationToken         = default)
 
 
@@ -158,6 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -181,19 +185,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
             SendHeartbeat(this IEnergyMeterNode    EnergyMeter,
 
-                          CustomData?              CustomData          = null,
+                          CustomData?              CustomData            = null,
 
-                          SourceRouting?           Destination         = null,
+                          SourceRouting?           Destination           = null,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
-                          IEnumerable<Signature>?  Signatures          = null,
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
 
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.Heartbeat(
@@ -212,6 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -242,21 +248,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                         DateTime                 GeneratedAt,
                         UInt32                   SequenceNumber,
                         IEnumerable<EventData>   EventData,
-                        Boolean?                 ToBeContinued       = null,
+                        Boolean?                 ToBeContinued         = null,
 
-                        CustomData?              CustomData          = null,
+                        CustomData?              CustomData            = null,
 
-                        SourceRouting?           Destination         = null,
+                        SourceRouting?           Destination           = null,
 
-                        IEnumerable<KeyPair>?    SignKeys            = null,
-                        IEnumerable<SignInfo>?   SignInfos           = null,
-                        IEnumerable<Signature>?  Signatures          = null,
+                        IEnumerable<KeyPair>?    SignKeys              = null,
+                        IEnumerable<SignInfo>?   SignInfos             = null,
+                        IEnumerable<Signature>?  Signatures            = null,
 
-                        Request_Id?              RequestId           = null,
-                        DateTime?                RequestTimestamp    = null,
-                        TimeSpan?                RequestTimeout      = null,
-                        EventTracking_Id?        EventTrackingId     = null,
-                        CancellationToken        CancellationToken   = default)
+                        Request_Id?              RequestId             = null,
+                        DateTime?                RequestTimestamp      = null,
+                        TimeSpan?                RequestTimeout        = null,
+                        EventTracking_Id?        EventTrackingId       = null,
+                        SerializationFormats?    SerializationFormat   = null,
+                        CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.NotifyEvent(
@@ -280,6 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -308,21 +316,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                           SecurityEventType        Type,
                                           DateTime                 Timestamp,
-                                          String?                  TechInfo            = null,
+                                          String?                  TechInfo              = null,
 
-                                          CustomData?              CustomData          = null,
+                                          CustomData?              CustomData            = null,
 
-                                          SourceRouting?           Destination         = null,
+                                          SourceRouting?           Destination           = null,
 
-                                          IEnumerable<KeyPair>?    SignKeys            = null,
-                                          IEnumerable<SignInfo>?   SignInfos           = null,
-                                          IEnumerable<Signature>?  Signatures          = null,
+                                          IEnumerable<KeyPair>?    SignKeys              = null,
+                                          IEnumerable<SignInfo>?   SignInfos             = null,
+                                          IEnumerable<Signature>?  Signatures            = null,
 
-                                          Request_Id?              RequestId           = null,
-                                          DateTime?                RequestTimestamp    = null,
-                                          TimeSpan?                RequestTimeout      = null,
-                                          EventTracking_Id?        EventTrackingId     = null,
-                                          CancellationToken        CancellationToken   = default)
+                                          Request_Id?              RequestId             = null,
+                                          DateTime?                RequestTimestamp      = null,
+                                          TimeSpan?                RequestTimeout        = null,
+                                          EventTracking_Id?        EventTrackingId       = null,
+                                          SerializationFormats?    SerializationFormat   = null,
+                                          CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.SecurityEventNotification(
@@ -345,6 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -377,21 +387,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                          UInt32                   SequenceNumber,
                          DateTime                 GeneratedAt,
                          IEnumerable<ReportData>  ReportData,
-                         Boolean?                 ToBeContinued       = null,
+                         Boolean?                 ToBeContinued         = null,
 
-                         CustomData?              CustomData          = null,
+                         CustomData?              CustomData            = null,
 
-                         SourceRouting?           Destination         = null,
+                         SourceRouting?           Destination           = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.NotifyReport(
@@ -416,6 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -448,21 +460,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                                    UInt32                       SequenceNumber,
                                    DateTime                     GeneratedAt,
                                    IEnumerable<MonitoringData>  MonitoringData,
-                                   Boolean?                     ToBeContinued       = null,
+                                   Boolean?                     ToBeContinued         = null,
 
-                                   CustomData?                  CustomData          = null,
+                                   CustomData?                  CustomData            = null,
 
-                                   SourceRouting?               Destination         = null,
+                                   SourceRouting?               Destination           = null,
 
-                                   IEnumerable<KeyPair>?        SignKeys            = null,
-                                   IEnumerable<SignInfo>?       SignInfos           = null,
-                                   IEnumerable<Signature>?      Signatures          = null,
+                                   IEnumerable<KeyPair>?        SignKeys              = null,
+                                   IEnumerable<SignInfo>?       SignInfos             = null,
+                                   IEnumerable<Signature>?      Signatures            = null,
 
-                                   Request_Id?                  RequestId           = null,
-                                   DateTime?                    RequestTimestamp    = null,
-                                   TimeSpan?                    RequestTimeout      = null,
-                                   EventTracking_Id?            EventTrackingId     = null,
-                                   CancellationToken            CancellationToken   = default)
+                                   Request_Id?                  RequestId             = null,
+                                   DateTime?                    RequestTimestamp      = null,
+                                   TimeSpan?                    RequestTimeout        = null,
+                                   EventTracking_Id?            EventTrackingId       = null,
+                                   SerializationFormats?        SerializationFormat   = null,
+                                   CancellationToken            CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.NotifyMonitoringReport(
@@ -487,6 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -513,21 +527,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
             SendLogStatusNotification(this IEnergyMeterNode    EnergyMeter,
 
                                       UploadLogStatus          Status,
-                                      Int32?                   LogRequestId        = null,
+                                      Int32?                   LogRequestId          = null,
 
-                                      CustomData?              CustomData          = null,
+                                      CustomData?              CustomData            = null,
 
-                                      SourceRouting?           Destination         = null,
+                                      SourceRouting?           Destination           = null,
 
-                                      IEnumerable<KeyPair>?    SignKeys            = null,
-                                      IEnumerable<SignInfo>?   SignInfos           = null,
-                                      IEnumerable<Signature>?  Signatures          = null,
+                                      IEnumerable<KeyPair>?    SignKeys              = null,
+                                      IEnumerable<SignInfo>?   SignInfos             = null,
+                                      IEnumerable<Signature>?  Signatures            = null,
 
-                                      Request_Id?              RequestId           = null,
-                                      DateTime?                RequestTimestamp    = null,
-                                      TimeSpan?                RequestTimeout      = null,
-                                      EventTracking_Id?        EventTrackingId     = null,
-                                      CancellationToken        CancellationToken   = default)
+                                      Request_Id?              RequestId             = null,
+                                      DateTime?                RequestTimestamp      = null,
+                                      TimeSpan?                RequestTimeout        = null,
+                                      EventTracking_Id?        EventTrackingId       = null,
+                                      SerializationFormats?    SerializationFormat   = null,
+                                      CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.LogStatusNotification(
@@ -549,6 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -576,19 +592,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
             TransferData(this IEnergyMeterNode    EnergyMeter,
 
                          Vendor_Id                VendorId,
-                         Message_Id?              MessageId           = null,
-                         JToken?                  Data                = null,
-                         CustomData?              CustomData          = null,
+                         Message_Id?              MessageId             = null,
+                         JToken?                  Data                  = null,
+                         CustomData?              CustomData            = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.DataTransfer(
@@ -611,6 +628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -640,19 +658,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                             EVSE_Id                  EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>  MeterValues,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?              CustomData            = null,
 
-                            SourceRouting?           Destination         = null,
+                            SourceRouting?           Destination           = null,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.MeterValues(
@@ -674,6 +693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -703,21 +723,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
 
                                   Int32                     NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>  MessageInfos,
-                                  Boolean?                  ToBeContinued       = null,
+                                  Boolean?                  ToBeContinued         = null,
 
-                                  CustomData?               CustomData          = null,
+                                  CustomData?               CustomData            = null,
 
-                                  SourceRouting?            Destination         = null,
+                                  SourceRouting?            Destination           = null,
 
-                                  IEnumerable<KeyPair>?     SignKeys            = null,
-                                  IEnumerable<SignInfo>?    SignInfos           = null,
-                                  IEnumerable<Signature>?   Signatures          = null,
+                                  IEnumerable<KeyPair>?     SignKeys              = null,
+                                  IEnumerable<SignInfo>?    SignInfos             = null,
+                                  IEnumerable<Signature>?   Signatures            = null,
 
-                                  Request_Id?               RequestId           = null,
-                                  DateTime?                 RequestTimestamp    = null,
-                                  TimeSpan?                 RequestTimeout      = null,
-                                  EventTracking_Id?         EventTrackingId     = null,
-                                  CancellationToken         CancellationToken   = default)
+                                  Request_Id?               RequestId             = null,
+                                  DateTime?                 RequestTimestamp      = null,
+                                  TimeSpan?                 RequestTimeout        = null,
+                                  EventTracking_Id?         EventTrackingId       = null,
+                                  SerializationFormats?     SerializationFormat   = null,
+                                  CancellationToken         CancellationToken     = default)
 
 
                 => EnergyMeter.OCPP.OUT.NotifyDisplayMessages(
@@ -740,6 +761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
+                           SerializationFormat,
                            CancellationToken
 
                        )

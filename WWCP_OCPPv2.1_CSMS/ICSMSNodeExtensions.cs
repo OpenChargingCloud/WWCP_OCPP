@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Reset the given charging station/networking node.
         /// </summary>
-        /// <param name="DestinationId">The charging station/networking node identification.</param>
+        /// <param name="Destination">The charging station/networking node identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -57,19 +57,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             Reset(this ICSMSNode           CSMS,
                   SourceRouting            Destination,
                   ResetType                ResetType,
-                  EVSE_Id?                 EVSEId              = null,
+                  EVSE_Id?                 EVSEId                = null,
 
-                  IEnumerable<KeyPair>?    SignKeys            = null,
-                  IEnumerable<SignInfo>?   SignInfos           = null,
-                  IEnumerable<Signature>?  Signatures          = null,
+                  IEnumerable<KeyPair>?    SignKeys              = null,
+                  IEnumerable<SignInfo>?   SignInfos             = null,
+                  IEnumerable<Signature>?  Signatures            = null,
 
-                  CustomData?              CustomData          = null,
+                  CustomData?              CustomData            = null,
 
-                  Request_Id?              RequestId           = null,
-                  DateTime?                RequestTimestamp    = null,
-                  TimeSpan?                RequestTimeout      = null,
-                  EventTracking_Id?        EventTrackingId     = null,
-                  CancellationToken        CancellationToken   = default)
+                  Request_Id?              RequestId             = null,
+                  DateTime?                RequestTimestamp      = null,
+                  TimeSpan?                RequestTimeout        = null,
+                  EventTracking_Id?        EventTrackingId       = null,
+                  SerializationFormats?    SerializationFormat   = null,
+                  CancellationToken        CancellationToken     = default)
 
                 => CSMS.OCPP.OUT.Reset(
                        new ResetRequest(
@@ -88,6 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -99,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Initiate a firmware update of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -119,20 +121,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            SourceRouting            Destination,
                            Firmware                 Firmware,
                            Int32                    UpdateFirmwareRequestId,
-                           Byte?                    Retries             = null,
-                           TimeSpan?                RetryInterval       = null,
+                           Byte?                    Retries               = null,
+                           TimeSpan?                RetryInterval         = null,
 
-                           IEnumerable<KeyPair>?    SignKeys            = null,
-                           IEnumerable<SignInfo>?   SignInfos           = null,
-                           IEnumerable<Signature>?  Signatures          = null,
+                           IEnumerable<KeyPair>?    SignKeys              = null,
+                           IEnumerable<SignInfo>?   SignInfos             = null,
+                           IEnumerable<Signature>?  Signatures            = null,
 
-                           CustomData?              CustomData          = null,
+                           CustomData?              CustomData            = null,
 
-                           Request_Id?              RequestId           = null,
-                           DateTime?                RequestTimestamp    = null,
-                           TimeSpan?                RequestTimeout      = null,
-                           EventTracking_Id?        EventTrackingId     = null,
-                           CancellationToken        CancellationToken   = default)
+                           Request_Id?              RequestId             = null,
+                           DateTime?                RequestTimestamp      = null,
+                           TimeSpan?                RequestTimeout        = null,
+                           EventTracking_Id?        EventTrackingId       = null,
+                           SerializationFormats?    SerializationFormat   = null,
+                           CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.UpdateFirmware(
@@ -154,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -165,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Publish a firmware onto a local controller.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
@@ -187,20 +191,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             Int32                    PublishFirmwareRequestId,
                             URL                      DownloadLocation,
                             String                   MD5Checksum,
-                            Byte?                    Retries             = null,
-                            TimeSpan?                RetryInterval       = null,
+                            Byte?                    Retries               = null,
+                            TimeSpan?                RetryInterval         = null,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?              CustomData            = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.PublishFirmware(
@@ -223,6 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -234,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Unpublish a firmware from a local controller.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -251,17 +257,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               SourceRouting            Destination,
                               String                   MD5Checksum,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?              CustomData            = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?              RequestId             = null,
+                              DateTime?                RequestTimestamp      = null,
+                              TimeSpan?                RequestTimeout        = null,
+                              EventTracking_Id?        EventTrackingId       = null,
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.UnpublishFirmware(
@@ -280,6 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -291,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve the base report from the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -310,17 +318,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           Int64                    GetBaseReportRequestId,
                           ReportBase               ReportBase,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
-                          IEnumerable<Signature>?  Signatures          = null,
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
 
-                          CustomData?              CustomData          = null,
+                          CustomData?              CustomData            = null,
 
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetBaseReport(
@@ -340,6 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -351,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve reports from the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="GetReportRequestId">The networking node identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
@@ -372,17 +382,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
 
-                      IEnumerable<KeyPair>?           SignKeys            = null,
-                      IEnumerable<SignInfo>?          SignInfos           = null,
-                      IEnumerable<Signature>?         Signatures          = null,
+                      IEnumerable<KeyPair>?           SignKeys              = null,
+                      IEnumerable<SignInfo>?          SignInfos             = null,
+                      IEnumerable<Signature>?         Signatures            = null,
 
-                      CustomData?                     CustomData          = null,
+                      CustomData?                     CustomData            = null,
 
-                      Request_Id?                     RequestId           = null,
-                      DateTime?                       RequestTimestamp    = null,
-                      TimeSpan?                       RequestTimeout      = null,
-                      EventTracking_Id?               EventTrackingId     = null,
-                      CancellationToken               CancellationToken   = default)
+                      Request_Id?                     RequestId             = null,
+                      DateTime?                       RequestTimestamp      = null,
+                      TimeSpan?                       RequestTimeout        = null,
+                      EventTracking_Id?               EventTrackingId       = null,
+                      SerializationFormats?           SerializationFormat   = null,
+                      CancellationToken               CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetReport(
@@ -403,6 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -414,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -436,20 +448,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    LogType                  LogType,
                    Int32                    LogRequestId,
                    LogParameters            Log,
-                   Byte?                    Retries             = null,
-                   TimeSpan?                RetryInterval       = null,
+                   Byte?                    Retries               = null,
+                   TimeSpan?                RetryInterval         = null,
 
-                   IEnumerable<KeyPair>?    SignKeys            = null,
-                   IEnumerable<SignInfo>?   SignInfos           = null,
-                   IEnumerable<Signature>?  Signatures          = null,
+                   IEnumerable<KeyPair>?    SignKeys              = null,
+                   IEnumerable<SignInfo>?   SignInfos             = null,
+                   IEnumerable<Signature>?  Signatures            = null,
 
-                   CustomData?              CustomData          = null,
+                   CustomData?              CustomData            = null,
 
-                   Request_Id?              RequestId           = null,
-                   DateTime?                RequestTimestamp    = null,
-                   TimeSpan?                RequestTimeout      = null,
-                   EventTracking_Id?        EventTrackingId     = null,
-                   CancellationToken        CancellationToken   = default)
+                   Request_Id?              RequestId             = null,
+                   DateTime?                RequestTimestamp      = null,
+                   TimeSpan?                RequestTimeout        = null,
+                   EventTracking_Id?        EventTrackingId       = null,
+                   SerializationFormats?    SerializationFormat   = null,
+                   CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetLog(
@@ -472,6 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -484,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
         /// <param name="DataConsistencyModel">An optional data consistency model for this request.</param>
         /// 
@@ -513,6 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          DateTime?                     RequestTimestamp       = null,
                          TimeSpan?                     RequestTimeout         = null,
                          EventTracking_Id?             EventTrackingId        = null,
+                         SerializationFormats?         SerializationFormat    = null,
                          CancellationToken             CancellationToken      = default)
 
 
@@ -533,6 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -544,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Get variable data from a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -561,17 +577,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          SourceRouting                 Destination,
                          IEnumerable<GetVariableData>  VariableData,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<KeyPair>?         SignKeys              = null,
+                         IEnumerable<SignInfo>?        SignInfos             = null,
+                         IEnumerable<Signature>?       Signatures            = null,
 
-                         CustomData?                   CustomData          = null,
+                         CustomData?                   CustomData            = null,
 
-                         Request_Id?                   RequestId           = null,
-                         DateTime?                     RequestTimestamp    = null,
-                         TimeSpan?                     RequestTimeout      = null,
-                         EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken             CancellationToken   = default)
+                         Request_Id?                   RequestId             = null,
+                         DateTime?                     RequestTimestamp      = null,
+                         TimeSpan?                     RequestTimeout        = null,
+                         EventTracking_Id?             EventTrackingId       = null,
+                         SerializationFormats?         SerializationFormat   = null,
+                         CancellationToken             CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetVariables(
@@ -590,6 +607,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -601,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the monitoring base of a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="MonitoringBase">The monitoring base to be set.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -618,17 +636,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               SourceRouting            Destination,
                               MonitoringBase           MonitoringBase,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?              CustomData            = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?              RequestId             = null,
+                              DateTime?                RequestTimestamp      = null,
+                              TimeSpan?                RequestTimeout        = null,
+                              EventTracking_Id?        EventTrackingId       = null,
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetMonitoringBase(
@@ -647,6 +666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -658,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Get monitoring report from a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="GetMonitoringReportRequestId">The networking node identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
@@ -679,17 +699,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>    ComponentVariables,
 
-                                IEnumerable<KeyPair>?             SignKeys            = null,
-                                IEnumerable<SignInfo>?            SignInfos           = null,
-                                IEnumerable<Signature>?           Signatures          = null,
+                                IEnumerable<KeyPair>?             SignKeys              = null,
+                                IEnumerable<SignInfo>?            SignInfos             = null,
+                                IEnumerable<Signature>?           Signatures            = null,
 
-                                CustomData?                       CustomData          = null,
+                                CustomData?                       CustomData            = null,
 
-                                Request_Id?                       RequestId           = null,
-                                DateTime?                         RequestTimestamp    = null,
-                                TimeSpan?                         RequestTimeout      = null,
-                                EventTracking_Id?                 EventTrackingId     = null,
-                                CancellationToken                 CancellationToken   = default)
+                                Request_Id?                       RequestId             = null,
+                                DateTime?                         RequestTimestamp      = null,
+                                TimeSpan?                         RequestTimeout        = null,
+                                EventTracking_Id?                 EventTrackingId       = null,
+                                SerializationFormats?             SerializationFormat   = null,
+                                CancellationToken                 CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetMonitoringReport(
@@ -710,6 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -721,7 +743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the monitoring level on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -738,17 +760,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                SourceRouting            Destination,
                                Severities               Severity,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?              CustomData            = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?              RequestId             = null,
+                               DateTime?                RequestTimestamp      = null,
+                               TimeSpan?                RequestTimeout        = null,
+                               EventTracking_Id?        EventTrackingId       = null,
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetMonitoringLevel(
@@ -767,6 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -778,7 +802,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -795,17 +819,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   SourceRouting                   Destination,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
-                                  IEnumerable<KeyPair>?           SignKeys            = null,
-                                  IEnumerable<SignInfo>?          SignInfos           = null,
-                                  IEnumerable<Signature>?         Signatures          = null,
+                                  IEnumerable<KeyPair>?           SignKeys              = null,
+                                  IEnumerable<SignInfo>?          SignInfos             = null,
+                                  IEnumerable<Signature>?         Signatures            = null,
 
-                                  CustomData?                     CustomData          = null,
+                                  CustomData?                     CustomData            = null,
 
-                                  Request_Id?                     RequestId           = null,
-                                  DateTime?                       RequestTimestamp    = null,
-                                  TimeSpan?                       RequestTimeout      = null,
-                                  EventTracking_Id?               EventTrackingId     = null,
-                                  CancellationToken               CancellationToken   = default)
+                                  Request_Id?                     RequestId             = null,
+                                  DateTime?                       RequestTimestamp      = null,
+                                  TimeSpan?                       RequestTimeout        = null,
+                                  EventTracking_Id?               EventTrackingId       = null,
+                                  SerializationFormats?           SerializationFormat   = null,
+                                  CancellationToken               CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetVariableMonitoring(
@@ -824,6 +849,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -835,7 +861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Delete a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="VariableMonitoringIds">An enumeration of variable monitoring identifications to clear.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -852,17 +878,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     SourceRouting                       Destination,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
-                                    IEnumerable<KeyPair>?               SignKeys            = null,
-                                    IEnumerable<SignInfo>?              SignInfos           = null,
-                                    IEnumerable<Signature>?             Signatures          = null,
+                                    IEnumerable<KeyPair>?               SignKeys              = null,
+                                    IEnumerable<SignInfo>?              SignInfos             = null,
+                                    IEnumerable<Signature>?             Signatures            = null,
 
-                                    CustomData?                         CustomData          = null,
+                                    CustomData?                         CustomData            = null,
 
-                                    Request_Id?                         RequestId           = null,
-                                    DateTime?                           RequestTimestamp    = null,
-                                    TimeSpan?                           RequestTimeout      = null,
-                                    EventTracking_Id?                   EventTrackingId     = null,
-                                    CancellationToken                   CancellationToken   = default)
+                                    Request_Id?                         RequestId             = null,
+                                    DateTime?                           RequestTimestamp      = null,
+                                    TimeSpan?                           RequestTimeout        = null,
+                                    EventTracking_Id?                   EventTrackingId       = null,
+                                    SerializationFormats?               SerializationFormat   = null,
+                                    CancellationToken                   CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.ClearVariableMonitoring(
@@ -881,6 +908,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -892,7 +920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the network profile of a charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
         /// 
@@ -911,17 +939,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               Int32                     ConfigurationSlot,
                               NetworkConnectionProfile  NetworkConnectionProfile,
 
-                              IEnumerable<KeyPair>?     SignKeys            = null,
-                              IEnumerable<SignInfo>?    SignInfos           = null,
-                              IEnumerable<Signature>?   Signatures          = null,
+                              IEnumerable<KeyPair>?     SignKeys              = null,
+                              IEnumerable<SignInfo>?    SignInfos             = null,
+                              IEnumerable<Signature>?   Signatures            = null,
 
-                              CustomData?               CustomData          = null,
+                              CustomData?               CustomData            = null,
 
-                              Request_Id?               RequestId           = null,
-                              DateTime?                 RequestTimestamp    = null,
-                              TimeSpan?                 RequestTimeout      = null,
-                              EventTracking_Id?         EventTrackingId     = null,
-                              CancellationToken         CancellationToken   = default)
+                              Request_Id?               RequestId             = null,
+                              DateTime?                 RequestTimestamp      = null,
+                              TimeSpan?                 RequestTimeout        = null,
+                              EventTracking_Id?         EventTrackingId       = null,
+                              SerializationFormats?     SerializationFormat   = null,
+                              CancellationToken         CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetNetworkProfile(
@@ -941,6 +970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -952,7 +982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Change the availability of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
         /// 
         /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
@@ -971,19 +1001,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                SourceRouting            Destination,
                                OperationalStatus        OperationalStatus,
 
-                               EVSE?                    EVSE                = null,
+                               EVSE?                    EVSE                  = null,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?              CustomData            = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?              RequestId             = null,
+                               DateTime?                RequestTimestamp      = null,
+                               TimeSpan?                RequestTimeout        = null,
+                               EventTracking_Id?        EventTrackingId       = null,
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.ChangeAvailability(
@@ -1003,6 +1034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1014,7 +1046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomTrigger">An optional custom trigger.</param>
@@ -1032,20 +1064,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             TriggerMessage(this ICSMSNode           CSMS,
                            SourceRouting            Destination,
                            MessageTrigger           RequestedMessage,
-                           EVSE?                    EVSE                = null,
-                           String?                  CustomTrigger       = null,
+                           EVSE?                    EVSE                  = null,
+                           String?                  CustomTrigger         = null,
 
-                           IEnumerable<KeyPair>?    SignKeys            = null,
-                           IEnumerable<SignInfo>?   SignInfos           = null,
-                           IEnumerable<Signature>?  Signatures          = null,
+                           IEnumerable<KeyPair>?    SignKeys              = null,
+                           IEnumerable<SignInfo>?   SignInfos             = null,
+                           IEnumerable<Signature>?  Signatures            = null,
 
-                           CustomData?              CustomData          = null,
+                           CustomData?              CustomData            = null,
 
-                           Request_Id?              RequestId           = null,
-                           DateTime?                RequestTimestamp    = null,
-                           TimeSpan?                RequestTimeout      = null,
-                           EventTracking_Id?        EventTrackingId     = null,
-                           CancellationToken        CancellationToken   = default)
+                           Request_Id?              RequestId             = null,
+                           DateTime?                RequestTimestamp      = null,
+                           TimeSpan?                RequestTimeout        = null,
+                           EventTracking_Id?        EventTrackingId       = null,
+                           SerializationFormats?    SerializationFormat   = null,
+                           CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.TriggerMessage(
@@ -1066,6 +1099,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1077,7 +1111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Transfer the given data to the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -1095,20 +1129,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             TransferData(this ICSMSNode           CSMS,
                          SourceRouting            Destination,
                          Vendor_Id                VendorId,
-                         Message_Id?              MessageId           = null,
-                         JToken?                  Data                = null,
+                         Message_Id?              MessageId             = null,
+                         JToken?                  Data                  = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
 
-                         CustomData?              CustomData          = null,
+                         CustomData?              CustomData            = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.DataTransfer(
@@ -1129,6 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1141,7 +1177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Send the signed certificate to the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1157,19 +1193,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             SendSignedCertificate(this ICSMSNode           CSMS,
                                   SourceRouting            Destination,
                                   CertificateChain         CertificateChain,
-                                  CertificateSigningUse?   CertificateType     = null,
+                                  CertificateSigningUse?   CertificateType       = null,
 
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
+                                  IEnumerable<KeyPair>?    SignKeys              = null,
+                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  IEnumerable<Signature>?  Signatures            = null,
 
-                                  CustomData?              CustomData          = null,
+                                  CustomData?              CustomData            = null,
 
-                                  Request_Id?              RequestId           = null,
-                                  DateTime?                RequestTimestamp    = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  Request_Id?              RequestId             = null,
+                                  DateTime?                RequestTimestamp      = null,
+                                  TimeSpan?                RequestTimeout        = null,
+                                  EventTracking_Id?        EventTrackingId       = null,
+                                  SerializationFormats?    SerializationFormat   = null,
+                                  CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.CertificateSigned(
@@ -1189,6 +1226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1200,7 +1238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
@@ -1219,17 +1257,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                InstallCertificateUse    CertificateType,
                                Certificate              Certificate,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?              CustomData            = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?              RequestId             = null,
+                               DateTime?                RequestTimestamp      = null,
+                               TimeSpan?                RequestTimeout        = null,
+                               EventTracking_Id?        EventTrackingId       = null,
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.InstallCertificate(
@@ -1249,6 +1288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1260,7 +1300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1274,20 +1314,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
             GetInstalledCertificateIds(this ICSMSNode                     CSMS,
-                                       SourceRouting            Destination,
-                                       IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
+                                       SourceRouting                      Destination,
+                                       IEnumerable<GetCertificateIdUse>?  CertificateTypes      = null,
 
-                                       IEnumerable<KeyPair>?              SignKeys            = null,
-                                       IEnumerable<SignInfo>?             SignInfos           = null,
-                                       IEnumerable<Signature>?            Signatures          = null,
+                                       IEnumerable<KeyPair>?              SignKeys              = null,
+                                       IEnumerable<SignInfo>?             SignInfos             = null,
+                                       IEnumerable<Signature>?            Signatures            = null,
 
-                                       CustomData?                        CustomData          = null,
+                                       CustomData?                        CustomData            = null,
 
-                                       Request_Id?                        RequestId           = null,
-                                       DateTime?                          RequestTimestamp    = null,
-                                       TimeSpan?                          RequestTimeout      = null,
-                                       EventTracking_Id?                  EventTrackingId     = null,
-                                       CancellationToken                  CancellationToken   = default)
+                                       Request_Id?                        RequestId             = null,
+                                       DateTime?                          RequestTimestamp      = null,
+                                       TimeSpan?                          RequestTimeout        = null,
+                                       EventTracking_Id?                  EventTrackingId       = null,
+                                       SerializationFormats?              SerializationFormat   = null,
+                                       CancellationToken                  CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetInstalledCertificateIds(
@@ -1306,6 +1347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1317,7 +1359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1334,17 +1376,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               SourceRouting            Destination,
                               CertificateHashData      CertificateHashData,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?              CustomData            = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?              RequestId             = null,
+                              DateTime?                RequestTimestamp      = null,
+                              TimeSpan?                RequestTimeout        = null,
+                              EventTracking_Id?        EventTrackingId       = null,
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.DeleteCertificate(
@@ -1363,6 +1406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1374,7 +1418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
         /// <param name="Availability">An availability status of the certificate revocation list.</param>
         /// <param name="Location">An optional location of the certificate revocation list.</param>
@@ -1395,17 +1439,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   NotifyCRLStatus          Availability,
                                   URL?                     Location,
 
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
+                                  IEnumerable<KeyPair>?    SignKeys              = null,
+                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  IEnumerable<Signature>?  Signatures            = null,
 
-                                  CustomData?              CustomData          = null,
+                                  CustomData?              CustomData            = null,
 
-                                  Request_Id?              RequestId           = null,
-                                  DateTime?                RequestTimestamp    = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  Request_Id?              RequestId             = null,
+                                  DateTime?                RequestTimestamp      = null,
+                                  TimeSpan?                RequestTimeout        = null,
+                                  EventTracking_Id?        EventTrackingId       = null,
+                                  SerializationFormats?    SerializationFormat   = null,
+                                  CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.NotifyCRL(
@@ -1426,6 +1471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1438,7 +1484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return the local white list of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1453,17 +1499,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             GetLocalListVersion(this ICSMSNode           CSMS,
                                 SourceRouting            Destination,
 
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<KeyPair>?    SignKeys              = null,
+                                IEnumerable<SignInfo>?   SignInfos             = null,
+                                IEnumerable<Signature>?  Signatures            = null,
 
-                                CustomData?              CustomData          = null,
+                                CustomData?              CustomData            = null,
 
-                                Request_Id?              RequestId           = null,
-                                DateTime?                RequestTimestamp    = null,
-                                TimeSpan?                RequestTimeout      = null,
-                                EventTracking_Id?        EventTrackingId     = null,
-                                CancellationToken        CancellationToken   = default)
+                                Request_Id?              RequestId             = null,
+                                DateTime?                RequestTimestamp      = null,
+                                TimeSpan?                RequestTimeout        = null,
+                                EventTracking_Id?        EventTrackingId       = null,
+                                SerializationFormats?    SerializationFormat   = null,
+                                CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetLocalListVersion(
@@ -1481,6 +1528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1492,7 +1540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the local white liste at the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
@@ -1523,6 +1571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           DateTime?                        RequestTimestamp         = null,
                           TimeSpan?                        RequestTimeout           = null,
                           EventTracking_Id?                EventTrackingId          = null,
+                          SerializationFormats?            SerializationFormat      = null,
                           CancellationToken                CancellationToken        = default)
 
 
@@ -1544,6 +1593,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1555,7 +1605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1570,17 +1620,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             ClearCache(this ICSMSNode           CSMS,
                        SourceRouting            Destination,
 
-                       IEnumerable<KeyPair>?    SignKeys            = null,
-                       IEnumerable<SignInfo>?   SignInfos           = null,
-                       IEnumerable<Signature>?  Signatures          = null,
+                       IEnumerable<KeyPair>?    SignKeys              = null,
+                       IEnumerable<SignInfo>?   SignInfos             = null,
+                       IEnumerable<Signature>?  Signatures            = null,
 
-                       CustomData?              CustomData          = null,
+                       CustomData?              CustomData            = null,
 
-                       Request_Id?              RequestId           = null,
-                       DateTime?                RequestTimestamp    = null,
-                       TimeSpan?                RequestTimeout      = null,
-                       EventTracking_Id?        EventTrackingId     = null,
-                       CancellationToken        CancellationToken   = default)
+                       Request_Id?              RequestId             = null,
+                       DateTime?                RequestTimestamp      = null,
+                       TimeSpan?                RequestTimeout        = null,
+                       EventTracking_Id?        EventTrackingId       = null,
+                       SerializationFormats?    SerializationFormat   = null,
+                       CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.ClearCache(
@@ -1598,6 +1649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1610,7 +1662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Send a QR code scanned notification.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="EVSEId">The identification of the EVSE to be reserved. A value of 0 means that the reservation is not for a specific EVSE.</param>
         /// <param name="Timeout">The timeout of this information.</param>
         /// 
@@ -1629,17 +1681,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           EVSE_Id                  EVSEId,
                           TimeSpan                 Timeout,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
-                          IEnumerable<Signature>?  Signatures          = null,
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
 
-                          CustomData?              CustomData          = null,
+                          CustomData?              CustomData            = null,
 
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.QRCodeScanned(
@@ -1659,6 +1712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1670,7 +1724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a charging reservation of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
@@ -1693,21 +1747,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        Reservation_Id           ReservationId,
                        DateTime                 ExpiryDate,
                        IdToken                  IdToken,
-                       ConnectorType?           ConnectorType       = null,
-                       EVSE_Id?                 EVSEId              = null,
-                       IdToken?                 GroupIdToken        = null,
+                       ConnectorType?           ConnectorType         = null,
+                       EVSE_Id?                 EVSEId                = null,
+                       IdToken?                 GroupIdToken          = null,
 
-                       IEnumerable<KeyPair>?    SignKeys            = null,
-                       IEnumerable<SignInfo>?   SignInfos           = null,
-                       IEnumerable<Signature>?  Signatures          = null,
+                       IEnumerable<KeyPair>?    SignKeys              = null,
+                       IEnumerable<SignInfo>?   SignInfos             = null,
+                       IEnumerable<Signature>?  Signatures            = null,
 
-                       CustomData?              CustomData          = null,
+                       CustomData?              CustomData            = null,
 
-                       Request_Id?              RequestId           = null,
-                       DateTime?                RequestTimestamp    = null,
-                       TimeSpan?                RequestTimeout      = null,
-                       EventTracking_Id?        EventTrackingId     = null,
-                       CancellationToken        CancellationToken   = default)
+                       Request_Id?              RequestId             = null,
+                       DateTime?                RequestTimestamp      = null,
+                       TimeSpan?                RequestTimeout        = null,
+                       EventTracking_Id?        EventTrackingId       = null,
+                       SerializationFormats?    SerializationFormat   = null,
+                       CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.ReserveNow(
@@ -1731,6 +1786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1742,7 +1798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Cancel the given charging reservation at the given charging station.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1759,17 +1815,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               SourceRouting            Destination,
                               Reservation_Id           ReservationId,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?              CustomData            = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?              RequestId             = null,
+                              DateTime?                RequestTimestamp      = null,
+                              TimeSpan?                RequestTimeout        = null,
+                              EventTracking_Id?        EventTrackingId       = null,
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.CancelReservation(
@@ -1788,6 +1845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1799,7 +1857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
@@ -1821,22 +1879,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           SourceRouting            Destination,
                           RemoteStart_Id           RequestStartTransactionRequestId,
                           IdToken                  IdToken,
-                          EVSE_Id?                 EVSEId              = null,
-                          ChargingProfile?         ChargingProfile     = null,
-                          IdToken?                 GroupIdToken        = null,
-                          TransactionLimits?       TransactionLimits   = null,
+                          EVSE_Id?                 EVSEId                = null,
+                          ChargingProfile?         ChargingProfile       = null,
+                          IdToken?                 GroupIdToken          = null,
+                          TransactionLimits?       TransactionLimits     = null,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
-                          IEnumerable<Signature>?  Signatures          = null,
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
 
-                          CustomData?              CustomData          = null,
+                          CustomData?              CustomData            = null,
 
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.RequestStartTransaction(
@@ -1860,6 +1919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1871,7 +1931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1888,17 +1948,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          SourceRouting            Destination,
                          Transaction_Id           TransactionId,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
 
-                         CustomData?              CustomData          = null,
+                         CustomData?              CustomData            = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.RequestStopTransaction(
@@ -1917,6 +1978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1928,7 +1990,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1943,19 +2005,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetTransactionStatus(this ICSMSNode           CSMS,
                                  SourceRouting            Destination,
-                                 Transaction_Id?          TransactionId       = null,
+                                 Transaction_Id?          TransactionId         = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?              CustomData            = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?              RequestId             = null,
+                                 DateTime?                RequestTimestamp      = null,
+                                 TimeSpan?                RequestTimeout        = null,
+                                 EventTracking_Id?        EventTrackingId       = null,
+                                 SerializationFormats?    SerializationFormat   = null,
+                                 CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetTransactionStatus(
@@ -1974,6 +2037,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -1985,7 +2049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -2004,17 +2068,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                EVSE_Id                  EVSEId,
                                ChargingProfile          ChargingProfile,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<KeyPair>?    SignKeys              = null,
+                               IEnumerable<SignInfo>?   SignInfos             = null,
+                               IEnumerable<Signature>?  Signatures            = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?              CustomData            = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?              RequestId             = null,
+                               DateTime?                RequestTimestamp      = null,
+                               TimeSpan?                RequestTimeout        = null,
+                               EventTracking_Id?        EventTrackingId       = null,
+                               SerializationFormats?    SerializationFormat   = null,
+                               CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetChargingProfile(
@@ -2034,6 +2099,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2045,7 +2111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -2063,19 +2129,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 SourceRouting             Destination,
                                 Int64                     GetChargingProfilesRequestId,
                                 ChargingProfileCriterion  ChargingProfile,
-                                EVSE_Id?                  EVSEId              = null,
+                                EVSE_Id?                  EVSEId                = null,
 
-                                IEnumerable<KeyPair>?     SignKeys            = null,
-                                IEnumerable<SignInfo>?    SignInfos           = null,
-                                IEnumerable<Signature>?   Signatures          = null,
+                                IEnumerable<KeyPair>?     SignKeys              = null,
+                                IEnumerable<SignInfo>?    SignInfos             = null,
+                                IEnumerable<Signature>?   Signatures            = null,
 
-                                CustomData?               CustomData          = null,
+                                CustomData?               CustomData            = null,
 
-                                Request_Id?               RequestId           = null,
-                                DateTime?                 RequestTimestamp    = null,
-                                TimeSpan?                 RequestTimeout      = null,
-                                EventTracking_Id?         EventTrackingId     = null,
-                                CancellationToken         CancellationToken   = default)
+                                Request_Id?               RequestId             = null,
+                                DateTime?                 RequestTimestamp      = null,
+                                TimeSpan?                 RequestTimeout        = null,
+                                EventTracking_Id?         EventTrackingId       = null,
+                                SerializationFormats?     SerializationFormat   = null,
+                                CancellationToken         CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetChargingProfiles(
@@ -2096,6 +2163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2107,7 +2175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Remove the charging profile at the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
         /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
         /// 
@@ -2136,6 +2204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  DateTime?                RequestTimestamp          = null,
                                  TimeSpan?                RequestTimeout            = null,
                                  EventTracking_Id?        EventTrackingId           = null,
+                                 SerializationFormats?    SerializationFormat       = null,
                                  CancellationToken        CancellationToken         = default)
 
 
@@ -2156,6 +2225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2167,7 +2237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return the charging schedule of the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -2186,19 +2256,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  SourceRouting            Destination,
                                  TimeSpan                 Duration,
                                  EVSE_Id                  EVSEId,
-                                 ChargingRateUnits?       ChargingRateUnit    = null,
+                                 ChargingRateUnits?       ChargingRateUnit      = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?              CustomData            = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?              RequestId             = null,
+                                 DateTime?                RequestTimestamp      = null,
+                                 TimeSpan?                RequestTimeout        = null,
+                                 EventTracking_Id?        EventTrackingId       = null,
+                                 SerializationFormats?    SerializationFormat   = null,
+                                 CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetCompositeSchedule(
@@ -2219,6 +2290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2230,7 +2302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -2289,6 +2361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   DateTime?                RequestTimestamp      = null,
                                   TimeSpan?                RequestTimeout        = null,
                                   EventTracking_Id?        EventTrackingId       = null,
+                                  SerializationFormats?    SerializationFormat   = null,
                                   CancellationToken        CancellationToken     = default)
 
 
@@ -2325,6 +2398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
 
                        )
@@ -2337,7 +2411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2354,17 +2428,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         SourceRouting                    Destination,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
-                                        IEnumerable<KeyPair>?            SignKeys            = null,
-                                        IEnumerable<SignInfo>?           SignInfos           = null,
-                                        IEnumerable<Signature>?          Signatures          = null,
+                                        IEnumerable<KeyPair>?            SignKeys              = null,
+                                        IEnumerable<SignInfo>?           SignInfos             = null,
+                                        IEnumerable<Signature>?          Signatures            = null,
 
-                                        CustomData?                      CustomData          = null,
+                                        CustomData?                      CustomData            = null,
 
-                                        Request_Id?                      RequestId           = null,
-                                        DateTime?                        RequestTimestamp    = null,
-                                        TimeSpan?                        RequestTimeout      = null,
-                                        EventTracking_Id?                EventTrackingId     = null,
-                                        CancellationToken                CancellationToken   = default)
+                                        Request_Id?                      RequestId             = null,
+                                        DateTime?                        RequestTimestamp      = null,
+                                        TimeSpan?                        RequestTimeout        = null,
+                                        EventTracking_Id?                EventTrackingId       = null,
+                                        SerializationFormats?            SerializationFormat   = null,
+                                        CancellationToken                CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.NotifyAllowedEnergyTransfer(
@@ -2383,6 +2458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2394,7 +2470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Switch to the priority charging profile.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -2413,17 +2489,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 Transaction_Id           TransactionId,
                                 Boolean                  Activate,
 
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<KeyPair>?    SignKeys              = null,
+                                IEnumerable<SignInfo>?   SignInfos             = null,
+                                IEnumerable<Signature>?  Signatures            = null,
 
-                                CustomData?              CustomData          = null,
+                                CustomData?              CustomData            = null,
 
-                                Request_Id?              RequestId           = null,
-                                DateTime?                RequestTimestamp    = null,
-                                TimeSpan?                RequestTimeout      = null,
-                                EventTracking_Id?        EventTrackingId     = null,
-                                CancellationToken        CancellationToken   = default)
+                                Request_Id?              RequestId             = null,
+                                DateTime?                RequestTimestamp      = null,
+                                TimeSpan?                RequestTimeout        = null,
+                                EventTracking_Id?        EventTrackingId       = null,
+                                SerializationFormats?    SerializationFormat   = null,
+                                CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.UsePriorityCharging(
@@ -2443,6 +2520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2454,7 +2532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2472,17 +2550,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             EVSE_Id                  EVSEId,
                             Connector_Id             ConnectorId,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?              CustomData            = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.UnlockConnector(
@@ -2502,6 +2581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2516,7 +2596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The charging station uses the value of signal to select a matching power value
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
-        /// <param name="DestinationId">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">Ther value of the signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -2535,17 +2615,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            DateTime                 ActivationTimestamp,
                            AFRR_Signal              Signal,
 
-                           IEnumerable<KeyPair>?    SignKeys            = null,
-                           IEnumerable<SignInfo>?   SignInfos           = null,
-                           IEnumerable<Signature>?  Signatures          = null,
+                           IEnumerable<KeyPair>?    SignKeys              = null,
+                           IEnumerable<SignInfo>?   SignInfos             = null,
+                           IEnumerable<Signature>?  Signatures            = null,
 
-                           CustomData?              CustomData          = null,
+                           CustomData?              CustomData            = null,
 
-                           Request_Id?              RequestId           = null,
-                           DateTime?                RequestTimestamp    = null,
-                           TimeSpan?                RequestTimeout      = null,
-                           EventTracking_Id?        EventTrackingId     = null,
-                           CancellationToken        CancellationToken   = default)
+                           Request_Id?              RequestId             = null,
+                           DateTime?                RequestTimestamp      = null,
+                           TimeSpan?                RequestTimeout        = null,
+                           EventTracking_Id?        EventTrackingId       = null,
+                           SerializationFormats?    SerializationFormat   = null,
+                           CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.AFRRSignal(
@@ -2565,6 +2646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2593,17 +2675,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               SourceRouting            Destination,
                               MessageInfo              Message,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?              CustomData            = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?              RequestId             = null,
+                              DateTime?                RequestTimestamp      = null,
+                              TimeSpan?                RequestTimeout        = null,
+                              EventTracking_Id?        EventTrackingId       = null,
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetDisplayMessage(
@@ -2622,6 +2705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2651,21 +2735,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             GetDisplayMessages(this ICSMSNode                   CSMS,
                                SourceRouting                    Destination,
                                Int32                            GetDisplayMessagesRequestId,
-                               IEnumerable<DisplayMessage_Id>?  Ids                 = null,
-                               MessagePriority?                 Priority            = null,
-                               MessageState?                    State               = null,
+                               IEnumerable<DisplayMessage_Id>?  Ids                   = null,
+                               MessagePriority?                 Priority              = null,
+                               MessageState?                    State                 = null,
 
-                               IEnumerable<KeyPair>?            SignKeys            = null,
-                               IEnumerable<SignInfo>?           SignInfos           = null,
-                               IEnumerable<Signature>?          Signatures          = null,
+                               IEnumerable<KeyPair>?            SignKeys              = null,
+                               IEnumerable<SignInfo>?           SignInfos             = null,
+                               IEnumerable<Signature>?          Signatures            = null,
 
-                               CustomData?                      CustomData          = null,
+                               CustomData?                      CustomData            = null,
 
-                               Request_Id?                      RequestId           = null,
-                               DateTime?                        RequestTimestamp    = null,
-                               TimeSpan?                        RequestTimeout      = null,
-                               EventTracking_Id?                EventTrackingId     = null,
-                               CancellationToken                CancellationToken   = default)
+                               Request_Id?                      RequestId             = null,
+                               DateTime?                        RequestTimestamp      = null,
+                               TimeSpan?                        RequestTimeout        = null,
+                               EventTracking_Id?                EventTrackingId       = null,
+                               SerializationFormats?            SerializationFormat   = null,
+                               CancellationToken                CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetDisplayMessages(
@@ -2687,6 +2772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2714,17 +2800,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 SourceRouting            Destination,
                                 DisplayMessage_Id        DisplayMessageId,
 
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<KeyPair>?    SignKeys              = null,
+                                IEnumerable<SignInfo>?   SignInfos             = null,
+                                IEnumerable<Signature>?  Signatures            = null,
 
-                                CustomData?              CustomData          = null,
+                                CustomData?              CustomData            = null,
 
-                                Request_Id?              RequestId           = null,
-                                DateTime?                RequestTimestamp    = null,
-                                TimeSpan?                RequestTimeout      = null,
-                                EventTracking_Id?        EventTrackingId     = null,
-                                CancellationToken        CancellationToken   = default)
+                                Request_Id?              RequestId             = null,
+                                DateTime?                RequestTimestamp      = null,
+                                TimeSpan?                RequestTimeout        = null,
+                                EventTracking_Id?        EventTrackingId       = null,
+                                SerializationFormats?    SerializationFormat   = null,
+                                CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.ClearDisplayMessage(
@@ -2743,6 +2830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2772,17 +2860,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             Decimal                  TotalCost,
                             Transaction_Id           TransactionId,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?              CustomData            = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.CostUpdated(
@@ -2802,6 +2891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2849,6 +2939,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        DateTime?                RequestTimestamp      = null,
                                        TimeSpan?                RequestTimeout        = null,
                                        EventTracking_Id?        EventTrackingId       = null,
+                                       SerializationFormats?    SerializationFormat   = null,
                                        CancellationToken        CancellationToken     = default)
 
 
@@ -2873,6 +2964,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2907,19 +2999,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             SetDefaultChargingTariff(this ICSMSNode           CSMS,
                                      SourceRouting            Destination,
                                      ChargingTariff           ChargingTariff,
-                                     IEnumerable<EVSE_Id>?    EVSEIds             = null,
+                                     IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
+                                     IEnumerable<KeyPair>?    SignKeys              = null,
+                                     IEnumerable<SignInfo>?   SignInfos             = null,
+                                     IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData          = null,
+                                     CustomData?              CustomData            = null,
 
-                                     Request_Id?              RequestId           = null,
-                                     DateTime?                RequestTimestamp    = null,
-                                     TimeSpan?                RequestTimeout      = null,
-                                     EventTracking_Id?        EventTrackingId     = null,
-                                     CancellationToken        CancellationToken   = default)
+                                     Request_Id?              RequestId             = null,
+                                     DateTime?                RequestTimestamp      = null,
+                                     TimeSpan?                RequestTimeout        = null,
+                                     EventTracking_Id?        EventTrackingId       = null,
+                                     SerializationFormats?    SerializationFormat   = null,
+                                     CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.SetDefaultChargingTariff(
@@ -2939,6 +3032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -2964,19 +3058,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetDefaultChargingTariff(this ICSMSNode           CSMS,
                                      SourceRouting            Destination,
-                                     IEnumerable<EVSE_Id>?    EVSEIds             = null,
+                                     IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
+                                     IEnumerable<KeyPair>?    SignKeys              = null,
+                                     IEnumerable<SignInfo>?   SignInfos             = null,
+                                     IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData          = null,
+                                     CustomData?              CustomData            = null,
 
-                                     Request_Id?              RequestId           = null,
-                                     DateTime?                RequestTimestamp    = null,
-                                     TimeSpan?                RequestTimeout      = null,
-                                     EventTracking_Id?        EventTrackingId     = null,
-                                     CancellationToken        CancellationToken   = default)
+                                     Request_Id?              RequestId             = null,
+                                     DateTime?                RequestTimestamp      = null,
+                                     TimeSpan?                RequestTimeout        = null,
+                                     EventTracking_Id?        EventTrackingId       = null,
+                                     SerializationFormats?    SerializationFormat   = null,
+                                     CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.GetDefaultChargingTariff(
@@ -2995,6 +3090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );
@@ -3022,20 +3118,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RemoveDefaultChargingTariff(this ICSMSNode           CSMS,
                                         SourceRouting            Destination,
-                                        ChargingTariff_Id?       ChargingTariffId    = null,
-                                        IEnumerable<EVSE_Id>?    EVSEIds             = null,
+                                        ChargingTariff_Id?       ChargingTariffId      = null,
+                                        IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
-                                        IEnumerable<KeyPair>?    SignKeys            = null,
-                                        IEnumerable<SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?  Signatures          = null,
+                                        IEnumerable<KeyPair>?    SignKeys              = null,
+                                        IEnumerable<SignInfo>?   SignInfos             = null,
+                                        IEnumerable<Signature>?  Signatures            = null,
 
-                                        CustomData?              CustomData          = null,
+                                        CustomData?              CustomData            = null,
 
-                                        Request_Id?              RequestId           = null,
-                                        DateTime?                RequestTimestamp    = null,
-                                        TimeSpan?                RequestTimeout      = null,
-                                        EventTracking_Id?        EventTrackingId     = null,
-                                        CancellationToken        CancellationToken   = default)
+                                        Request_Id?              RequestId             = null,
+                                        DateTime?                RequestTimestamp      = null,
+                                        TimeSpan?                RequestTimeout        = null,
+                                        EventTracking_Id?        EventTrackingId       = null,
+                                        SerializationFormats?    SerializationFormat   = null,
+                                        CancellationToken        CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.RemoveDefaultChargingTariff(
@@ -3055,6 +3152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
                            CancellationToken
                        )
                    );

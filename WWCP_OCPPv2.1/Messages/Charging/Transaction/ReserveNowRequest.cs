@@ -120,22 +120,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  Reservation_Id           Id,
                                  DateTime                 ExpiryDate,
                                  IdToken                  IdToken,
-                                 ConnectorType?           ConnectorType       = null,
-                                 EVSE_Id?                 EVSEId              = null,
-                                 IdToken?                 GroupIdToken        = null,
+                                 ConnectorType?           ConnectorType         = null,
+                                 EVSE_Id?                 EVSEId                = null,
+                                 IdToken?                 GroupIdToken          = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?              CustomData            = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 NetworkPath?             NetworkPath         = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?              RequestId             = null,
+                                 DateTime?                RequestTimestamp      = null,
+                                 TimeSpan?                RequestTimeout        = null,
+                                 EventTracking_Id?        EventTrackingId       = null,
+                                 NetworkPath?             NetworkPath           = null,
+                                 SerializationFormats?    SerializationFormat   = null,
+                                 CancellationToken        CancellationToken     = default)
 
             : base(Destination,
                    nameof(ReserveNowRequest)[..^7],
@@ -151,6 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {

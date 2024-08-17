@@ -151,6 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region BinaryDataStreamsExtensions
 
+            #region Files
+
             #region OnDeleteFile
 
             OCPP.IN.OnDeleteFile += (timestamp,
@@ -288,7 +290,131 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #endregion
 
-            #region DataTransfers
+            #region OnBinaryDataTransfer
+
+            OCPP.IN.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Local Controller '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseBinaryData = request.Data;
+
+                if (request.Data is not null)
+                    responseBinaryData = request.Data.Reverse();
+
+                return Task.FromResult(
+                           request.VendorId == Vendor_Id.GraphDefined
+
+                               ? new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 BinaryDataTransferStatus.Accepted,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+
+                               : new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 BinaryDataTransferStatus.Rejected,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
+                );
+
+            #endregion
+
+            #endregion
+
+            #region E2ESecurityExtensions
+
+            #region OnSecureDataTransfer
+
+            OCPP.IN.OnSecureDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Local Controller '{Id}': Incoming SecureDataTransfer request!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var secureData          = request.Decrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId)).ToUTF8String();
+                var responseSecureData  = secureData?.Reverse();
+                var keyId               = (UInt16) 1;
+
+                return Task.FromResult(
+                           request.Ciphertext is not null
+
+                               ? SecureDataTransferResponse.Encrypt(
+                                     Request:                request,
+                                     Status:                 SecureDataTransferStatus.Accepted,
+                                     Destination:            SourceRouting.To(request.NetworkPath.Source),
+                                     Parameter:              0,
+                                     KeyId:                  keyId,
+                                     Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),
+                                     Nonce:                  GetEncryptionNonce  (request.NetworkPath.Source, keyId),
+                                     Counter:                GetEncryptionCounter(request.NetworkPath.Source, keyId),
+                                     Payload:                responseSecureData?.ToUTF8Bytes() ?? [],
+                                     AdditionalStatusInfo:   null,
+
+                                     SignKeys:               null,
+                                     SignInfos:              null,
+                                     Signatures:             null,
+
+                                     EventTrackingId:        request.EventTrackingId,
+                                     NetworkPath:            NetworkPath.From(Id)
+
+                                 )
+
+                               : new SecureDataTransferResponse(
+                                     Request:                request,
+                                     NetworkPath:            NetworkPath.From(Id),
+                                     Status:                 SecureDataTransferStatus.Rejected,
+                                     AdditionalStatusInfo:   null,
+                                     Ciphertext:             responseSecureData?.ToUTF8Bytes()
+                                 )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnSecureDataTransferRequestFilter += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
+                );
+
+            #endregion
+
+            #endregion
 
             #region OnDataTransfer
 
@@ -413,127 +539,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #endregion
 
-            #region OnBinaryDataTransfer
-
-            OCPP.IN.OnBinaryDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"Local Controller '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
-
-                // VendorId
-                // MessageId
-                // Data
-
-                var responseBinaryData = request.Data;
-
-                if (request.Data is not null)
-                    responseBinaryData = request.Data.Reverse();
-
-                return Task.FromResult(
-                           request.VendorId == Vendor_Id.GraphDefined
-
-                               ? new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 BinaryDataTransferStatus.Accepted,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-
-                               : new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 BinaryDataTransferStatus.Rejected,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-                       );
-
-            };
-
-
-            OCPP.FORWARD.OnBinaryDataTransferRequestFilter += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               cancellationToken) =>
-
-                Task.FromResult(
-                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
-                );
-
-            #endregion
-
-            #region OnSecureDataTransfer
-
-            OCPP.IN.OnSecureDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"Local Controller '{Id}': Incoming SecureDataTransfer request!");
-
-                // VendorId
-                // MessageId
-                // Data
-
-                var secureData          = request.Decrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId)).ToUTF8String();
-                var responseSecureData  = secureData?.Reverse();
-                var keyId               = (UInt16) 1;
-
-                return Task.FromResult(
-                           request.Ciphertext is not null
-
-                               ? SecureDataTransferResponse.Encrypt(
-                                     Request:                request,
-                                     Status:                 SecureDataTransferStatus.Accepted,
-                                     Destination:            SourceRouting.To(request.NetworkPath.Source),
-                                     Parameter:              0,
-                                     KeyId:                  keyId,
-                                     Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),
-                                     Nonce:                  GetEncryptionNonce  (request.NetworkPath.Source, keyId),
-                                     Counter:                GetEncryptionCounter(request.NetworkPath.Source, keyId),
-                                     Payload:                responseSecureData?.ToUTF8Bytes() ?? [],
-                                     AdditionalStatusInfo:   null,
-
-                                     SignKeys:               null,
-                                     SignInfos:              null,
-                                     Signatures:             null,
-
-                                     EventTrackingId:        request.EventTrackingId,
-                                     NetworkPath:            NetworkPath.From(Id)
-
-                                 )
-
-                               : new SecureDataTransferResponse(
-                                     Request:                request,
-                                     NetworkPath:            NetworkPath.From(Id),
-                                     Status:                 SecureDataTransferStatus.Rejected,
-                                     AdditionalStatusInfo:   null,
-                                     Ciphertext:             responseSecureData?.ToUTF8Bytes()
-                                 )
-                       );
-
-            };
-
-
-            OCPP.FORWARD.OnSecureDataTransferRequestFilter += (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               cancellationToken) =>
-
-                Task.FromResult(
-                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
-                );
-
-            #endregion
-
-            #endregion
 
 
 
@@ -663,6 +668,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     AllowedChargingStations.Contains(request.NetworkPath.Source)
                         ? ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
                         : ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REJECT (request, "Unauthorized!")
+                );
+
+            #endregion
+
+            #region OnTransactionEvent
+
+            OCPP.FORWARD.OnTransactionEventRequestFilter += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) =>
+
+                Task.FromResult(
+                    ForwardingDecision<CS.TransactionEventRequest, TransactionEventResponse>.FORWARD(request)
                 );
 
             #endregion

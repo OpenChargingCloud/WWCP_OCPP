@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="BinaryFormat">The binary format to be used for parsing.</param>
         /// <param name="CustomModemParser">An optional delegate to parse custom modem values.</param>
         public static Modem Parse(MemoryStream                        BinaryStream,
-                                  BinaryFormats                       BinaryFormat,
+                                  SerializationFormats                       BinaryFormat,
                                   CustomBinaryParserDelegate<Modem>?  CustomModemParser   = null)
         {
 
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomModemParser">An optional delegate to parse custom modems.</param>
         public static Boolean TryParse(MemoryStream                        BinaryStream,
-                                       BinaryFormats                       BinaryFormat,
+                                       SerializationFormats                       BinaryFormat,
                                        [MaybeNullWhen(true)] out Modem?    Modem,
                                        [NotNullWhen(false)]  out String?   ErrorResponse,
                                        CustomBinaryParserDelegate<Modem>?  CustomModemParser   = null)
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     #region Compact Format
 
-                    case BinaryFormats.Compact:
+                    case SerializationFormats.BinaryCompact:
                     {
 
                         var ICCIDLength  = (Byte) BinaryStream.ReadByte();
