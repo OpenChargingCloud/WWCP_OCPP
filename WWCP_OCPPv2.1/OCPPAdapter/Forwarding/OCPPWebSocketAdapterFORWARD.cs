@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public ForwardingResults           DefaultForwardingResult    { get; set; } = ForwardingResults.DROP;
+        public ForwardingDecisions           DefaultForwardingResult    { get; set; } = ForwardingDecisions.DROP;
 
         public HashSet<NetworkingNode_Id>  AnycastIdsAllowed          { get; }      = [];
 
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkingNode">The parent networking node.</param>
         /// <param name="DefaultForwardingResult">The default forwarding result.</param>
         public OCPPWebSocketAdapterFORWARD(INetworkingNode    NetworkingNode,
-                                           ForwardingResults  DefaultForwardingResult = ForwardingResults.DROP)
+                                           ForwardingDecisions  DefaultForwardingResult = ForwardingDecisions.DROP)
         {
 
             this.parentNetworkingNode     = NetworkingNode;
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region In case: Try to call the matching 'incoming message processor'...
 
             if (forwardingDecision is null ||
-                forwardingDecision.Result == ForwardingResults.NEXT)
+                forwardingDecision.Result == ForwardingDecisions.NEXT)
             {
 
                 #region A filter rule for the OCPP action was found...
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region FORWARD
 
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
                 var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REPLACE
 
-            if (forwardingDecision.Result == ForwardingResults.REPLACE)
+            if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
 
                 var newJSONRequestMessage = forwardingDecision.NewJSONRequest is null
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REJECT
 
-            else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+            else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
                      forwardingDecision.JSONRejectResponse is not null)
             {
 
@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region FORWARD
 
-                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
+                    if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
                     {
 
                         var newJSONSendMessage = JSONSendMessage.AppendToNetworkPath(parentNetworkingNode.Id);
@@ -584,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region REPLACE
 
-                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
+                    if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
                     {
 
                         var newJSONSendMessage = forwardingDecision.NewJSONRequest is null
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region REJECT
 
-                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+                    else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
                              forwardingDecision.JSONRejectResponse is not null)
                     {
 
@@ -743,7 +743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region In case: Try to call the matching 'incoming message processor'...
 
             if (forwardingDecision is null ||
-                forwardingDecision.Result == ForwardingResults.NEXT)
+                forwardingDecision.Result == ForwardingDecisions.NEXT)
             {
 
                 #region A filter rule for the OCPP action was found...
@@ -825,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region FORWARD
 
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
                 var newBinaryRequestMessage = BinaryRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
@@ -854,7 +854,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REPLACE
 
-            if (forwardingDecision.Result == ForwardingResults.REPLACE)
+            if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
 
                 var newBinaryRequestMessage = forwardingDecision.NewBinaryRequest is null
@@ -893,7 +893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REJECT
 
-            else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+            else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
                      forwardingDecision.BinaryRejectResponse is not null)
             {
 
@@ -1053,7 +1053,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region FORWARD
 
-                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
+                    if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
                     {
 
                         var newBinarySendMessage = BinarySendMessage.AppendToNetworkPath(parentNetworkingNode.Id);
@@ -1076,7 +1076,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region REPLACE
 
-                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
+                    if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
                     {
 
                         var newBinarySendMessage = forwardingDecision.NewBinaryRequest is null
@@ -1112,7 +1112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region REJECT
 
-                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+                    else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
                              forwardingDecision.BinaryRejectResponse is not null)
                     {
 

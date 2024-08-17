@@ -142,11 +142,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingResult == ForwardingDecisions.FORWARD)
                 forwardingDecision = ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request);
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Attach OnListDirectoryRequestSent event
 
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
                 var sentLogging = OnListDirectoryRequestSent;

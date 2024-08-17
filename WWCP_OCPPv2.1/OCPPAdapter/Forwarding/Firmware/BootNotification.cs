@@ -177,14 +177,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingResult == ForwardingDecisions.FORWARD)
                 forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
-                                         ForwardingResults.FORWARD
+                                         ForwardingDecisions.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var dataTransferResponse = forwardingDecision?.RejectResponse ??
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
-                                         ForwardingResults.REJECT,
+                                         ForwardingDecisions.REJECT,
                                          dataTransferResponse,
                                          dataTransferResponse.ToJSON(
                                              parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Attach OnBootNotificationRequestSent event
 
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
                 var sentLogging = OnBootNotificationRequestSent;

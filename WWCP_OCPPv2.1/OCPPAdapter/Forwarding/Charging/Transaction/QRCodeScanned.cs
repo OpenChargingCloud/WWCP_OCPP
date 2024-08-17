@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingResult == ForwardingDecisions.FORWARD)
                 forwardingDecision = new ForwardingDecision<QRCodeScannedRequest, QRCodeScannedResponse>(
                                          request,
-                                         ForwardingResults.FORWARD
+                                         ForwardingDecisions.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var rejectResponse  = forwardingDecision?.RejectResponse ??
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 forwardingDecision  = new ForwardingDecision<QRCodeScannedRequest, QRCodeScannedResponse>(
                                           request,
-                                          ForwardingResults.REJECT,
+                                          ForwardingDecisions.REJECT,
                                           rejectResponse,
                                           rejectResponse.ToJSON(
                                               parentNetworkingNode.OCPP.CustomQRCodeScannedResponseSerializer,
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Attach OnQRCodeScannedRequestSent event
 
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
                 var sentLogging = OnQRCodeScannedRequestSent;

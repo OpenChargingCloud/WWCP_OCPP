@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultForwardingResult == ForwardingResults.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingResult == ForwardingDecisions.FORWARD)
                 forwardingDecision = new ForwardingDecision<SetChargingProfileRequest, SetChargingProfileResponse>(
                                          request,
-                                         ForwardingResults.FORWARD
+                                         ForwardingDecisions.FORWARD
                                      );
 
             if (forwardingDecision is null ||
-               (forwardingDecision.Result == ForwardingResults.REJECT && forwardingDecision.RejectResponse is null))
+               (forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
             {
 
                 var response = forwardingDecision?.RejectResponse ??
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 forwardingDecision = new ForwardingDecision<SetChargingProfileRequest, SetChargingProfileResponse>(
                                          request,
-                                         ForwardingResults.REJECT,
+                                         ForwardingDecisions.REJECT,
                                          response,
                                          response.ToJSON(
                                              parentNetworkingNode.OCPP.CustomSetChargingProfileResponseSerializer,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Attach OnSetChargingProfileRequestSent event
 
-            if (forwardingDecision.Result == ForwardingResults.FORWARD)
+            if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
                 var sentLogging = OnSetChargingProfileRequestSent;

@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The forwarding decision.
         /// </summary>
-        public ForwardingResults           Result                  { get; }
+        public ForwardingDecisions           Result                  { get; }
 
         /// <summary>
         /// The optional new JSON request sent instead of the original request.
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
         public ForwardingDecision(OCPP_JSONRequestMessage  JSONRequest,
-                                  ForwardingResults        Result,
+                                  ForwardingDecisions        Result,
                                   JSONLDContext?           RequestContext   = null,
                                   SourceRouting?           NewDestination   = null,
                                   String?                  RejectMessage    = null,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(ForwardingResults  Result,
+        public ForwardingDecision(ForwardingDecisions  Result,
                                   JSONLDContext?     RequestContext   = null,
                                   SourceRouting?     NewDestination   = null,
                                   String?            RejectMessage    = null,
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(ForwardingResults  Result,
+        public ForwardingDecision(ForwardingDecisions  Result,
                                   JObject            JSONRejectResponse,
                                   JSONLDContext?     RequestContext   = null,
                                   String?            RejectMessage    = null,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectMessage">An optional REJECT message sent back to the sender.</param>
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
-        public ForwardingDecision(ForwardingResults  Result,
+        public ForwardingDecision(ForwardingDecisions  Result,
                                   Byte[]             BinaryRejectResponse,
                                   JSONLDContext?     RequestContext   = null,
                                   String?            RejectMessage    = null,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (
                    //Request,
-                   ForwardingResults.FORWARD,
+                   ForwardingDecisions.FORWARD,
                    null,
                    NewDestination,
                    String.Empty,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 String?         LogMessage       = null,
                                                 JSONLDContext?  RequestContext   = null)
 
-            => new (ForwardingResults.REJECT,
+            => new (ForwardingDecisions.REJECT,
                     RequestContext,
                     null,
                     RejectMessage,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public static ForwardingDecision DROP(String?         LogMessage       = null,
                                               JSONLDContext?  RequestContext   = null)
 
-            => new (ForwardingResults.DROP,
+            => new (ForwardingDecisions.DROP,
                     RequestContext,
                     null,
                     String.Empty,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (
                    Request,
-                   ForwardingResults.NEXT,
+                   ForwardingDecisions.NEXT,
                    null,
                    null,
                    String.Empty,
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
         public ForwardingDecision(TRequest           Request,
-                                  ForwardingResults  Result,
+                                  ForwardingDecisions  Result,
                                   TRequest?          NewRequest       = null,
                                   String?            NewAction        = null,
                                   SourceRouting?     NewDestination   = null,
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
         public ForwardingDecision(TRequest           Request,
-                                  ForwardingResults  Result,
+                                  ForwardingDecisions  Result,
                                   TResponse          RejectResponse,
                                   JObject            JSONRejectResponse,
                                   String?            RejectMessage   = null,
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RejectDetails">Optional REJECT details sent back to the sender.</param>
         /// <param name="LogMessage">An optional log message.</param>
         public ForwardingDecision(TRequest           Request,
-                                  ForwardingResults  Result,
+                                  ForwardingDecisions  Result,
                                   TResponse          RejectResponse,
                                   Byte[]             BinaryRejectResponse,
                                   String?            RejectMessage   = null,
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 => new (
                        Request,
-                       ForwardingResults.FORWARD,
+                       ForwardingDecisions.FORWARD,
                        null,
                        null,
                        NewDestination,
@@ -510,7 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 => new (
                        Request,
-                       ForwardingResults.REJECT,
+                       ForwardingDecisions.REJECT,
                        null,
                        null,
                        null,
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (
                    Request,
-                   ForwardingResults.REJECT,
+                   ForwardingDecisions.REJECT,
                    RejectResponse,
                    JSONRejectResponse,
                    RejectMessage,
@@ -564,7 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 => new (
                        Request,
-                       ForwardingResults.REPLACE,
+                       ForwardingDecisions.REPLACE,
                        NewRequest,
                        NewAction,
                        NewDestination,
@@ -575,6 +575,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+
+    /// <summary>
+    /// Message forwarding decisions
+    /// </summary>
+    public enum ForwardingDecisions
+    {
+
+        /// <summary>
+        /// DROP the message without any notification.
+        /// </summary>
+        DROP,
+
+        /// <summary>
+        /// REJECT the message with a notification.
+        /// </summary>
+        REJECT,
+
+        /// <summary>
+        /// FORWARD the message.
+        /// </summary>
+        FORWARD,
+
+        /// <summary>
+        /// REPLACE the received message and sent a new message instead.
+        /// </summary>
+        REPLACE,
+
+        /// <summary>
+        /// Let the next processing step handle the message.
+        /// </summary>
+        NEXT
 
     }
 

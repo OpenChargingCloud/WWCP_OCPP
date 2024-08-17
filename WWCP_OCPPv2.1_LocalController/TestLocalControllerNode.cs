@@ -516,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     return Task.FromResult(
                                new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
-                                   ForwardingResults.REJECT,
+                                   ForwardingDecisions.REJECT,
                                    response,
                                    response.ToJSON(
                                        OCPP.CustomDataTransferResponseSerializer,

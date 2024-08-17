@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     Assert.That(nnBootNotification.Request.NetworkPath.Source,                Is.EqualTo(chargingStation.Id));
                     Assert.That(nnBootNotification.Request.NetworkPath.Last,                  Is.EqualTo(chargingStation.Id));
                     Assert.That(nnBootNotification.Request.Reason,                            Is.EqualTo(reason));
-                    Assert.That(nnBootNotification.Result,                                    Is.EqualTo(ForwardingResults.FORWARD));
+                    Assert.That(nnBootNotification.Result,                                    Is.EqualTo(ForwardingDecisions.FORWARD));
 
 
                     // Networking Node JSON Request OUT
@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     Assert.That(nnDataTransfer.Request.VendorId,                          Is.EqualTo(vendorId));
                     Assert.That(nnDataTransfer.Request.MessageId,                         Is.EqualTo(messageId));
                     Assert.That(nnDataTransfer.Request.Data?.ToString(),                  Is.EqualTo(data));
-                    Assert.That(nnDataTransfer.Result,                                    Is.EqualTo(ForwardingResults.FORWARD));
+                    Assert.That(nnDataTransfer.Result,                                    Is.EqualTo(ForwardingDecisions.FORWARD));
 
 
                     // Networking Node JSON Request OUT
@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     Assert.That(nnDataTransfer.Request.VendorId,                          Is.EqualTo(vendorId));
                     Assert.That(nnDataTransfer.Request.MessageId,                         Is.EqualTo(messageId));
                     Assert.That(nnDataTransfer.Request.Data?.ToString(),                  Is.EqualTo(data));
-                    Assert.That(nnDataTransfer.Result,                                    Is.EqualTo(ForwardingResults.REJECT));
+                    Assert.That(nnDataTransfer.Result,                                    Is.EqualTo(ForwardingDecisions.REJECT));
 
 
                     //// Networking Node JSON Request OUT

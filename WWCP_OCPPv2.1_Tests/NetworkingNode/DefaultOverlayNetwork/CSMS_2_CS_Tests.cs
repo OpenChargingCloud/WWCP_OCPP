@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     //Assert.That(nnResetRequest.Request.NetworkPath.Source,        Is.EqualTo(CSMS.Id));
                     //Assert.That(nnResetRequest.Request.NetworkPath.Last,          Is.EqualTo(CSMS.Id));
                     Assert.That(nnResetRequest.Request.ResetType,                 Is.EqualTo(resetType));
-                    Assert.That(nnResetRequest.Result,                            Is.EqualTo(ForwardingResults.FORWARD));
+                    Assert.That(nnResetRequest.Result,                            Is.EqualTo(ForwardingDecisions.FORWARD));
 
 
                     // Charging Station Request IN
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     Assert.That(nnDataTransfer.Request.VendorId,                         Is.EqualTo(vendorId));
                     Assert.That(nnDataTransfer.Request.MessageId,                        Is.EqualTo(messageId));
                     Assert.That(nnDataTransfer.Request.Data?.ToString(),                 Is.EqualTo(data));
-                    Assert.That(nnDataTransfer.Result,                                   Is.EqualTo(ForwardingResults.FORWARD));
+                    Assert.That(nnDataTransfer.Result,                                   Is.EqualTo(ForwardingDecisions.FORWARD));
 
 
                     // Charging Station Request IN
