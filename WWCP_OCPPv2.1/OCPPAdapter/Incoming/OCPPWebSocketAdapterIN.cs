@@ -111,7 +111,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         private   readonly  INetworkingNode                 parentNetworkingNode;
 
-        protected readonly  Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
+        protected readonly  Dictionary<String, MethodInfo>  incomingJSONMessageProcessorsLookup     = [];
+        protected readonly  Dictionary<String, MethodInfo>  incomingBinaryMessageProcessorsLookup   = [];
 
         #endregion
 
@@ -196,21 +197,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Reflect "Receive_XXX" messages and wire them...
 
-            foreach (var method in typeof(OCPPWebSocketAdapterIN).
-                                       GetMethods(BindingFlags.Public | BindingFlags.Instance).
-                                            Where(method            => method.Name.StartsWith("Receive_") &&
-                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<OCPP_Response>))))
+            foreach (var methodInfo in typeof(OCPPWebSocketAdapterIN).
+                                           GetMethods(BindingFlags.Public | BindingFlags.Instance).
+                                                Where(method            => method.Name.StartsWith("Receive_") &&
+                                                     (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>>) ||
+                                                      method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>>) ||
+                                                      method.ReturnType == typeof(Task<OCPP_Response>))))
             {
 
-                var processorName = method.Name[8..];
+                var processorName = methodInfo.Name[8..];
 
-                if (incomingMessageProcessorsLookup.ContainsKey(processorName))
+                if (incomingJSONMessageProcessorsLookup.ContainsKey(processorName))
                     throw new ArgumentException("Duplicate processor name: " + processorName);
 
-                incomingMessageProcessorsLookup.Add(processorName,
-                                                    method);
+                var parameterInfos = methodInfo.GetParameters();
+
+                if (parameterInfos.Length > 7)
+                {
+
+                    if      (parameterInfos[6].ParameterType == typeof(JObject))
+                        incomingJSONMessageProcessorsLookup.Add(
+                            processorName,
+                            methodInfo
+                        );
+
+                    else if (parameterInfos[6].ParameterType == typeof(Byte[]))
+                        incomingBinaryMessageProcessorsLookup.Add(
+                            processorName,
+                            methodInfo
+                        );
+
+                }
 
             }
 
@@ -303,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         #region Try to call the matching 'incoming message processor'...
 
-                        if (incomingMessageProcessorsLookup.TryGetValue(jsonRequestMessage.Action, out var methodInfo))
+                        if (incomingJSONMessageProcessorsLookup.TryGetValue(jsonRequestMessage.Action, out var methodInfo))
                         {
 
                             //ToDo: Maybe this could be done via code generation!
@@ -617,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         #region Try to call the matching 'incoming message processor'...
 
-                        if (incomingMessageProcessorsLookup.TryGetValue(jsonSendMessage.Action, out var methodInfo))
+                        if (incomingJSONMessageProcessorsLookup.TryGetValue(jsonSendMessage.Action, out var methodInfo))
                         {
 
                             //ToDo: Maybe this could be done via code generation!
@@ -768,16 +785,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             case WebSocketClientConnection:
                                 binaryRequestMessage = binaryRequestMessage.ChangeNetworking(
-                                                                  SourceRouting.To(parentNetworkingNode.Id),
-                                                                  binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
-                                                              );
+                                                           SourceRouting.To(parentNetworkingNode.Id),
+                                                           binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                       );
                                 break;
 
                             case WebSocketServerConnection:
                                 binaryRequestMessage = binaryRequestMessage.ChangeNetworking(
-                                                                  SourceRouting.To(NetworkingNode_Id.CSMS),
-                                                                  binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
-                                                              );
+                                                           SourceRouting.To(NetworkingNode_Id.CSMS),
+                                                           binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                       );
                                 break;
 
                         }
@@ -827,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         #region Try to call the matching 'incoming message processor'
 
-                        if (incomingMessageProcessorsLookup.TryGetValue(binaryRequestMessage.Action, out var methodInfo))
+                        if (incomingBinaryMessageProcessorsLookup.TryGetValue(binaryRequestMessage.Action, out var methodInfo))
                         {
 
                             var result = methodInfo.Invoke(this,
@@ -844,32 +861,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             OCPP_BinaryResponseMessage?   OCPPBinaryResponse   = null;
                             OCPP_JSONRequestErrorMessage? OCPPErrorResponse    = null;
 
-                            // Obsolete!
-                            if      (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> textProcessor) {
-                                (OCPPResponse, OCPPErrorResponse) = await textProcessor;
+                            //// Obsolete!
+                            //if      (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> textProcessor) {
+                            //    (OCPPResponse, OCPPErrorResponse) = await textProcessor;
 
-                                if (OCPPResponse is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse    (OCPPResponse);
+                            //    if (OCPPResponse is not null)
+                            //        sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse    (OCPPResponse);
 
-                                if (OCPPErrorResponse is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(OCPPErrorResponse);
+                            //    if (OCPPErrorResponse is not null)
+                            //        sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(OCPPErrorResponse);
 
-                            }
+                            //}
 
-                            // Obsolete!
-                            else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor) {
+                            //// Obsolete!
+                            //else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor) {
 
-                                (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
+                            //    (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
 
-                                if (OCPPBinaryResponse is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse  (OCPPBinaryResponse);
+                            //    if (OCPPBinaryResponse is not null)
+                            //        sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse  (OCPPBinaryResponse);
 
-                                if (OCPPErrorResponse is not null)
-                                    sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(OCPPErrorResponse);
+                            //    if (OCPPErrorResponse is not null)
+                            //        sendMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(OCPPErrorResponse);
 
-                            }
+                            //}
 
-                            else if (result is Task<OCPP_Response> ocppProcessor)
+                            //else
+                            if (result is Task<OCPP_Response> ocppProcessor)
                             {
 
                                 var ocppResponse = await ocppProcessor;
@@ -1169,7 +1187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         #region Try to call the matching 'incoming message processor'...
 
-                        if (incomingMessageProcessorsLookup.TryGetValue(binarySendMessage.Action, out var methodInfo) &&
+                        if (incomingJSONMessageProcessorsLookup.TryGetValue(binarySendMessage.Action, out var methodInfo) &&
                             methodInfo is not null)
                         {
 

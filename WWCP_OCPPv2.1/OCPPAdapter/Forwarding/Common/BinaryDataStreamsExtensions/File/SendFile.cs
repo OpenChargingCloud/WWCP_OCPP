@@ -84,7 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision>
 
-            Forward_SendFile(OCPP_BinaryRequestMessage  BinaryRequestMessage,
+            Forward_SendFile(OCPP_JSONRequestMessage    JSONRequestMessage,
+                             OCPP_BinaryRequestMessage  BinaryRequestMessage,
                              IWebSocketConnection       WebSocketConnection,
                              CancellationToken          CancellationToken   = default)
 

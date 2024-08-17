@@ -136,11 +136,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnAnyJSONRequestFilterDelegate      OnAnyJSONRequestFilter;
-        public event OnAnyJSONRequestFilteredDelegate    OnAnyJSONRequestFiltered;
+        public event OnAnyJSONRequestFilterDelegate?      OnAnyJSONRequestFilter;
+        public event OnAnyJSONRequestFilteredDelegate?    OnAnyJSONRequestFiltered;
 
-        public event OnAnyBinaryRequestFilterDelegate    OnAnyBinaryRequestFilter;
-        public event OnAnyBinaryRequestFilteredDelegate  OnAnyBinaryRequestFiltered;
+        public event OnAnyBinaryRequestFilterDelegate?    OnAnyBinaryRequestFilter;
+        public event OnAnyBinaryRequestFilteredDelegate?  OnAnyBinaryRequestFiltered;
 
         #endregion
 
@@ -160,18 +160,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Reflect "Forward_XXX" messages and wire them...
 
-            foreach (var method in typeof(OCPPWebSocketAdapterFORWARD).
-                                       GetMethods(BindingFlags.Public | BindingFlags.Instance).
-                                            Where(method => method.Name.StartsWith("Forward_")))
+            foreach (var methodInfo in typeof(OCPPWebSocketAdapterFORWARD).
+                                           GetMethods(BindingFlags.Public | BindingFlags.Instance).
+                                                Where(method => method.Name.StartsWith("Forward_")))
             {
 
-                var processorName = method.Name[8..];
+                var processorName = methodInfo.Name[8..];
 
                 if (forwardingMessageProcessorsLookup.ContainsKey(processorName))
                     throw new ArgumentException("Duplicate processor name: " + processorName);
 
-                forwardingMessageProcessorsLookup.Add(processorName,
-                                                      method);
+                var parameterInfos = methodInfo.GetParameters();
+
+                if (parameterInfos.Length == 4)
+                    forwardingMessageProcessorsLookup.Add(
+                        processorName,
+                        methodInfo
+                    );
 
             }
 
@@ -251,8 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region A filter rule for the OCPP action was found...
 
-                if (forwardingMessageProcessorsLookup.TryGetValue(JSONRequestMessage.Action, out var methodInfo) &&
-                    methodInfo is not null)
+                if (forwardingMessageProcessorsLookup.TryGetValue(JSONRequestMessage.Action, out var methodInfo))
                 {
 
                     //ToDo: Maybe this could be done via code generation!
@@ -260,6 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      this,
                                      [
                                          JSONRequestMessage,
+                                         null,
                                          WebSocketConnection,
                                          JSONRequestMessage.CancellationToken
                                      ]
@@ -535,8 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Try to call the matching 'incoming message processor'...
 
-            if (forwardingMessageProcessorsLookup.TryGetValue(JSONSendMessage.Action, out var methodInfo) &&
-                methodInfo is not null)
+            if (forwardingMessageProcessorsLookup.TryGetValue(JSONSendMessage.Action, out var methodInfo))
             {
 
                 //ToDo: Maybe this could be done via code generation!
@@ -544,6 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  this,
                                  [
                                      JSONSendMessage,
+                                     null,
                                      WebSocketConnection,
                                      JSONSendMessage.CancellationToken
                                  ]
@@ -743,14 +748,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region A filter rule for the OCPP action was found...
 
-                if (forwardingMessageProcessorsLookup.TryGetValue(BinaryRequestMessage.Action, out var methodInfo) &&
-                    methodInfo is not null)
+                if (forwardingMessageProcessorsLookup.TryGetValue(BinaryRequestMessage.Action, out var methodInfo))
                 {
 
                     //ToDo: Maybe this could be done via code generation!
                     var result = methodInfo.Invoke(
                                      this,
                                      [
+                                         null,
                                          BinaryRequestMessage,
                                          WebSocketConnection,
                                          BinaryRequestMessage.CancellationToken
@@ -1024,7 +1029,154 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinarySendMessage.Destination.Next))
                 return;
 
-            await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(BinarySendMessage);
+
+            #region Try to call the matching 'incoming message processor'...
+
+            if (forwardingMessageProcessorsLookup.TryGetValue(BinarySendMessage.Action, out var methodInfo))
+            {
+
+                //ToDo: Maybe this could be done via code generation!
+                var result = methodInfo.Invoke(
+                                 this,
+                                 [
+                                     null,
+                                     BinarySendMessage,
+                                     WebSocketConnection,
+                                     BinarySendMessage.CancellationToken
+                                 ]
+                             );
+
+                if (result is Task<ForwardingDecision> forwardingProcessor)
+                {
+
+                    var forwardingDecision = await forwardingProcessor;
+
+                    #region FORWARD
+
+                    if (forwardingDecision.Result == ForwardingResults.FORWARD)
+                    {
+
+                        var newBinarySendMessage = BinarySendMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+
+                        //expectedResponses.TryAdd(
+                        //    newbinaryRequestMessage.MessageId,
+                        //    new ResponseInfo(
+                        //        newbinaryRequestMessage.MessageId,
+                        //        forwardingDecision.   RequestContext ?? binaryLDContext.Parse("willnothappen!"),
+                        //        newbinaryRequestMessage.NetworkPath.Source,
+                        //        newbinaryRequestMessage.RequestTimeout
+                        //    )
+                        //);
+
+                        await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(newBinarySendMessage);
+
+                    }
+
+                    #endregion
+
+                    #region REPLACE
+
+                    if (forwardingDecision.Result == ForwardingResults.REPLACE)
+                    {
+
+                        var newBinarySendMessage = forwardingDecision.NewBinaryRequest is null
+                                                        ? BinarySendMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                                        : new OCPP_BinarySendMessage(
+                                                              BinarySendMessage.MessageTimestamp,
+                                                              BinarySendMessage.EventTrackingId,
+                                                              BinarySendMessage.NetworkingMode,
+                                                              forwardingDecision.NewDestination ?? BinarySendMessage.Destination,
+                                                              BinarySendMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                              BinarySendMessage.MessageId,
+                                                              forwardingDecision.NewAction        ?? BinarySendMessage.Action,
+                                                              forwardingDecision.NewBinaryRequest, // <-- !!!
+                                                              BinarySendMessage.ErrorMessage,
+                                                              BinarySendMessage.CancellationToken
+                                                          );
+
+                        //expectedResponses.TryAdd(
+                        //    newBinarySendMessage.MessageId,
+                        //    new ResponseInfo(
+                        //        newBinarySendMessage.MessageId,
+                        //        forwardingDecision.   RequestContext ?? binaryLDContext.Parse("willnothappen!"),
+                        //        newBinarySendMessage.NetworkPath.Source,
+                        //        newBinarySendMessage.RequestTimeout
+                        //    )
+                        //);
+
+                        await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(newBinarySendMessage);
+
+                    }
+
+                    #endregion
+
+                    #region REJECT
+
+                    else if (forwardingDecision.Result == ForwardingResults.REJECT &&
+                             forwardingDecision.BinaryRejectResponse is not null)
+                    {
+
+                        await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
+                                  new OCPP_BinaryRequestErrorMessage(
+                                      Timestamp.Now,
+                                      BinarySendMessage.EventTrackingId,
+                                      NetworkingMode.Unknown,
+                                      SourceRouting.To  (BinarySendMessage.NetworkPath.Source),
+                                      NetworkPath.  From(parentNetworkingNode.Id),
+                                      BinarySendMessage.MessageId,
+                                      ResultCode.Filtered,
+                                      forwardingDecision.RejectMessage,
+                                      forwardingDecision.RejectDetails,
+                                      BinarySendMessage.CancellationToken
+                                  )
+                              );
+
+                    }
+
+                    #endregion
+
+                    #region DROP
+
+                    else
+                    {
+                        // Just ignore the request!
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    DebugX.Log($"Received undefined '{BinarySendMessage.Action}' binary send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+            }
+
+            #endregion
+
+            #region ...or error!
+
+            else
+            {
+
+                DebugX.Log($"Received unknown '{BinarySendMessage.Action}' binary send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+                //OCPPErrorResponse = new OCPP_binaryErrorMessage(
+                //                        Timestamp.Now,
+                //                        EventTracking_Id.New,
+                //                        NetworkingMode.Unknown,
+                //                        NetworkingNode_Id.Zero,
+                //                        NetworkPath.Empty,
+                //                        jsonRequest.RequestId,
+                //                        ResultCode.ProtocolError,
+                //                        $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                //                        new JObject(
+                //                            new JProperty("request", binaryMessage)
+                //                        )
+                //                    );
+
+            }
+
+            #endregion
 
         }
 

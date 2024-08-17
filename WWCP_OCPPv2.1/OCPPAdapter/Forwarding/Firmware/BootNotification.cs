@@ -87,30 +87,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision>
 
-            Forward_BootNotification(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                     IWebSocketConnection     WebSocketConnection,
-                                     CancellationToken        CancellationToken   = default)
+            Forward_BootNotification(OCPP_JSONRequestMessage    JSONRequestMessage,
+                                     OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                                     IWebSocketConnection       WebSocketConnection,
+                                     CancellationToken          CancellationToken   = default)
 
         {
 
             #region Parse the BootNotification request
 
-            if (!BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
-                                                  JSONRequestMessage.RequestId,
-                                                  JSONRequestMessage.Destination,
-                                                  JSONRequestMessage.NetworkPath,
-                                                  out var request,
-                                                  out var errorResponse,
-                                                  JSONRequestMessage.RequestTimestamp,
-                                                  JSONRequestMessage.RequestTimeout - Timestamp.Now,
-                                                  JSONRequestMessage.EventTrackingId,
-                                                  parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
-                                                  parentNetworkingNode.OCPP.CustomChargingStationParser,
-                                                  parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                  parentNetworkingNode.OCPP.CustomCustomDataParser))
+            BootNotificationRequest? request;
+            String?                  errorResponse;
+
+            if (JSONRequestMessage is not null)
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                if (!BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
+                                                      JSONRequestMessage.RequestId,
+                                                      JSONRequestMessage.Destination,
+                                                      JSONRequestMessage.NetworkPath,
+                                                      out request,
+                                                      out errorResponse,
+                                                      JSONRequestMessage.RequestTimestamp,
+                                                      JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                                      JSONRequestMessage.EventTrackingId,
+                                                      parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
+                                                      parentNetworkingNode.OCPP.CustomChargingStationParser,
+                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                      parentNetworkingNode.OCPP.CustomCustomDataParser))
+                {
+                    return ForwardingDecision.REJECT(errorResponse);
+                }
             }
+
+            else if (BinaryRequestMessage is not null)
+            {
+                if (!BootNotificationRequest.TryParse(BinaryRequestMessage.Payload,
+                                                      BinaryRequestMessage.RequestId,
+                                                      BinaryRequestMessage.Destination,
+                                                      BinaryRequestMessage.NetworkPath,
+                                                      out request,
+                                                      out errorResponse,
+                                                      BinaryRequestMessage.RequestTimestamp,
+                                                      BinaryRequestMessage.RequestTimeout - Timestamp.Now,
+                                                      BinaryRequestMessage.EventTrackingId,
+                                                      parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
+                                                      parentNetworkingNode.OCPP.CustomChargingStationParser,
+                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                      parentNetworkingNode.OCPP.CustomCustomDataParser))
+                {
+                    return ForwardingDecision.REJECT(errorResponse);
+                }
+            }
+
+            else
+                return ForwardingDecision.REJECT("The given message could not be parsed!");
 
             #endregion
 
@@ -182,13 +212,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            //ToDo: Test how to translate a binary message into JSON and vice versa!
             if (forwardingDecision.NewRequest is not null)
-                forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
-                                                        parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
-                                                        parentNetworkingNode.OCPP.CustomChargingStationSerializer,
-                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                    );
+            {
+                if (forwardingDecision.NewRequest.SerializationFormat.Group() == SerializationFormatGroup.JSON)
+                    forwardingDecision.NewJSONRequest   = forwardingDecision.NewRequest.ToJSON(
+                                                              parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                                              parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                          );
+
+                else
+                    forwardingDecision.NewBinaryRequest = forwardingDecision.NewRequest.ToBinary(
+                                                              //parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                                              //parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                              //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                              //parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                          );
+            }
 
             #region Send OnBootNotificationRequestFiltered event
 
@@ -234,6 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return forwardingDecision;
 
         }
+
 
     }
 

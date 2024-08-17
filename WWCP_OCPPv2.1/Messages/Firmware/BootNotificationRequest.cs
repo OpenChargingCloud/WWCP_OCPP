@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
         /// 
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON,   RequestId, SourceRouting, NetworkPath, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a BootNotification request.
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         SourceRouting,
                          NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse,
@@ -308,14 +308,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return bootNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a BootNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out BootNotificationRequest, out ErrorResponse, ...)
+        #region (static) Parse   (Binary, RequestId, SourceRouting, NetworkPath, CustomBootNotificationRequestParser = null)
+
+        /// <summary>
+        /// Parse the given binary representation of a BootNotification request.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
+        public static BootNotificationRequest Parse(Byte[]                                                 Binary,
+                                                    Request_Id                                             RequestId,
+                                                    SourceRouting                                          SourceRouting,
+                                                    NetworkPath                                            NetworkPath,
+                                                    DateTime?                                              RequestTimestamp                      = null,
+                                                    TimeSpan?                                              RequestTimeout                        = null,
+                                                    EventTracking_Id?                                      EventTrackingId                       = null,
+                                                    CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null,
+                                                    CustomJObjectParserDelegate<ChargingStation>?          CustomChargingStationParser           = null,
+                                                    CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
+                                                    CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
+        {
+
+
+            if (TryParse(Binary,
+                         RequestId,
+                         SourceRouting,
+                         NetworkPath,
+                         out var bootNotificationRequest,
+                         out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomBootNotificationRequestParser,
+                         CustomChargingStationParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
+            {
+                return bootNotificationRequest;
+            }
+
+            throw new ArgumentException("The given binary representation of a BootNotification request is invalid: " + errorResponse,
+                                        nameof(Binary));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON,   RequestId, SourceRouting, NetworkPath, out BootNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a BootNotification request.
@@ -413,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BootNotificationRequest = new BootNotificationRequest(
 
-                                                  SourceRouting,
+                                              SourceRouting,
                                               ChargingStation,
                                               Reason,
 
@@ -441,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 BootNotificationRequest  = null;
-                ErrorResponse            = "The given JSON representation of a boot notification request is invalid: " + e.Message;
+                ErrorResponse            = "The given JSON representation of a BootNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -449,7 +503,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomBootNotificationRequestSerializer = null, CustomChargingStationSerializer = null, ...)
+        #region (static) TryParse(Binary, RequestId, SourceRouting, NetworkPath, out BootNotificationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to parse the given binary representation of a BootNotification request.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
+        public static Boolean TryParse(Byte[]                                                 Binary,
+                                       Request_Id                                             RequestId,
+                                       SourceRouting                                          SourceRouting,
+                                       NetworkPath                                            NetworkPath,
+                                       [NotNullWhen(true)]  out BootNotificationRequest?      BootNotificationRequest,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
+                                       DateTime?                                              RequestTimestamp                      = null,
+                                       TimeSpan?                                              RequestTimeout                        = null,
+                                       EventTracking_Id?                                      EventTrackingId                       = null,
+                                       CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null,
+                                       CustomJObjectParserDelegate<ChargingStation>?          CustomChargingStationParser           = null,
+                                       CustomJObjectParserDelegate<Signature>?                CustomSignatureParser                 = null,
+                                       CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
+        {
+
+            try
+            {
+
+                BootNotificationRequest = null;
+
+                var JSON = JObject.Parse(Binary.ToUTF8String());
+
+                #region ChargingStation      [mandatory]
+
+                if (!JSON.ParseMandatoryJSON("chargingStation",
+                                             "charging station",
+                                             (JObject json, [NotNullWhen(true)]  out ChargingStation? chargingStation, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPPv2_1.ChargingStation.TryParse(json, out chargingStation, out errorResponse, CustomChargingStationParser, CustomCustomDataParser),
+                                             out ChargingStation? ChargingStation,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Reason               [mandatory]
+
+                if (!JSON.ParseMandatory("reason",
+                                         "boot reason",
+                                         BootReason.TryParse,
+                                         out BootReason Reason,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Signatures           [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              (JObject json, [NotNullWhen(true)] out Signature? signature, [NotNullWhen(false)] out String? errorResponse)
+                                                 => Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData           [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPPv2_1.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                BootNotificationRequest = new BootNotificationRequest(
+
+                                              SourceRouting,
+                                              ChargingStation,
+                                              Reason,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData,
+
+                                              RequestId,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
+                                              NetworkPath
+
+                                          );
+
+                if (CustomBootNotificationRequestParser is not null)
+                    BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
+                                                                                  BootNotificationRequest);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                BootNotificationRequest  = null;
+                ErrorResponse            = "The given JSON representation of a BootNotification request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON  (CustomBootNotificationRequestSerializer = null, CustomChargingStationSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -488,13 +678,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region ToBinary(CustomBootNotificationRequestSerializer = null, CustomChargingStationSerializer = null, ...)
 
+        /// <summary>
+        /// Return a binary representation of this object.
+        /// </summary>
+        /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
+        /// <param name="CustomChargingStationSerializer"></param>
+        /// <param name="CustomBinarySignatureSerializer"></param>
+        /// <param name="IncludeSignatures"></param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
+                               CustomBinarySerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
                                CustomBinarySerializerDelegate<Signature>?                CustomBinarySignatureSerializer           = null,
                                Boolean                                                   IncludeSignatures                         = true)
         {
 
             var binaryStream = new MemoryStream();
+
+            switch (SerializationFormat)
+            {
+
+                case SerializationFormats.JSON_UTF8_Binary:
+                    binaryStream.Write(ToJSON().ToUTF8Bytes());
+                    break;
+
+            }
 
             var binary = binaryStream.ToArray();
 
@@ -503,6 +711,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                        : binary;
 
         }
+
+        #endregion
 
 
         #region Operator overloading

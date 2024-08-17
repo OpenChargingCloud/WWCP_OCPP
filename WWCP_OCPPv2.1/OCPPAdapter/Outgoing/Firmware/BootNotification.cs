@@ -148,95 +148,312 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                #region Sign request message
-
-                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
-                        Request,
-                        Request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
-                            parentNetworkingNode.OCPP.CustomChargingStationSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out var signingErrors
-                    ))
+                switch (Request.SerializationFormat)
                 {
 
-                    response = BootNotificationResponse.SignatureError(
-                                   Request,
-                                   signingErrors
-                               );
+                    case SerializationFormats.JSON: {
 
-                }
+                            #region Sign request message
 
-                #endregion
+                            if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                                    Request,
+                                    Request.ToJSON(
+                                        parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                        parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                    ),
+                                    out var signingErrors
+                                ))
+                            {
 
-                else
-                {
+                                response = BootNotificationResponse.SignatureError(
+                                               Request,
+                                               signingErrors
+                                           );
 
-                    #region Send request message
+                            }
 
-                    var sendRequestState = await SendJSONRequestAndWait(
+                            #endregion
 
-                                                     OCPP_JSONRequestMessage.FromRequest(
+                            else
+                            {
+
+                                #region Send request message
+
+                                var sendRequestState = await SendJSONRequestAndWait(
+
+                                                                 OCPP_JSONRequestMessage.FromRequest(
+                                                                     Request,
+                                                                     Request.ToJSON(
+                                                                         parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                                                         parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                                     )
+                                                                 ),
+
+                                                                 sendMessageResult => LogEvent(
+                                                                     OnBootNotificationRequestSent,
+                                                                     loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         parentNetworkingNode,
+                                                                         sendMessageResult.Connection,
+                                                                         Request,
+                                                                         sendMessageResult.Result,
+                                                                         Request.CancellationToken
+                                                                     )
+                                                                 )
+
+                                                             );
+
+                                #endregion
+
+                                if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                                    response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationResponse(
                                                          Request,
-                                                         Request.ToJSON(
-                                                             parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
-                                                             parentNetworkingNode.OCPP.CustomChargingStationSerializer,
-                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                         )
-                                                     ),
+                                                         jsonResponse,
+                                                         sendRequestState.WebSocketConnectionReceived,
+                                                         sendRequestState.DestinationReceived,
+                                                         sendRequestState.NetworkPathReceived,
+                                                         Request.         EventTrackingId,
+                                                         Request.         RequestId,
+                                                         sendRequestState.ResponseTimestamp,
+                                                         Request.         CancellationToken
+                                                     );
 
-                                                     sendMessageResult => LogEvent(
-                                                         OnBootNotificationRequestSent,
-                                                         loggingDelegate => loggingDelegate.Invoke(
-                                                             Timestamp.Now,
-                                                             parentNetworkingNode,
-                                                             sendMessageResult.Connection,
-                                                             Request,
-                                                             sendMessageResult.Result,
-                                                             Request.CancellationToken
-                                                         )
-                                                     )
+                                if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                                    response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationRequestError(
+                                                         Request,
+                                                         jsonRequestError,
+                                                         sendRequestState.WebSocketConnectionReceived,
+                                                         sendRequestState.DestinationReceived,
+                                                         sendRequestState.NetworkPathReceived,
+                                                         Request.EventTrackingId,
+                                                         Request.RequestId,
+                                                         sendRequestState.ResponseTimestamp,
+                                                         Request.CancellationToken
+                                                     );
 
-                                                 );
+                                response ??= new BootNotificationResponse(
+                                                 Request,
+                                                 RegistrationStatus.Rejected,
+                                                 Timestamp.Now,
+                                                 BootNotificationResponse.DefaultInterval,
+                                                 Result: Result.FromSendRequestState(sendRequestState)
+                                             );
 
-                    #endregion
+                            }
 
-                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationResponse(
-                                             Request,
-                                             jsonResponse,
-                                             sendRequestState.WebSocketConnectionReceived,
-                                             sendRequestState.DestinationReceived,
-                                             sendRequestState.NetworkPathReceived,
-                                             Request.         EventTrackingId,
-                                             Request.         RequestId,
-                                             sendRequestState.ResponseTimestamp,
-                                             Request.         CancellationToken
-                                         );
+                        }
+                        break;
 
-                    if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationRequestError(
-                                             Request,
-                                             jsonRequestError,
-                                             sendRequestState.WebSocketConnectionReceived,
-                                             sendRequestState.DestinationReceived,
-                                             sendRequestState.NetworkPathReceived,
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             sendRequestState.ResponseTimestamp,
-                                             Request.CancellationToken
-                                         );
 
-                    response ??= new BootNotificationResponse(
-                                     Request,
-                                     RegistrationStatus.Rejected,
-                                     Timestamp.Now,
-                                     BootNotificationResponse.DefaultInterval,
-                                     Result: Result.FromSendRequestState(sendRequestState)
-                                 );
+                    case SerializationFormats.JSON_UTF8_Binary: {
+
+                            #region Sign request message
+
+                            if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                                    Request,
+                                    Request.ToJSON(
+                                        parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                        parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                    ),
+                                    out var signingErrors
+                                ))
+                            {
+
+                                response = BootNotificationResponse.SignatureError(
+                                               Request,
+                                               signingErrors
+                                           );
+
+                            }
+
+                            #endregion
+
+                            else
+                            {
+
+                                #region Send request message
+
+                                var sendRequestState = await SendBinaryRequestAndWait(
+
+                                                                 OCPP_BinaryRequestMessage.FromRequest(
+                                                                     Request,
+                                                                     Request.ToJSON(
+                                                                         parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                                                         parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                                     ).ToUTF8Bytes()
+                                                                 ),
+
+                                                                 sendMessageResult => LogEvent(
+                                                                     OnBootNotificationRequestSent,
+                                                                     loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         parentNetworkingNode,
+                                                                         sendMessageResult.Connection,
+                                                                         Request,
+                                                                         sendMessageResult.Result,
+                                                                         Request.CancellationToken
+                                                                     )
+                                                                 )
+
+                                                             );
+
+                                #endregion
+
+                                if (sendRequestState.IsValidBinaryResponse(Request, out var binaryResponse))
+                                    response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationResponse(
+                                                         Request,
+                                                         binaryResponse,
+                                                         sendRequestState.WebSocketConnectionReceived,
+                                                         sendRequestState.DestinationReceived,
+                                                         sendRequestState.NetworkPathReceived,
+                                                         Request.         EventTrackingId,
+                                                         Request.         RequestId,
+                                                         sendRequestState.ResponseTimestamp,
+                                                         Request.         CancellationToken
+                                                     );
+
+                                if (sendRequestState.IsValidBinaryRequestError(Request, out var binaryRequestError))
+                                    response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationRequestError(
+                                                         Request,
+                                                         binaryRequestError,
+                                                         sendRequestState.WebSocketConnectionReceived,
+                                                         sendRequestState.DestinationReceived,
+                                                         sendRequestState.NetworkPathReceived,
+                                                         Request.EventTrackingId,
+                                                         Request.RequestId,
+                                                         sendRequestState.ResponseTimestamp,
+                                                         Request.CancellationToken
+                                                     );
+
+                                response ??= new BootNotificationResponse(
+                                                 Request,
+                                                 RegistrationStatus.Rejected,
+                                                 Timestamp.Now,
+                                                 BootNotificationResponse.DefaultInterval,
+                                                 Result: Result.FromSendRequestState(sendRequestState)
+                                             );
+
+                            }
+
+                        }
+                        break;
+
+
+                    case SerializationFormats.BinaryCompact: {
+
+                            #region Sign request message
+
+                            if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                                    Request,
+                                    Request.ToBinary(
+                                        //parentNetworkingNode.OCPP.CustomBinaryBootNotificationRequestSerializer,
+                                        //parentNetworkingNode.OCPP.CustomBinaryChargingStationSerializer,
+                                        //parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                                        IncludeSignatures: false
+                                    ),
+                                    out var signingErrors
+                                ))
+                            {
+
+                                response = BootNotificationResponse.SignatureError(
+                                               Request,
+                                               signingErrors
+                                           );
+
+                            }
+
+                            #endregion
+
+                            else
+                            {
+
+                                #region Send request message
+
+                                var sendRequestState = await SendBinaryRequestAndWait(
+
+                                                                 OCPP_BinaryRequestMessage.FromRequest(
+                                                                     Request,
+                                                                     Request.ToBinary(
+                                                                         //parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
+                                                                         //parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                                         //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                                         //parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                                         IncludeSignatures: true
+                                                                     )
+                                                                 ),
+
+                                                                 sendMessageResult => LogEvent(
+                                                                     OnBootNotificationRequestSent,
+                                                                     loggingDelegate => loggingDelegate.Invoke(
+                                                                         Timestamp.Now,
+                                                                         parentNetworkingNode,
+                                                                         sendMessageResult.Connection,
+                                                                         Request,
+                                                                         sendMessageResult.Result,
+                                                                         Request.CancellationToken
+                                                                     )
+                                                                 )
+
+                                                             );
+
+                                #endregion
+
+                                if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                                    response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationResponse(
+                                                         Request,
+                                                         jsonResponse,
+                                                         sendRequestState.WebSocketConnectionReceived,
+                                                         sendRequestState.DestinationReceived,
+                                                         sendRequestState.NetworkPathReceived,
+                                                         Request.         EventTrackingId,
+                                                         Request.         RequestId,
+                                                         sendRequestState.ResponseTimestamp,
+                                                         Request.         CancellationToken
+                                                     );
+
+                                if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
+                                    response = await parentNetworkingNode.OCPP.IN.Receive_BootNotificationRequestError(
+                                                         Request,
+                                                         jsonRequestError,
+                                                         sendRequestState.WebSocketConnectionReceived,
+                                                         sendRequestState.DestinationReceived,
+                                                         sendRequestState.NetworkPathReceived,
+                                                         Request.EventTrackingId,
+                                                         Request.RequestId,
+                                                         sendRequestState.ResponseTimestamp,
+                                                         Request.CancellationToken
+                                                     );
+
+                                response ??= new BootNotificationResponse(
+                                                 Request,
+                                                 RegistrationStatus.Rejected,
+                                                 Timestamp.Now,
+                                                 BootNotificationResponse.DefaultInterval,
+                                                 Result: Result.FromSendRequestState(sendRequestState)
+                                             );
+
+                            }
+
+                        }
+                        break;
+
+
+                    default:
+                        response ??= new BootNotificationResponse(
+                                         Request,
+                                         RegistrationStatus.Rejected,
+                                         Timestamp.Now,
+                                         BootNotificationResponse.DefaultInterval
+                                     );
+                        break;
 
                 }
 

@@ -255,10 +255,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, ...)
+        #region (static) Parse   (Request, JSON,   ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification response.
+        /// Parse the given JSON representation of a BootNotification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
@@ -296,17 +296,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return bootNotificationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a BootNotification response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out BootNotificationResponse, out ErrorResponse, ...)
+        #region (static) Parse   (Request, Binary, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification response.
+        /// Parse the given JSON representation of a BootNotification response.
+        /// </summary>
+        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
+        public static BootNotificationResponse Parse(BootNotificationRequest                                 Request,
+                                                     Byte[]                                                  Binary,
+                                                     SourceRouting                                           SourceRouting,
+                                                     NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
+                                                     CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
+                                                     CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                                     CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
+        {
+
+
+            if (TryParse(Request,
+                         Binary,
+                         SourceRouting,
+                         NetworkPath,
+                         out var bootNotificationResponse,
+                         out var errorResponse,
+                         ResponseTimestamp,
+                         CustomBootNotificationResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
+            {
+                return bootNotificationResponse;
+            }
+
+            throw new ArgumentException("The given binary representation of a BootNotification response is invalid: " + errorResponse,
+                                        nameof(Binary));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, JSON,   out BootNotificationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a BootNotification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
@@ -437,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                null,
                                                ResponseTimestamp,
 
-                                                   SourceRouting,
+                                               SourceRouting,
                                                NetworkPath,
 
                                                null,
@@ -458,7 +506,172 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 BootNotificationResponse  = null;
-                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a BootNotification response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, Binary, out BootNotificationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a BootNotification response.
+        /// </summary>
+        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
+        public static Boolean TryParse(BootNotificationRequest                                 Request,
+                                       Byte[]                                                  Binary,
+                                       SourceRouting                                           SourceRouting,
+                                       NetworkPath                                             NetworkPath,
+                                       [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
+                                       CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                       CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
+        {
+
+            try
+            {
+
+                BootNotificationResponse = null;
+
+                var JSON = new JObject();
+
+                #region Status         [mandatory]
+
+                if (!JSON.ParseMandatory("status",
+                                         "registration status",
+                                         RegistrationStatusExtensions.TryParse,
+                                         out RegistrationStatus RegistrationStatus,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (RegistrationStatus == RegistrationStatus.Unknown)
+                {
+                    ErrorResponse = "Unknown registration status '" + (JSON["status"]?.Value<String>() ?? "") + "' received!";
+                    return false;
+                }
+
+                #endregion
+
+                #region CurrentTime    [mandatory]
+
+                if (!JSON.ParseMandatory("currentTime",
+                                         "current time",
+                                         out DateTime CurrentTime,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Interval       [mandatory]
+
+                if (!JSON.ParseMandatory("interval",
+                                         "heartbeat interval",
+                                         out TimeSpan Interval,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region StatusInfo     [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "status info",
+                                           (JObject json, [NotNullWhen(true)] out StatusInfo? statusInfo, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPPv2_1.StatusInfo.TryParse(json, out statusInfo, out errorResponse, CustomStatusInfoParser),
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              (JObject json, [NotNullWhen(true)] out Signature? signature, [NotNullWhen(false)] out String? errorResponse)
+                                                  => Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData     [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                => OCPPv2_1.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                BootNotificationResponse = new BootNotificationResponse(
+
+                                               Request,
+                                               RegistrationStatus,
+                                               CurrentTime,
+                                               Interval,
+                                               StatusInfo,
+
+                                               null,
+                                               ResponseTimestamp,
+
+                                               SourceRouting,
+                                               NetworkPath,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData
+
+                                           );
+
+                if (CustomBootNotificationResponseParser is not null)
+                    BootNotificationResponse = CustomBootNotificationResponseParser(JSON,
+                                                                                    BootNotificationResponse);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                BootNotificationResponse  = null;
+                ErrorResponse             = "The given JSON representation of a BootNotification response is invalid: " + e.Message;
                 return false;
             }
 

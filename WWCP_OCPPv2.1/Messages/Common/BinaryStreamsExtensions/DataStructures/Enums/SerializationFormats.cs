@@ -18,6 +18,13 @@
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    public enum SerializationFormatGroup
+    {
+        JSON,
+        Binary
+    }
+
+
     /// <summary>
     /// Extensions methods for OCPP Request/Response Serialization Formats.
     /// </summary>
@@ -142,17 +149,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             switch (Number)
             {
 
-                case 1:
+                case 10:
+                    SerializationFormat = SerializationFormats.JSON;
+                    return true;
+
+
+                case 50:
+                    SerializationFormat = SerializationFormats.JSON_UTF8_Binary;
+                    return true;
+
+
+                case 100:
                     SerializationFormat = SerializationFormats.BinaryCompact;
                     return true;
 
-                case 2:
+                case 101:
                     SerializationFormat = SerializationFormats.BinaryTextIds;
                     return true;
 
-                case 3:
+                case 102:
                     SerializationFormat = SerializationFormats.BinaryTLV;
                     return true;
+
 
                 default:
                     SerializationFormat = SerializationFormats.Unkown;
@@ -245,14 +263,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a string representation of the given serialization format.
         /// </summary>
-        /// <param name="SerializationFormats">A serialization format.</param>
-        public static String AsText(this SerializationFormats SerializationFormats)
+        /// <param name="SerializationFormat">A serialization format.</param>
+        public static String AsText(this SerializationFormats SerializationFormat)
 
-            => SerializationFormats switch {
-                   SerializationFormats.BinaryCompact => "Compact",
-                   SerializationFormats.BinaryTextIds => "TextIds",
-                   SerializationFormats.BinaryTLV     => "TagLengthValue",
-                   _                                  => "unknown"
+            => SerializationFormat switch {
+
+                   SerializationFormats.JSON              => "JSON",
+                   SerializationFormats.JSON_UTF8_Binary  => "JSON_UTF8_Binary",
+
+                   SerializationFormats.BinaryCompact     => "Compact",
+                   SerializationFormats.BinaryTextIds     => "TextIds",
+                   SerializationFormats.BinaryTLV         => "TagLengthValue",
+
+                   _                                      => "unknown"
+
                };
 
         #endregion
@@ -262,14 +286,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a numeric representation of the given serialization format.
         /// </summary>
-        /// <param name="SerializationFormats">A serialization format.</param>
-        public static UInt16 AsNumber(this SerializationFormats SerializationFormats)
+        /// <param name="SerializationFormat">A serialization format.</param>
+        public static UInt16 AsNumber(this SerializationFormats SerializationFormat)
 
-            => SerializationFormats switch {
-                   SerializationFormats.BinaryCompact  => 1,
-                   SerializationFormats.BinaryTextIds  => 2,
-                   SerializationFormats.BinaryTLV      => 3,
-                   _                                   => 0
+            => SerializationFormat switch {
+
+                   SerializationFormats.JSON              =>  10,
+
+                   SerializationFormats.JSON_UTF8_Binary  =>  50,
+
+                   SerializationFormats.BinaryCompact     => 100,
+                   SerializationFormats.BinaryTextIds     => 101,
+                   SerializationFormats.BinaryTLV         => 102,
+
+                   _                                      =>   0
+
                };
 
         #endregion
@@ -279,11 +310,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a binary representation of the given serialization format.
         /// </summary>
-        /// <param name="SerializationFormats">A serialization format.</param>
-        public static Byte[] AsBytes(this SerializationFormats SerializationFormats)
+        /// <param name="SerializationFormat">A serialization format.</param>
+        public static Byte[] AsBytes(this SerializationFormats SerializationFormat)
         {
 
-            var result = BitConverter.GetBytes(SerializationFormats.AsNumber());
+            var result = BitConverter.GetBytes(SerializationFormat.AsNumber());
 
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(result);
@@ -294,49 +325,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region Group(this SerializationFormat)
+
+        /// <summary>
+        /// Whether the given serialization format is TEXT or BINARY.
+        /// </summary>
+        /// <param name="SerializationFormat">A serialization format.</param>
+        public static SerializationFormatGroup Group(this SerializationFormats SerializationFormat)
+
+            => SerializationFormat switch {
+
+                   SerializationFormats.JSON_UTF8_Binary or
+                   SerializationFormats.BinaryCompact    or
+                   SerializationFormats.BinaryTextIds    or
+                   SerializationFormats.BinaryTLV
+                       => SerializationFormatGroup.Binary,
+
+                   _   => SerializationFormatGroup.JSON
+
+               };
+
+        #endregion
+
+
     }
 
 
     /// <summary>
     /// OCPP Request/Response Serialization Formats.
     /// </summary>
-    public enum SerializationFormats : Byte
+    public enum SerializationFormats : UInt16
     {
 
         /// <summary>
         /// Unknown format
         /// </summary>
-        Unkown,
+        Unkown              =  0,
 
         /// <summary>
         /// The OCPP request/response default format.
         /// </summary>
-        Default,
+        Default             =  1,
+
 
         /// <summary>
         /// Explicitly send this request/response as OCPP-defined JSON.
         /// </summary>
-        JSON,
+        JSON                = 10,
+
 
         /// <summary>
         /// Explicitly send this request/response as OCPP-defined JSON, but within a binary HTTP Web Socket frame.
         /// </summary>
-        JSON_UTF8_Binary,
+        JSON_UTF8_Binary    = 50,
+
 
         /// <summary>
         /// Compact format
         /// </summary>
-        BinaryCompact,
+        BinaryCompact       = 100,
 
         /// <summary>
         /// TextId format
         /// </summary>
-        BinaryTextIds,
+        BinaryTextIds       = 101,
 
         /// <summary>
         /// Extensible Tag-Length-Value (TLV) format
         /// </summary>
-        BinaryTLV
+        BinaryTLV           = 102
 
     }
 

@@ -84,9 +84,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision>
 
-            Forward_DeleteUserRole(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                   IWebSocketConnection     WebSocketConnection,
-                                   CancellationToken        CancellationToken   = default)
+            Forward_DeleteUserRole(OCPP_JSONRequestMessage    JSONRequestMessage,
+                                   OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                                   IWebSocketConnection       WebSocketConnection,
+                                   CancellationToken          CancellationToken   = default)
 
         {
 

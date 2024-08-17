@@ -428,6 +428,104 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+
+        public async Task<BootNotificationResponse>
+
+            Receive_BootNotificationResponse(BootNotificationRequest  Request,
+                                             Byte[]                   ResponseBinary,
+                                             IWebSocketConnection     WebSocketConnection,
+                                             SourceRouting            Destination,
+                                             NetworkPath              NetworkPath,
+                                             EventTracking_Id         EventTrackingId,
+                                             Request_Id               RequestId,
+                                             DateTime?                ResponseTimestamp   = null,
+                                             CancellationToken        CancellationToken   = default)
+
+        {
+
+            BootNotificationResponse? response = null;
+
+            try
+            {
+
+                var ResponseJSON = JObject.Parse(ResponseBinary.ToUTF8String());
+
+                if (BootNotificationResponse.TryParse(Request,
+                                                      ResponseJSON,
+                                                      Destination,
+                                                      NetworkPath,
+                                                      out response,
+                                                      out var errorResponse,
+                                                      ResponseTimestamp,
+                                                      parentNetworkingNode.OCPP.CustomBootNotificationResponseParser,
+                                                      parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                      parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    #region Verify response signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                            response,
+                            response.ToJSON(
+                                parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            ),
+                            out errorResponse
+                        ))
+                    {
+
+                        response = BootNotificationResponse.SignatureError(
+                                       Request,
+                                       errorResponse
+                                   );
+
+                    }
+
+                    #endregion
+
+                }
+
+                else
+                    response = BootNotificationResponse.FormationViolation(
+                                   Request,
+                                   errorResponse
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = BootNotificationResponse.ExceptionOccured(
+                               Request,
+                               e
+                           );
+
+            }
+
+
+            #region Send OnBootNotificationResponseReceived event
+
+            await LogEvent(
+                      OnBootNotificationResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          WebSocketConnection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
         #endregion
 
         #region Receive BootNotification request error
@@ -480,6 +578,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                           CancellationToken
                       )
                   );
+
+            #endregion
+
+
+            var response = BootNotificationResponse.RequestError(
+                               Request,
+                               RequestErrorMessage.EventTrackingId,
+                               RequestErrorMessage.ErrorCode,
+                               RequestErrorMessage.ErrorDescription,
+                               RequestErrorMessage.ErrorDetails,
+                               RequestErrorMessage.ResponseTimestamp,
+                               RequestErrorMessage.Destination,
+                               RequestErrorMessage.NetworkPath
+                           );
+
+            #region Send OnBootNotificationResponseReceived event
+
+            await LogEvent(
+                      OnBootNotificationResponseReceived,
+                      loggingDelegate => loggingDelegate.Invoke(
+                          Timestamp.Now,
+                          parentNetworkingNode,
+                          Connection,
+                          Request,
+                          response,
+                          response.Runtime,
+                          CancellationToken
+                      )
+                  );
+
+            #endregion
+
+            return response;
+
+        }
+
+
+        public async Task<BootNotificationResponse>
+
+            Receive_BootNotificationRequestError(BootNotificationRequest         Request,
+                                                 OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
+                                                 IWebSocketConnection            Connection,
+                                                 SourceRouting                   SourceRouting,
+                                                 NetworkPath                     NetworkPath,
+                                                 EventTracking_Id                EventTrackingId,
+                                                 Request_Id                      RequestId,
+                                                 DateTime?                       ResponseTimestamp   = null,
+                                                 CancellationToken               CancellationToken   = default)
+        {
+
+            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+            //    response,
+            //    response.ToJSON(
+            //        parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+            //    ),
+            //    out errorResponse
+            //);
+
+            #region Send BootNotificationRequestErrorReceived event
+
+            //await LogEvent(
+            //          BootNotificationRequestErrorReceived,
+            //          loggingDelegate => loggingDelegate.Invoke(
+            //              Timestamp.Now,
+            //              parentNetworkingNode,
+            //              Connection,
+            //              Request,
+            //              RequestErrorMessage,
+            //              RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+            //              CancellationToken
+            //          )
+            //      );
 
             #endregion
 
