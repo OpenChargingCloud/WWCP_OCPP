@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultForwardingResult == ForwardingDecisions.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
                 forwardingDecision = new ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD

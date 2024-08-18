@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            if (forwardingDecision is null && DefaultForwardingResult == ForwardingDecisions.FORWARD)
+            if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
                 forwardingDecision = new ForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD

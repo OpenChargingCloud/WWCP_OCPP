@@ -694,6 +694,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => parentNetworkingNode.Id.ToString();
+
+        #endregion
+
     }
 
 }
