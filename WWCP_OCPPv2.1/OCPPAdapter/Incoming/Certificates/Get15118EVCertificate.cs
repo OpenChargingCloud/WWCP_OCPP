@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnGet15118EVCertificate?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnGet15118EVCertificateDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : Get15118EVCertificateResponse.Failed(request, $"Undefined {nameof(OnGet15118EVCertificate)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = Get15118EVCertificateResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnGet15118EVCertificate),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnGet15118EVCertificate,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= Get15118EVCertificateResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

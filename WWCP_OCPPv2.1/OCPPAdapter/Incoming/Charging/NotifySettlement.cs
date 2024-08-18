@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnNotifySettlement?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnNotifySettlementDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : NotifySettlementResponse.Failed(request, $"Undefined {nameof(OnNotifySettlement)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = NotifySettlementResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnNotifySettlement),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnNotifySettlement,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= NotifySettlementResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

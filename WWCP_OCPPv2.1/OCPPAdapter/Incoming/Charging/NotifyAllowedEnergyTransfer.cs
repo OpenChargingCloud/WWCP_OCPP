@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnNotifyAllowedEnergyTransfer?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnNotifyAllowedEnergyTransferDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : NotifyAllowedEnergyTransferResponse.Failed(request, $"Undefined {nameof(OnNotifyAllowedEnergyTransfer)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = NotifyAllowedEnergyTransferResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnNotifyAllowedEnergyTransfer),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnNotifyAllowedEnergyTransfer,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= NotifyAllowedEnergyTransferResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

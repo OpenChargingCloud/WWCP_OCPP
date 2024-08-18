@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnHeartbeat?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : HeartbeatResponse.Failed(request, $"Undefined {nameof(OnHeartbeat)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = HeartbeatResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnHeartbeat),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnHeartbeat,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= HeartbeatResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

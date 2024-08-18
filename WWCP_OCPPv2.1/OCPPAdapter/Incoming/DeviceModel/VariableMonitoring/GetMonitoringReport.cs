@@ -218,45 +218,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnGetMonitoringReport?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnGetMonitoringReportDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : GetMonitoringReportResponse.Failed(request, $"Undefined {nameof(OnGetMonitoringReport)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = GetMonitoringReportResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnGetMonitoringReport),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnGetMonitoringReport,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= GetMonitoringReportResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

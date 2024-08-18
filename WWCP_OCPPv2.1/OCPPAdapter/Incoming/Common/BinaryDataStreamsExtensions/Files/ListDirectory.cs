@@ -212,45 +212,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnListDirectory?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnListDirectoryDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ListDirectoryResponse.Failed(request, $"Undefined {nameof(OnListDirectory)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ListDirectoryResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnListDirectory),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnListDirectory,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ListDirectoryResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

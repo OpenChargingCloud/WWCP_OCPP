@@ -73,12 +73,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         [Optional]
         public Byte[]?                   Data                    { get; }
 
-        /// <summary>
-        /// The binary format of the given message.
-        /// </summary>
-        [Mandatory]
-        public SerializationFormats             Format                  { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -100,8 +94,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
                                           BinaryDataTransferStatus   Status,
                                           String?                    AdditionalStatusInfo   = null,
@@ -359,9 +351,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var binaryStream = new MemoryStream();
 
-            binaryStream.Write(Format.AsBytes(), 0, 2);
+            binaryStream.Write(SerializationFormat.AsBytes(), 0, 2);
 
-            switch (Format)
+            switch (SerializationFormat)
             {
 
                 case SerializationFormats.BinaryCompact: {

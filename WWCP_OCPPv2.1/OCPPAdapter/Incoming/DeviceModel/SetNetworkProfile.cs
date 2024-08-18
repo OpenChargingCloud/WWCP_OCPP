@@ -217,45 +217,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnSetNetworkProfile?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSetNetworkProfileDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : SetNetworkProfileResponse.Failed(request, $"Undefined {nameof(OnSetNetworkProfile)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = SetNetworkProfileResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnSetNetworkProfile),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnSetNetworkProfile,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= SetNetworkProfileResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

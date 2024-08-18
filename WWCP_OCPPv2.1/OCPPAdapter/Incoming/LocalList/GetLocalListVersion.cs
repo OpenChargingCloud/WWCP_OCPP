@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnGetLocalListVersion?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : GetLocalListVersionResponse.Failed(request, $"Undefined {nameof(OnGetLocalListVersion)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = GetLocalListVersionResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnGetLocalListVersion),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnGetLocalListVersion,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= GetLocalListVersionResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

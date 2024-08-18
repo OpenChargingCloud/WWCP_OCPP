@@ -215,45 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnUpdateFirmware?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : UpdateFirmwareResponse.Failed(request, $"Undefined {nameof(OnUpdateFirmware)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = UpdateFirmwareResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnUpdateFirmware),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnUpdateFirmware,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= UpdateFirmwareResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

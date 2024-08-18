@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SetDisplayMessage(DateTime              RequestTimestamp,
-                                      IWebSocketConnection? WebSocketConnection,
+                                      IWebSocketConnection  WebSocketConnection,
                                       SourceRouting         SourceRouting,
                                       NetworkPath           NetworkPath,
                                       EventTracking_Id      EventTrackingId,
@@ -218,45 +218,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnSetDisplayMessage?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSetDisplayMessageDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : SetDisplayMessageResponse.Failed(request, $"Undefined {nameof(OnSetDisplayMessage)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = SetDisplayMessageResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnSetDisplayMessage),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnSetDisplayMessage,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= SetDisplayMessageResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

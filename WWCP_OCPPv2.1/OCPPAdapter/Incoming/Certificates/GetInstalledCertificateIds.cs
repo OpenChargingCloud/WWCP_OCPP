@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnGetInstalledCertificateIds?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnGetInstalledCertificateIdsDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : GetInstalledCertificateIdsResponse.Failed(request, $"Undefined {nameof(OnGetInstalledCertificateIds)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = GetInstalledCertificateIdsResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnGetInstalledCertificateIds),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnGetInstalledCertificateIds,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= GetInstalledCertificateIdsResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnNotifyPriorityCharging?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnNotifyPriorityChargingDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : NotifyPriorityChargingResponse.Failed(request, $"Undefined {nameof(OnNotifyPriorityCharging)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = NotifyPriorityChargingResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnNotifyPriorityCharging),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnNotifyPriorityCharging,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= NotifyPriorityChargingResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

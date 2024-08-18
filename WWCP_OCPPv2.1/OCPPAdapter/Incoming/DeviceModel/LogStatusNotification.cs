@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnLogStatusNotification?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : LogStatusNotificationResponse.Failed(request, $"Undefined {nameof(OnLogStatusNotification)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = LogStatusNotificationResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnLogStatusNotification),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnLogStatusNotification,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= LogStatusNotificationResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

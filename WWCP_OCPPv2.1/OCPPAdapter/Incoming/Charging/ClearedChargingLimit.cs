@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnClearedChargingLimit?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnClearedChargingLimitDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ClearedChargingLimitResponse.Failed(request, $"Undefined {nameof(OnClearedChargingLimit)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ClearedChargingLimitResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnClearedChargingLimit),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnClearedChargingLimit,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ClearedChargingLimitResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

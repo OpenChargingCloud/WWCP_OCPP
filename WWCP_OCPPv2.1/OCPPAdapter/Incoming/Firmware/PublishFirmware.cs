@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnPublishFirmware?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnPublishFirmwareDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : PublishFirmwareResponse.Failed(request, $"Undefined {nameof(OnPublishFirmware)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = PublishFirmwareResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnPublishFirmware),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnPublishFirmware,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= PublishFirmwareResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

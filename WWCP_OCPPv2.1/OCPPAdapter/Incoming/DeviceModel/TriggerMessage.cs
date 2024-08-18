@@ -215,45 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnTriggerMessage?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : TriggerMessageResponse.Failed(request, $"Undefined {nameof(OnTriggerMessage)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = TriggerMessageResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnTriggerMessage),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnTriggerMessage,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= TriggerMessageResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

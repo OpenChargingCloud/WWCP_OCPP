@@ -219,45 +219,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnSendLocalList?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : SendLocalListResponse.Failed(request, $"Undefined {nameof(OnSendLocalList)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = SendLocalListResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnSendLocalList),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnSendLocalList,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= SendLocalListResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

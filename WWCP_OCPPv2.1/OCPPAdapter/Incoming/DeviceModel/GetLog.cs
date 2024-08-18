@@ -215,45 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnGetLog?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnGetLogDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : GetLogResponse.Failed(request, $"Undefined {nameof(OnGetLog)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = GetLogResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnGetLog),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnGetLog,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= GetLogResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnSetMonitoringLevel?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSetMonitoringLevelDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : SetMonitoringLevelResponse.Failed(request, $"Undefined {nameof(OnSetMonitoringLevel)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = SetMonitoringLevelResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnSetMonitoringLevel),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnSetMonitoringLevel,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= SetMonitoringLevelResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

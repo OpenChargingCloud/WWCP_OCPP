@@ -224,45 +224,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnNotifyEVChargingNeeds?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnNotifyEVChargingNeedsDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : NotifyEVChargingNeedsResponse.Failed(request, $"Undefined {nameof(OnNotifyEVChargingNeeds)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = NotifyEVChargingNeedsResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnNotifyEVChargingNeeds),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnNotifyEVChargingNeeds,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= NotifyEVChargingNeedsResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

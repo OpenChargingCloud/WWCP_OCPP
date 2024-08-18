@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnRemoveDefaultChargingTariff?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnRemoveDefaultChargingTariffDelegate)?.Invoke(
-                                                                                                                               Timestamp.Now,
-                                                                                                                               parentNetworkingNode,
-                                                                                                                               WebSocketConnection,
-                                                                                                                               request,
-                                                                                                                               CancellationToken
-                                                                                                                           )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : RemoveDefaultChargingTariffResponse.Failed(request, $"Undefined {nameof(OnRemoveDefaultChargingTariff)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = RemoveDefaultChargingTariffResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnRemoveDefaultChargingTariff),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnRemoveDefaultChargingTariff,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= RemoveDefaultChargingTariffResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

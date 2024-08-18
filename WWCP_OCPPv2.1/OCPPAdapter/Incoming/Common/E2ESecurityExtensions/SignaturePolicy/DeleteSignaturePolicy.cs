@@ -212,45 +212,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnDeleteSignaturePolicy?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnDeleteSignaturePolicyDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : DeleteSignaturePolicyResponse.Failed(request, $"Undefined {nameof(OnDeleteSignaturePolicy)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = DeleteSignaturePolicyResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnDeleteSignaturePolicy),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnDeleteSignaturePolicy,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= DeleteSignaturePolicyResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

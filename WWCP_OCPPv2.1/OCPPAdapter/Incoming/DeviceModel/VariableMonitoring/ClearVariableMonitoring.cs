@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnClearVariableMonitoring?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnClearVariableMonitoringDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ClearVariableMonitoringResponse.Failed(request, $"Undefined {nameof(OnClearVariableMonitoring)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ClearVariableMonitoringResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnClearVariableMonitoring),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnClearVariableMonitoring,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ClearVariableMonitoringResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

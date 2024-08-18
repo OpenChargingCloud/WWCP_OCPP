@@ -213,45 +213,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnAddUserRole?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnAddUserRoleDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : AddUserRoleResponse.Failed(request, $"Undefined {nameof(OnAddUserRole)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = AddUserRoleResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnAddUserRole),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnAddUserRole,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= AddUserRoleResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

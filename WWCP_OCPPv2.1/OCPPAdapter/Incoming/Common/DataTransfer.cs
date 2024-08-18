@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnDataTransfer?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)?.Invoke(
-                                                                                                                         Timestamp.Now,
-                                                                                                                         parentNetworkingNode,
-                                                                                                                         WebSocketConnection,
-                                                                                                                         request,
-                                                                                                                         CancellationToken
-                                                                                                                     )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : DataTransferResponse.Failed(request, $"Undefined {nameof(OnDataTransfer)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = DataTransferResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnDataTransfer),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnDataTransfer,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= DataTransferResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

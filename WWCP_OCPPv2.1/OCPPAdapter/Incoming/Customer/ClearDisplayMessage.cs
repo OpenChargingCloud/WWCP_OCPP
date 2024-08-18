@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnClearDisplayMessage?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnClearDisplayMessageDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ClearDisplayMessageResponse.Failed(request, $"Undefined {nameof(OnClearDisplayMessage)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ClearDisplayMessageResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnClearDisplayMessage),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnClearDisplayMessage,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ClearDisplayMessageResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

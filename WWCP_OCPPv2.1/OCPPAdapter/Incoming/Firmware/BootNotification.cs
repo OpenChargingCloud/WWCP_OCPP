@@ -215,45 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnBootNotification?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : BootNotificationResponse.Failed(request, $"Undefined {nameof(OnBootNotification)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = BootNotificationResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnBootNotification),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnBootNotification,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= BootNotificationResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 
@@ -397,45 +371,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnBootNotification?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : BootNotificationResponse.Failed(request, $"Undefined {nameof(OnBootNotification)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = BootNotificationResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnBootNotification),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnBootNotification,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= BootNotificationResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

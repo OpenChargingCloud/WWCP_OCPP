@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnUnlockConnector?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : UnlockConnectorResponse.Failed(request, $"Undefined {nameof(OnUnlockConnector)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = UnlockConnectorResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnUnlockConnector),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnUnlockConnector,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= UnlockConnectorResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

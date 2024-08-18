@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnQRCodeScanned?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnQRCodeScannedDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : QRCodeScannedResponse.Failed(request, $"Undefined {nameof(OnQRCodeScanned)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = QRCodeScannedResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnQRCodeScanned),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnQRCodeScanned,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= QRCodeScannedResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnGetDisplayMessages?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnGetDisplayMessagesDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : GetDisplayMessagesResponse.Failed(request, $"Undefined {nameof(OnGetDisplayMessages)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = GetDisplayMessagesResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnGetDisplayMessages),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnGetDisplayMessages,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= GetDisplayMessagesResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

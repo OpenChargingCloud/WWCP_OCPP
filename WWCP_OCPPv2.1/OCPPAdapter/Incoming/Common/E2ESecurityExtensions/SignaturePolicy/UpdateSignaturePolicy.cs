@@ -212,45 +212,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnUpdateSignaturePolicy?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnUpdateSignaturePolicyDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : UpdateSignaturePolicyResponse.Failed(request, $"Undefined {nameof(OnUpdateSignaturePolicy)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = UpdateSignaturePolicyResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnUpdateSignaturePolicy),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnUpdateSignaturePolicy,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= UpdateSignaturePolicyResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

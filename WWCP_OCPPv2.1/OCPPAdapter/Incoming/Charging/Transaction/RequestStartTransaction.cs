@@ -243,45 +243,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnRequestStartTransaction?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnRequestStartTransactionDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : RequestStartTransactionResponse.Failed(request, $"Undefined {nameof(OnRequestStartTransaction)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = RequestStartTransactionResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnRequestStartTransaction),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnRequestStartTransaction,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= RequestStartTransactionResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

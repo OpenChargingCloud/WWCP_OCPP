@@ -216,45 +216,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnReserveNow?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ReserveNowResponse.Failed(request, $"Undefined {nameof(OnReserveNow)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ReserveNowResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnReserveNow),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnReserveNow,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ReserveNowResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

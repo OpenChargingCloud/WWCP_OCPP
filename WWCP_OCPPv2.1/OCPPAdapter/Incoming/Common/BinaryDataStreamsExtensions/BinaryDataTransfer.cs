@@ -212,45 +212,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnBinaryDataTransfer?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(
-                                                                                                                               Timestamp.Now,
-                                                                                                                               parentNetworkingNode,
-                                                                                                                               WebSocketConnection,
-                                                                                                                               request,
-                                                                                                                               CancellationToken
-                                                                                                                           )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : BinaryDataTransferResponse.Failed(request, $"Undefined {nameof(OnBinaryDataTransfer)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = BinaryDataTransferResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnBinaryDataTransfer),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnBinaryDataTransfer,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= BinaryDataTransferResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

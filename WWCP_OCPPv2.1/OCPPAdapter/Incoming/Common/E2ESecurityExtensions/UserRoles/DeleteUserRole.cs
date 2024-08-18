@@ -212,45 +212,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnDeleteUserRole?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnDeleteUserRoleDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : DeleteUserRoleResponse.Failed(request, $"Undefined {nameof(OnDeleteUserRole)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = DeleteUserRoleResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnDeleteUserRole),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnDeleteUserRole,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= DeleteUserRoleResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

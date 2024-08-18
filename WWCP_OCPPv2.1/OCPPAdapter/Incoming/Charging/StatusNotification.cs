@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnStatusNotification?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : StatusNotificationResponse.Failed(request, $"Undefined {nameof(OnStatusNotification)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = StatusNotificationResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnStatusNotification),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnStatusNotification,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= StatusNotificationResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

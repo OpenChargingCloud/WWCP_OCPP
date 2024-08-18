@@ -215,45 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnChangeAvailability?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ChangeAvailabilityResponse.Failed(request, $"Undefined {nameof(OnChangeAvailability)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ChangeAvailabilityResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnChangeAvailability),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnChangeAvailability,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ChangeAvailabilityResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

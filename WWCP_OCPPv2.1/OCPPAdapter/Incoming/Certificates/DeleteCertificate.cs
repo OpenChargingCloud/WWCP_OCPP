@@ -215,45 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnDeleteCertificate?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnDeleteCertificateDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : DeleteCertificateResponse.Failed(request, $"Undefined {nameof(OnDeleteCertificate)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = DeleteCertificateResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnDeleteCertificate),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnDeleteCertificate,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= DeleteCertificateResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnReservationStatusUpdate?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnReservationStatusUpdateDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ReservationStatusUpdateResponse.Failed(request, $"Undefined {nameof(OnReservationStatusUpdate)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ReservationStatusUpdateResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnReservationStatusUpdate),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnReservationStatusUpdate,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ReservationStatusUpdateResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

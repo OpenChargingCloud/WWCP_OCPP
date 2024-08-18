@@ -1154,48 +1154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region BinaryDataStreams Extensions
 
-            #region OnBinaryDataTransfer
-
-            OCPP.IN.OnBinaryDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"CSMS '{Id}': Incoming BinaryDataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
-
-                // VendorId
-                // MessageId
-                // BinaryData
-
-                var responseBinaryData = Array.Empty<Byte>();
-
-                if (request.Data is not null)
-                    responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
-
-                return Task.FromResult(
-
-                           request.VendorId == Vendor_Id.GraphDefined
-
-                               ? new BinaryDataTransferResponse(
-                                     Request:                request,
-                                     Status:                 BinaryDataTransferStatus.Accepted,
-                                     AdditionalStatusInfo:   null,
-                                     Data:                   responseBinaryData
-                                 )
-
-                               : new BinaryDataTransferResponse(
-                                     Request:                request,
-                                     Status:                 BinaryDataTransferStatus.Rejected,
-                                     AdditionalStatusInfo:   null,
-                                     Data:                   responseBinaryData
-                                 )
-
-                       );
-
-            };
-
-            #endregion
+            #region Files
 
             #region OnDeleteFile
 
@@ -1282,6 +1241,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                FileName:      request.FileName,
                                Status:        SendFileStatus.Success
                            )
+                       );
+
+            };
+
+            #endregion
+
+            #endregion
+
+            #region OnBinaryDataTransfer
+
+            OCPP.IN.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"CSMS '{Id}': Incoming BinaryDataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // BinaryData
+
+                var responseBinaryData = Array.Empty<Byte>();
+
+                if (request.Data is not null)
+                    responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
+
+                return Task.FromResult(
+
+                           request.VendorId == Vendor_Id.GraphDefined
+
+                               ? new BinaryDataTransferResponse(
+                                     Request:                request,
+                                     Status:                 BinaryDataTransferStatus.Accepted,
+                                     AdditionalStatusInfo:   null,
+                                     Data:                   responseBinaryData
+                                 )
+
+                               : new BinaryDataTransferResponse(
+                                     Request:                request,
+                                     Status:                 BinaryDataTransferStatus.Rejected,
+                                     AdditionalStatusInfo:   null,
+                                     Data:                   responseBinaryData
+                                 )
+
                        );
 
             };

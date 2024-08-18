@@ -212,45 +212,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnDeleteFile?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnDeleteFileDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : DeleteFileResponse.Failed(request, $"Undefined {nameof(OnDeleteFile)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = DeleteFileResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnDeleteFile),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnDeleteFile,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= DeleteFileResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

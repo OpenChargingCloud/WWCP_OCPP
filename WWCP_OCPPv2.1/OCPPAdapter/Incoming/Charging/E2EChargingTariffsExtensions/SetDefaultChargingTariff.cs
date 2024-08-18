@@ -225,45 +225,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnSetDefaultChargingTariff?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnSetDefaultChargingTariffDelegate)?.Invoke(
-                                                                                                                               Timestamp.Now,
-                                                                                                                               parentNetworkingNode,
-                                                                                                                               WebSocketConnection,
-                                                                                                                               request,
-                                                                                                                               CancellationToken
-                                                                                                                           )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : SetDefaultChargingTariffResponse.Failed(request, $"Undefined {nameof(OnSetDefaultChargingTariff)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = SetDefaultChargingTariffResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnSetDefaultChargingTariff),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnSetDefaultChargingTariff,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= SetDefaultChargingTariffResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

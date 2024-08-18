@@ -239,45 +239,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnReportChargingProfiles?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnReportChargingProfilesDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ReportChargingProfilesResponse.Failed(request, $"Undefined {nameof(OnReportChargingProfiles)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ReportChargingProfilesResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnReportChargingProfiles),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnReportChargingProfiles,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ReportChargingProfilesResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

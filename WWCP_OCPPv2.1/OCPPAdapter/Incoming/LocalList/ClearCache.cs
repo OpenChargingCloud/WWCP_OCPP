@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnClearCache?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : ClearCacheResponse.Failed(request, $"Undefined {nameof(OnClearCache)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = ClearCacheResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnClearCache),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnClearCache,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= ClearCacheResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

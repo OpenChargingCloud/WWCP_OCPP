@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -1135,7 +1136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (private) LogEvent(Logger, LogHandler, ...)
+        #region (private) LogEvent      (Logger, LogHandler, ...)
 
         private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
                                          Func<TDelegate, Task>                              LogHandler,
@@ -1154,7 +1155,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors(Caller, ExceptionOccured)
+        #region (private) CallProcessor (Processor, ProcessorHandler, ...)
+
+        private async Task<T?> CallProcessor<TDelegate, T>(TDelegate?                                            Processor,
+                                                           Func<TDelegate, Task<T>>                              ProcessorHandler,
+                                                           [CallerArgumentExpression(nameof(Processor))] String  EventName     = "",
+                                                           [CallerMemberName()]                          String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+        {
+
+            if (Processor is not null)
+            {
+                try
+                {
+
+                    var handler = Processor.GetInvocationList().OfType<TDelegate>().FirstOrDefault();
+
+                    if (handler is not null)
+                        return await ProcessorHandler(handler);
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors($"{OCPPCommand}.{EventName}", e);
+                }
+            }
+
+            return default;
+
+            //try
+            //{
+
+            //    var responseTasks = OnBinaryDataTransfer?.
+            //                            GetInvocationList()?.
+            //                            SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(
+            //                                                                                                       Timestamp.Now,
+            //                                                                                                       parentNetworkingNode,
+            //                            WebSocketConnection,
+            //                                                                                                       request,
+            //                                                                                                       CancellationToken
+            //                                                                                                   )).
+            //                            ToArray();
+
+            //    response = responseTasks?.Length > 0
+            //                   ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+            //                   : BinaryDataTransferResponse.Failed(request, $"Undefined {nameof(OnBinaryDataTransfer)}!");
+
+            //}
+            //catch (Exception e)
+            //{
+
+            //    response = BinaryDataTransferResponse.ExceptionOccured(request, e);
+            //    await HandleErrors(
+            //              nameof(OnBinaryDataTransfer),
+            //              e
+            //          );
+
+            //}
+
+        }
+
+        #endregion
+
+        #region (private) HandleErrors  (Caller, ExceptionOccured)
 
         private Task HandleErrors(String     Caller,
                                   Exception  ExceptionOccured)

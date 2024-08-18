@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnAFRRSignal?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnAFRRSignalDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : AFRRSignalResponse.Failed(request, $"Undefined {nameof(OnAFRRSignal)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = AFRRSignalResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnAFRRSignal),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnAFRRSignal,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= AFRRSignalResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

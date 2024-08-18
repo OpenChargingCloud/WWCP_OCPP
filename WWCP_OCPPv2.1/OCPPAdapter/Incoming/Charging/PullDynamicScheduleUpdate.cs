@@ -214,45 +214,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnPullDynamicScheduleUpdate?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnPullDynamicScheduleUpdateDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : PullDynamicScheduleUpdateResponse.Failed(request, $"Undefined {nameof(OnPullDynamicScheduleUpdate)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = PullDynamicScheduleUpdateResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnPullDynamicScheduleUpdate),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnPullDynamicScheduleUpdate,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= PullDynamicScheduleUpdateResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

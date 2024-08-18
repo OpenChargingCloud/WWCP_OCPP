@@ -217,45 +217,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnAuthorize?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(
-                                                                                                                               Timestamp.Now,
-                                                                                                                               parentNetworkingNode,
-                                                                                                                               WebSocketConnection,
-                                                                                                                               request,
-                                                                                                                               CancellationToken
-                                                                                                                           )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : AuthorizeResponse.Failed(request, $"Undefined {nameof(OnAuthorize)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = AuthorizeResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnAuthorize),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnAuthorize,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= AuthorizeResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

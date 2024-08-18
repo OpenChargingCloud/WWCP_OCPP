@@ -216,45 +216,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnMeterValues?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : MeterValuesResponse.Failed(request, $"Undefined {nameof(OnMeterValues)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = MeterValuesResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnMeterValues),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnMeterValues,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= MeterValuesResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 

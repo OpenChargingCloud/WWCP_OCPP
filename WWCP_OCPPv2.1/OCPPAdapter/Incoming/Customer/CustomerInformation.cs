@@ -217,45 +217,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-                        try
-                        {
-
-                            var responseTasks = OnCustomerInformation?.
-                                                    GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnCustomerInformationDelegate)?.Invoke(
-                                                                                  Timestamp.Now,
-                                                                                  parentNetworkingNode,
-                                                                                  WebSocketConnection,
-                                                                                  request,
-                                                                                  CancellationToken
-                                                                              )).
-                                                    ToArray();
-
-                            response = responseTasks?.Length > 0
-                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : CustomerInformationResponse.Failed(request, $"Undefined {nameof(OnCustomerInformation)}!");
-
-                        }
-                        catch (Exception e)
-                        {
-
-                            response = CustomerInformationResponse.ExceptionOccured(request, e);
-
-                            await HandleErrors(
-                                      nameof(OnCustomerInformation),
-                                      e
-                                  );
-
-                        }
-                    }
+                    response ??= await CallProcessor(
+                                           OnCustomerInformation,
+                                           filter => filter.Invoke(
+                                                         Timestamp.Now,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         request,
+                                                         CancellationToken
+                                                     )
+                                       );
 
                     response ??= CustomerInformationResponse.Failed(request);
 
-                    #endregion
 
                     #region Sign response message
 
