@@ -97,16 +97,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         new event OnWebSocketClientBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
 
 
-        Task ProcessWebSocketTextFrame  (DateTime                   RequestTimestamp,
-                                         WebSocketClientConnection  ClientConnection,
-                                         EventTracking_Id           EventTrackingId,
-                                         String                     TextMessage,
-                                         CancellationToken          CancellationToken);
-        Task ProcessWebSocketBinaryFrame(DateTime                   RequestTimestamp,
-                                         WebSocketClientConnection  ClientConnection,
-                                         EventTracking_Id           EventTrackingId,
-                                         Byte[]                     BinaryMessage,
-                                         CancellationToken          CancellationToken);
+        //Task ProcessWebSocketTextFrame  (DateTime                   RequestTimestamp,
+        //                                 WebSocketClientConnection  ClientConnection,
+        //                                 EventTracking_Id           EventTrackingId,
+        //                                 String                     TextMessage,
+        //                                 CancellationToken          CancellationToken);
+        //Task ProcessWebSocketBinaryFrame(DateTime                   RequestTimestamp,
+        //                                 WebSocketClientConnection  ClientConnection,
+        //                                 EventTracking_Id           EventTrackingId,
+        //                                 Byte[]                     BinaryMessage,
+        //                                 CancellationToken          CancellationToken);
 
 
         Task<SentMessageResult> SendJSONRequest         (OCPP_JSONRequestMessage          JSONRequestMessage);

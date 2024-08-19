@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <summary>
     /// The OCPP HTTP Web Socket server.
     /// </summary>
-    public partial class OCPPWebSocketServer : WebSocketServer,
+    public partial class OCPPWebSocketServer : AWebSocketServer,
                                                IOCPPWebSocketServer
     {
 
@@ -308,10 +308,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             base.OnCloseMessageReceived         += ProcessCloseMessage;
 
+            base.OnTextMessageReceived          += ProcessTextMessage;
+            base.OnBinaryMessageReceived        += ProcessBinaryMessage;
+
+            base.OnPingMessageReceived          += (timestamp, server, connection, frame, eventTrackingId, pingMessage, ct) => {
+                                                       DebugX.Log($"HTTP Web Socket Server '{connection.RemoteSocket}' Ping received:   '{frame.Payload.ToUTF8String()}'");
+                                                       return Task.CompletedTask;
+                                                   };
+
+            base.OnPongMessageReceived          += (timestamp, server, connection, frame, eventTrackingId, pingMessage, ct) => {
+                                                       DebugX.Log($"HTTP Web Socket Server '{connection.RemoteSocket}' Pong received:   '{frame.Payload.ToUTF8String()}'");
+                                                       return Task.CompletedTask;
+                                                   };
+
+            base.OnCloseMessageReceived         += (timestamp, server, connection, frame, eventTrackingId, closingStatusCode, closingReason, ct) => {
+                                                       DebugX.Log($"HTTP Web Socket Server '{connection.RemoteSocket}' Close received:  '{closingStatusCode}', '{closingReason ?? ""}'");
+                                                       return Task.CompletedTask;
+                                                   };
+
             if (AutoStart)
                 Start();
 
         }
+
+        
 
         #endregion
 
@@ -727,55 +747,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         // Receive data...
 
-        #region (protected) ProcessTextMessage   (RequestTimestamp, WebSocketConnection, TextMessage,   EventTrackingId, CancellationToken)
+        #region (protected) ProcessTextMessage   (RequestTimestamp, Server, WebSocketConnection, Frame, EventTrackingId, TextMessage,   CancellationToken)
 
         /// <summary>
-        /// Process all text messages of this WebSocket API.
+        /// Process a HTTP Web Socket text message.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="WebSocketConnection">The WebSocket connection.</param>
-        /// <param name="TextMessage">The received text message.</param>
+        /// <param name="Server">The HTTP Web Socket server.</param>
+        /// <param name="WebSocketConnection">The HTTP Web Socket connection.</param>
+        /// <param name="Frame">The HTTP Web Socket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
+        /// <param name="TextMessage">The received text message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
-                                                                                    WebSocketServerConnection  WebSocketConnection,
-                                                                                    String                     TextMessage,
-                                                                                    EventTracking_Id           EventTrackingId,
-                                                                                    CancellationToken          CancellationToken)
+        public async Task ProcessTextMessage(DateTime                   RequestTimestamp,
+                                             IWebSocketServer           Server,
+                                             WebSocketServerConnection  WebSocketConnection,
+                                             WebSocketFrame             Frame,
+                                             EventTracking_Id           EventTrackingId,
+                                             String                     TextMessage,
+                                             CancellationToken          CancellationToken)
         {
-
-            #region Initial checks
-
-            if (TextMessage == "[]" ||
-                TextMessage.IsNullOrEmpty())
-            {
-
-                await HandleErrors(
-                          nameof(OCPPWebSocketClient),
-                          nameof(ProcessTextMessage),
-                          "Received an empty text message!"
-                      );
-
-                return new WebSocketTextMessageResponse(
-                           RequestTimestamp,
-                           TextMessage,
-                           Timestamp.Now,
-                           "Received an empty text message!",
-                           EventTrackingId,
-                           CancellationToken
-                       );
-
-            }
-
-            #endregion
-
-            WebSocketTextMessageResponse? textMessageResponse = null;
 
             try
             {
 
-                var jsonMessage   = JArray.Parse(TextMessage);
-                var sourceNodeId  = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey);
+                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
+
+                #region Initial checks
+
+                TextMessage = TextMessage.Trim();
+
+                if (TextMessage == "[]" ||
+                    TextMessage.IsNullOrEmpty())
+                {
+
+                    await HandleErrors(
+                              nameof(OCPPWebSocketClient),
+                              nameof(ProcessTextMessage),
+                              $"Received an empty text message from {(
+                                   sourceNodeId.HasValue
+                                       ? $"'{sourceNodeId}' ({WebSocketConnection.RemoteSocket})"
+                                       : $"'{WebSocketConnection.RemoteSocket}"
+                              )}'!"
+                          );
+
+                    return;
+
+                }
+
+                #endregion
+
+
+                var jsonMessage = JArray.Parse(TextMessage);
 
                 await LogEvent(
                           OnJSONMessageReceived,
@@ -790,91 +813,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                           )
                       );
 
-                textMessageResponse = await OCPPAdapter.IN.ProcessJSONMessage(
-                                                RequestTimestamp,
-                                                WebSocketConnection,
-                                                jsonMessage,
-                                                EventTrackingId,
-                                                CancellationToken
-                                            );
+                await OCPPAdapter.IN.ProcessJSONMessage(
+                          RequestTimestamp,
+                          WebSocketConnection,
+                          sourceNodeId,
+                          jsonMessage,
+                          EventTrackingId,
+                          CancellationToken
+                      );
 
             }
             catch (Exception e)
             {
-
-                textMessageResponse = new WebSocketTextMessageResponse(
-                                          RequestTimestamp,
-                                          TextMessage,
-                                          Timestamp.Now,
-                                          $"[{nameof(OCPPWebSocketServer)}] {e.Message}",
-                                          EventTrackingId,
-                                          CancellationToken
-                                      );
-
+                await HandleErrors(
+                          nameof(OCPPWebSocketClient),
+                          nameof(ProcessTextMessage),
+                          e
+                      );
             }
-
-            textMessageResponse ??= new WebSocketTextMessageResponse(
-                                            RequestTimestamp,
-                                            TextMessage,
-                                            Timestamp.Now,
-                                            "Unknown Error!",
-                                            EventTrackingId,
-                                            CancellationToken
-                                        );
-
-            return textMessageResponse;
 
         }
 
         #endregion
 
-        #region (protected) ProcessBinaryMessage (RequestTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)
+        #region (protected) ProcessBinaryMessage (RequestTimestamp, Server, WebSocketConnection, Frame, EventTrackingId, BinaryMessage, CancellationToken)
 
         /// <summary>
-        /// Process all text messages of this WebSocket API.
+        /// Process a HTTP Web Socket binary message.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Connection">The WebSocket connection.</param>
-        /// <param name="BinaryMessage">The received binary message.</param>
+        /// <param name="Server">The HTTP Web Socket server.</param>
+        /// <param name="WebSocketConnection">The HTTP Web Socket connection.</param>
+        /// <param name="Frame">The HTTP Web Socket frame.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
+        /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public override async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
-                                                                                        WebSocketServerConnection  WebSocketConnection,
-                                                                                        Byte[]                     BinaryMessage,
-                                                                                        EventTracking_Id           EventTrackingId,
-                                                                                        CancellationToken          CancellationToken)
+        public async Task ProcessBinaryMessage(DateTime                   RequestTimestamp,
+                                               IWebSocketServer           Server,
+                                               WebSocketServerConnection  WebSocketConnection,
+                                               WebSocketFrame             Frame,
+                                               EventTracking_Id           EventTrackingId,
+                                               Byte[]                     BinaryMessage,
+                                               CancellationToken          CancellationToken)
         {
-
-            #region Initial checks
-
-            if (BinaryMessage.Length == 0)
-            {
-
-                await HandleErrors(
-                          nameof(OCPPWebSocketClient),
-                          nameof(ProcessTextMessage),
-                          "Received an empty binary message!"
-                      );
-
-                return new WebSocketBinaryMessageResponse(
-                           RequestTimestamp,
-                           BinaryMessage,
-                           Timestamp.Now,
-                           "Received an empty binary message!".ToUTF8Bytes(),
-                           EventTrackingId,
-                           CancellationToken
-                       );
-
-            }
-
-            #endregion
-
-            WebSocketBinaryMessageResponse? binaryMessageResponse = null;
 
             try
             {
 
-                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey);
+                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
+
+                #region Initial checks
+
+                if (BinaryMessage.Length == 0)
+                {
+
+                    await HandleErrors(
+                              nameof(OCPPWebSocketClient),
+                              nameof(ProcessTextMessage),
+                              $"Received an empty binary message from {(
+                                   sourceNodeId.HasValue
+                                       ? $"'{sourceNodeId}' ({WebSocketConnection.RemoteSocket})"
+                                       : $"'{WebSocketConnection.RemoteSocket}"
+                              )}'!"
+                          );
+
+                    return;
+
+                }
+
+                #endregion
+
 
                 await LogEvent(
                           OnBinaryMessageReceived,
@@ -889,39 +897,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                           )
                       );
 
-                binaryMessageResponse = await OCPPAdapter.IN.ProcessBinaryMessage(
-                                                  RequestTimestamp,
-                                                  WebSocketConnection,
-                                                  BinaryMessage,
-                                                  EventTrackingId,
-                                                  CancellationToken
-                                              );
+                await OCPPAdapter.IN.ProcessBinaryMessage(
+                          RequestTimestamp,
+                          WebSocketConnection,
+                          sourceNodeId,
+                          BinaryMessage,
+                          EventTrackingId,
+                          CancellationToken
+                      );
 
             }
             catch (Exception e)
             {
-
-                binaryMessageResponse = new WebSocketBinaryMessageResponse(
-                                            RequestTimestamp,
-                                            BinaryMessage,
-                                            Timestamp.Now,
-                                            $"[{nameof(OCPPWebSocketServer)}] {e.Message}".ToUTF8Bytes(),
-                                            EventTrackingId,
-                                            CancellationToken
-                                        );
-
+                await HandleErrors(
+                          nameof(OCPPWebSocketClient),
+                          nameof(ProcessBinaryMessage),
+                          e
+                      );
             }
-
-            binaryMessageResponse ??= new WebSocketBinaryMessageResponse(
-                                          RequestTimestamp,
-                                          BinaryMessage,
-                                          Timestamp.Now,
-                                          "Unknown Error!".ToUTF8Bytes(),
-                                          EventTrackingId,
-                                          CancellationToken
-                                      );
-
-            return binaryMessageResponse;
 
         }
 

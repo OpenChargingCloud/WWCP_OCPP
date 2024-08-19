@@ -255,11 +255,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="JSONMessage">The received JSON message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task<WebSocketTextMessageResponse> ProcessJSONMessage(DateTime              MessageTimestamp,
-                                                                           IWebSocketConnection  WebSocketConnection,
-                                                                           JArray                JSONMessage,
-                                                                           EventTracking_Id      EventTrackingId,
-                                                                           CancellationToken     CancellationToken)
+        public async Task ProcessJSONMessage(DateTime              MessageTimestamp,
+                                             IWebSocketConnection  WebSocketConnection,
+                                             NetworkingNode_Id?    sourceNodeId,
+                                             JArray                JSONMessage,
+                                             EventTracking_Id      EventTrackingId,
+                                             CancellationToken     CancellationToken)
         {
 
             try
@@ -267,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 SentMessageResult? sentMessageResult = null;
 
-                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
+                //var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
                 if      (OCPP_JSONRequestMessage.      TryParse(JSONMessage, out var jsonRequestMessage,       out var requestParsingError,  MessageTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
@@ -693,27 +694,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                       );
             }
 
-            // The response is empty!
-            return new WebSocketTextMessageResponse(
-                       MessageTimestamp,
-                       JSONMessage.ToString(),
-                       Timestamp.Now,
-                       String.Empty,
-                       EventTrackingId,
-                       CancellationToken
-                   );
-
         }
 
         #endregion
 
         #region ProcessBinaryMessage (MessageTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)
 
-        public async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime              MessageTimestamp,
-                                                                               IWebSocketConnection  WebSocketConnection,
-                                                                               Byte[]                BinaryMessage,
-                                                                               EventTracking_Id      EventTrackingId,
-                                                                               CancellationToken     CancellationToken)
+        public async Task ProcessBinaryMessage(DateTime              MessageTimestamp,
+                                               IWebSocketConnection  WebSocketConnection,
+                                               NetworkingNode_Id?    sourceNodeId,
+                                               Byte[]                BinaryMessage,
+                                               EventTracking_Id      EventTrackingId,
+                                               CancellationToken     CancellationToken)
         {
 
             try
@@ -721,7 +713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 SentMessageResult? sentMessageResult = null;
 
-                var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
+                //var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
                 if      (OCPP_BinaryRequestMessage.      TryParse(BinaryMessage, out var binaryRequestMessage,       out var requestParsingError,  MessageTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequestMessage  is not null)
                 {
@@ -1119,17 +1111,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                           //BinaryMessage
                       );
             }
-
-
-            // The response is empty!
-            return new WebSocketBinaryMessageResponse(
-                       MessageTimestamp,
-                       BinaryMessage,
-                       Timestamp.Now,
-                       [],
-                       EventTrackingId,
-                       CancellationToken
-                   );
 
         }
 
