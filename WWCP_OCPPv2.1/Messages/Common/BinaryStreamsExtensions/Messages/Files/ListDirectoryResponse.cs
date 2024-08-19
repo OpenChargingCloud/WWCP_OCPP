@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="SourceRouting">The destination identification of the message within the overlay network.</param>
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
         /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      Result?                  Result                = null,
                                      DateTime?                ResponseTimestamp     = null,
 
-                                     SourceRouting?           SourceRouting         = null,
+                                     SourceRouting?           Destination           = null,
                                      NetworkPath?             NetworkPath           = null,
 
                                      IEnumerable<KeyPair>?    SignKeys              = null,
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom ListDirectory responses.</param>
         public static ListDirectoryResponse Parse(ListDirectoryRequest                                 Request,
                                                   JObject                                              JSON,
-                                                  SourceRouting                                        SourceRouting,
+                                                  SourceRouting                                    Destination,
                                                   NetworkPath                                          NetworkPath,
                                                   DateTime?                                            ResponseTimestamp                   = null,
                                                   CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null,
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(Request,
                          JSON,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var listDirectoryResponse,
                          out var errorResponse,
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom ListDirectory responses.</param>
         public static Boolean TryParse(ListDirectoryRequest                                 Request,
                                        JObject                                              JSON,
-                                       SourceRouting                                        SourceRouting,
+                                       SourceRouting                                    Destination,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out ListDirectoryResponse?      ListDirectoryResponse,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             null,
                                             ResponseTimestamp,
 
-                                                SourceRouting,
+                                            Destination,
                                             NetworkPath,
 
                                             null,
@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          JObject?                 ErrorDetails        = null,
                                                          DateTime?                ResponseTimestamp   = null,
 
-                                                         SourceRouting?       SourceRouting       = null,
+                                                         SourceRouting?           Destination         = null,
                                                          NetworkPath?             NetworkPath         = null,
 
                                                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,

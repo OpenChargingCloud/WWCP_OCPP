@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new close periodic event stream request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="Id">The unqiue identification of the periodic event stream to close.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -140,12 +140,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomClosePeriodicEventStreamRequestParser">A delegate to parse custom ClosePeriodicEventStream requests.</param>
         public static ClosePeriodicEventStreamRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
-                                                            SourceRouting                                                  SourceRouting,
+                                                            SourceRouting                                              Destination,
                                                             NetworkPath                                                    NetworkPath,
                                                             CustomJObjectParserDelegate<ClosePeriodicEventStreamRequest>?  CustomClosePeriodicEventStreamRequestParser   = null)
         {
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var closePeriodicEventStreamRequest,
                          out var errorResponse,
@@ -179,20 +179,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClosePeriodicEventStreamRequest">The parsed ClosePeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                               JSON,
                                        Request_Id                            RequestId,
-                                       SourceRouting                         SourceRouting,
+                                       SourceRouting                     Destination,
                                        NetworkPath                           NetworkPath,
                                        out ClosePeriodicEventStreamRequest?  ClosePeriodicEventStreamRequest,
                                        out String?                           ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                            SourceRouting,
+                        Destination,
                         NetworkPath,
                         out ClosePeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -204,14 +204,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClosePeriodicEventStreamRequest">The parsed ClosePeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClosePeriodicEventStreamRequestParser">A delegate to parse custom ClosePeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
-                                       SourceRouting                                                  SourceRouting,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                    NetworkPath,
                                        out ClosePeriodicEventStreamRequest?                           ClosePeriodicEventStreamRequest,
                                        out String?                                                    ErrorResponse,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 ClosePeriodicEventStreamRequest = new ClosePeriodicEventStreamRequest(
 
-                                                          SourceRouting,
+                                                      Destination,
                                                       Id,
 
                                                       null,

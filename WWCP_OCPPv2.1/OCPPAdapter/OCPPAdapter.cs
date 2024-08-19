@@ -353,6 +353,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        public CustomJObjectSerializerDelegate<MessageTransferMessage>?                              CustomMessageTransferMessageSerializer                       { get; set; }
+
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
@@ -578,14 +580,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Firmware
 
-        public CustomJObjectParserDelegate<OCPPv2_1.CS.  BootNotificationRequest>?                     CustomBootNotificationRequestParser                      { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                    CustomBootNotificationResponseParser                     { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CS.  FirmwareStatusNotificationRequest>?           CustomFirmwareStatusNotificationRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?          CustomFirmwareStatusNotificationResponseParser           { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CS.  HeartbeatRequest>?                            CustomHeartbeatRequestParser                             { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.HeartbeatResponse>?                           CustomHeartbeatResponseParser                            { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CS.  PublishFirmwareStatusNotificationRequest>?    CustomPublishFirmwareStatusNotificationRequestParser     { get; set; }
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?   CustomPublishFirmwareStatusNotificationResponseParser    { get; set; }
+        public CustomJObjectParserDelegate<CS.  BootNotificationRequest>?                     CustomBootNotificationRequestParser                      { get; set; }
+        public CustomJObjectParserDelegate<CSMS.BootNotificationResponse>?                    CustomBootNotificationResponseParser                     { get; set; }
+        public CustomJObjectParserDelegate<CS.  FirmwareStatusNotificationRequest>?           CustomFirmwareStatusNotificationRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<CSMS.FirmwareStatusNotificationResponse>?          CustomFirmwareStatusNotificationResponseParser           { get; set; }
+        public CustomJObjectParserDelegate<CS.  HeartbeatRequest>?                            CustomHeartbeatRequestParser                             { get; set; }
+        public CustomJObjectParserDelegate<CSMS.HeartbeatResponse>?                           CustomHeartbeatResponseParser                            { get; set; }
+        public CustomJObjectParserDelegate<CS.  PublishFirmwareStatusNotificationRequest>?    CustomPublishFirmwareStatusNotificationRequestParser     { get; set; }
+        public CustomJObjectParserDelegate<CSMS.PublishFirmwareStatusNotificationResponse>?   CustomPublishFirmwareStatusNotificationResponseParser    { get; set; }
 
         #endregion
 
@@ -729,8 +731,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public CustomJObjectParserDelegate<DataTransferRequest>?                                       CustomDataTransferRequestParser                              { get; set; }
-        public CustomJObjectParserDelegate<DataTransferResponse>?                                      CustomDataTransferResponseParser                             { get; set; }
+        public CustomJObjectParserDelegate<DataTransferRequest>?                                       CustomDataTransferRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<DataTransferResponse>?                                      CustomDataTransferResponseParser                         { get; set; }
+
+
+        public CustomJObjectParserDelegate<MessageTransferMessage>?                                    CustomMessageTransferMessageParser                       { get; set; }
+
 
 
         // BinaryDataStreamsExtensions
@@ -839,25 +845,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Send    JSON   messages
 
-        #region (internal) SendJSONRequest          (JSONRequestMessage)
+        #region (internal) SendJSONRequest          (JSONRequestMessage, SentMessageResultDelegate = null)
 
-        internal async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
+        internal async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage     JSONRequestMessage,
+                                                               Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
 
                 else if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
 
             }
 
-            return sendMessageResult;
+            if (SentMessageResultDelegate is not null)
+                SentMessageResultDelegate(sentMessageResult);
+
+            return sentMessageResult;
 
         }
 
@@ -869,13 +879,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                      Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
-            var sendMessageResult = await SendJSONRequest(JSONRequestMessage);
+            var sentMessageResult = await SendJSONRequest(JSONRequestMessage, SentMessageResultDelegate);
 
-            if (SentMessageResultDelegate is not null)
-                SentMessageResultDelegate(sendMessageResult);
-
-
-            if (sendMessageResult.Result == SentMessageResults.Success)
+            if (sentMessageResult.Result == SentMessageResults.Success)
             {
 
                 #region 1. Store 'in-flight' request...
@@ -959,7 +965,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Destination:              JSONRequestMessage.Destination,
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
-                       SentMessageResult:        sendMessageResult,
+                       SentMessageResult:        sentMessageResult,
                        ResponseTimestamp:        Timestamp.Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
@@ -986,20 +992,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         internal async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendJSONResponse(JSONResponseMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONResponse(JSONResponseMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendJSONResponse(JSONResponseMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONResponse(JSONResponseMessage);
 
             }
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -1010,20 +1016,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         internal async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
 
             }
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -1034,44 +1040,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         internal async Task<SentMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
 
             }
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
         #endregion
 
-        #region (internal) SendJSONSendMessage      (JSONRequestMessage)
+        #region (internal) SendJSONSendMessage      (JSONRequestMessage, SentMessageResultDelegate = null)
 
-        internal async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        internal async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage        JSONSendMessage,
+                                                                   Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendJSONSendMessage(JSONSendMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONSendMessage(JSONSendMessage);
 
                 else if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendJSONSendMessage(JSONSendMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONSendMessage(JSONSendMessage);
 
             }
 
-            return sendMessageResult;
+            if (SentMessageResultDelegate is not null)
+                SentMessageResultDelegate(sentMessageResult);
+
+            return sentMessageResult;
 
         }
 
@@ -1081,25 +1091,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Send    binary messages
 
-        #region (internal) SendBinaryRequest        (BinaryRequestMessage)
+        #region (internal) SendBinaryRequest        (BinaryRequestMessage, SentMessageResultDelegate = null)
 
-        internal async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        internal async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage   BinaryRequestMessage,
+                                                                 Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
 
                 else if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
 
             }
 
-            return sendMessageResult;
+            if (SentMessageResultDelegate is not null)
+                SentMessageResultDelegate(sentMessageResult);
+
+            return sentMessageResult;
 
         }
 
@@ -1111,12 +1125,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                        Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
-            var sendMessageResult = await SendBinaryRequest(BinaryRequestMessage);
+            var sentMessageResult = await SendBinaryRequest(BinaryRequestMessage, SentMessageResultDelegate);
 
-            if (SentMessageResultDelegate is not null)
-                SentMessageResultDelegate(sendMessageResult);
-
-            if (sendMessageResult.Result == SentMessageResults.Success)
+            if (sentMessageResult.Result == SentMessageResults.Success)
             {
 
                 #region (internal) 1. Store 'in-flight' request...
@@ -1200,7 +1211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Destination:              BinaryRequestMessage.Destination,
                        Timeout:                  BinaryRequestMessage.RequestTimeout,
                        BinaryRequest:            BinaryRequestMessage,
-                       SentMessageResult:        sendMessageResult,
+                       SentMessageResult:        sentMessageResult,
                        ResponseTimestamp:        Timestamp.Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
@@ -1227,20 +1238,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         internal async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
 
             }
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -1251,20 +1262,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         internal async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             }
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -1275,44 +1286,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         internal async Task<SentMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             }
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
         #endregion
 
-        #region (internal) SendBinarySendMessage    (BinarySendMessage)
+        #region (internal) SendBinarySendMessage    (BinarySendMessage, SentMessageResultDelegate = null)
 
-        internal async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        internal async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage      BinarySendMessage,
+                                                                     Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
-            var sendMessageResult = SentMessageResult.UnknownClient();
+            var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketClient.SendBinarySendMessage(BinarySendMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinarySendMessage(BinarySendMessage);
 
                 else if (reachability.OCPPWebSocketServer is not null)
-                    sendMessageResult = await reachability.OCPPWebSocketServer.SendBinarySendMessage(BinarySendMessage);
+                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinarySendMessage(BinarySendMessage);
 
             }
 
-            return sendMessageResult;
+            if (SentMessageResultDelegate is not null)
+                SentMessageResultDelegate(sentMessageResult);
+
+            return sentMessageResult;
 
         }
 

@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new ReserveNow request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="Id">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The unique token identification for which the reservation is being made.</param>
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNow requests.</param>
         public static ReserveNowRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              SourceRouting                                    SourceRouting,
+                                              SourceRouting                                Destination,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var reserveNowRequest,
                          out var errorResponse,
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       SourceRouting                                    SourceRouting,
+                                       SourceRouting                                Destination,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out ReserveNowRequest?      ReserveNowRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
@@ -535,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ReserveNowRequest = new ReserveNowRequest(
 
-                                            SourceRouting,
+                                        Destination,
                                         Id,
                                         ExpiryDateTime,
                                         IdToken,

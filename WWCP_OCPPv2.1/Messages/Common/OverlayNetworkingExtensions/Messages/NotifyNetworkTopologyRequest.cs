@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new NotifyNetworkTopology request.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification of the message destination.</param>
+        /// <param name="Destination">The networking node identification of the message destination.</param>
         /// <param name="NetworkTopologyInformation">A network topology information.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyNetworkTopologyRequest(SourceRouting               SourceRouting,
+        public NotifyNetworkTopologyRequest(SourceRouting               Destination,
                                             NetworkTopologyInformation  NetworkTopologyInformation,
 
                                             IEnumerable<KeyPair>?       SignKeys              = null,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             SerializationFormats?       SerializationFormat   = null,
                                             CancellationToken           CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(NotifyNetworkTopologyRequest)[..^7],
 
                    SignKeys,
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomNotifyNetworkTopologyRequestParser">An optional delegate to parse custom NotifyNetworkTopology requests.</param>
         public static NotifyNetworkTopologyRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         SourceRouting                                               SourceRouting,
+                                                         SourceRouting                                           Destination,
                                                          NetworkPath                                                 NetworkPath,
                                                          DateTime?                                                   RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var notifyNetworkTopologyRequest,
                          out var errorResponse,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyNetworkTopologyRequest">The parsed NotifyNetworkTopology request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomNotifyNetworkTopologyRequestParser">An optional delegate to parse custom NotifyNetworkTopology requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       SourceRouting                                               SourceRouting,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out NotifyNetworkTopologyRequest?      NotifyNetworkTopologyRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 NotifyNetworkTopologyRequest = new NotifyNetworkTopologyRequest(
 
-                                                       SourceRouting,
+                                                   Destination,
                                                    NetworkTopologyInformation,
 
                                                    null,

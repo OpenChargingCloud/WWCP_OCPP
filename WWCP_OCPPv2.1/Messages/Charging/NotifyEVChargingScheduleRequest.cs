@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify EV charging schedule request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
         /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
         /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEVChargingScheduleRequest(SourceRouting            SourceRouting,
+        public NotifyEVChargingScheduleRequest(SourceRouting            Destination,
                                                DateTime                 TimeBase,
                                                EVSE_Id                  EVSEId,
                                                ChargingSchedule         ChargingSchedule,
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                SerializationFormats?    SerializationFormat        = null,
                                                CancellationToken        CancellationToken          = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(NotifyEVChargingScheduleRequest)[..^7],
 
                    SignKeys,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
         public static NotifyEVChargingScheduleRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
-                                                            SourceRouting                                                  SourceRouting,
+                                                            SourceRouting                                              Destination,
                                                             NetworkPath                                                    NetworkPath,
                                                             DateTime?                                                      RequestTimestamp                              = null,
                                                             TimeSpan?                                                      RequestTimeout                                = null,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var notifyEVChargingScheduleRequest,
                          out var errorResponse,
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyEVChargingScheduleRequest">The parsed notify EV charging schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
-                                       SourceRouting                                                  SourceRouting,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEVChargingScheduleRequest?      NotifyEVChargingScheduleRequest,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyEVChargingScheduleRequest = new NotifyEVChargingScheduleRequest(
 
-                                                          SourceRouting,
+                                                      Destination,
                                                       TimeBase,
                                                       EVSEId,
                                                       ChargingSchedule,

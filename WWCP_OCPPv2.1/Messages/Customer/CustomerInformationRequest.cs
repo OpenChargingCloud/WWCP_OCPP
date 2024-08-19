@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new CustomerInformation request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="CustomerInformationRequestId">An unique identification of the CustomerInformation request.</param>
         /// <param name="Report">Whether the charging station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.</param>
         /// <param name="Clear">Whether the charging station should clear all information about the customer referred to.</param>
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public CustomerInformationRequest(SourceRouting            SourceRouting,
+        public CustomerInformationRequest(SourceRouting            Destination,
                                           Int64                    CustomerInformationRequestId,
                                           Boolean                  Report,
                                           Boolean                  Clear,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           SerializationFormats?    SerializationFormat   = null,
                                           CancellationToken        CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(CustomerInformationRequest)[..^7],
 
                    SignKeys,
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom CustomerInformation requests.</param>
         public static CustomerInformationRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       SourceRouting                                             SourceRouting,
+                                                       SourceRouting                                         Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var customerInformationRequest,
                          out var errorResponse,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomerInformationRequest">The parsed CustomerInformation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom CustomerInformation requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       SourceRouting                                             SourceRouting,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out CustomerInformationRequest?      CustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -570,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 CustomerInformationRequest = new CustomerInformationRequest(
 
-                                                     SourceRouting,
+                                                 Destination,
                                                  CustomerInformationRequestId,
                                                  Report,
                                                  Clear,

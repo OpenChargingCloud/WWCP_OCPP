@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetLog request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
         public static GetLogRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
-                                          SourceRouting                                SourceRouting,
+                                          SourceRouting                            Destination,
                                           NetworkPath                                  NetworkPath,
                                           DateTime?                                    RequestTimestamp            = null,
                                           TimeSpan?                                    RequestTimeout              = null,
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var getLogRequest,
                          out var errorResponse,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetLogRequest">The parsed GetLog request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
-                                       SourceRouting                                SourceRouting,
+                                       SourceRouting                            Destination,
                                        NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out GetLogRequest?      GetLogRequest,
                                        [NotNullWhen(false)] out String?             ErrorResponse,
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetLogRequest = new GetLogRequest(
 
-                                        SourceRouting,
+                                    Destination,
                                     LogType,
                                     LogRequestId,
                                     Log,

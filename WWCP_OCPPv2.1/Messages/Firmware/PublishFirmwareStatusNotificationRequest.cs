@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a publish firmware status notification request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="Status">The progress status of the publish firmware request.</param>
         /// <param name="PublishFirmwareStatusNotificationRequestId">The optional unique identification of the publish firmware status notification request.</param>
         /// <param name="DownloadLocations">The optional enumeration of downstream firmware download locations for all attached charging stations.</param>
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
         public static PublishFirmwareStatusNotificationRequest Parse(JObject                                                                 JSON,
                                                                      Request_Id                                                              RequestId,
-                                                                     SourceRouting                                                           SourceRouting,
+                                                                     SourceRouting                                                       Destination,
                                                                      NetworkPath                                                             NetworkPath,
                                                                      DateTime?                                                               RequestTimestamp                                       = null,
                                                                      TimeSpan?                                                               RequestTimeout                                         = null,
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var publishFirmwareStatusNotificationRequest,
                          out var errorResponse,
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PublishFirmwareStatusNotificationRequest">The parsed publish firmware status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
         public static Boolean TryParse(JObject                                                                 JSON,
                                        Request_Id                                                              RequestId,
-                                       SourceRouting                                                           SourceRouting,
+                                       SourceRouting                                                       Destination,
                                        NetworkPath                                                             NetworkPath,
                                        [NotNullWhen(true)]  out PublishFirmwareStatusNotificationRequest?      PublishFirmwareStatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                                        ErrorResponse,
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 PublishFirmwareStatusNotificationRequest = new PublishFirmwareStatusNotificationRequest(
 
-                                                                   SourceRouting,
+                                                               Destination,
                                                                Status,
                                                                PublishFirmwareStatusNotificationRequestId,
                                                                DownloadLocations,

@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="MessageTimestamp">The message sent time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The networking mode to use.</param>
-    /// <param name="DestinationId">The networking node identification or Any- or Multicast address of the message destination.</param>
+    /// <param name="Destination">The networking node identification or Any- or Multicast address of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the message through the overlay network.</param>
     /// <param name="MessageId">An unique message identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
@@ -124,15 +124,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region (static) FromMessage(Message, SerializedMessage)
+        #region (static) FromDatagram(Message, SerializedMessage)
 
         /// <summary>
-        /// Create a new OCPP JSON send message transport container based on the given JSON message.
+        /// Create a new OCPP JSONSendMessage transport container based on the given JSON message.
         /// </summary>
         /// <param name="Message">A send message.</param>
         /// <param name="SerializedMessage">The serialized send message.</param>
-        public static OCPP_JSONSendMessage FromMessage(IRequest  Message,
-                                                       JObject   SerializedMessage)
+        public static OCPP_JSONSendMessage FromDatagram(IMessage  Message,
+                                                        JObject   SerializedMessage)
 
             => new (Timestamp.Now,
                     Message.EventTrackingId,

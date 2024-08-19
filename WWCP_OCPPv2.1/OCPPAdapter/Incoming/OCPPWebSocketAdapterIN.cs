@@ -1185,36 +1185,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             return default;
 
-            //try
-            //{
-
-            //    var responseTasks = OnBinaryDataTransfer?.
-            //                            GetInvocationList()?.
-            //                            SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(
-            //                                                                                                       Timestamp.Now,
-            //                                                                                                       parentNetworkingNode,
-            //                            WebSocketConnection,
-            //                                                                                                       request,
-            //                                                                                                       CancellationToken
-            //                                                                                                   )).
-            //                            ToArray();
-
-            //    response = responseTasks?.Length > 0
-            //                   ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-            //                   : BinaryDataTransferResponse.Failed(request, $"Undefined {nameof(OnBinaryDataTransfer)}!");
-
-            //}
-            //catch (Exception e)
-            //{
-
-            //    response = BinaryDataTransferResponse.ExceptionOccured(request, e);
-            //    await HandleErrors(
-            //              nameof(OnBinaryDataTransfer),
-            //              e
-            //          );
-
-            //}
-
         }
 
         #endregion

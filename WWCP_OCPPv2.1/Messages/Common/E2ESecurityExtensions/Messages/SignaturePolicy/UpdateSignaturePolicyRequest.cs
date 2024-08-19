@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new UpdateSignaturePolicy request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateSignaturePolicyRequest(SourceRouting            SourceRouting,
+        public UpdateSignaturePolicyRequest(SourceRouting            Destination,
 
                                             IEnumerable<KeyPair>?    SignKeys              = null,
                                             IEnumerable<SignInfo>?   SignInfos             = null,
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             SerializationFormats?    SerializationFormat   = null,
                                             CancellationToken        CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(UpdateSignaturePolicyRequest)[..^7],
 
                    SignKeys,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom UpdateSignaturePolicy requests.</param>
         public static UpdateSignaturePolicyRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         SourceRouting                                               SourceRouting,
+                                                         SourceRouting                                           Destination,
                                                          NetworkPath                                                 NetworkPath,
                                                          DateTime?                                                   RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var updateSignaturePolicyRequest,
                          out var errorResponse,
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UpdateSignaturePolicyRequest">The parsed UpdateSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom UpdateSignaturePolicy requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       SourceRouting                                               SourceRouting,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out UpdateSignaturePolicyRequest?      UpdateSignaturePolicyRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 UpdateSignaturePolicyRequest = new UpdateSignaturePolicyRequest(
 
-                                                       SourceRouting,
+                                                   Destination,
 
                                                    null,
                                                    null,

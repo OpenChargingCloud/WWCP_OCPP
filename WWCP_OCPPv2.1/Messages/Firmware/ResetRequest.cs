@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new Reset request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="ResetType">The type of Reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
-                                         SourceRouting                               SourceRouting,
+                                         SourceRouting                           Destination,
                                          NetworkPath                                 NetworkPath,
                                          DateTime?                                   RequestTimestamp           = null,
                                          TimeSpan?                                   RequestTimeout             = null,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var ResetRequest,
                          out var errorResponse,
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResetRequest">The parsed Reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
-                                       SourceRouting                               SourceRouting,
+                                       SourceRouting                           Destination,
                                        NetworkPath                                 NetworkPath,
                                        [NotNullWhen(true)]  out ResetRequest?      ResetRequest,
                                        [NotNullWhen(false)] out String?            ErrorResponse,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ResetRequest = new ResetRequest(
 
-                                       SourceRouting,
+                                   Destination,
                                    ResetType,
                                    EVSEId,
 

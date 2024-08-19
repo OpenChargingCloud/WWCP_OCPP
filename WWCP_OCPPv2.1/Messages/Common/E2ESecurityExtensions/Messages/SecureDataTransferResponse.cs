@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="SourceRouting">The destination identification of the message within the overlay network.</param>
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
         /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           Result?                    Result                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
-                                          SourceRouting?             SourceRouting          = null,
+                                          SourceRouting?             Destination            = null,
                                           NetworkPath?               NetworkPath            = null,
 
                                           IEnumerable<KeyPair>?      SignKeys               = null,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new SecureDataTransferRequest and encrypt the given plaintext
         /// using the given cryptographic key.
         /// </summary>
-        /// <param name="SourceRouting"></param>
+        /// <param name="Destination"></param>
         /// <param name="Parameter"></param>
         /// <param name="KeyId"></param>
         /// <param name="Key"></param>
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static SecureDataTransferResponse Parse(SecureDataTransferRequest                                Request,
                                                        Byte[]                                                   SecureData,
-                                                       SourceRouting                                            SourceRouting,
+                                                       SourceRouting                                        Destination,
                                                        NetworkPath                                              NetworkPath,
                                                        DateTime?                                                ResponseTimestamp                        = null,
                                                        CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null,
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (TryParse(Request,
                          SecureData,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var secureDataTransferResponse,
                          out var errorResponse,
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
         public static Boolean TryParse(SecureDataTransferRequest                                Request,
                                        Byte[]                                                   SecureData,
-                                       SourceRouting                                            SourceRouting,
+                                       SourceRouting                                        Destination,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SecureDataTransferResponse?     SecureDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -437,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       null,
                                                       ResponseTimestamp,
 
-                                                          SourceRouting,
+                                                      Destination,
                                                       NetworkPath,
 
                                                       null,
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               JObject?                   ErrorDetails        = null,
                                                               DateTime?                  ResponseTimestamp   = null,
 
-                                                              SourceRouting?         SourceRouting       = null,
+                                                              SourceRouting?             Destination         = null,
                                                               NetworkPath?               NetworkPath         = null,
 
                                                               IEnumerable<KeyPair>?      SignKeys            = null,
@@ -562,7 +562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,

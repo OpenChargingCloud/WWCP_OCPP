@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new ClearCache request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static ClearCacheRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              SourceRouting                                    SourceRouting,
+                                              SourceRouting                                Destination,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var clearCacheRequest,
                          out var errorResponse,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       SourceRouting                                    SourceRouting,
+                                       SourceRouting                                Destination,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out ClearCacheRequest?      ClearCacheRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ClearCacheRequest = new ClearCacheRequest(
 
-                                            SourceRouting,
+                                        Destination,
 
                                         null,
                                         null,

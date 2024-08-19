@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SendFile(DateTime              RequestTimestamp,
                              IWebSocketConnection  WebSocketConnection,
-                             SourceRouting         SourceRouting,
+                             SourceRouting     Destination,
                              NetworkPath           NetworkPath,
                              EventTracking_Id      EventTrackingId,
                              Request_Id            RequestId,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SendFileRequest.TryParse(BinaryRequest,
                                              RequestId,
-                                             SourceRouting,
+                                         Destination,
                                              NetworkPath,
                                              out var request,
                                              out var errorResponse,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SendFileResponse(SendFileRequest       Request,
                                      JObject               ResponseJSON,
                                      IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting         SourceRouting,
+                                     SourceRouting     Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
                                      Request_Id            RequestId,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SendFileResponse.TryParse(Request,
                                               ResponseJSON,
-                                              SourceRouting,
+                                          Destination,
                                               NetworkPath,
                                               out response,
                                               out var errorResponse,

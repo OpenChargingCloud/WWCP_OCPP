@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a GetBaseReport request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the GetBaseReport request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom GetBaseReport requests.</param>
         public static GetBaseReportRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 SourceRouting                                       SourceRouting,
+                                                 SourceRouting                                   Destination,
                                                  NetworkPath                                         NetworkPath,
                                                  DateTime?                                           RequestTimestamp                   = null,
                                                  TimeSpan?                                           RequestTimeout                     = null,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var getBaseReportRequest,
                          out var errorResponse,
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetBaseReportRequest">The parsed GetBaseReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom GetBaseReport requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       SourceRouting                                       SourceRouting,
+                                       SourceRouting                                   Destination,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out GetBaseReportRequest?      GetBaseReportRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetBaseReportRequest = new GetBaseReportRequest(
 
-                                               SourceRouting,
+                                           Destination,
                                            GetBaseReportRequestId,
                                            ReportBase,
 

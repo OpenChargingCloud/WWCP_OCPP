@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new DataTransfer request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific message data (a JSON token).</param>
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                SourceRouting                                      SourceRouting,
+                                                SourceRouting                                  Destination,
                                                 NetworkPath                                        NetworkPath,
                                                 DateTime?                                          RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var dataTransferRequest,
                          out var errorResponse,
@@ -267,14 +267,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DataTransferRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DataTransfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       SourceRouting                                      SourceRouting,
+                                       SourceRouting                                  Destination,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DataTransferRequest = new DataTransferRequest(
 
-                                              SourceRouting,
+                                          Destination,
                                           VendorId,
                                           MessageId,
                                           Data,

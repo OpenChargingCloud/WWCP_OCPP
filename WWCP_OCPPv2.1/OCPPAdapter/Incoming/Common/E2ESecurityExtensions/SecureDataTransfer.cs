@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SecureDataTransfer(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
-                                       SourceRouting         SourceRouting,
+                                       SourceRouting     Destination,
                                        NetworkPath           NetworkPath,
                                        EventTracking_Id      EventTrackingId,
                                        Request_Id            RequestId,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SecureDataTransferRequest.TryParse(BinaryRequest,
                                                        RequestId,
-                                                       SourceRouting,
+                                                   Destination,
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SecureDataTransferResponse(SecureDataTransferRequest  Request,
                                                Byte[]                     ResponseBytes,
                                                IWebSocketConnection       WebSocketConnection,
-                                               SourceRouting              SourceRouting,
+                                               SourceRouting          Destination,
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
                                                Request_Id                 RequestId,
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (SecureDataTransferResponse.TryParse(Request,
                                                         ResponseBytes,
-                                                        SourceRouting,
+                                                    Destination,
                                                         NetworkPath,
                                                         out response,
                                                         out var errorResponse,

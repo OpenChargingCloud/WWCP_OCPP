@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a ReservationStatusUpdate request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="ReservationId">The unique identification of the transaction to update.</param>
         /// <param name="ReservationUpdateStatus">The updated reservation status.</param>
         /// 
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom ReservationStatusUpdate requests.</param>
         public static ReservationStatusUpdateRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           SourceRouting                                                 SourceRouting,
+                                                           SourceRouting                                             Destination,
                                                            NetworkPath                                                   NetworkPath,
                                                            DateTime?                                                     RequestTimestamp                             = null,
                                                            TimeSpan?                                                     RequestTimeout                               = null,
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var reservationStatusUpdateRequest,
                          out var errorResponse,
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ReservationStatusUpdateRequest">The parsed ReservationStatusUpdate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom ReservationStatusUpdate requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       SourceRouting                                                 SourceRouting,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out ReservationStatusUpdateRequest?      ReservationStatusUpdateRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 ReservationStatusUpdateRequest = new ReservationStatusUpdateRequest(
 
-                                                         SourceRouting,
+                                                     Destination,
                                                      ReservationId,
                                                      ReservationUpdateStatus,
 

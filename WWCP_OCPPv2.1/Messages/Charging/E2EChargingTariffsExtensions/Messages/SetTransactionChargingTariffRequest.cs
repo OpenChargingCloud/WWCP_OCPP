@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set transaction charging tariff request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="TransactionId">An transaction identification for which the applicable charging tariff is requested.</param>
         /// <param name="ChargingTariff">A charging tariff.</param>
         /// 
@@ -151,12 +151,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
         public static SetTransactionChargingTariffRequest Parse(JObject                                                            JSON,
                                                                 Request_Id                                                         RequestId,
-                                                                SourceRouting                                                      SourceRouting,
+                                                                SourceRouting                                                  Destination,
                                                                 NetworkPath                                                        NetworkPath,
                                                                 CustomJObjectParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser   = null)
         {
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var setTransactionChargingTariffRequest,
                          out var errorResponse,
@@ -190,20 +190,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        Request_Id                                RequestId,
-                                       SourceRouting                             SourceRouting,
+                                       SourceRouting                         Destination,
                                        NetworkPath                               NetworkPath,
                                        out SetTransactionChargingTariffRequest?  SetTransactionChargingTariffRequest,
                                        out String?                               ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                            SourceRouting,
+                        Destination,
                         NetworkPath,
                         out SetTransactionChargingTariffRequest,
                         out ErrorResponse,
@@ -215,14 +215,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
         public static Boolean TryParse(JObject                                                            JSON,
                                        Request_Id                                                         RequestId,
-                                       SourceRouting                                                      SourceRouting,
+                                       SourceRouting                                                  Destination,
                                        NetworkPath                                                        NetworkPath,
                                        out SetTransactionChargingTariffRequest?                           SetTransactionChargingTariffRequest,
                                        out String?                                                        ErrorResponse,
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetTransactionChargingTariffRequest = new SetTransactionChargingTariffRequest(
 
-                                                              SourceRouting,
+                                                          Destination,
                                                           TransactionId,
                                                           ChargingTariff,
 

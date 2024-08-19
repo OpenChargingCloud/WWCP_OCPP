@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get periodic event stream request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -129,12 +129,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetPeriodicEventStreamRequestParser">A delegate to parse custom GetPeriodicEventStreams requests.</param>
         public static GetPeriodicEventStreamsRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           SourceRouting                                                 SourceRouting,
+                                                           SourceRouting                                             Destination,
                                                            NetworkPath                                                   NetworkPath,
                                                            CustomJObjectParserDelegate<GetPeriodicEventStreamsRequest>?  CustomGetPeriodicEventStreamRequestParser   = null)
         {
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var getPeriodicEventStreamsRequest,
                          out var errorResponse,
@@ -168,20 +168,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetPeriodicEventStreamRequest">The parsed GetPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        Request_Id                           RequestId,
-                                       SourceRouting                        SourceRouting,
+                                       SourceRouting                    Destination,
                                        NetworkPath                          NetworkPath,
                                        out GetPeriodicEventStreamsRequest?  GetPeriodicEventStreamRequest,
                                        out String?                          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                            SourceRouting,
+                        Destination,
                         NetworkPath,
                         out GetPeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -193,14 +193,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetPeriodicEventStreamRequest">The parsed GetPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetPeriodicEventStreamRequestParser">A delegate to parse custom GetPeriodicEventStreams requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       SourceRouting                                                 SourceRouting,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                                   NetworkPath,
                                        out GetPeriodicEventStreamsRequest?                           GetPeriodicEventStreamRequest,
                                        out String?                                                   ErrorResponse,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetPeriodicEventStreamRequest = new GetPeriodicEventStreamsRequest(
 
-                                                        SourceRouting,
+                                                    Destination,
 
                                                     null,
                                                     null,

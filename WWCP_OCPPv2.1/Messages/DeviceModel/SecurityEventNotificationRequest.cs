@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new security event notification request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="Type">Type of the security event.</param>
         /// <param name="Timestamp">The timestamp of the security event.</param>
         /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static SecurityEventNotificationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             SourceRouting                                                   SourceRouting,
+                                                             SourceRouting                                               Destination,
                                                              NetworkPath                                                     NetworkPath,
                                                              DateTime?                                                       RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var securityEventNotificationRequest,
                          out var errorResponse,
@@ -247,14 +247,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SecurityEventNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SecurityEventNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a security event notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SecurityEventNotificationRequest">The parsed security event notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       SourceRouting                                                   SourceRouting,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out SecurityEventNotificationRequest?      SecurityEventNotificationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
 
-                                                           SourceRouting,
+                                                       Destination,
                                                        Type,
                                                        Timestamp,
                                                        TechInfo,

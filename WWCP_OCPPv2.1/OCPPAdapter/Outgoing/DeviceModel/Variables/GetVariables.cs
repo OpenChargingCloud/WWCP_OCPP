@@ -194,14 +194,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          )
                                                      ),
 
-                                                     sendMessageResult => LogEvent(
+                                                     sentMessageResult => LogEvent(
                                                          OnGetVariablesRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
-                                                             sendMessageResult.Connection,
+                                                             sentMessageResult.Connection,
                                                              Request,
-                                                             sendMessageResult.Result,
+                                                             sentMessageResult.Result,
                                                              Request.CancellationToken
                                                          )
                                                      )

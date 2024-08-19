@@ -48,10 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    out String?            ErrorResponse,
                                    params SignInfo[]      SignInfos)
 
-            => SignaturePolicy.SignMessage(SignableMessage,
-                                           JSONMessage,
-                                           out ErrorResponse,
-                                           SignInfos);
+            => SignaturePolicy.SignMessage(
+                   SignableMessage,
+                   JSONMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
         #endregion
 
@@ -61,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Sign the given binary OCPP message.
         /// </summary>
         /// <param name="SignableMessage">A signable message.</param>
-        /// <param name="JSONMessage">The binary representation of the signable message.</param>
+        /// <param name="BinaryMessage">The binary representation of the signable message.</param>
         /// <param name="SignaturePolicy">A signature policy.</param>
         /// <param name="ErrorResponse">The optional error response-</param>
         /// <param name="SignInfos">An optional enumeration of signature information.</param>
@@ -71,10 +73,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    out String?            ErrorResponse,
                                    params SignInfo[]      SignInfos)
 
-            => SignaturePolicy.SignMessage(SignableMessage,
-                                           BinaryMessage,
-                                           out ErrorResponse,
-                                           SignInfos);
+            => SignaturePolicy.SignMessage(
+                   SignableMessage,
+                   BinaryMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
         #endregion
 

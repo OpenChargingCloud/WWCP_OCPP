@@ -470,7 +470,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 );
 
                 await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
-                          newJSONRequestMessage
+                          newJSONRequestMessage,
+                          forwardingDecision.SentMessageLogger
                       );
 
             }
@@ -736,17 +737,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var newJSONSendMessage = JSONSendMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
-                //expectedResponses.TryAdd(
-                //    newJSONRequestMessage.MessageId,
-                //    new ResponseInfo(
-                //        newJSONRequestMessage.MessageId,
-                //        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                //        newJSONRequestMessage.NetworkPath.Source,
-                //        newJSONRequestMessage.RequestTimeout
-                //    )
-                //);
+                if (forwardingDecision.NewDestination is not null)
+                    newJSONSendMessage = newJSONSendMessage.ChangeNetworking(forwardingDecision.NewDestination);
 
-                await parentNetworkingNode.OCPP.OUT.SendJSONSendMessage(newJSONSendMessage);
+                await parentNetworkingNode.OCPP.OUT.SendJSONSendMessage(
+                          newJSONSendMessage,
+                          forwardingDecision.SentMessageLogger
+                      );
 
             }
 
@@ -758,31 +755,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 var newJSONSendMessage = forwardingDecision.NewJSONRequest is null
-                                                ? JSONSendMessage.AppendToNetworkPath(parentNetworkingNode.Id)
-                                                : new OCPP_JSONSendMessage(
-                                                      JSONSendMessage.MessageTimestamp,
-                                                      JSONSendMessage.EventTrackingId,
-                                                      JSONSendMessage.NetworkingMode,
-                                                      forwardingDecision.NewDestination ?? JSONSendMessage.Destination,
-                                                      JSONSendMessage.NetworkPath.Append(parentNetworkingNode.Id),
-                                                      JSONSendMessage.MessageId,
-                                                      forwardingDecision.NewAction        ?? JSONSendMessage.Action,
-                                                      forwardingDecision.NewJSONRequest, // <-- !!!
-                                                      JSONSendMessage.ErrorMessage,
-                                                      JSONSendMessage.CancellationToken
-                                                  );
+                                             ? JSONSendMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                             : new OCPP_JSONSendMessage(
+                                                   JSONSendMessage.MessageTimestamp,
+                                                   JSONSendMessage.EventTrackingId,
+                                                   JSONSendMessage.NetworkingMode,
+                                                   forwardingDecision.NewDestination ?? JSONSendMessage.Destination,
+                                                   JSONSendMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                   JSONSendMessage.MessageId,
+                                                   forwardingDecision.NewAction        ?? JSONSendMessage.Action,
+                                                   forwardingDecision.NewJSONRequest, // <-- !!!
+                                                   //JSONSendMessage.SendTimeout,
+                                                   JSONSendMessage.ErrorMessage,
+                                                   JSONSendMessage.CancellationToken
+                                               );
 
-                //expectedResponses.TryAdd(
-                //    newJSONSendMessage.MessageId,
-                //    new ResponseInfo(
-                //        newJSONSendMessage.MessageId,
-                //        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                //        newJSONSendMessage.NetworkPath.Source,
-                //        newJSONSendMessage.RequestTimeout
-                //    )
-                //);
-
-                await parentNetworkingNode.OCPP.OUT.SendJSONSendMessage(newJSONSendMessage);
+                await parentNetworkingNode.OCPP.OUT.SendJSONSendMessage(
+                          newJSONSendMessage,
+                          forwardingDecision.SentMessageLogger
+                      );
 
             }
 
@@ -1283,17 +1274,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var newBinarySendMessage = BinarySendMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
-                //expectedResponses.TryAdd(
-                //    newbinaryRequestMessage.MessageId,
-                //    new ResponseInfo(
-                //        newbinaryRequestMessage.MessageId,
-                //        forwardingDecision.   RequestContext ?? binaryLDContext.Parse("willnothappen!"),
-                //        newbinaryRequestMessage.NetworkPath.Source,
-                //        newbinaryRequestMessage.RequestTimeout
-                //    )
-                //);
+                if (forwardingDecision.NewDestination is not null)
+                    newBinarySendMessage = newBinarySendMessage.ChangeNetworking(forwardingDecision.NewDestination);
 
-                await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(newBinarySendMessage);
+                await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(
+                          newBinarySendMessage,
+                          forwardingDecision.SentMessageLogger
+                      );
 
             }
 
@@ -1304,32 +1291,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
 
-                var newBinarySendMessage = forwardingDecision.NewBinaryRequest is null
-                                                ? BinarySendMessage.AppendToNetworkPath(parentNetworkingNode.Id)
-                                                : new OCPP_BinarySendMessage(
-                                                      BinarySendMessage.MessageTimestamp,
-                                                      BinarySendMessage.EventTrackingId,
-                                                      BinarySendMessage.NetworkingMode,
-                                                      forwardingDecision.NewDestination ?? BinarySendMessage.Destination,
-                                                      BinarySendMessage.NetworkPath.Append(parentNetworkingNode.Id),
-                                                      BinarySendMessage.MessageId,
-                                                      forwardingDecision.NewAction ?? BinarySendMessage.Action,
-                                                      forwardingDecision.NewBinaryRequest, // <-- !!!
-                                                      BinarySendMessage.ErrorMessage,
-                                                      BinarySendMessage.CancellationToken
-                                                  );
+                var newBinarySendMessage = forwardingDecision.NewJSONRequest is null
+                                               ? BinarySendMessage.AppendToNetworkPath(parentNetworkingNode.Id)
+                                               : new OCPP_BinarySendMessage(
+                                                     BinarySendMessage.MessageTimestamp,
+                                                     BinarySendMessage.EventTrackingId,
+                                                     BinarySendMessage.NetworkingMode,
+                                                     forwardingDecision.NewDestination ?? BinarySendMessage.Destination,
+                                                     BinarySendMessage.NetworkPath.Append(parentNetworkingNode.Id),
+                                                     BinarySendMessage.MessageId,
+                                                     forwardingDecision.NewAction        ?? BinarySendMessage.Action,
+                                                     forwardingDecision.NewBinaryRequest, // <-- !!!
+                                                     //BinarySendMessage.SendTimeout,
+                                                     BinarySendMessage.ErrorMessage,
+                                                     BinarySendMessage.CancellationToken
+                                                 );
 
-                //expectedResponses.TryAdd(
-                //    newBinarySendMessage.MessageId,
-                //    new ResponseInfo(
-                //        newBinarySendMessage.MessageId,
-                //        forwardingDecision.   RequestContext ?? binaryLDContext.Parse("willnothappen!"),
-                //        newBinarySendMessage.NetworkPath.Source,
-                //        newBinarySendMessage.RequestTimeout
-                //    )
-                //);
-
-                await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(newBinarySendMessage);
+                await parentNetworkingNode.OCPP.OUT.SendBinarySendMessage(
+                          newBinarySendMessage,
+                          forwardingDecision.SentMessageLogger
+                      );
 
             }
 

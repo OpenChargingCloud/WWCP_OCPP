@@ -73,36 +73,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        public static OCPP_Response FromJSONResponse   (OCPP_JSONResponseMessage        JSONResponseMessage)
-
-            => new (JSONResponseMessage,
-                    null,
-                    null,
-                    null);
-
-        public static OCPP_Response FromJSONError      (OCPP_JSONRequestErrorMessage    JSONRequestErrorMessage)
-
-            => new (null,
-                    JSONRequestErrorMessage,
-                    null,
-                    null);
-
-        public static OCPP_Response FromBinaryResponse (OCPP_BinaryResponseMessage      BinaryResponseMessage)
-
-            => new (null,
-                    null,
-                    BinaryResponseMessage,
-                    null);
-
-        public static OCPP_Response FromBinaryError    (OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage)
-
-            => new (null,
-                    null,
-                    null,
-                    BinaryRequestErrorMessage);
-
-
-
         #region JSONResponse(...)
 
         public static OCPP_Response JSONResponse(EventTracking_Id                EventTrackingId,
@@ -221,6 +191,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #endregion
 
+
+        #region (static) Empty(...)
+
+        public static OCPP_Response Empty()
+
+            => new (null,
+                    null,
+                    null,
+                    null);
+
+        #endregion
 
         #region (static) CouldNotParse(...)
 

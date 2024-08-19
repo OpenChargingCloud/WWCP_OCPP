@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              Result?                            Result                = null,
                                              DateTime?                          ResponseTimestamp     = null,
 
-                                             SourceRouting?                     SourceRouting         = null,
+                                             SourceRouting?                     Destination           = null,
                                              NetworkPath?                       NetworkPath           = null,
 
                                              IEnumerable<KeyPair>?              SignKeys              = null,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetUserChargingTariffResponseParser">A delegate to parse custom set user charging tariff responses.</param>
         public static SetUserChargingTariffResponse Parse(CSMS.SetUserChargingTariffRequest                            Request,
                                                           JObject                                                      JSON,
-                                                          SourceRouting                                                SourceRouting,
+                                                          SourceRouting                                            Destination,
                                                           NetworkPath                                                  NetworkPath,
                                                           DateTime?                                                    ResponseTimestamp                           = null,
                                                           CustomJObjectParserDelegate<SetUserChargingTariffResponse>?  CustomSetUserChargingTariffResponseParser   = null,
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(Request,
                          JSON,
-                         SourceRouting,
+                     Destination,
                          NetworkPath,
                          out var setUserChargingTariffResponse,
                          out var errorResponse,
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetUserChargingTariffResponseParser">A delegate to parse custom set user charging tariff responses.</param>
         public static Boolean TryParse(CSMS.SetUserChargingTariffRequest                            Request,
                                        JObject                                                      JSON,
-                                       SourceRouting                                                SourceRouting,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                                  NetworkPath,
                                        out SetUserChargingTariffResponse?                           SetUserChargingTariffResponse,
                                        out String?                                                  ErrorResponse,
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     null,
                                                     ResponseTimestamp,
 
-                                                    SourceRouting,
+                                                Destination,
                                                     NetworkPath,
 
                                                     null,
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                  JObject?                           ErrorDetails        = null,
                                                                  DateTime?                          ResponseTimestamp   = null,
 
-                                                                 SourceRouting?                     SourceRouting       = null,
+                                                                 SourceRouting?                     Destination         = null,
                                                                  NetworkPath?                       NetworkPath         = null,
 
                                                                  IEnumerable<KeyPair>?              SignKeys            = null,
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ),
                    ResponseTimestamp,
 
-                   SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,

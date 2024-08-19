@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new notify periodic event stream request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="Id">The unique identification of the periodic event stream.</param>
         /// <param name="StreamDataElements">An enumeration of periodic event stream data elements.</param>
         /// 
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyPeriodicEventStreamRequest(SourceRouting                   SourceRouting,
+        public NotifyPeriodicEventStreamRequest(SourceRouting                   Destination,
                                                 PeriodicEventStream_Id          Id,
                                                 IEnumerable<StreamDataElement>  StreamDataElements,
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 SerializationFormats?           SerializationFormat   = null,
                                                 CancellationToken               CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(NotifyPeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
@@ -158,12 +158,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyPeriodicEventStreamRequestParser">A delegate to parse custom NotifyPeriodicEventStream requests.</param>
         public static NotifyPeriodicEventStreamRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             SourceRouting                                                   SourceRouting,
+                                                             SourceRouting                                               Destination,
                                                              NetworkPath                                                     NetworkPath,
                                                              CustomJObjectParserDelegate<NotifyPeriodicEventStreamRequest>?  CustomNotifyPeriodicEventStreamRequestParser   = null)
         {
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var notifyPeriodicEventStreamRequest,
                          out var errorResponse,
@@ -197,20 +197,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPeriodicEventStreamRequest">The parsed NotifyPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        Request_Id                             RequestId,
-                                       SourceRouting                          SourceRouting,
+                                       SourceRouting                      Destination,
                                        NetworkPath                            NetworkPath,
                                        out NotifyPeriodicEventStreamRequest?  NotifyPeriodicEventStreamRequest,
                                        out String?                            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                            SourceRouting,
+                        Destination,
                         NetworkPath,
                         out NotifyPeriodicEventStreamRequest,
                         out ErrorResponse,
@@ -222,14 +222,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPeriodicEventStreamRequest">The parsed NotifyPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyPeriodicEventStreamRequestParser">A delegate to parse custom NotifyPeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       SourceRouting                                                   SourceRouting,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                     NetworkPath,
                                        out NotifyPeriodicEventStreamRequest?                           NotifyPeriodicEventStreamRequest,
                                        out String?                                                     ErrorResponse,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyPeriodicEventStreamRequest = new NotifyPeriodicEventStreamRequest(
 
-                                                           SourceRouting,
+                                                       Destination,
                                                        Id,
                                                        StreamDataElements,
 

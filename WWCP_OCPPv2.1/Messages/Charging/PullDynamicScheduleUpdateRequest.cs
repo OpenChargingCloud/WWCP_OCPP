@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a pull dynamic schedule update request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile for which an update is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPullDynamicScheduleUpdateRequestParser">A delegate to parse custom pull dynamic schedule update requests.</param>
         public static PullDynamicScheduleUpdateRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             SourceRouting                                                   SourceRouting,
+                                                             SourceRouting                                               Destination,
                                                              NetworkPath                                                     NetworkPath,
                                                              DateTime?                                                       RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var pullDynamicScheduleUpdateRequest,
                          out var errorResponse,
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PullDynamicScheduleUpdateRequest">The parsed pull dynamic schedule update request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPullDynamicScheduleUpdateRequestParser">A delegate to parse custom pull dynamic schedule update requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       SourceRouting                                                   SourceRouting,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out PullDynamicScheduleUpdateRequest?      PullDynamicScheduleUpdateRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 PullDynamicScheduleUpdateRequest = new PullDynamicScheduleUpdateRequest(
 
-                                                           SourceRouting,
+                                                       Destination,
                                                        ChargingProfileId,
 
                                                        null,

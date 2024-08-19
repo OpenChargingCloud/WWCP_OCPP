@@ -391,20 +391,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region OnDataTransfer
 
-            OCPP.IN.OnDataTransfer += async (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
+            OCPP.IN.OnDataTransfer += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       cancellationToken) => {
 
-                // VendorId
-                // MessageId
-                // Data
-
-                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
-                                                        request.MessageId + ", " +
-                                                        request.Data);
-
+                DebugX.Log($"Gateway '{Id}': Incoming DataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
                 var responseData = request.Data;
 
@@ -467,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                       );
 
 
-                return response;
+                return Task.FromResult(response);
 
             };
 
@@ -507,6 +500,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                 else
                     return Task.FromResult(
                                ForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request)
+                           );
+
+            };
+
+            #endregion
+
+            #region OnMessageTransfer
+
+            OCPP.IN.OnMessageTransferMessageReceived += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                DebugX.Log($"Gateway '{Id}': Incoming MessageTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                    property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
+
+            OCPP.FORWARD.OnMessageTransferMessageFilter += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                if (request.Data?.ToString() == "Please REJECT!")
+                {
+
+                    //var response = new DataTransferResponse(
+                    //                   request,
+                    //                   DataTransferStatus.Rejected,
+                    //                   Result: Result.Filtered("This message is not allowed!")
+                    //               );
+
+                    return Task.FromResult(
+                               new ForwardingDecision<MessageTransferMessage>(
+                                   request,
+                                   ForwardingDecisions.REJECT,
+                                   //response,
+                                   //response.ToJSON(
+                                   //    OCPP.CustomDataTransferResponseSerializer,
+                                   //    OCPP.CustomStatusInfoSerializer,
+                                   //    OCPP.CustomSignatureSerializer,
+                                   //    OCPP.CustomCustomDataSerializer
+                                   //),
+                                   RejectMessage: "The message was REJECTED!"
+                               )
+                           );
+
+                }
+
+                else
+                    return Task.FromResult(
+                               ForwardingDecision<MessageTransferMessage>.FORWARD(request)
                            );
 
             };
@@ -589,6 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                 );
 
             #endregion
+
 
 
             // CS -> CSMS

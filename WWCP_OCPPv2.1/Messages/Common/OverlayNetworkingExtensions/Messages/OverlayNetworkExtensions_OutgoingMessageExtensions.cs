@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //        => NetworkingNode.ocppOUT.NotifyNetworkTopology(
         //               new OCPP.NN.NotifyNetworkTopologyRequest(
 
-        //                       SourceRouting,
+        //                   Destination,
         //                   NetworkTopologyInformation,
 
         //                   SignKeys,

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -35,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region TransferData (DestinationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
-        /// Transfer the given data to the given charging station.
+        /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
@@ -43,12 +44,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// 
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<DataTransferResponse>
 
@@ -88,6 +91,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            RequestId        ?? NetworkingNode.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(NetworkingNode.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendMessage  (DestinationId, VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Send the given vendor-specific message.
+        /// </summary>
+        /// <param name="Destination">The networking node identification.</param>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification field.</param>
+        /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// 
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<SentMessageResult>
+
+            SendMessage(this INetworkingNode     NetworkingNode,
+                        SourceRouting            Destination,
+                        Vendor_Id                VendorId,
+                        Message_Id?              MessageId             = null,
+                        JToken?                  Data                  = null,
+
+                        IEnumerable<KeyPair>?    SignKeys              = null,
+                        IEnumerable<SignInfo>?   SignInfos             = null,
+                        IEnumerable<Signature>?  Signatures            = null,
+
+                        CustomData?              CustomData            = null,
+
+                        Request_Id?              RequestId             = null,
+                        DateTime?                RequestTimestamp      = null,
+                        EventTracking_Id?        EventTrackingId       = null,
+                        SerializationFormats?    SerializationFormat   = null,
+                        CancellationToken        CancellationToken     = default)
+
+
+                => NetworkingNode.OCPP.OUT.MessageTransfer(
+                       new MessageTransferMessage(
+                           Destination,
+                           VendorId,
+                           MessageId,
+                           Data,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? NetworkingNode.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(NetworkingNode.Id),
                            SerializationFormat,

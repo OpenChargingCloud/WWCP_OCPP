@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new SendFile request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SendFileRequest(SourceRouting            SourceRouting,
+        public SendFileRequest(SourceRouting            Destination,
                                FilePath                 FileName,
                                Byte[]                   FileContent,
                                ContentType?             FileContentType       = null,
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                SerializationFormats?    SerializationFormat   = null,
                                CancellationToken        CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(SendFileRequest)[..^7],
 
                    SignKeys,
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomSendFileRequestParser">An optional delegate to parse custom SendFileRequest requests.</param>
         public static SendFileRequest Parse(Byte[]                                        Binary,
                                             Request_Id                                    RequestId,
-                                            SourceRouting                                 SourceRouting,
+                                            SourceRouting                             Destination,
                                             NetworkPath                                   NetworkPath,
                                             DateTime?                                     RequestTimestamp              = null,
                                             TimeSpan?                                     RequestTimeout                = null,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(Binary,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var sendFileRequest,
                          out var errorResponse,
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomSendFileRequestParser">An optional delegate to parse custom SendFileRequest requests.</param>
         public static Boolean TryParse(Byte[]                                        Binary,
                                        Request_Id                                    RequestId,
-                                       SourceRouting                                 SourceRouting,
+                                       SourceRouting                             Destination,
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out SendFileRequest?     SendFileRequest,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 SendFileRequest = new SendFileRequest(
 
-                                          SourceRouting,
+                                      Destination,
                                       fileName.Value,
                                       fileContent,
                                       fileContentType,

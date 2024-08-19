@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Send requests/responses...
 
-        #region SendJSONRequest          (JSONRequestMessage, SentAction = null)
+        #region SendJSONRequest          (JSONRequestMessage,   SentAction = null)
 
         /// <summary>
         /// Send (and forget) the given JSON request message.
@@ -211,22 +211,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              Action<SentMessageResult>?  SentAction   = null)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
-
-            SentAction?.Invoke(sendMessageResult);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage, SentAction);
 
             await NotifyJSONRequestMessageSent(
                       JSONRequestMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
         #endregion
 
-        #region SendJSONRequestAndWait   (JSONRequestMessage, SentAction = null)
+        #region SendJSONRequestAndWait   (JSONRequestMessage,   SentAction = null)
 
         /// <summary>
         /// Send the given JSON request message and wait for the result/timeout.
@@ -238,13 +236,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var sendRequestState = await parentNetworkingNode.OCPP.SendJSONRequestAndWait(JSONRequestMessage,
-                                                                                          async sendMessageResult => {
+                                                                                          async sentMessageResult => {
 
-                SentAction?.Invoke(sendMessageResult);
+                SentAction?.Invoke(sentMessageResult);
 
                 await NotifyJSONRequestMessageSent(
                           JSONRequestMessage,
-                          sendMessageResult
+                          sentMessageResult
                       );
 
             });
@@ -260,14 +258,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
 
             await NotifyJSONResponseMessageSent(
                       JSONResponseMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -278,14 +276,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONRequestError(JSONRequestErrorMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONRequestError(JSONRequestErrorMessage);
 
             await NotifyJSONRequestErrorSent(
                       JSONRequestErrorMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -296,36 +294,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SentMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONResponseError(JSONResponseErrorMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONResponseError(JSONResponseErrorMessage);
 
             await NotifyJSONResponseErrorSent(
                       JSONResponseErrorMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
         #endregion
 
-        #region SendJSONSendMessage      (JSONSendMessage)
+        #region SendJSONSendMessage      (JSONSendMessage,      SentAction = null)
 
         /// <summary>
         /// Send (and forget) the given JSON send message.
         /// </summary>
         /// <param name="JSONSendMessage">A JSON send message.</param>
-        public async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage JSONSendMessage)
+        /// <param name="SentAction">An action called after trying to send the request.</param>
+        public async Task<SentMessageResult> SendJSONSendMessage(OCPP_JSONSendMessage        JSONSendMessage,
+                                                                 Action<SentMessageResult>?  SentAction   = null)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendJSONSendMessage(JSONSendMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONSendMessage(JSONSendMessage, SentAction);
 
             await NotifyJSONSendMessageSent(
                       JSONSendMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -343,16 +343,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                Action<SentMessageResult>?  SentAction   = null)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
-
-            SentAction?.Invoke(sendMessageResult);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage, SentAction);
 
             await NotifyBinaryRequestMessageSent(
                       BinaryRequestMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -370,13 +368,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var sendRequestState = await parentNetworkingNode.OCPP.SendBinaryRequestAndWait(BinaryRequestMessage,
-                                                                                            async sendMessageResult => {
+                                                                                            async sentMessageResult => {
 
-                SentAction?.Invoke(sendMessageResult);
+                SentAction?.Invoke(sentMessageResult);
 
                 await NotifyBinaryRequestMessageSent(
                           BinaryRequestMessage,
-                          sendMessageResult
+                          sentMessageResult
                       );
 
             });
@@ -392,14 +390,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage);
 
             await NotifyBinaryResponseMessageSent(
                       BinaryResponseMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -410,14 +408,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequestError(BinaryRequestErrorMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             await NotifyBinaryRequestErrorSent(
                       BinaryRequestErrorMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
@@ -428,36 +426,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SentMessageResult> SendBinaryResponseError(OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponseError(BinaryResponseErrorMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             await NotifyBinaryResponseErrorSent(
                       BinaryResponseErrorMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 
         #endregion
 
-        #region SendBinarySendMessage    (BinarySendMessage)
+        #region SendBinarySendMessage    (BinarySendMessage,    SentAction = null)
 
         /// <summary>
         /// Send (and forget) the given binary send message.
         /// </summary>
         /// <param name="BinarySendMessage">A binary send message.</param>
-        public async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage BinarySendMessage)
+        /// <param name="SentAction">An action called after trying to send the request.</param>
+        public async Task<SentMessageResult> SendBinarySendMessage(OCPP_BinarySendMessage      BinarySendMessage,
+                                                                   Action<SentMessageResult>?  SentAction   = null)
         {
 
-            var sendMessageResult = await parentNetworkingNode.OCPP.SendBinarySendMessage(BinarySendMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinarySendMessage(BinarySendMessage, SentAction);
 
             await NotifyBinarySendMessageSent(
                       BinarySendMessage,
-                      sendMessageResult
+                      sentMessageResult
                   );
 
-            return sendMessageResult;
+            return sentMessageResult;
 
         }
 

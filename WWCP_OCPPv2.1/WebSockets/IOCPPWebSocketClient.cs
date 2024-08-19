@@ -29,21 +29,40 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
-    public delegate Task OnWebSocketClientJSONMessageDelegate  (DateTime                    Timestamp,
-                                                                OCPPWebSocketClient         Client,
-                                                                WebSocketClientConnection   Connection,
-                                                                EventTracking_Id            EventTrackingId,
-                                                                DateTime                    MessageTimestamp,
-                                                                JArray                      Message,
-                                                                CancellationToken           CancellationToken);
+    public delegate Task OnWebSocketClientJSONMessageSentDelegate       (DateTime                    Timestamp,
+                                                                         OCPPWebSocketClient         Client,
+                                                                         WebSocketClientConnection   Connection,
+                                                                         EventTracking_Id            EventTrackingId,
+                                                                         DateTime                    MessageTimestamp,
+                                                                         JArray                      Message,
+                                                                         SentStatus                  SentStatus,
+                                                                         CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketClientBinaryMessageDelegate(DateTime                    Timestamp,
-                                                                OCPPWebSocketClient         Client,
-                                                                WebSocketClientConnection   Connection,
-                                                                EventTracking_Id            EventTrackingId,
-                                                                DateTime                    MessageTimestamp,
-                                                                Byte[]                      MessageMessage,
-                                                                CancellationToken           CancellationToken);
+    public delegate Task OnWebSocketClientJSONMessageReceivedDelegate   (DateTime                    Timestamp,
+                                                                         OCPPWebSocketClient         Client,
+                                                                         WebSocketClientConnection   Connection,
+                                                                         EventTracking_Id            EventTrackingId,
+                                                                         DateTime                    MessageTimestamp,
+                                                                         JArray                      Message,
+                                                                         CancellationToken           CancellationToken);
+
+
+    public delegate Task OnWebSocketClientBinaryMessageSentDelegate     (DateTime                    Timestamp,
+                                                                         OCPPWebSocketClient         Client,
+                                                                         WebSocketClientConnection   Connection,
+                                                                         EventTracking_Id            EventTrackingId,
+                                                                         DateTime                    MessageTimestamp,
+                                                                         Byte[]                      MessageMessage,
+                                                                         SentStatus                  SentStatus,
+                                                                         CancellationToken           CancellationToken);
+
+    public delegate Task OnWebSocketClientBinaryMessageReceivedDelegate (DateTime                    Timestamp,
+                                                                         OCPPWebSocketClient         Client,
+                                                                         WebSocketClientConnection   Connection,
+                                                                         EventTracking_Id            EventTrackingId,
+                                                                         DateTime                    MessageTimestamp,
+                                                                         Byte[]                      MessageMessage,
+                                                                         CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,23 +78,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// An event sent whenever a JSON message was sent.
         /// </summary>
-        event     OnWebSocketClientJSONMessageDelegate?     OnJSONMessageSent;
+        event     OnWebSocketClientJSONMessageSentDelegate?         OnJSONMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON message was received.
         /// </summary>
-        event     OnWebSocketClientJSONMessageDelegate?     OnJSONMessageReceived;
+        event     OnWebSocketClientJSONMessageReceivedDelegate?     OnJSONMessageReceived;
 
 
         /// <summary>
         /// An event sent whenever a binary message was sent.
         /// </summary>
-        new event OnWebSocketClientBinaryMessageDelegate?   OnBinaryMessageSent;
+        new event OnWebSocketClientBinaryMessageSentDelegate?       OnBinaryMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary message was received.
         /// </summary>
-        new event OnWebSocketClientBinaryMessageDelegate?   OnBinaryMessageReceived;
+        new event OnWebSocketClientBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
 
 
         Task ProcessWebSocketTextFrame  (DateTime                   RequestTimestamp,

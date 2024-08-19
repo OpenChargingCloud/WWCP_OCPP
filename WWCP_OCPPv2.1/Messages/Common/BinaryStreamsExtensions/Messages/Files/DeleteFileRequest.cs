@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new DeleteFile request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
         /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DeleteFileRequest(SourceRouting            SourceRouting,
+        public DeleteFileRequest(SourceRouting            Destination,
                                  FilePath                 FileName,
                                  Byte[]?                  FileSHA256            = null,
                                  Byte[]?                  FileSHA512            = null,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  SerializationFormats?    SerializationFormat   = null,
                                  CancellationToken        CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(DeleteFileRequest)[..^7],
 
                    SignKeys,
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static DeleteFileRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              SourceRouting                                    SourceRouting,
+                                              SourceRouting                                Destination,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var deleteFileRequest,
                          out var errorResponse,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DeleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       SourceRouting                                    SourceRouting,
+                                       SourceRouting                                Destination,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out DeleteFileRequest?      DeleteFileRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DeleteFileRequest = new DeleteFileRequest(
 
-                                            SourceRouting,
+                                        Destination,
                                         FileName,
                                         FileSHA256,
                                         FileSHA512,

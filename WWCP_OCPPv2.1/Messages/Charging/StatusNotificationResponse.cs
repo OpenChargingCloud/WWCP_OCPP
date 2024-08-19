@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
         /// 
-        /// <param name="SourceRouting">The destination identification of the message within the overlay network.</param>
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
         /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           Result?                    Result                = null,
                                           DateTime?                  ResponseTimestamp     = null,
 
-                                          SourceRouting?             SourceRouting         = null,
+                                          SourceRouting?             Destination           = null,
                                           NetworkPath?               NetworkPath           = null,
 
                                           IEnumerable<KeyPair>?      SignKeys              = null,
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom StatusNotification responses.</param>
         public static StatusNotificationResponse Parse(StatusNotificationRequest                                 Request,
                                                        JObject                                                   JSON,
-                                                       SourceRouting                                             SourceRouting,
+                                                       SourceRouting                                         Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 ResponseTimestamp                        = null,
                                                        CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null,
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(Request,
                          JSON,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var statusNotificationResponse,
                          out var errorResponse,
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom StatusNotification responses.</param>
         public static Boolean TryParse(StatusNotificationRequest                                 Request,
                                        JObject                                                   JSON,
-                                       SourceRouting                                             SourceRouting,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out StatusNotificationResponse?      StatusNotificationResponse,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  null,
                                                  ResponseTimestamp,
 
-                                                     SourceRouting,
+                                                 Destination,
                                                  NetworkPath,
 
                                                  null,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                               JObject?                   ErrorDetails        = null,
                                                               DateTime?                  ResponseTimestamp   = null,
 
-                                                              SourceRouting?         SourceRouting       = null,
+                                                              SourceRouting?             Destination         = null,
                                                               NetworkPath?               NetworkPath         = null,
 
                                                               IEnumerable<KeyPair>?      SignKeys            = null,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    ),
                    ResponseTimestamp,
 
-                       SourceRouting,
+                   Destination,
                    NetworkPath,
 
                    SignKeys,

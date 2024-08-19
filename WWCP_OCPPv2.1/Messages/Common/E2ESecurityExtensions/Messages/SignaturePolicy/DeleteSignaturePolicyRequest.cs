@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new DeleteSignaturePolicy request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="SignaturePolicyId">A unique identification of a signature policy.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DeleteSignaturePolicyRequest(SourceRouting            SourceRouting,
+        public DeleteSignaturePolicyRequest(SourceRouting            Destination,
                                             SignaturePolicy_Id       SignaturePolicyId,
 
                                             IEnumerable<KeyPair>?    SignKeys              = null,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             SerializationFormats?    SerializationFormat   = null,
                                             CancellationToken        CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(DeleteSignaturePolicyRequest)[..^7],
 
                    SignKeys,
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteSignaturePolicyRequestParser">An optional delegate to parse custom DeleteSignaturePolicy requests.</param>
         public static DeleteSignaturePolicyRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         SourceRouting                                               SourceRouting,
+                                                         SourceRouting                                           Destination,
                                                          NetworkPath                                                 NetworkPath,
                                                          DateTime?                                                   RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var deleteSignaturePolicyRequest,
                          out var errorResponse,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DeleteSignaturePolicyRequest">The parsed DeleteSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomDeleteSignaturePolicyRequestParser">An optional delegate to parse custom DeleteSignaturePolicy requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       SourceRouting                                               SourceRouting,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out DeleteSignaturePolicyRequest?      DeleteSignaturePolicyRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DeleteSignaturePolicyRequest = new DeleteSignaturePolicyRequest(
 
-                                                       SourceRouting,
+                                                   Destination,
                                                    SignaturePolicyId,
 
                                                    null,

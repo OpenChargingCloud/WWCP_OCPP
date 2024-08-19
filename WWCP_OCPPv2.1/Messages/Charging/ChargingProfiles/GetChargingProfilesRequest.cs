@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a GetChargingProfiles request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="GetChargingProfilesRequestId">An unique identification of the GetChargingProfiles request.</param>
         /// <param name="ChargingProfile">Machting charging profiles.</param>
         /// <param name="EVSEId">Optional EVSE identification of the EVSE for which the installed charging profiles SHALL be reported. If 0, only charging profiles installed on the charging station itself (the grid connection) SHALL be reported.If omitted, all installed charging profiles SHALL be reported.</param>
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetChargingProfilesRequestParser">A delegate to parse custom GetChargingProfiles requests.</param>
         public static GetChargingProfilesRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       SourceRouting                                             SourceRouting,
+                                                       SourceRouting                                         Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var getChargingProfilesRequest,
                          out var errorResponse,
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetChargingProfilesRequest">The parsed GetChargingProfiles request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetChargingProfilesRequestParser">A delegate to parse custom GetChargingProfiles requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       SourceRouting                                             SourceRouting,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out GetChargingProfilesRequest?      GetChargingProfilesRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetChargingProfilesRequest = new GetChargingProfilesRequest(
 
-                                                     SourceRouting,
+                                                 Destination,
                                                  GetChargingProfilesRequestId,
                                                  ChargingProfile,
                                                  EVSEId,

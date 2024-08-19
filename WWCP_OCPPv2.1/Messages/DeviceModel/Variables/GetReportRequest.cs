@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetReport request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="GetReportRequestId">The charging station identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetReportRequest(SourceRouting                    SourceRouting,
+        public GetReportRequest(SourceRouting                    Destination,
                                 Int32                            GetReportRequestId,
                                 IEnumerable<ComponentCriteria>?  ComponentCriteria     = null,
                                 IEnumerable<ComponentVariable>?  ComponentVariables    = null,
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 SerializationFormats?            SerializationFormat   = null,
                                 CancellationToken                CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(GetReportRequest)[..^7],
 
                    SignKeys,
@@ -319,12 +319,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static GetReportRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             SourceRouting                                   SourceRouting,
+                                             SourceRouting                               Destination,
                                              NetworkPath                                     NetworkPath,
                                              DateTime?                                       RequestTimestamp               = null,
                                              TimeSpan?                                       RequestTimeout                 = null,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var getReportRequest,
                          out var errorResponse,
@@ -360,14 +360,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetReportRequest">The parsed GetReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       SourceRouting                                   SourceRouting,
+                                       SourceRouting                               Destination,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out GetReportRequest?      GetReportRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetReportRequest = new GetReportRequest(
 
-                                           SourceRouting,
+                                       Destination,
                                        GetReportRequestId,
                                        ComponentCriteria,
                                        ComponentVariables,

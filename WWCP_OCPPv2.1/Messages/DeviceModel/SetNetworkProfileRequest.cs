@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new SetNetworkProfile request.
         /// </summary>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
         /// 
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetNetworkProfileRequest(SourceRouting             SourceRouting,
+        public SetNetworkProfileRequest(SourceRouting             Destination,
                                         Int32                     ConfigurationSlot,
                                         NetworkConnectionProfile  NetworkConnectionProfile,
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         SerializationFormats?     SerializationFormat   = null,
                                         CancellationToken         CancellationToken     = default)
 
-            : base(SourceRouting,
+            : base(Destination,
                    nameof(SetNetworkProfileRequest)[..^7],
 
                    SignKeys,
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom SetNetworkProfile requests.</param>
         public static SetNetworkProfileRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     SourceRouting                                           SourceRouting,
+                                                     SourceRouting                                       Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               RequestTimestamp                       = null,
                                                      TimeSpan?                                               RequestTimeout                         = null,
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var setNetworkProfileRequest,
                          out var errorResponse,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetNetworkProfileRequest">The parsed SetNetworkProfile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom SetNetworkProfile requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       SourceRouting                                           SourceRouting,
+                                       SourceRouting                                       Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetNetworkProfileRequest?      SetNetworkProfileRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -518,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetNetworkProfileRequest = new SetNetworkProfileRequest(
 
-                                                   SourceRouting,
+                                               Destination,
                                                ConfigurationSlot,
                                                NetworkConnectionProfile,
 

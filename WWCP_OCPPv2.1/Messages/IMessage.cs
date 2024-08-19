@@ -48,13 +48,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The message identification.
         /// </summary>
         [Mandatory]
-        Request_Id         MessageId            { get; }
+        Request_Id         RequestId            { get; }
 
         /// <summary>
         /// The timestamp of the message creation.
         /// </summary>
         [Mandatory]
-        DateTime           SentTimestamp        { get; }
+        DateTime           MessageTimestamp     { get; }
 
         /// <summary>
         /// The event tracking identification for correlating this message with other events.

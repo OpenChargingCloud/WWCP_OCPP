@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new SignCertificate request.
         /// </summary>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="SignCertificateRequestId">A SignCertificate request identification.</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   SourceRouting                                         SourceRouting,
+                                                   SourceRouting                                     Destination,
                                                    NetworkPath                                           NetworkPath,
                                                    DateTime?                                             RequestTimestamp                     = null,
                                                    TimeSpan?                                             RequestTimeout                       = null,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                             SourceRouting,
+                         Destination,
                          NetworkPath,
                          out var signCertificateRequest,
                          out var errorResponse,
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="SourceRouting">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SignCertificateRequest">The parsed SignCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       SourceRouting                                         SourceRouting,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out SignCertificateRequest?      SignCertificateRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SignCertificateRequest = new SignCertificateRequest(
 
-                                                 SourceRouting,
+                                             Destination,
                                              CSR,
                                              1, //SignCertificateRequestId,
                                              CertificateType,

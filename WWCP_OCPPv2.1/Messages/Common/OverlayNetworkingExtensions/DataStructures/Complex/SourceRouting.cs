@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Try to parse the given JSON array representation of a source routing.
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
-        /// <param name="SourceRouting">The parsed connector type.</param>
+        /// <param name="SourceRouting">The parsed source routing.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JArray              JSONArray,
                                        out SourceRouting?  SourceRouting,
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Try to parse the given JSON array representation of a source routing.
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
-        /// <param name="SourceRouting">The parsed connector type.</param>
+        /// <param name="SourceRouting">The parsed source routing.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSourceRoutingParser">An optional delegate to parse custom source routing JSON objects.</param>
         public static Boolean TryParse(JArray                                      JSONArray,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (CustomSourceRoutingParser is not null)
                     SourceRouting = CustomSourceRoutingParser(JSONArray,
-                                                          SourceRouting);
+                                                              SourceRouting);
 
                 return true;
 
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two source routings.
         /// </summary>
-        /// <param name="SourceRouting">A source routing to compare with.</param>
+        /// <param name="Destination">A source routing to compare with.</param>
         public Int32 CompareTo(SourceRouting? SourceRouting)
         {
 
@@ -508,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Compares two a source routing for equality.
         /// </summary>
-        /// <param name="SourceRouting">Charging needs to compare with.</param>
+        /// <param name="Destination">Charging needs to compare with.</param>
         public Boolean Equals(SourceRouting? SourceRouting)
         {
 

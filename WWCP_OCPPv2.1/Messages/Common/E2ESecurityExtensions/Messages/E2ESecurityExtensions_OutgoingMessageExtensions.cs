@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Transfer the given binary data to the given charging station.
         /// </summary>
-        /// <param name="SourceRouting">The networking node identification.</param>
+        /// <param name="Destination">The networking node identification.</param>
         /// <param name="Parameter">Encryption parameters.</param>
         /// <param name="KeyId">The unique identification of the encryption key.</param>
         /// <param name="Payload">The unencrypted encapsulated security payload.</param>

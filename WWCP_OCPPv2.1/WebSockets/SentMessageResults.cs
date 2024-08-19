@@ -27,10 +27,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     public class SentMessageResult
     {
 
+        #region Properties
+
         public SentMessageResults     Result        { get; }
         public IWebSocketConnection?  Connection    { get; }
         public Exception?             Exception     { get; }
 
+        #endregion
+
+        #region Constructor(s)
 
         private SentMessageResult(SentMessageResults     SentMessageResult,
                                   IWebSocketConnection?  WebSocketConnection   = null,
@@ -43,6 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         }
 
+        #endregion
+
 
         public static SentMessageResult Unknown()
 
@@ -52,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
             => new(SentMessageResults.UnknownClient);
 
-        public static SentMessageResult TransmissionFailed (Exception              Exception)
+        public static SentMessageResult TransmissionFailed (Exception             Exception)
 
             => new (SentMessageResults.TransmissionFailed,
                     null,
@@ -75,6 +82,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (SentMessageResults.Success,
                     WebSocketConnection);
 
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => $"{Result} via '{Connection?.ToString() ?? "-"}'{(Exception is not null ? $", Exception: {Exception.Message}" : "")}";
+
+        #endregion
 
     }
 

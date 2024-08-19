@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_TransactionEvent(DateTime              RequestTimestamp,
                                      IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting         SourceRouting,
+                                     SourceRouting     Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
                                      Request_Id            RequestId,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (TransactionEventRequest.TryParse(JSONRequest,
                                                      RequestId,
-                                                     SourceRouting,
+                                                 Destination,
                                                      NetworkPath,
                                                      out var request,
                                                      out var errorResponse,

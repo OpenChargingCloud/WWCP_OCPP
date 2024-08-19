@@ -642,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SignMessage        (SignableMessage, JSONMessage,   out ErrorResponse, params SignInfos)
+        #region SignMessage         (SignableMessage, JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given message.
@@ -794,7 +794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SignRequestMessage (RequestMessage,  JSONMessage,   out ErrorResponse, params SignInfos)
+        #region SignRequestMessage  (RequestMessage,  JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given request message.
@@ -807,18 +807,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           JObject                           JSONMessage,
                                           [NotNullWhen(false)] out String?  ErrorResponse,
                                           params SignInfo[]                 SignInfos)
-        {
 
-            return SignMessage(RequestMessage,
-                               JSONMessage,
-                               out ErrorResponse,
-                               SignInfos);
-
-        }
+            => SignMessage(
+                   RequestMessage,
+                   JSONMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
         #endregion
 
-        #region SignResponseMessage(ResponseMessage, JSONMessage,   out ErrorResponse, params SignInfos)
+        #region SignResponseMessage (ResponseMessage, JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given response message.
@@ -831,19 +830,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            JObject                           JSONMessage,
                                            [NotNullWhen(false)] out String?  ErrorResponse,
                                            params SignInfo[]                 SignInfos)
-        {
 
-            return SignMessage(ResponseMessage,
-                               JSONMessage,
-                               out ErrorResponse,
-                               SignInfos);
+            => SignMessage(
+                   ResponseMessage,
+                   JSONMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
-        }
+        #endregion
+
+        #region SignSendMessage     (SendMessage,     JSONMessage,   out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given send message.
+        /// </summary>
+        /// <param name="SendMessage">The send message.</param>
+        /// <param name="JSONMessage">The JSON representation of the send message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
+        /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the send message.</param>
+        public Boolean SignSendMessage(IMessage                          SendMessage,
+                                       JObject                           JSONMessage,
+                                       [NotNullWhen(false)] out String?  ErrorResponse,
+                                       params SignInfo[]                 SignInfos)
+
+            => SignMessage(
+                   SendMessage,
+                   JSONMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
         #endregion
 
 
-        #region SignMessage        (SignableMessage, BinaryMessage, out ErrorResponse, params SignInfos)
+        #region SignMessage         (SignableMessage, BinaryMessage, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given message.
@@ -993,7 +1014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SignRequestMessage (RequestMessage,  BinaryMessage, out ErrorResponse, params SignInfos)
+        #region SignRequestMessage  (RequestMessage,  BinaryMessage, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given request message.
@@ -1006,18 +1027,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           Byte[]                            BinaryMessage,
                                           [NotNullWhen(false)] out String?  ErrorResponse,
                                           params SignInfo[]                 SignInfos)
-        {
 
-            return SignMessage(RequestMessage,
-                               BinaryMessage,
-                               out ErrorResponse,
-                               SignInfos);
-
-        }
+            => SignMessage(
+                   RequestMessage,
+                   BinaryMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
         #endregion
 
-        #region SignResponseMessage(ResponseMessage, BinaryMessage, out ErrorResponse, params SignInfos)
+        #region SignResponseMessage (ResponseMessage, BinaryMessage, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given response message.
@@ -1030,14 +1050,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            Byte[]                            BinaryMessage,
                                            [NotNullWhen(false)] out String?  ErrorResponse,
                                            params SignInfo[]                 SignInfos)
-        {
 
-            return SignMessage(ResponseMessage,
-                               BinaryMessage,
-                               out ErrorResponse,
-                               SignInfos);
+            => SignMessage(
+                   ResponseMessage,
+                   BinaryMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
-        }
+        #endregion
+
+        #region SignSendMessage     (SendMessage,     BinaryMessage, out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given request message.
+        /// </summary>
+        /// <param name="SendMessage">The request message.</param>
+        /// <param name="BinaryMessage">The binary representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
+        /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
+        public Boolean SignSendMessage(IMessage                          SendMessage,
+                                       Byte[]                            BinaryMessage,
+                                       [NotNullWhen(false)] out String?  ErrorResponse,
+                                       params SignInfo[]                 SignInfos)
+
+            => SignMessage(
+                   SendMessage,
+                   BinaryMessage,
+                   out ErrorResponse,
+                   SignInfos
+               );
 
         #endregion
 
@@ -1157,7 +1199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region VerifyMessage      (SignableMessage, JSONMessage,   out ErrorResponse)
+        #region VerifySendMessage     (SignableMessage, JSONMessage,   out ErrorResponse)
 
         /// <summary>
         /// Verify the given message.
@@ -1165,9 +1207,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="JSONMessage">The JSON representation of the signable/verifiable message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyMessage(ISignableMessage                  SignableMessage,
-                                     JObject                           JSONMessage,
-                                     [NotNullWhen(false)] out String?  ErrorResponse)
+        public Boolean VerifySendMessage(ISignableMessage                  SignableMessage,
+                                         JObject                           JSONMessage,
+                                         [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             ErrorResponse = null;
@@ -1262,7 +1304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region VerifyMessage      (RequestMessage,  JSONMessage,   out ErrorResponse)
+        #region VerifyRequestMessage  (RequestMessage,  JSONMessage,   out ErrorResponse)
 
         /// <summary>
         /// Verify the given request message.
@@ -1273,17 +1315,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
                                             JObject                           JSONMessage,
                                             [NotNullWhen(false)] out String?  ErrorResponse)
-        {
 
-            return VerifyMessage(RequestMessage,
-                                 JSONMessage,
-                                 out ErrorResponse);
-
-        }
+            => VerifySendMessage(
+                   RequestMessage,
+                   JSONMessage,
+                   out ErrorResponse
+               );
 
         #endregion
 
-        #region VerifyMessage      (RequestMessage,  JSONMessage,   out ErrorResponse)
+        #region VerifyResponseMessage (ResponseMessage, JSONMessage,   out ErrorResponse)
 
         /// <summary>
         /// Verify the given request message.
@@ -1294,18 +1335,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean VerifyResponseMessage(IResponse                         ResponseMessage,
                                              JObject                           JSONMessage,
                                              [NotNullWhen(false)] out String?  ErrorResponse)
-        {
 
-            return VerifyMessage(ResponseMessage,
-                                 JSONMessage,
-                                 out ErrorResponse);
-
-        }
+            => VerifySendMessage(
+                   ResponseMessage,
+                   JSONMessage,
+                   out ErrorResponse
+               );
 
         #endregion
 
 
-        #region VerifyMessage      (SignableMessage, BinaryMessage, out ErrorResponse)
+        #region VerifySendMessage     (SignableMessage, BinaryMessage, out ErrorResponse)
 
         /// <summary>
         /// Verify the given message.
@@ -1313,9 +1353,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="BinaryMessage">The binary representation of the signable/verifiable message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyMessage(ISignableMessage                  SignableMessage,
-                                     Byte[]                            BinaryMessage,
-                                     [NotNullWhen(false)] out String?  ErrorResponse)
+        public Boolean VerifySendMessage(ISignableMessage                  SignableMessage,
+                                         Byte[]                            BinaryMessage,
+                                         [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             ErrorResponse = null;
@@ -1410,7 +1450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region VerifyMessage      (RequestMessage,  BinaryMessage, out ErrorResponse)
+        #region VerifyRequestMessage  (RequestMessage,  BinaryMessage, out ErrorResponse)
 
         /// <summary>
         /// Verify the given request message.
@@ -1421,17 +1461,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
                                             Byte[]                            BinaryMessage,
                                             [NotNullWhen(false)] out String?  ErrorResponse)
-        {
 
-            return VerifyMessage(RequestMessage,
-                                 BinaryMessage,
-                                 out ErrorResponse);
-
-        }
+            => VerifySendMessage(
+                   RequestMessage,
+                   BinaryMessage,
+                   out ErrorResponse
+               );
 
         #endregion
 
-        #region VerifyMessage      (RequestMessage,  BinaryMessage, out ErrorResponse)
+        #region VerifyResponseMessage (RequestMessage,  BinaryMessage, out ErrorResponse)
 
         /// <summary>
         /// Verify the given request message.
@@ -1442,13 +1481,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean VerifyResponseMessage(IResponse                         ResponseMessage,
                                              Byte[]                            BinaryMessage,
                                              [NotNullWhen(false)] out String?  ErrorResponse)
-        {
 
-            return VerifyMessage(ResponseMessage,
-                                 BinaryMessage,
-                                 out ErrorResponse);
-
-        }
+            => VerifySendMessage(
+                   ResponseMessage,
+                   BinaryMessage,
+                   out ErrorResponse
+               );
 
         #endregion
 

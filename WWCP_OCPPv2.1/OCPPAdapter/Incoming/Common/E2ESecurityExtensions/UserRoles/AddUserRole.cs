@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_AddUserRole(DateTime              RequestTimestamp,
                                 IWebSocketConnection  WebSocketConnection,
-                                SourceRouting         SourceRouting,
+                                SourceRouting     Destination,
                                 NetworkPath           NetworkPath,
                                 EventTracking_Id      EventTrackingId,
                                 Request_Id            RequestId,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (AddUserRoleRequest.TryParse(JSONRequest,
                                                 RequestId,
-                                                SourceRouting,
+                                            Destination,
                                                 NetworkPath,
                                                 out var request,
                                                 out var errorResponse,
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_AddUserRoleResponse(AddUserRoleRequest    Request,
                                         JObject               ResponseJSON,
                                         IWebSocketConnection  WebSocketConnection,
-                                        SourceRouting         SourceRouting,
+                                        SourceRouting     Destination,
                                         NetworkPath           NetworkPath,
                                         EventTracking_Id      EventTrackingId,
                                         Request_Id            RequestId,
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (AddUserRoleResponse.TryParse(Request,
                                                  ResponseJSON,
-                                                 SourceRouting,
+                                             Destination,
                                                  NetworkPath,
                                                  out response,
                                                  out var errorResponse,

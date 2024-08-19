@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -702,6 +703,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    );
 
         #endregion
+
+        #region SendMessage                          (VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Send the given vendor-specific message to the CSMS.
+        /// </summary>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="Data">A vendor-specific JSON token.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<SentMessageResult>
+
+            SendMessage(this IChargingStationNode  ChargingStation,
+
+                        Vendor_Id                  VendorId,
+                        Message_Id?                MessageId             = null,
+                        JToken?                    Data                  = null,
+                        CustomData?                CustomData            = null,
+
+                        IEnumerable<KeyPair>?      SignKeys              = null,
+                        IEnumerable<SignInfo>?     SignInfos             = null,
+                        IEnumerable<Signature>?    Signatures            = null,
+
+                        Request_Id?                RequestId             = null,
+                        DateTime?                  RequestTimestamp      = null,
+                        EventTracking_Id?          EventTrackingId       = null,
+                        SerializationFormats?      SerializationFormat   = null,
+                        CancellationToken          CancellationToken     = default)
+
+
+                => ChargingStation.OCPP.OUT.MessageTransfer(
+                       new MessageTransferMessage(
+
+                           SourceRouting.CSMS,
+
+                           VendorId,
+                           MessageId,
+                           Data,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargingStation.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           SerializationFormat,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
 
 
         #region SendCertificateSigningRequest         (CSR, SignCertificateRequestId, CertificateType = null, ...)

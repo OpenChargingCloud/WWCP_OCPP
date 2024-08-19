@@ -205,6 +205,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region BinaryDataStreamsExtensions
 
+            #region Files
+
             #region OnDeleteFile
 
             OCPP.IN.OnDeleteFile += (timestamp,
@@ -309,8 +311,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            // Bidirectional
-
             #region OnBinaryDataTransfer
 
             OCPP.IN.OnBinaryDataTransfer += (timestamp,
@@ -368,132 +368,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            #region OnDataTransfer
-
-            OCPP.IN.OnDataTransfer += async (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                // VendorId
-                // MessageId
-                // Data
-
-                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
-                                                        request.MessageId + ", " +
-                                                        request.Data);
-
-
-                var responseData = request.Data;
-
-                if (request.Data is not null)
-                {
-
-                    if      (request.Data.Type == JTokenType.String)
-                        responseData = request.Data.ToString().Reverse();
-
-                    else if (request.Data.Type == JTokenType.Object) {
-
-                        var responseObject = new JObject();
-
-                        foreach (var property in (request.Data as JObject)!)
-                        {
-                            if (property.Value?.Type == JTokenType.String)
-                                responseObject.Add(property.Key,
-                                                    property.Value.ToString().Reverse());
-                        }
-
-                        responseData = responseObject;
-
-                    }
-
-                    else if (request.Data.Type == JTokenType.Array) {
-
-                        var responseArray = new JArray();
-
-                        foreach (var element in (request.Data as JArray)!)
-                        {
-                            if (element?.Type == JTokenType.String)
-                                responseArray.Add(element.ToString().Reverse());
-                        }
-
-                        responseData = responseArray;
-
-                    }
-
-                }
-
-
-                var response =  request.VendorId == Vendor_Id.GraphDefined
-
-                                    ? new DataTransferResponse(
-                                          Request:       request,
-                                          NetworkPath:   NetworkPath.From(Id),
-                                          Status:        DataTransferStatus.Accepted,
-                                          Data:          responseData,
-                                          StatusInfo:    null,
-                                          CustomData:    null
-                                      )
-
-                                    : new DataTransferResponse(
-                                          Request:       request,
-                                          NetworkPath:   NetworkPath.From(Id),
-                                          Status:        DataTransferStatus.Rejected,
-                                          Data:          null,
-                                          StatusInfo:    null,
-                                          CustomData:    null
-                                      );
-
-
-                return response;
-
-            };
-
-
-            OCPP.FORWARD.OnDataTransferRequestFilter += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) => {
-
-                if (request.Data?.ToString() == "Please REJECT!")
-                {
-
-                    var response = new DataTransferResponse(
-                                       request,
-                                       DataTransferStatus.Rejected,
-                                       Result: Result.Filtered("This message is not allowed!")
-                                   );
-
-                    return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                   request,
-                                   ForwardingDecisions.REJECT,
-                                   response,
-                                   response.ToJSON(
-                                       OCPP.CustomDataTransferResponseSerializer,
-                                       OCPP.CustomStatusInfoSerializer,
-                                       OCPP.CustomSignatureSerializer,
-                                       OCPP.CustomCustomDataSerializer
-                                   ),
-                                   "The message was REJECTED!"
-                               )
-                           );
-
-                }
-
-                else
-                    return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
-                                   request,
-                                   ForwardingDecisions.FORWARD
-                               )
-                           );
-
-            };
-
             #endregion
+
+            #region E2E Security Extensions
 
             #region OnSecureDataTransfer
 
@@ -563,6 +440,224 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             //    );
 
             #endregion
+
+            #endregion
+
+            #region OnDataTransfer
+
+            OCPP.IN.OnDataTransfer += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       cancellationToken) => {
+
+                DebugX.Log($"Charging Station '{Id}': Incoming DataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                    property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+
+                var response =  request.VendorId == Vendor_Id.GraphDefined
+
+                                    ? new DataTransferResponse(
+                                          Request:       request,
+                                          NetworkPath:   NetworkPath.From(Id),
+                                          Status:        DataTransferStatus.Accepted,
+                                          Data:          responseData,
+                                          StatusInfo:    null,
+                                          CustomData:    null
+                                      )
+
+                                    : new DataTransferResponse(
+                                          Request:       request,
+                                          NetworkPath:   NetworkPath.From(Id),
+                                          Status:        DataTransferStatus.Rejected,
+                                          Data:          null,
+                                          StatusInfo:    null,
+                                          CustomData:    null
+                                      );
+
+
+                return Task.FromResult(response);
+
+            };
+
+
+            OCPP.FORWARD.OnDataTransferRequestFilter += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                if (request.Data?.ToString() == "Please REJECT!")
+                {
+
+                    var response = new DataTransferResponse(
+                                       request,
+                                       DataTransferStatus.Rejected,
+                                       Result: Result.Filtered("This message is not allowed!")
+                                   );
+
+                    return Task.FromResult(
+                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
+                                   request,
+                                   ForwardingDecisions.REJECT,
+                                   response,
+                                   response.ToJSON(
+                                       OCPP.CustomDataTransferResponseSerializer,
+                                       OCPP.CustomStatusInfoSerializer,
+                                       OCPP.CustomSignatureSerializer,
+                                       OCPP.CustomCustomDataSerializer
+                                   ),
+                                   "The message was REJECTED!"
+                               )
+                           );
+
+                }
+
+                else
+                    return Task.FromResult(
+                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
+                                   request,
+                                   ForwardingDecisions.FORWARD
+                               )
+                           );
+
+            };
+
+            #endregion
+
+            #region OnMessageTransfer
+
+            OCPP.IN.OnMessageTransferMessageReceived += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                DebugX.Log($"Charging Station '{Id}': Incoming MessageTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                    property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
+
+            OCPP.FORWARD.OnMessageTransferMessageFilter += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                if (request.Data?.ToString() == "Please REJECT!")
+                {
+
+                    //var response = new DataTransferResponse(
+                    //                   request,
+                    //                   DataTransferStatus.Rejected,
+                    //                   Result: Result.Filtered("This message is not allowed!")
+                    //               );
+
+                    return Task.FromResult(
+                               new ForwardingDecision<MessageTransferMessage>(
+                                   request,
+                                   ForwardingDecisions.REJECT,
+                                   //response,
+                                   //response.ToJSON(
+                                   //    OCPP.CustomDataTransferResponseSerializer,
+                                   //    OCPP.CustomStatusInfoSerializer,
+                                   //    OCPP.CustomSignatureSerializer,
+                                   //    OCPP.CustomCustomDataSerializer
+                                   //),
+                                   RejectMessage: "The message was REJECTED!"
+                               )
+                           );
+
+                }
+
+                else
+                    return Task.FromResult(
+                               ForwardingDecision<MessageTransferMessage>.FORWARD(request)
+                           );
+
+            };
+
+            #endregion
+
 
 
 

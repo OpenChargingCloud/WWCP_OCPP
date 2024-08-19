@@ -20,6 +20,7 @@
 using System.Reflection;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
@@ -195,23 +196,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// An event sent whenever a JSON message was sent.
         /// </summary>
-        public event     OnWebSocketServerJSONMessageDelegate?     OnJSONMessageSent;
+        public event     OnWebSocketServerJSONMessageSentDelegate?         OnJSONMessageSent;
 
         /// <summary>
         /// An event sent whenever a JSON message was received.
         /// </summary>
-        public event     OnWebSocketServerJSONMessageDelegate?     OnJSONMessageReceived;
+        public event     OnWebSocketServerJSONMessageReceivedDelegate?     OnJSONMessageReceived;
 
 
         /// <summary>
         /// An event sent whenever a binary message was sent.
         /// </summary>
-        public new event OnWebSocketServerBinaryMessageDelegate?   OnBinaryMessageSent;
+        public new event OnWebSocketServerBinaryMessageSentDelegate?       OnBinaryMessageSent;
 
         /// <summary>
         /// An event sent whenever a binary message was received.
         /// </summary>
-        public new event OnWebSocketServerBinaryMessageDelegate?   OnBinaryMessageReceived;
+        public new event OnWebSocketServerBinaryMessageReceivedDelegate?   OnBinaryMessageReceived;
 
         #endregion
 
@@ -732,7 +733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Process all text messages of this WebSocket API.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="ServerConnection">The WebSocket connection.</param>
+        /// <param name="WebSocketConnection">The WebSocket connection.</param>
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
@@ -743,6 +744,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                                     CancellationToken          CancellationToken)
         {
 
+            #region Initial checks
+
+            if (TextMessage == "[]" ||
+                TextMessage.IsNullOrEmpty())
+            {
+
+                await HandleErrors(
+                          nameof(OCPPWebSocketClient),
+                          nameof(ProcessTextMessage),
+                          "Received an empty text message!"
+                      );
+
+                return new WebSocketTextMessageResponse(
+                           RequestTimestamp,
+                           TextMessage,
+                           Timestamp.Now,
+                           "Received an empty text message!",
+                           EventTrackingId,
+                           CancellationToken
+                       );
+
+            }
+
+            #endregion
+
             WebSocketTextMessageResponse? textMessageResponse = null;
 
             try
@@ -751,43 +777,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 var jsonMessage   = JArray.Parse(TextMessage);
                 var sourceNodeId  = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
-                #region OnJSONMessageReceived
+                await LogEvent(
+                          OnJSONMessageReceived,
+                          loggingDelegate => loggingDelegate.Invoke(
+                              Timestamp.Now,
+                              this,
+                              WebSocketConnection,
+                              EventTrackingId,
+                              RequestTimestamp,
+                              jsonMessage,
+                              CancellationToken
+                          )
+                      );
 
-                var onJSONMessageReceived = OnJSONMessageReceived;
-                if (onJSONMessageReceived is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONMessageReceived.GetInvocationList().
-                                               OfType<OnWebSocketServerJSONMessageDelegate>().
-                                               Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             this,
-                                                                             WebSocketConnection,
-                                                                             EventTrackingId,
-                                                                             RequestTimestamp,
-                                                                             jsonMessage,
-                                                                             CancellationToken
-                                                                         )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnJSONMessageReceived));
-                    }
-                }
-
-                #endregion
-
-                textMessageResponse  = await OCPPAdapter.IN.ProcessJSONMessage(
-                                                 RequestTimestamp,
-                                                 WebSocketConnection,
-                                                 jsonMessage,
-                                                 EventTrackingId,
-                                                 CancellationToken
-                                             );
+                textMessageResponse = await OCPPAdapter.IN.ProcessJSONMessage(
+                                                RequestTimestamp,
+                                                WebSocketConnection,
+                                                jsonMessage,
+                                                EventTrackingId,
+                                                CancellationToken
+                                            );
 
             }
             catch (Exception e)
@@ -836,6 +845,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                                         CancellationToken          CancellationToken)
         {
 
+            #region Initial checks
+
+            if (BinaryMessage.Length == 0)
+            {
+
+                await HandleErrors(
+                          nameof(OCPPWebSocketClient),
+                          nameof(ProcessTextMessage),
+                          "Received an empty binary message!"
+                      );
+
+                return new WebSocketBinaryMessageResponse(
+                           RequestTimestamp,
+                           BinaryMessage,
+                           Timestamp.Now,
+                           "Received an empty binary message!".ToUTF8Bytes(),
+                           EventTrackingId,
+                           CancellationToken
+                       );
+
+            }
+
+            #endregion
+
             WebSocketBinaryMessageResponse? binaryMessageResponse = null;
 
             try
@@ -843,35 +876,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var sourceNodeId = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
-                #region OnBinaryMessageReceived
-
-                var onBinaryMessageReceived = OnBinaryMessageReceived;
-                if (onBinaryMessageReceived is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onBinaryMessageReceived.GetInvocationList().
-                                               OfType<OnWebSocketServerBinaryMessageDelegate>().
-                                               Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                             Timestamp.Now,
-                                                                             this,
-                                                                             WebSocketConnection,
-                                                                             EventTrackingId,
-                                                                             RequestTimestamp,
-                                                                             BinaryMessage,
-                                                                             CancellationToken
-                                                                         )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnBinaryMessageReceived));
-                    }
-                }
-
-                #endregion
+                await LogEvent(
+                          OnBinaryMessageReceived,
+                          loggingDelegate => loggingDelegate.Invoke(
+                              Timestamp.Now,
+                              this,
+                              WebSocketConnection,
+                              EventTrackingId,
+                              RequestTimestamp,
+                              BinaryMessage,
+                              CancellationToken
+                          )
+                      );
 
                 binaryMessageResponse = await OCPPAdapter.IN.ProcessBinaryMessage(
                                                   RequestTimestamp,
@@ -929,49 +945,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestMessage.Destination.Next))
                 {
 
-                    JSONRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
+                    JSONRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(OCPPAdapter.NetworkingMode_WebSocketKey)
                                                             ?? NetworkingMode.Standard;
 
                     var jsonMessage  = JSONRequestMessage.ToJSON();
 
-                    var sendStatus   = await SendTextMessage(
+                    var sentStatus   = await SendTextMessage(
                                                  webSocketConnection,
                                                  jsonMessage.ToString(Formatting.None),
                                                  JSONRequestMessage.EventTrackingId,
                                                  JSONRequestMessage.CancellationToken
                                              );
 
-                    #region OnJSONMessageSent
+                    await LogEvent(
+                              OnJSONMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  JSONRequestMessage.EventTrackingId,
+                                  JSONRequestMessage.RequestTimestamp,
+                                  jsonMessage,
+                                  sentStatus,
+                                  JSONRequestMessage.CancellationToken
+                              )
+                          );
 
-                    var onJSONMessageSent = OnJSONMessageSent;
-                    if (onJSONMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onJSONMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerJSONMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 JSONRequestMessage.EventTrackingId,
-                                                                                 JSONRequestMessage.RequestTimestamp,
-                                                                                 jsonMessage,
-                                                                                 JSONRequestMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnJSONMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1005,49 +1005,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseMessage.Destination.Next))
                 {
 
-                    JSONResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey)
+                    JSONResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(OCPPAdapter.NetworkingMode_WebSocketKey)
                                                              ?? NetworkingMode.Standard;
 
                     var jsonMessage  = JSONResponseMessage.ToJSON();
 
-                    var sendStatus   = await SendTextMessage(
+                    var sentStatus   = await SendTextMessage(
                                                  webSocketConnection,
                                                  jsonMessage.ToString(Formatting.None),
                                                  JSONResponseMessage.EventTrackingId,
                                                  JSONResponseMessage.CancellationToken
                                              );
 
-                    #region OnJSONMessageSent
+                    await LogEvent(
+                              OnJSONMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  JSONResponseMessage.EventTrackingId,
+                                  JSONResponseMessage.ResponseTimestamp,
+                                  jsonMessage,
+                                  sentStatus,
+                                  JSONResponseMessage.CancellationToken
+                              )
+                          );
 
-                        var onJSONMessageSent = OnJSONMessageSent;
-                        if (onJSONMessageSent is not null)
-                        {
-                            try
-                            {
-
-                                await Task.WhenAll(onJSONMessageSent.GetInvocationList().
-                                                       OfType<OnWebSocketServerJSONMessageDelegate>().
-                                                       Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                     Timestamp.Now,
-                                                                                     this,
-                                                                                     webSocketConnection,
-                                                                                     JSONResponseMessage.EventTrackingId,
-                                                                                     JSONResponseMessage.ResponseTimestamp,
-                                                                                     jsonMessage,
-                                                                                     JSONResponseMessage.CancellationToken
-                                                                                 )).
-                                                       ToArray());
-
-                            }
-                            catch (Exception e)
-                            {
-                                DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnJSONMessageSent));
-                            }
-                        }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1086,44 +1070,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var jsonMessage  = JSONRequestErrorMessage.ToJSON();
 
-                    var sendStatus   = await SendTextMessage(
+                    var sentStatus   = await SendTextMessage(
                                                  webSocketConnection,
                                                  jsonMessage.ToString(Formatting.None),
                                                  JSONRequestErrorMessage.EventTrackingId,
                                                  JSONRequestErrorMessage.CancellationToken
                                              );
 
-                    #region OnJSONMessageSent
+                    await LogEvent(
+                              OnJSONMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  JSONRequestErrorMessage.EventTrackingId,
+                                  JSONRequestErrorMessage.ResponseTimestamp,
+                                  jsonMessage,
+                                  sentStatus,
+                                  JSONRequestErrorMessage.CancellationToken
+                              )
+                          );
 
-                        var onJSONMessageSent = OnJSONMessageSent;
-                        if (onJSONMessageSent is not null)
-                        {
-                            try
-                            {
-
-                                await Task.WhenAll(onJSONMessageSent.GetInvocationList().
-                                                       OfType<OnWebSocketServerJSONMessageDelegate>().
-                                                       Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                     Timestamp.Now,
-                                                                                     this,
-                                                                                     webSocketConnection,
-                                                                                     JSONRequestErrorMessage.EventTrackingId,
-                                                                                     JSONRequestErrorMessage.ResponseTimestamp,
-                                                                                     jsonMessage,
-                                                                                     JSONRequestErrorMessage.CancellationToken
-                                                                                 )).
-                                                       ToArray());
-
-                            }
-                            catch (Exception e)
-                            {
-                                DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnJSONMessageSent));
-                            }
-                        }
-
-                        #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1162,44 +1130,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var jsonMessage  = JSONResponseErrorMessage.ToJSON();
 
-                    var sendStatus   = await SendTextMessage(
+                    var sentStatus   = await SendTextMessage(
                                                  webSocketConnection,
                                                  jsonMessage.ToString(Formatting.None),
                                                  JSONResponseErrorMessage.EventTrackingId,
                                                  JSONResponseErrorMessage.CancellationToken
                                              );
 
-                    #region OnJSONMessageSent
+                    await LogEvent(
+                              OnJSONMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  JSONResponseErrorMessage.EventTrackingId,
+                                  JSONResponseErrorMessage.ResponseTimestamp,
+                                  jsonMessage,
+                                  sentStatus,
+                                  JSONResponseErrorMessage.CancellationToken
+                              )
+                          );
 
-                    var onJSONMessageSent = OnJSONMessageSent;
-                    if (onJSONMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onJSONMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerJSONMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 JSONResponseErrorMessage.EventTrackingId,
-                                                                                 JSONResponseErrorMessage.ResponseTimestamp,
-                                                                                 jsonMessage,
-                                                                                 JSONResponseErrorMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnJSONMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1238,44 +1190,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var jsonMessage  = JSONSendMessage.ToJSON();
 
-                    var sendStatus   = await SendTextMessage(
+                    var sentStatus   = await SendTextMessage(
                                                  webSocketConnection,
                                                  jsonMessage.ToString(Formatting.None),
                                                  JSONSendMessage.EventTrackingId,
                                                  JSONSendMessage.CancellationToken
                                              );
 
-                    #region OnJSONMessageSent
+                    await LogEvent(
+                              OnJSONMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  JSONSendMessage.EventTrackingId,
+                                  JSONSendMessage.MessageTimestamp,
+                                  jsonMessage,
+                                  sentStatus,
+                                  JSONSendMessage.CancellationToken
+                              )
+                          );
 
-                    var onJSONMessageSent = OnJSONMessageSent;
-                    if (onJSONMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onJSONMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerJSONMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 JSONSendMessage.EventTrackingId,
-                                                                                 JSONSendMessage.MessageTimestamp,
-                                                                                 jsonMessage,
-                                                                                 JSONSendMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnJSONMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1315,44 +1251,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var binaryMessage  = BinaryRequestMessage.ToByteArray();
 
-                    var sendStatus     = await SendBinaryMessage(
+                    var sentStatus     = await SendBinaryMessage(
                                                    webSocketConnection,
                                                    binaryMessage,
                                                    BinaryRequestMessage.EventTrackingId,
                                                    BinaryRequestMessage.CancellationToken
                                                );
 
-                    #region OnBinaryMessageSent
+                    await LogEvent(
+                              OnBinaryMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  BinaryRequestMessage.EventTrackingId,
+                                  BinaryRequestMessage.RequestTimestamp,
+                                  binaryMessage,
+                                  sentStatus,
+                                  BinaryRequestMessage.CancellationToken
+                              )
+                          );
 
-                    var onBinaryMessageSent = OnBinaryMessageSent;
-                    if (onBinaryMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onBinaryMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerBinaryMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 BinaryRequestMessage.EventTrackingId,
-                                                                                 BinaryRequestMessage.RequestTimestamp,
-                                                                                 binaryMessage,
-                                                                                 BinaryRequestMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnBinaryMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1391,44 +1311,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var binaryMessage  = BinaryResponseMessage.ToByteArray();
 
-                    var sendStatus     = await SendBinaryMessage(
+                    var sentStatus     = await SendBinaryMessage(
                                                    webSocketConnection,
                                                    binaryMessage,
                                                    BinaryResponseMessage.EventTrackingId,
                                                    BinaryResponseMessage.CancellationToken
                                                );
 
-                    #region OnBinaryMessageSent
+                    await LogEvent(
+                              OnBinaryMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  BinaryResponseMessage.EventTrackingId,
+                                  BinaryResponseMessage.ResponseTimestamp,
+                                  binaryMessage,
+                                  sentStatus,
+                                  BinaryResponseMessage.CancellationToken
+                              )
+                          );
 
-                    var onBinaryMessageSent = OnBinaryMessageSent;
-                    if (onBinaryMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onBinaryMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerBinaryMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 BinaryResponseMessage.EventTrackingId,
-                                                                                 BinaryResponseMessage.ResponseTimestamp,
-                                                                                 binaryMessage,
-                                                                                 BinaryResponseMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnBinaryMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1467,44 +1371,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var binaryMessage  = BinaryRequestErrorMessage.ToByteArray();
 
-                    var sendStatus     = await SendBinaryMessage(
+                    var sentStatus     = await SendBinaryMessage(
                                                    webSocketConnection,
                                                    binaryMessage,
                                                    BinaryRequestErrorMessage.EventTrackingId,
                                                    BinaryRequestErrorMessage.CancellationToken
                                                );
 
-                    #region OnBinaryMessageSent
+                    await LogEvent(
+                              OnBinaryMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  BinaryRequestErrorMessage.EventTrackingId,
+                                  BinaryRequestErrorMessage.ResponseTimestamp,
+                                  binaryMessage,
+                                  sentStatus,
+                                  BinaryRequestErrorMessage.CancellationToken
+                              )
+                          );
 
-                    var onBinaryMessageSent = OnBinaryMessageSent;
-                    if (onBinaryMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onBinaryMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerBinaryMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 BinaryRequestErrorMessage.EventTrackingId,
-                                                                                 BinaryRequestErrorMessage.ResponseTimestamp,
-                                                                                 binaryMessage,
-                                                                                 BinaryRequestErrorMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnBinaryMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1543,44 +1431,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var binaryMessage  = BinaryResponseErrorMessage.ToByteArray();
 
-                    var sendStatus     = await SendBinaryMessage(
+                    var sentStatus     = await SendBinaryMessage(
                                                    webSocketConnection,
                                                    binaryMessage,
                                                    BinaryResponseErrorMessage.EventTrackingId,
                                                    BinaryResponseErrorMessage.CancellationToken
                                                );
 
-                    #region OnBinaryMessageSent
+                    await LogEvent(
+                              OnBinaryMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  BinaryResponseErrorMessage.EventTrackingId,
+                                  BinaryResponseErrorMessage.ResponseTimestamp,
+                                  binaryMessage,
+                                  sentStatus,
+                                  BinaryResponseErrorMessage.CancellationToken
+                              )
+                          );
 
-                    var onBinaryMessageSent = OnBinaryMessageSent;
-                    if (onBinaryMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onBinaryMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerBinaryMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 BinaryResponseErrorMessage.EventTrackingId,
-                                                                                 BinaryResponseErrorMessage.ResponseTimestamp,
-                                                                                 binaryMessage,
-                                                                                 BinaryResponseErrorMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnBinaryMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1619,44 +1491,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                     var binaryMessage  = BinarySendMessage.ToByteArray();
 
-                    var sendStatus     = await SendBinaryMessage(
+                    var sentStatus     = await SendBinaryMessage(
                                                    webSocketConnection,
                                                    binaryMessage,
                                                    BinarySendMessage.EventTrackingId,
                                                    BinarySendMessage.CancellationToken
                                                );
 
-                    #region OnBinaryMessageSent
+                    await LogEvent(
+                              OnBinaryMessageSent,
+                              loggingDelegate => loggingDelegate.Invoke(
+                                  Timestamp.Now,
+                                  this,
+                                  webSocketConnection,
+                                  BinarySendMessage.EventTrackingId,
+                                  BinarySendMessage.MessageTimestamp,
+                                  binaryMessage,
+                                  sentStatus,
+                                  BinarySendMessage.CancellationToken
+                              )
+                          );
 
-                    var onBinaryMessageSent = OnBinaryMessageSent;
-                    if (onBinaryMessageSent is not null)
-                    {
-                        try
-                        {
-
-                            await Task.WhenAll(onBinaryMessageSent.GetInvocationList().
-                                                   OfType<OnWebSocketServerBinaryMessageDelegate>().
-                                                   Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                                 Timestamp.Now,
-                                                                                 this,
-                                                                                 webSocketConnection,
-                                                                                 BinarySendMessage.EventTrackingId,
-                                                                                 BinarySendMessage.MessageTimestamp,
-                                                                                 binaryMessage,
-                                                                                 BinarySendMessage.CancellationToken
-                                                                             )).
-                                                   ToArray());
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(OCPPWebSocketServer) + "." + nameof(OnBinaryMessageSent));
-                        }
-                    }
-
-                    #endregion
-
-                    if (sendStatus == SentStatus.Success)
+                    if (sentStatus == SentStatus.Success)
                         return SentMessageResult.Success(webSocketConnection);
 
                     RemoveConnection(webSocketConnection);
@@ -1721,14 +1577,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
 
 
-        #region (protected) HandleErrors(Module, Caller, Exception, Description = null)
-        protected Task HandleErrors(String     Module,
-                                    String     Caller,
-                                    Exception  Exception,
-                                    String?    Description   = null)
+        #region (private) LogEvent(Logger, LogHandler, ...)
+
+        private async Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                               Func<TDelegate, Task>                              LogHandler,
+                                               [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                               [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+        {
+            if (Logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(
+                              Logger.GetInvocationList().
+                                     OfType<TDelegate>().
+                                     Select(LogHandler)
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(nameof(OCPPWebSocketClient), $"{OCPPCommand}.{EventName}", e);
+                }
+            }
+        }
+
+        #endregion
+
+        #region (private) HandleErrors(Module, Caller, ErrorResponse)
+
+        private Task HandleErrors(String  Module,
+                                  String  Caller,
+                                  String  ErrorResponse)
         {
 
-            DebugX.LogException(Exception, $"{Module}.{Caller}{(Description is not null ? $" {Description}" : "")}");
+            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+        #region (private) HandleErrors(Module, Caller, ExceptionOccured)
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
 
             return Task.CompletedTask;
 
