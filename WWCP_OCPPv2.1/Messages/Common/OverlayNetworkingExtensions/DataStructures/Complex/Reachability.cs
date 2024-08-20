@@ -17,6 +17,10 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -42,6 +46,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Byte                   Priority               { get; }
 
+        public Byte                   Weight                 { get; }
+
         public DateTime               Timestamp              { get; }
 
         public DateTime?              Timeout                { get; }
@@ -55,6 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public Reachability(NetworkingNode_Id     DestinationId,
                             IOCPPWebSocketClient  OCPPWebSocketClient,
                             Byte?                 Priority    = 0,
+                            Byte?                 Weight      = 1,
                             DateTime?             Timestamp   = null,
                             DateTime?             Timeout     = null)
         {
@@ -62,6 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.DestinationId        = DestinationId;
             this.OCPPWebSocketClient  = OCPPWebSocketClient;
             this.Priority             = Priority  ?? 0;
+            this.Weight               = Weight    ?? 1;
             this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.Timeout              = Timeout;
 
@@ -74,6 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public Reachability(NetworkingNode_Id     DestinationId,
                             IOCPPWebSocketServer  OCPPWebSocketServer,
                             Byte?                 Priority    = 0,
+                            Byte?                 Weight      = 1,
                             DateTime?             Timestamp   = null,
                             DateTime?             Timeout     = null)
         {
@@ -81,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.DestinationId        = DestinationId;
             this.OCPPWebSocketServer  = OCPPWebSocketServer;
             this.Priority             = Priority  ?? 0;
+            this.Weight               = Weight    ?? 1;
             this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.Timeout              = Timeout;
 
@@ -93,6 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public Reachability(NetworkingNode_Id  DestinationId,
                             NetworkingNode_Id  NetworkingHub,
                             Byte?              Priority    = 0,
+                            Byte?              Weight      = 1,
                             DateTime?          Timestamp   = null,
                             DateTime?          Timeout     = null)
         {
@@ -100,6 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.DestinationId  = DestinationId;
             this.NetworkingHub  = NetworkingHub;
             this.Priority       = Priority  ?? 0;
+            this.Weight         = Weight    ?? 1;
             this.Timestamp      = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.Timeout        = Timeout;
 
@@ -108,6 +120,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #endregion
+
+
+        public JObject ToJSON(Boolean IgnoreDestinationId = false)
+        {
+
+            var json = JSONObject.Create(
+
+                           IgnoreDestinationId
+                               ? null
+                               : new JProperty("destinationId",     DestinationId.                ToString()),
+
+                           OCPPWebSocketClient is not null
+                               ? new JProperty("webSocketClient",   OCPPWebSocketClient.RemoteURL.ToString())
+                               : null,
+
+                           OCPPWebSocketServer is not null
+                               ? new JProperty("webSocketServer",   OCPPWebSocketServer.IPSocket. ToString())
+                               : null,
+
+                           NetworkingHub.HasValue
+                               ? new JProperty("networkingHub",     NetworkingHub.                ToString())
+                               : null,
+
+                                 new JProperty("priority",          Priority),
+                                 new JProperty("weight",            Weight),
+                                 new JProperty("timestamp",         Timestamp.                    ToIso8601()),
+
+                           Timeout.HasValue
+                               ? new JProperty("timeout",           Timeout.Value.                ToIso8601())
+                               : null
+
+                       );
+
+            return json;
+
+        }
 
 
         #region (override) ToString()

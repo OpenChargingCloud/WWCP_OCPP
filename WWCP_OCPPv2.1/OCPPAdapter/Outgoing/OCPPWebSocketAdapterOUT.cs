@@ -19,6 +19,8 @@
 
 using System.Runtime.CompilerServices;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -659,6 +661,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+        public JObject ToJSON()
+        {
+
+            var json = JSONObject.Create(
+
+                           //new JProperty("anycastIds",   new JArray(AnycastIds.Select(networkingNodeId => networkingNodeId.ToString())))
+
+                       );
+
+            return json;
+
+        }
 
 
         #region (private) LogEvent(Logger, LogHandler, ...)

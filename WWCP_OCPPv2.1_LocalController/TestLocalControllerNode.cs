@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 {
 
     /// <summary>
-    /// A local controller node for testing.
+    /// An OCPP Local Controller node for testing.
     /// </summary>
     public partial class TestLocalControllerNode : ALocalControllerNode,
                                                    ILocalControllerNode

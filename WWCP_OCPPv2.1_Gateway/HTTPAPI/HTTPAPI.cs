@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -34,8 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
     /// <summary>
     /// The Gateway HTTP API.
     /// </summary>
-    public class HTTPAPI : AHTTPAPIExtension<HTTPExtAPI>,
-                           IHTTPAPIExtension<HTTPExtAPI>
+    public class HTTPAPI : NetworkingNode.HTTPAPI
     {
 
         #region Data
@@ -83,36 +83,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// The HTTP realm, if HTTP Basic Authentication is used.
-        /// </summary>
-        public String?                                    HTTPRealm     { get; }
-
-        /// <summary>
-        /// An enumeration of logins for an optional HTTP Basic Authentication.
-        /// </summary>
-        public IEnumerable<KeyValuePair<String, String>>  HTTPLogins    { get; }
-
-        /// <summary>
-        /// Send debug information via HTTP Server Sent Events.
-        /// </summary>
-        public HTTPEventSource<JObject>                   EventLog      { get; }
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
         /// Attach the given gateway WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="HTTPAPI">A HTTP API.</param>
+        /// <param name="HTTPExtAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
         public HTTPAPI(AGatewayNode                                Gateway,
-                       HTTPExtAPI                                  HTTPAPI,
+                       HTTPExtAPI                                  HTTPExtAPI,
                        String?                                     HTTPServerName         = null,
                        HTTPPath?                                   URLPathPrefix          = null,
                        HTTPPath?                                   BasePath               = null,
@@ -121,35 +102,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                        String                                      HTTPRealm              = DefaultHTTPRealm,
                        IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
-                       String?                                     HTMLTemplate           = null)
+                       Formatting                                  JSONFormatting         = Formatting.None)
 
-            : base(HTTPAPI,
+            : base(Gateway,
+                   HTTPExtAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath,
-                   HTMLTemplate)
+
+                   EventLoggingDisabled,
+
+                   HTTPRealm,
+                   HTTPLogins,
+                   JSONFormatting)
 
         {
 
-            this.gateway             = Gateway;
-            this.HTTPRealm           = HTTPRealm;
-            this.HTTPLogins          = HTTPLogins ?? [];
-
-            // Link HTTP events...
-            //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
-            //HTTPServer.ResponseLog  += (HTTPProcessor, ServerTimestamp, Request, Response)                       => ResponseLog.WhenAll(HTTPProcessor, ServerTimestamp, Request, Response);
-            //HTTPServer.ErrorLog     += (HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException) => ErrorLog.   WhenAll(HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException);
-
-            var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
-
-            this.EventLog            = HTTPBaseAPI.AddJSONEventSource(
-                                           EventIdentification:      EventLogId,
-                                           URLTemplate:              this.URLPathPrefix + "/events",
-                                           MaxNumberOfCachedEvents:  10000,
-                                           RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            !EventLoggingDisabled,
-                                           LogfilePrefix:            LogfilePrefix
-                                       );
+            this.gateway = Gateway;
 
             RegisterURITemplates();
             AttachGateway(gateway);

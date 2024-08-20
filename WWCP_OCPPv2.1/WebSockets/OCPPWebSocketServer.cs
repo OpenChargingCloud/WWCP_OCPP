@@ -1534,7 +1534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
             var lookUpNetworkingNodeId = NetworkingNodeId;
 
-            if (OCPPAdapter.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
+            if (OCPPAdapter.Routing.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
                 reachability is not null)
             {
                 lookUpNetworkingNodeId = reachability.DestinationId;

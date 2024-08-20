@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,13 +47,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String   SignedMeterData    { get; }
 
         /// <summary>
-        /// Method used to create the digital signature.
-        /// [max 50]
-        /// </summary>
-        [Mandatory]
-        public String   SigningMethod      { get; }
-
-        /// <summary>
         /// Method used to encode the meter values before applying the digital signature algorithm.
         /// [max 50]
         /// </summary>
@@ -59,11 +54,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String   EncodingMethod     { get; }
 
         /// <summary>
-        /// The public key (base64 encoded).
+        /// Optional method used to create the digital signature.
+        /// This information might already be included within the signedMeterData.
+        /// [max 50]
+        /// </summary>
+        [Optional]
+        public String?  SigningMethod      { get; }
+
+        /// <summary>
+        /// The optional, but when it is given base64 encoded public key.
         /// [max 2500]
         /// </summary>
-        [Mandatory]
-        public String   PublicKey          { get; }
+        [Optional]
+        public String?  PublicKey          { get; }
 
         #endregion
 
@@ -73,33 +76,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new signed meter value.
         /// </summary>
         /// <param name="SignedMeterData">The signed meter value (base64 encoded).</param>
-        /// <param name="SigningMethod">Method used to create the digital signature.</param>
         /// <param name="EncodingMethod">Method used to encode the meter values before applying the digital signature algorithm.</param>
-        /// <param name="PublicKey">The public key (base64 encoded).</param>
+        /// <param name="SigningMethod">An optional method used to create the digital signature. This information might already be included within the signedMeterData.</param>
+        /// <param name="PublicKey">An optional, but when it is given base64 encoded public key..</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SignedMeterValue(String       SignedMeterData,
-                                String       SigningMethod,
                                 String       EncodingMethod,
-                                String       PublicKey,
-                                CustomData?  CustomData   = null)
+                                String?      SigningMethod   = null,
+                                String?      PublicKey       = null,
+                                CustomData?  CustomData      = null)
 
             : base(CustomData)
 
         {
 
             this.SignedMeterData  = SignedMeterData;
-            this.SigningMethod    = SigningMethod;
             this.EncodingMethod   = EncodingMethod;
+            this.SigningMethod    = SigningMethod;
             this.PublicKey        = PublicKey;
 
             unchecked
             {
 
-                hashCode = SignedMeterData.GetHashCode() * 11 ^
-                           SigningMethod.  GetHashCode() *  7 ^
-                           EncodingMethod. GetHashCode() *  5 ^
-                           PublicKey.      GetHashCode() *  3 ^
-
+                hashCode = SignedMeterData.GetHashCode()       * 11 ^
+                           EncodingMethod. GetHashCode()       *  5 ^
+                          (SigningMethod?. GetHashCode() ?? 0) *  7 ^
+                          (PublicKey?.     GetHashCode() ?? 0) *  3 ^
                            base.           GetHashCode();
 
             }
@@ -111,45 +113,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SignedMeterValueType",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Represent a signed version of the meter value.",
-        //   "javaType": "SignedMeterValue",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // "SignedMeterValueType": {
+        //     "description":           "Signed_ Meter_ Value
+        //                               urn:x-enexis:ecdm:uid:2:236397
+        //                               Represent a signed version of the meter value.",
+        //     "javaType":              "SignedMeterValue",
+        //     "type":                  "object",
+        //     "additionalProperties":   false,
+        //     "properties": {
+        //         "signedMeterData": {
+        //             "description": "Signed_ Meter_ Value. Signed_ Meter_ Data. Base64String2500Type
+        //                             urn:x-enexis:ecdm:uid:1:572635
+        //                             Base64 encoded, contains the signed data which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.",
+        //             "type":        "string",
+        //             "maxLength":    2500
+        //         },
+        //         "signingMethod": {
+        //             "description": "Signed_ Meter_ Value. Signing_ Method. CI50_ Text
+        //                             urn:x-enexis:ecdm:uid:1:572636
+        //                             *(2.1)* Method used to create the digital signature. Optional, if already included in _signedMeterData_.",
+        //             "type":        "string",
+        //             "maxLength":    50
+        //         },
+        //         "encodingMethod": {
+        //             "description": "Signed_ Meter_ Value. Encoding_ Method. CI50_ Text
+        //                             urn:x-enexis:ecdm:uid:1:572634
+        //                             Method used to encode the meter values before applying the digital signature algorithm.",
+        //             "type":        "string",
+        //             "maxLength":    50
+        //         },
+        //         "publicKey": {
+        //             "description": "Signed_ Meter_ Value. Public_ Key. Base64String2500Type
+        //                             urn:x-enexis:ecdm:uid:1:572633
+        //                             *(2.1)* Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_",
+        //             "type":        "string",
+        //             "maxLength":    2500
+        //         }
         //     },
-        //     "signedMeterData": {
-        //       "description": "Base64 encoded, contains the signed data which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.",
-        //       "type": "string",
-        //       "maxLength": 2500
-        //     },
-        //     "signingMethod": {
-        //       "description": "Method used to create the digital signature.",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     },
-        //     "encodingMethod": {
-        //       "description": "Method used to encode the meter values before applying the digital signature algorithm.",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     },
-        //     "publicKey": {
-        //       "description": "Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.",
-        //       "type": "string",
-        //       "maxLength": 2500
-        //     }
-        //   },
-        //   "required": [
-        //     "signedMeterData",
-        //     "signingMethod",
-        //     "encodingMethod",
-        //     "publicKey"
-        //   ]
+        //     "required": [
+        //         "signedMeterData",
+        //         "encodingMethod"
+        //     ]
         // }
 
         #endregion
@@ -168,8 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var signedMeterValue,
                          out var errorResponse,
-                         CustomSignedMeterValueParser) &&
-                signedMeterValue is not null)
+                         CustomSignedMeterValueParser))
             {
                 return signedMeterValue;
             }
@@ -191,9 +194,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignedMeterValue">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out SignedMeterValue?  SignedMeterValue,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out SignedMeterValue?  SignedMeterValue,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
 
             => TryParse(JSON,
                         out SignedMeterValue,
@@ -209,8 +212,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSignedMeterValueParser">A delegate to parse custom signed meter values.</param>
         public static Boolean TryParse(JObject                                         JSON,
-                                       out SignedMeterValue?                           SignedMeterValue,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out SignedMeterValue?      SignedMeterValue,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<SignedMeterValue>?  CustomSignedMeterValueParser   = null)
         {
 
@@ -231,18 +234,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region SigningMethod      [mandatory]
-
-                if (!JSON.ParseMandatoryText("signingMethod",
-                                             "signing method",
-                                             out String SigningMethod,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
                 #region EncodingMethod     [mandatory]
 
                 if (!JSON.ParseMandatoryText("encodingMethod",
@@ -255,15 +246,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region PublicKey          [mandatory]
+                #region SigningMethod      [optional]
 
-                if (!JSON.ParseMandatoryText("publicKey",
-                                             "public key",
-                                             out String PublicKey,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
+                var SigningMethod = JSON.GetString("signingMethod");
+
+                #endregion
+
+                #region PublicKey          [optional]
+
+                var PublicKey = JSON.GetString("publicKey");
 
                 #endregion
 
@@ -284,8 +275,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SignedMeterValue = new SignedMeterValue(
                                        SignedMeterData,
-                                       SigningMethod,
                                        EncodingMethod,
+                                       SigningMethod,
                                        PublicKey,
                                        CustomData
                                    );
@@ -322,9 +313,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("signedMeterData",   SignedMeterData),
-                                 new JProperty("signingMethod",     SigningMethod),
                                  new JProperty("encodingMethod",    EncodingMethod),
-                                 new JProperty("publicKey",         PublicKey),
+
+                           SigningMethod.IsNotNullOrEmpty()
+                               ? new JProperty("signingMethod",     SigningMethod)
+                               : null,
+
+                           PublicKey.    IsNotNullOrEmpty()
+                               ? new JProperty("publicKey",         PublicKey)
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
@@ -349,9 +346,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
                    new String(SignedMeterData.ToCharArray()),
-                   new String(SigningMethod.  ToCharArray()),
                    new String(EncodingMethod. ToCharArray()),
-                   new String(PublicKey.      ToCharArray()),
+                   SigningMethod.IsNotNullOrEmpty() ? new String(SigningMethod.  ToCharArray()) : null,
+                   PublicKey.    IsNotNullOrEmpty() ? new String(PublicKey.      ToCharArray()) : null,
                    CustomData
                );
 
@@ -458,9 +455,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(SignedMeterData, ", ",
-                             SigningMethod,   ", ",
-                             EncodingMethod);
+            => String.Concat(
+
+                   $"{EncodingMethod}: '{SignedMeterData}'",
+
+                   SigningMethod.IsNotNullOrEmpty()
+                       ? $", signing method: {SigningMethod}"
+                       : "",
+
+                   PublicKey.    IsNotNullOrEmpty()
+                       ? $", public key: {PublicKey}"
+                       : ""
+
+               );
 
         #endregion
 

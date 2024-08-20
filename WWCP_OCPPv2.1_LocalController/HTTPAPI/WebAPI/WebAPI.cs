@@ -79,11 +79,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// <summary>
         /// Attach the given local controller WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="LocalController">A local controller.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
+        /// <param name="LocalController">A Local Controller node.</param>
+        /// <param name="HTTPServer">A HTTP server.</param>
+        /// <param name="HTTPServerName">An optional HTTP server name for the WebAPI.</param>
+        /// <param name="URLPathPrefix">An optional URL path prefix for the WebAPI.</param>
+        /// <param name="BasePath">An optional base path for the WebAPI.</param>
+        /// <param name="HTTPRealm">An optional HTTP realm, when HTTP Basic Authentication is used with the WebAPI.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
+        /// <param name="HTMLTemplate"></param>
         public WebAPI(ALocalControllerNode                        LocalController,
                       HTTPServer                                  HTTPServer,
                       String?                                     HTTPServerName   = null,

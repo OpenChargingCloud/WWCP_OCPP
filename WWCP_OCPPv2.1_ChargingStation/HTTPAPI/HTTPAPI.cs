@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -34,8 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The OCPP Networking Node HTTP API.
     /// </summary>
-    public class HTTPAPI : AHTTPAPIExtension<HTTPExtAPI>,
-                           IHTTPAPIExtension<HTTPExtAPI>
+    public class HTTPAPI : NetworkingNode.HTTPAPI
     {
 
         #region Data
@@ -83,37 +83,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// The HTTP realm, if HTTP Basic Authentication is used.
-        /// </summary>
-        public  String?                                    HTTPRealm         { get; }
-
-        /// <summary>
-        /// An enumeration of logins for an optional HTTP Basic Authentication.
-        /// </summary>
-        public  IEnumerable<KeyValuePair<String, String>>  HTTPLogins        { get; }
-
-        /// <summary>
-        /// Send debug information via HTTP Server Sent Events.
-        /// </summary>
-        public  HTTPEventSource<JObject>                   EventLog          { get; }
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
         /// <param name="ChargingStation">An OCPP charging station management system.</param>
-        /// <param name="HTTPAPI">A HTTP API.</param>
+        /// <param name="HTTPExtAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
         public HTTPAPI(AChargingStationNode                        ChargingStation,
-                       HTTPExtAPI                                  HTTPAPI,
+                       HTTPExtAPI                                  HTTPExtAPI,
                        String?                                     HTTPServerName         = null,
                        HTTPPath?                                   URLPathPrefix          = null,
                        HTTPPath?                                   BasePath               = null,
@@ -122,35 +103,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        String                                      HTTPRealm              = DefaultHTTPRealm,
                        IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
-                       String?                                     HTMLTemplate           = null)
+                       Formatting                                  JSONFormatting         = Formatting.None)
 
-            : base(HTTPAPI,
+            : base(ChargingStation,
+                   HTTPExtAPI,
                    HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath,
-                   HTMLTemplate)
+
+                   EventLoggingDisabled,
+
+                   HTTPRealm,
+                   HTTPLogins,
+                   JSONFormatting)
 
         {
 
-            this.chargingStation     = ChargingStation;
-            this.HTTPRealm           = HTTPRealm;
-            this.HTTPLogins          = HTTPLogins ?? [];
-
-            // Link HTTP events...
-            //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
-            //HTTPServer.ResponseLog  += (HTTPProcessor, ServerTimestamp, Request, Response)                       => ResponseLog.WhenAll(HTTPProcessor, ServerTimestamp, Request, Response);
-            //HTTPServer.ErrorLog     += (HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException) => ErrorLog.   WhenAll(HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException);
-
-            var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
-
-            this.EventLog            = HTTPBaseAPI.AddJSONEventSource(
-                                           EventIdentification:      EventLogId,
-                                           URLTemplate:              this.URLPathPrefix + "/events",
-                                           MaxNumberOfCachedEvents:  10000,
-                                           RetryIntervall:           TimeSpan.FromSeconds(5),
-                                           EnableLogging:            !EventLoggingDisabled,
-                                           LogfilePrefix:            LogfilePrefix
-                                       );
+            this.chargingStation = ChargingStation;
 
             RegisterURITemplates();
             AttachChargingStation(chargingStation);
@@ -164,290 +133,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         public void AttachChargingStation(AChargingStationNode ChargingStation)
         {
-
-            // Wire HTTP Server Sent Events
-
-            #region Generic JSON Messages
-
-            #region OnJSONMessageRequestReceived
-
-            //ChargingStation.OnJSONMessageRequestReceived += (timestamp,
-            //                                                webSocketServer,
-            //                                                webSocketConnection,
-            //                                                networkingNodeId,
-            //                                                networkPath,
-            //                                                eventTrackingId,
-            //                                                requestTimestamp,
-            //                                                requestMessage,
-            //                                                cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageRequestReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      requestMessage)
-            //                         ));
-
-            #endregion
-
-            #region OnJSONMessageResponseSent
-
-            //ChargingStation.OnJSONMessageResponseSent += (timestamp,
-            //                                             webSocketServer,
-            //                                             webSocketConnection,
-            //                                             networkingNodeId,
-            //                                             networkPath,
-            //                                             eventTrackingId,
-            //                                             requestTimestamp,
-            //                                             jsonRequestMessage,
-            //                                             binaryRequestMessage,
-            //                                             responseTimestamp,
-            //                                             responseMessage,
-            //                                             cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageResponseSent),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)
-            //                         ));
-
-            #endregion
-
-            #region OnJSONErrorResponseSent
-
-            //ChargingStation.OnJSONErrorResponseSent += (timestamp,
-            //                                           webSocketServer,
-            //                                           webSocketConnection,
-            //                                           eventTrackingId,
-            //                                           requestTimestamp,
-            //                                           jsonRequestMessage,
-            //                                           binaryRequestMessage,
-            //                                           responseTimestamp,
-            //                                           responseMessage,
-            //                                           cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONErrorResponseSent),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)
-            //                         ));
-
-            #endregion
-
-
-            #region OnJSONMessageRequestSent
-
-            //ChargingStation.OnJSONMessageRequestSent += (timestamp,
-            //                                            webSocketServer,
-            //                                            webSocketConnection,
-            //                                            networkingNodeId,
-            //                                            networkPath,
-            //                                            eventTrackingId,
-            //                                            requestTimestamp,
-            //                                            requestMessage,
-            //                                            cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageRequestSent),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      requestMessage)
-            //                         ));
-
-            #endregion
-
-            #region OnJSONMessageResponseReceived
-
-            //ChargingStation.OnJSONMessageResponseReceived += (timestamp,
-            //                                                 webSocketServer,
-            //                                                 webSocketConnection,
-            //                                                 networkingNodeId,
-            //                                                 networkPath,
-            //                                                 eventTrackingId,
-            //                                                 requestTimestamp,
-            //                                                 jsonRequestMessage,
-            //                                                 binaryRequestMessage,
-            //                                                 responseTimestamp,
-            //                                                 responseMessage,
-            //                                                 cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONMessageResponseReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)
-            //                         ));
-
-            #endregion
-
-            #region OnJSONErrorResponseReceived
-
-            //ChargingStation.OnJSONErrorResponseReceived += (timestamp,
-            //                                               webSocketServer,
-            //                                               webSocketConnection,
-            //                                               eventTrackingId,
-            //                                               requestTimestamp,
-            //                                               jsonRequestMessage,
-            //                                               binaryRequestMessage,
-            //                                               responseTimestamp,
-            //                                               responseMessage,
-            //                                               cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnJSONErrorResponseReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)
-            //                         ));
-
-            #endregion
-
-            #endregion
-
-            #region Generic Binary Messages
-
-            #region OnBinaryMessageRequestReceived
-
-            //ChargingStation.OnBinaryMessageRequestReceived += (timestamp,
-            //                                                  webSocketServer,
-            //                                                  webSocketConnection,
-            //                                                  networkingNodeId,
-            //                                                  networkPath,
-            //                                                  eventTrackingId,
-            //                                                  requestTimestamp,
-            //                                                  requestMessage,
-            //                                                  cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageRequestReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
-            //                         ));
-
-            #endregion
-
-            #region OnBinaryMessageResponseSent
-
-            //ChargingStation.OnBinaryMessageResponseSent += (timestamp,
-            //                                               webSocketServer,
-            //                                               webSocketConnection,
-            //                                               networkingNodeId,
-            //                                               networkPath,
-            //                                               eventTrackingId,
-            //                                               requestTimestamp,
-            //                                               jsonRequestMessage,
-            //                                               binaryRequestMessage,
-            //                                               responseTimestamp,
-            //                                               responseMessage,
-            //                                               cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageResponseSent),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
-            //                         ));
-
-            #endregion
-
-            #region OnBinaryErrorResponseSent
-
-            //NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
-            //                                                  webSocketServer,
-            //                                                  webSocketConnection,
-            //                                                  eventTrackingId,
-            //                                                  requestTimestamp,
-            //                                                  jsonRequestMessage,
-            //                                                  binaryRequestMessage,
-            //                                                  responseTimestamp,
-            //                                                  responseMessage) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
-            //                         ));
-
-            #endregion
-
-
-            #region OnBinaryMessageRequestSent
-
-            //ChargingStation.OnBinaryMessageRequestSent += (timestamp,
-            //                                                   webSocketServer,
-            //                                                   webSocketConnection,
-            //                                                   networkingNodeId,
-            //                                                   networkPath,
-            //                                                   eventTrackingId,
-            //                                                   requestTimestamp,
-            //                                                   requestMessage,
-            //                                                   cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageRequestSent),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
-            //                         ));
-
-            #endregion
-
-            #region OnBinaryMessageResponseReceived
-
-            //ChargingStation.OnBinaryMessageResponseReceived += (timestamp,
-            //                                                        webSocketServer,
-            //                                                        webSocketConnection,
-            //                                                        networkingNodeId,
-            //                                                        networkPath,
-            //                                                        eventTrackingId,
-            //                                                        requestTimestamp,
-            //                                                        jsonRequestMessage,
-            //                                                        binaryRequestMessage,
-            //                                                        responseTimestamp,
-            //                                                        responseMessage,
-            //                                                        cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(ChargingStation.OnBinaryMessageResponseReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
-            //                         ));
-
-            #endregion
-
-            #region OnBinaryErrorResponseReceived
-
-            //NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
-            //                                                      webSocketServer,
-            //                                                      webSocketConnection,
-            //                                                      eventTrackingId,
-            //                                                      requestTimestamp,
-            //                                                      jsonRequestMessage,
-            //                                                      binaryRequestMessage,
-            //                                                      responseTimestamp,
-            //                                                      responseMessage) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
-            //                         ));
-
-            #endregion
-
-            #endregion
-
-
-
-            // Firmware API download messages
-            // Logdata API upload messages
-            // Diagnostics API upload messages
 
 
         }

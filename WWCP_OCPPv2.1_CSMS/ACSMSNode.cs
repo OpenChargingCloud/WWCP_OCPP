@@ -313,61 +313,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Id">The unique identification of this Charging Station Management System (CSMS).</param>
         /// <param name="Description">An optional multi-language description of the Charging Station Management System (CSMS).</param>
-        public ACSMSNode(NetworkingNode_Id         Id,
-                         String                    VendorName,
-                         String                    Model,
-                         String?                   SerialNumber                     = null,
-                         String?                   SoftwareVersion                  = null,
-                         I18NString?               Description                      = null,
-                         CustomData?               CustomData                       = null,
+        public ACSMSNode(NetworkingNode_Id              Id,
+                         String                         VendorName,
+                         String                         Model,
+                         String?                        SerialNumber                     = null,
+                         String?                        SoftwareVersion                  = null,
+                         I18NString?                    Description                      = null,
+                         CustomData?                    CustomData                       = null,
 
-                         AsymmetricCipherKeyPair?  ClientCAKeyPair                  = null,
-                         BCx509.X509Certificate?   ClientCACertificate              = null,
+                         AsymmetricCipherKeyPair?       ClientCAKeyPair                  = null,
+                         BCx509.X509Certificate?        ClientCACertificate              = null,
 
-                         SignaturePolicy?          SignaturePolicy                  = null,
-                         SignaturePolicy?          ForwardingSignaturePolicy        = null,
+                         SignaturePolicy?               SignaturePolicy                  = null,
+                         SignaturePolicy?               ForwardingSignaturePolicy        = null,
 
-                         HTTPAPI?                  HTTPAPI                          = null,
-                         Boolean                   HTTPAPI_Disabled                 = false,
-                         IPPort?                   HTTPAPI_Port                     = null,
-                         String?                   HTTPAPI_ServerName               = null,
-                         String?                   HTTPAPI_ServiceName              = null,
-                         EMailAddress?             HTTPAPI_RobotEMailAddress        = null,
-                         String?                   HTTPAPI_RobotGPGPassphrase       = null,
-                         Boolean                   HTTPAPI_EventLoggingDisabled     = false,
+                         Func<ACSMSNode, HTTPAPI>?      HTTPAPI                          = null,
+                         Boolean                        HTTPAPI_Disabled                 = false,
+                         IPPort?                        HTTPAPI_Port                     = null,
+                         String?                        HTTPAPI_ServerName               = null,
+                         String?                        HTTPAPI_ServiceName              = null,
+                         EMailAddress?                  HTTPAPI_RobotEMailAddress        = null,
+                         String?                        HTTPAPI_RobotGPGPassphrase       = null,
+                         Boolean                        HTTPAPI_EventLoggingDisabled     = false,
 
-                         DownloadAPI?              HTTPDownloadAPI                  = null,
-                         Boolean                   HTTPDownloadAPI_Disabled         = false,
-                         HTTPPath?                 HTTPDownloadAPI_Path             = null,
-                         String?                   HTTPDownloadAPI_FileSystemPath   = null,
+                         Func<ACSMSNode, DownloadAPI>?  HTTPDownloadAPI                  = null,
+                         Boolean                        HTTPDownloadAPI_Disabled         = false,
+                         HTTPPath?                      HTTPDownloadAPI_Path             = null,
+                         String?                        HTTPDownloadAPI_FileSystemPath   = null,
 
-                         UploadAPI?                HTTPUploadAPI                    = null,
-                         Boolean                   HTTPUploadAPI_Disabled           = false,
-                         HTTPPath?                 HTTPUploadAPI_Path               = null,
-                         String?                   HTTPUploadAPI_FileSystemPath     = null,
+                         Func<ACSMSNode, UploadAPI>?    HTTPUploadAPI                    = null,
+                         Boolean                        HTTPUploadAPI_Disabled           = false,
+                         HTTPPath?                      HTTPUploadAPI_Path               = null,
+                         String?                        HTTPUploadAPI_FileSystemPath     = null,
 
-                         //HTTPPath?                 FirmwareDownloadAPIPath          = null,
-                         //HTTPPath?                 LogfilesUploadAPIPath            = null,
-                         //HTTPPath?                 DiagnosticsUploadAPIPath         = null,
+                         //HTTPPath?                      FirmwareDownloadAPIPath          = null,
+                         //HTTPPath?                      LogfilesUploadAPIPath            = null,
+                         //HTTPPath?                      DiagnosticsUploadAPIPath         = null,
 
-                         QRCodeAPI?                QRCodeAPI                        = null,
-                         Boolean                   QRCodeAPI_Disabled               = false,
-                         HTTPPath?                 QRCodeAPI_Path                   = null,
+                         Func<ACSMSNode, QRCodeAPI>?    QRCodeAPI                        = null,
+                         Boolean                        QRCodeAPI_Disabled               = false,
+                         HTTPPath?                      QRCodeAPI_Path                   = null,
 
-                         WebAPI?                   WebAPI                           = null,
-                         Boolean                   WebAPI_Disabled                  = false,
-                         HTTPPath?                 WebAPI_Path                      = null,
+                         Func<ACSMSNode, WebAPI>?       WebAPI                           = null,
+                         Boolean                        WebAPI_Disabled                  = false,
+                         HTTPPath?                      WebAPI_Path                      = null,
 
-                         TimeSpan?                 DefaultRequestTimeout            = null,
+                         TimeSpan?                      DefaultRequestTimeout            = null,
 
-                         Boolean                   DisableSendHeartbeats            = false,
-                         TimeSpan?                 SendHeartbeatsEvery              = null,
+                         Boolean                        DisableSendHeartbeats            = false,
+                         TimeSpan?                      SendHeartbeatsEvery              = null,
 
-                         Boolean                   DisableMaintenanceTasks          = false,
-                         TimeSpan?                 MaintenanceEvery                 = null,
+                         Boolean                        DisableMaintenanceTasks          = false,
+                         TimeSpan?                      MaintenanceEvery                 = null,
 
-                         ISMTPClient?              SMTPClient                       = null,
-                         DNSClient?                DNSClient                        = null)
+                         ISMTPClient?                   SMTPClient                       = null,
+                         DNSClient?                     DNSClient                        = null)
 
             : base(Id,
                    Description,
@@ -427,23 +427,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.HTTPUploadAPI_FileSystemPath    = HTTPUploadAPI_FileSystemPath   ?? Path.Combine(AppContext.BaseDirectory, "UploadAPI");
             this.HTTPDownloadAPI_FileSystemPath  = HTTPDownloadAPI_FileSystemPath ?? Path.Combine(AppContext.BaseDirectory, "DownloadAPI");
 
-            if (HTTPExtAPI is not null)
-            {
+            if (this.HTTPExtAPI is not null)
+                this.HTTPAPI                     = !HTTPAPI_Disabled
+                                                       ? HTTPAPI?.Invoke(this)      ?? new HTTPAPI(
+                                                                                           this,
+                                                                                           HTTPExtAPI,
+                                                                                           EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
+                                                                                       )
+                                                       : null;
 
-                this.HTTPAPI                     = HTTPAPI ?? new HTTPAPI(
-                                                                  this,
-                                                                  HTTPExtAPI,
-                                                                  EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
-                                                              );
+            if (this.HTTPAPI is not null)
+            {
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                this.HTTPAPI.HTTPBaseAPI.HTTPServer.AddAuth(request => {
 
                     // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
-                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
-                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                    if (request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+                        request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+                        request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.WebAPI_Path))
                     {
                         return HTTPExtAPI.Anonymous;
                     }
@@ -459,12 +462,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     Directory.CreateDirectory(this.HTTPUploadAPI_FileSystemPath);
-                    this.HTTPUploadAPI              = HTTPUploadAPI   ?? new UploadAPI(
-                                                                             this,
-                                                                             HTTPExtAPI.HTTPServer,
-                                                                             URLPathPrefix:   this.HTTPUploadAPI_Path,
-                                                                             FileSystemPath:  this.HTTPUploadAPI_FileSystemPath
-                                                                         );
+                    this.HTTPUploadAPI              = HTTPUploadAPI?.Invoke(this)   ?? new UploadAPI(
+                                                                                           this,
+                                                                                           this.HTTPAPI.HTTPBaseAPI.HTTPServer,
+                                                                                           URLPathPrefix:   this.HTTPUploadAPI_Path,
+                                                                                           FileSystemPath:  this.HTTPUploadAPI_FileSystemPath
+                                                                                       );
 
                 }
 
@@ -472,34 +475,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     Directory.CreateDirectory(this.HTTPDownloadAPI_FileSystemPath);
-                    this.HTTPDownloadAPI            = HTTPDownloadAPI ?? new DownloadAPI(
-                                                                             this,
-                                                                             HTTPExtAPI.HTTPServer,
-                                                                             URLPathPrefix:   this.HTTPDownloadAPI_Path,
-                                                                             FileSystemPath:  this.HTTPDownloadAPI_FileSystemPath
-                                                                         );
+                    this.HTTPDownloadAPI            = HTTPDownloadAPI?.Invoke(this) ?? new DownloadAPI(
+                                                                                           this,
+                                                                                           this.HTTPAPI.HTTPBaseAPI.HTTPServer,
+                                                                                           URLPathPrefix:   this.HTTPDownloadAPI_Path,
+                                                                                           FileSystemPath:  this.HTTPDownloadAPI_FileSystemPath
+                                                                                       );
 
                 }
 
                 if (!QRCodeAPI_Disabled)
                 {
 
-                    this.QRCodeAPI                  = QRCodeAPI       ?? new QRCodeAPI(
-                                                                             this,
-                                                                             HTTPExtAPI.HTTPServer,
-                                                                             URLPathPrefix:   this.QRCodeAPI_Path
-                                                                         );
+                    this.QRCodeAPI                  = QRCodeAPI?.Invoke(this)       ?? new QRCodeAPI(
+                                                                                           this,
+                                                                                           this.HTTPAPI.HTTPBaseAPI.HTTPServer,
+                                                                                           URLPathPrefix:   this.QRCodeAPI_Path
+                                                                                       );
 
                 }
 
                 if (!WebAPI_Disabled)
                 {
 
-                    this.WebAPI                     = WebAPI          ?? new WebAPI(
-                                                                             this,
-                                                                             HTTPExtAPI.HTTPServer,
-                                                                             URLPathPrefix:   this.WebAPI_Path
-                                                                         );
+                    this.WebAPI                     = WebAPI?.Invoke(this)          ?? new WebAPI(
+                                                                                           this,
+                                                                                           this.HTTPAPI.HTTPBaseAPI.HTTPServer,
+                                                                                           URLPathPrefix:   this.WebAPI_Path
+                                                                                       );
 
                 }
 

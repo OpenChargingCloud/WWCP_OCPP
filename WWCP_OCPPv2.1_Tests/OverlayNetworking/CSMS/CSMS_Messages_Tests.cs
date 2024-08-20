@@ -97,8 +97,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.OCPP.AddStaticRouting(chargingStation1.Id,
-                                                 localController1.Id);
+                testCSMS01.OCPP.Routing.AddOrUpdateStaticRouting(
+                    chargingStation1.Id,
+                    localController1.Id
+                );
 
 
                 var resetType  = ResetType.Immediate;
@@ -207,8 +209,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.OCPP.AddStaticRouting(chargingStation1.Id,
-                                                 localController1.Id);
+                testCSMS01.OCPP.Routing.AddOrUpdateStaticRouting(
+                    chargingStation1.Id,
+                    localController1.Id
+                );
 
                 //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 
@@ -327,8 +331,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.OCPP.AddStaticRouting(chargingStation1.Id,
-                                                 localController1.Id);
+                testCSMS01.OCPP.Routing.AddOrUpdateStaticRouting(
+                    chargingStation1.Id,
+                    localController1.Id
+                );
 
                 //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 

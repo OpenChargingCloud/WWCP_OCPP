@@ -436,20 +436,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         NextHopNetworkingNodeId
                     );
 
-                    OCPP.AddStaticRouting(
+                    OCPP.Routing.AddOrUpdateStaticRouting(
                         NextHopNetworkingNodeId.Value,
                         ocppWebSocketClient,
                         0,
+                        1,
                         Timestamp.Now
                     );
 
                 }
 
                 if (RoutingNetworkingNodeIds is not null && RoutingNetworkingNodeIds.Any())
-                    OCPP.AddStaticRouting(
+                    OCPP.Routing.AddOrUpdateStaticRouting(
                         RoutingNetworkingNodeIds,
                         ocppWebSocketClient,
                         0,
+                        1,
                         Timestamp.Now
                     );
 
@@ -684,10 +686,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                              cancellationToken) => {
 
                 // A new connection from the same networking node/charging station will replace the older one!
-                OCPP.AddStaticRouting(DestinationId:    networkingNodeId,
-                                      WebSocketServer:  ocppWebSocketServer,
-                                      Priority:         0,
-                                      Timestamp:        timestamp);
+                OCPP.Routing.AddOrUpdateStaticRouting(
+                    DestinationId:    networkingNodeId,
+                    WebSocketServer:  ocppWebSocketServer,
+                    Priority:         0,
+                    Timestamp:        timestamp
+                );
 
                 #region Send OnNewWebSocketServerConnection
 
@@ -858,13 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-
-
-
-
-
             // (Generic) Error Handling
-
 
         }
 

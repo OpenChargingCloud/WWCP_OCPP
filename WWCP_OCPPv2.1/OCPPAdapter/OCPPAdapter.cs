@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
@@ -40,25 +41,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private readonly        ConcurrentDictionary<NetworkingNode_Id, List<Reachability>>  reachableNetworkingNodes        = [];
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>           requests                        = [];
-        private readonly        HashSet<SignaturePolicy>                                     signaturePolicies               = [];
-        private readonly        HashSet<SignaturePolicy>                                     forwardingSignaturePolicies     = [];
-        private                 Int64                                                        internalRequestId               = 800000;
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>  requests                        = [];
+        private readonly        HashSet<SignaturePolicy>                            signaturePolicies               = [];
+        private                 Int64                                               internalRequestId               = 800000;
 
         /// <summary>
         /// The default time span between heartbeat requests.
         /// </summary>
-        public static readonly  TimeSpan                                                     DefaultSendHeartbeatsEvery      = TimeSpan.FromMinutes(5);
+        public static readonly  TimeSpan                                            DefaultSendHeartbeatsEvery      = TimeSpan.FromMinutes(5);
 
         /// <summary>
         /// The default request timeout default.
         /// </summary>
-        public static readonly  TimeSpan                                                     DefaultRequestTimeoutDefault    = TimeSpan.FromSeconds(30);
+        public static readonly  TimeSpan                                            DefaultRequestTimeoutDefault    = TimeSpan.FromSeconds(30);
 
-        public const            String                                                       X_OCPP_NetworkingMode           = "X-OCPP-NetworkingMode";
-        public const            String                                                       NetworkingNodeId_WebSocketKey   = "NetworkingNodeId";
-        public const            String                                                       NetworkingMode_WebSocketKey     = "NetworkingMode";
+        public const            String                                              X_OCPP_NetworkingMode           = "X-OCPP-NetworkingMode";
+        public const            String                                              NetworkingNodeId_WebSocketKey   = "NetworkingNodeId";
+        public const            String                                              NetworkingMode_WebSocketKey     = "NetworkingMode";
 
         #endregion
 
@@ -83,6 +82,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Forwarded OCPP messages.
         /// </summary>
         public OCPPWebSocketAdapterFORWARD  FORWARD                  { get; }
+
+        /// <summary>
+        /// OCPP Routing of messages.
+        /// </summary>
+        public Routing                      Routing                  { get; }
 
         /// <summary>
         /// Disable the sending of heartbeats.
@@ -132,22 +136,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public SignaturePolicy               SignaturePolicy
             => signaturePolicies.First();
-
-        #endregion
-
-        #region ForwardingSignaturePolicy/-ies
-
-        /// <summary>
-        /// The enumeration of all signature policies.
-        /// </summary>
-        public IEnumerable<SignaturePolicy>  ForwardingSignaturePolicies
-            => forwardingSignaturePolicies;
-
-        /// <summary>
-        /// The currently active signature policy.
-        /// </summary>
-        public SignaturePolicy               ForwardingSignaturePolicy
-            => forwardingSignaturePolicies.First();
 
         #endregion
 
@@ -802,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP adapter.
+        /// Create a new OCPP Adapter.
         /// </summary>
         /// <param name="NetworkingNode">The attached networking node.</param>
         /// 
@@ -812,16 +800,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="DefaultRequestTimeout">The optional default request time out.</param>
         /// 
         /// <param name="SignaturePolicy">An optional signature policy.</param>
+        /// 
         /// <param name="ForwardingSignaturePolicy">An optional signature policy when forwarding OCPP messages.</param>
-        public OCPPAdapter(INetworkingNode   NetworkingNode,
+        /// <param name="DefaultForwardingDecision">The default forwarding decision.</param>
+        public OCPPAdapter(INetworkingNode       NetworkingNode,
 
-                           Boolean           DisableSendHeartbeats       = false,
-                           TimeSpan?         SendHeartbeatsEvery         = null,
+                           Boolean               DisableSendHeartbeats       = false,
+                           TimeSpan?             SendHeartbeatsEvery         = null,
 
-                           TimeSpan?         DefaultRequestTimeout       = null,
+                           TimeSpan?             DefaultRequestTimeout       = null,
 
-                           SignaturePolicy?  SignaturePolicy             = null,
-                           SignaturePolicy?  ForwardingSignaturePolicy   = null)
+                           SignaturePolicy?      SignaturePolicy             = null,
+
+                           SignaturePolicy?      ForwardingSignaturePolicy   = null,
+                           ForwardingDecisions?  DefaultForwardingDecision   = null)
 
         {
 
@@ -831,12 +823,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             this.DefaultRequestTimeout  = DefaultRequestTimeout ?? DefaultRequestTimeoutDefault;
 
-            this.signaturePolicies.          Add(SignaturePolicy           ?? new SignaturePolicy());
-            this.forwardingSignaturePolicies.Add(ForwardingSignaturePolicy ?? new SignaturePolicy());
+            this.Routing                = new Routing();
 
-            this.IN       = new OCPPWebSocketAdapterIN     (NetworkingNode);
-            this.OUT      = new OCPPWebSocketAdapterOUT    (NetworkingNode);
-            this.FORWARD  = new OCPPWebSocketAdapterFORWARD(NetworkingNode);
+            this.IN                     = new OCPPWebSocketAdapterIN(
+                                              NetworkingNode
+                                          );
+
+            this.OUT                    = new OCPPWebSocketAdapterOUT(
+                                              NetworkingNode
+                                          );
+
+            this.FORWARD                = new OCPPWebSocketAdapterFORWARD(
+                                              NetworkingNode,
+                                              ForwardingSignaturePolicy,
+                                              DefaultForwardingDecision
+                                          );
+
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
         }
 
@@ -853,7 +856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -994,7 +997,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1018,7 +1021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1042,7 +1045,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1067,7 +1070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -1099,7 +1102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -1240,7 +1243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1264,7 +1267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1288,7 +1291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
@@ -1313,7 +1316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
+            if (Routing.LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)
@@ -1504,313 +1507,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region LookupNetworkingNode (DestinationId, out Reachability)
-
-        public Boolean LookupNetworkingNode(NetworkingNode_Id                      DestinationId,
-                                            [NotNullWhen(true)] out Reachability?  Reachability)
+        public JObject ToJSON()
         {
 
-            if (reachableNetworkingNodes.TryGetValue(DestinationId, out var reachabilityList) &&
-                reachabilityList is not null &&
-                reachabilityList.Count > 0)
-            {
+            var json = JSONObject.Create(
 
-                var reachability = reachabilityList.OrderBy(entry => entry.Priority).First();
+                           new JProperty("id",                            Id.ToString()),
 
-                if (reachability.NetworkingHub.HasValue)
-                {
+                           new JProperty("IN",                            IN.     ToJSON()),
+                           new JProperty("OUT",                           OUT.    ToJSON()),
+                           new JProperty("FORWARD",                       FORWARD.ToJSON()),
 
-                    var visitedIds = new HashSet<NetworkingNode_Id>();
+                           new JProperty("routing",                       Routing.ToJSON()),
 
-                    do
-                    {
+                           new JProperty("disableSendHeartbeats",         DisableSendHeartbeats),
+                           new JProperty("sendHeartbeatsEvery",           SendHeartbeatsEvery.TotalSeconds),
+                          //new JProperty("disableSendHeartbeats",         DisableSendHeartbeats),
 
-                        if (reachability.NetworkingHub.HasValue)
-                        {
+                           new JProperty("defaultRequestTimeout",         DefaultRequestTimeout.TotalSeconds),
 
-                            visitedIds.Add(reachability.NetworkingHub.Value);
+                           new JProperty("signaturePolicies",             new JArray(SignaturePolicies.          Select(signaturePolicy => signaturePolicy.ToJSON())))
 
-                            if (reachableNetworkingNodes.TryGetValue(reachability.NetworkingHub.Value, out var reachability2List) &&
-                                reachability2List is not null &&
-                                reachability2List.Count > 0)
-                            {
-                                reachability = reachability2List.OrderBy(entry => entry.Priority).First();
-                            }
+                       );
 
-                            // Loop detected!
-                            if (reachability.NetworkingHub.HasValue && visitedIds.Contains(reachability.NetworkingHub.Value))
-                                break;
-
-                        }
-
-                    } while (reachability.OCPPWebSocketClient is null &&
-                             reachability.OCPPWebSocketServer is null);
-
-                }
-
-                Reachability = reachability;
-                return true;
-
-            }
-
-            Reachability = null;
-            return false;
+            return json;
 
         }
-
-        #endregion
-
-
-        #region AddStaticRouting     (DestinationId,  WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(NetworkingNode_Id     DestinationId,
-                                     IOCPPWebSocketClient  WebSocketClient,
-                                     Byte?                 Priority    = 0,
-                                     DateTime?             Timestamp   = null,
-                                     DateTime?             Timeout     = null)
-        {
-
-            var reachability = new Reachability(
-                                   DestinationId,
-                                   WebSocketClient,
-                                   Priority,
-                                   Timeout
-                               );
-
-            reachableNetworkingNodes.AddOrUpdate(
-
-                DestinationId,
-
-                (id)                   => [ reachability ],
-
-                (id, reachabilityList) => {
-
-                    if (reachabilityList is null)
-                        return [ reachability ];
-
-                    else
-                    {
-
-                        // For thread-safety!
-                        var updatedReachabilityList = new List<Reachability>();
-                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                        updatedReachabilityList.Add     (reachability);
-
-                        return updatedReachabilityList;
-
-                    }
-
-                }
-
-            );
-
-        }
-
-        #endregion
-
-        #region AddStaticRouting     (DestinationIds, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
-                                     IOCPPWebSocketClient            WebSocketClient,
-                                     Byte?                           Priority    = 0,
-                                     DateTime?                       Timestamp   = null,
-                                     DateTime?                       Timeout     = null)
-        {
-
-            foreach (var destinationId in DestinationIds)
-                AddStaticRouting(
-                    destinationId,
-                    WebSocketClient,
-                    Priority,
-                    Timestamp,
-                    Timeout
-                );
-
-        }
-
-        #endregion
-
-
-        #region AddStaticRouting     (DestinationId,  WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(NetworkingNode_Id     DestinationId,
-                                     IOCPPWebSocketServer  WebSocketServer,
-                                     Byte?                 Priority    = 0,
-                                     DateTime?             Timestamp   = null,
-                                     DateTime?             Timeout     = null)
-        {
-
-            var reachability = new Reachability(
-                                   DestinationId,
-                                   WebSocketServer,
-                                   Priority,
-                                   Timeout
-                               );
-
-            reachableNetworkingNodes.AddOrUpdate(
-
-                DestinationId,
-
-                (id)                   => [ reachability ],
-
-                (id, reachabilityList) => {
-
-                    if (reachabilityList is null)
-                        return [ reachability ];
-
-                    else
-                    {
-
-                        // For thread-safety!
-                        var updatedReachabilityList = new List<Reachability>();
-                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                        updatedReachabilityList.Add     (reachability);
-
-                        return updatedReachabilityList;
-
-                    }
-
-                }
-
-            );
-
-        }
-
-        #endregion
-
-        #region AddStaticRouting     (DestinationIds, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
-                                     IOCPPWebSocketServer            WebSocketServer,
-                                     Byte?                           Priority    = 0,
-                                     DateTime?                       Timestamp   = null,
-                                     DateTime?                       Timeout     = null)
-        {
-
-            foreach (var destinationId in DestinationIds)
-                AddStaticRouting(
-                    destinationId,
-                    WebSocketServer,
-                    Priority,
-                    Timestamp,
-                    Timeout
-                );
-
-        }
-
-        #endregion
-
-
-        #region AddStaticRouting     (DestinationId,  NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(NetworkingNode_Id  DestinationId,
-                                     NetworkingNode_Id  NetworkingHubId,
-                                     Byte?              Priority    = 0,
-                                     DateTime?          Timestamp   = null,
-                                     DateTime?          Timeout     = null)
-        {
-
-            var reachability = new Reachability(
-                                   DestinationId,
-                                   NetworkingHubId,
-                                   Priority,
-                                   Timeout
-                               );
-
-            reachableNetworkingNodes.AddOrUpdate(
-
-                DestinationId,
-
-                (id)                   => [ reachability ],
-
-                (id, reachabilityList) => {
-
-                    if (reachabilityList is null)
-                        return [ reachability ];
-
-                    else
-                    {
-
-                        // For thread-safety!
-                        var updatedReachabilityList = new List<Reachability>();
-                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                        updatedReachabilityList.Add     (reachability);
-
-                        return updatedReachabilityList;
-
-                    }
-
-                }
-
-            );
-
-        }
-
-        #endregion
-
-        #region AddStaticRouting     (DestinationIds, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(IEnumerable<NetworkingNode_Id>  DestinationIds,
-                                     NetworkingNode_Id               NetworkingHubId,
-                                     Byte?                           Priority    = 0,
-                                     DateTime?                       Timestamp   = null,
-                                     DateTime?                       Timeout     = null)
-        {
-
-            foreach (var destinationId in DestinationIds)
-                AddStaticRouting(
-                    destinationId,
-                    NetworkingHubId,
-                    Priority,
-                    Timestamp,
-                    Timeout
-                );
-
-        }
-
-        #endregion
-
-
-        #region RemoveStaticRouting  (DestinationId,  NetworkingHubId = null, Priority = 0)
-
-        public void RemoveStaticRouting(NetworkingNode_Id   DestinationId,
-                                        NetworkingNode_Id?  NetworkingHubId   = null,
-                                        Byte?               Priority          = 0)
-        {
-
-            if (!NetworkingHubId.HasValue)
-            {
-                reachableNetworkingNodes.TryRemove(DestinationId, out _);
-                return;
-            }
-
-            if (reachableNetworkingNodes.TryGetValue(DestinationId, out var reachabilityList) &&
-                reachabilityList is not null &&
-                reachabilityList.Count > 0)
-            {
-
-                // For thread-safety!
-                var updatedReachabilityList = new List<Reachability>(reachabilityList.Where(entry => entry.NetworkingHub == NetworkingHubId && (!Priority.HasValue || entry.Priority != (Priority ?? 0))));
-
-                if (updatedReachabilityList.Count > 0)
-                    reachableNetworkingNodes.TryUpdate(
-                        DestinationId,
-                        updatedReachabilityList,
-                        reachabilityList
-                    );
-
-                else
-                    reachableNetworkingNodes.TryRemove(DestinationId, out _);
-
-            }
-
-            //csmsChannel.Item1.RemoveStaticRouting(DestinationId,
-            //                                      NetworkingHubId);
-
-        }
-
-        #endregion
-
 
     }
 

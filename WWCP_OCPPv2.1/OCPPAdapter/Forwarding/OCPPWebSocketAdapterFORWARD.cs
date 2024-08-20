@@ -193,6 +193,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         private   readonly  INetworkingNode                                 parentNetworkingNode;
 
+        private   readonly  HashSet<SignaturePolicy>                        forwardingSignaturePolicies         = [];
+
         protected readonly  Dictionary<String, MethodInfo>                  forwardingMessageProcessorsLookup   = [];
 
         protected readonly  ConcurrentDictionary<Request_Id, ResponseInfo>  expectedResponses                   = [];
@@ -206,6 +208,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public HashSet<NetworkingNode_Id>  AnycastIdsAllowed            { get; }      = [];
 
         public HashSet<NetworkingNode_Id>  AnycastIdsDenied             { get; }      = [];
+
+
+        #region ForwardingSignaturePolicy/-ies
+
+        /// <summary>
+        /// The enumeration of all signature policies.
+        /// </summary>
+        public IEnumerable<SignaturePolicy>  ForwardingSignaturePolicies
+            => forwardingSignaturePolicies;
+
+        /// <summary>
+        /// The currently active signature policy.
+        /// </summary>
+        public SignaturePolicy               ForwardingSignaturePolicy
+            => forwardingSignaturePolicies.First();
+
+        #endregion
 
         #endregion
 
@@ -232,13 +251,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP adapter for forwarding messages.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
+        /// <param name="ForwardingSignaturePolicy">An optional signature policy when forwarding OCPP messages.</param>
         /// <param name="DefaultForwardingDecision">The default forwarding decision.</param>
-        public OCPPWebSocketAdapterFORWARD(INetworkingNode      NetworkingNode,
-                                           ForwardingDecisions  DefaultForwardingDecision = ForwardingDecisions.DROP)
+        public OCPPWebSocketAdapterFORWARD(INetworkingNode       NetworkingNode,
+                                           SignaturePolicy?      ForwardingSignaturePolicy   = null,
+                                           ForwardingDecisions?  DefaultForwardingDecision   = ForwardingDecisions.DROP)
         {
 
             this.parentNetworkingNode       = NetworkingNode;
-            this.DefaultForwardingDecision  = DefaultForwardingDecision;
+            this.DefaultForwardingDecision  = DefaultForwardingDecision    ?? ForwardingDecisions.DROP;
+
+            this.forwardingSignaturePolicies.Add(ForwardingSignaturePolicy ?? new SignaturePolicy());
 
             #region Reflect "Forward_XXX" messages and wire them...
 
@@ -1353,6 +1376,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+
+        public JObject ToJSON()
+        {
+
+            var json = JSONObject.Create(
+
+                           new JProperty("DefaultForwardingDecision",   DefaultForwardingDecision.ToString()),
+                           new JProperty("anycastIdsAllowed",           new JArray(AnycastIdsAllowed.          Select(networkingNodeId => networkingNodeId.ToString()))),
+                           new JProperty("anycastIdsDenied",            new JArray(AnycastIdsDenied.           Select(networkingNodeId => networkingNodeId.ToString()))),
+
+                           new JProperty("signaturePolicies",           new JArray(ForwardingSignaturePolicies.Select(signaturePolicy  => signaturePolicy. ToJSON())))
+
+                       );
+
+            return json;
+
+        }
 
 
 

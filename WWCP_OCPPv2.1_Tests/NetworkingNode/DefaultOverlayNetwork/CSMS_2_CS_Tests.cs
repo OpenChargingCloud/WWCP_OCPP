@@ -107,8 +107,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.AddStaticRouting(chargingStation.Id, localController.Id);
-                localController.OCPP.AddStaticRouting(CSMS.Id,            NetworkingNode_Id.CSMS); //Fix me!
+                CSMS.           OCPP.Routing.AddOrUpdateStaticRouting(
+                    chargingStation.Id,
+                    localController.Id
+                );
+
+                //Fix me!
+                localController.OCPP.Routing.AddOrUpdateStaticRouting(
+                    CSMS.Id,
+                    NetworkingNode_Id.CSMS
+                );
 
 
                 var resetType  = ResetType.Immediate;
@@ -233,8 +241,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.AddStaticRouting(chargingStation.Id, localController.Id);
-                localController.OCPP.AddStaticRouting(CSMS.Id,            NetworkingNode_Id.CSMS); //Fix me!
+                CSMS.           OCPP.Routing.AddOrUpdateStaticRouting(
+                    chargingStation.Id,
+                    localController.Id
+                );
+
+                //Fix me!
+                localController.OCPP.Routing.AddOrUpdateStaticRouting(
+                    CSMS.Id,
+                    NetworkingNode_Id.CSMS
+                );
 
 
                 var vendorId   = Vendor_Id. GraphDefined;

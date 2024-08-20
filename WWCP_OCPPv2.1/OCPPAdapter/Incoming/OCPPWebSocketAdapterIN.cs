@@ -27,7 +27,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -1115,6 +1114,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+        public JObject ToJSON()
+        {
+
+            var json = JSONObject.Create(
+
+                           new JProperty("anycastIds",   new JArray(AnycastIds.Select(networkingNodeId => networkingNodeId.ToString())))
+
+                       );
+
+            return json;
+
+        }
 
 
         #region (private) LogEvent      (Logger, LogHandler, ...)
