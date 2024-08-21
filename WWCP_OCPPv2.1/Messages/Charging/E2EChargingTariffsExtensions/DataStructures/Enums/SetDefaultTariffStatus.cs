@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Extensions methods for set default charging tariff status.
     /// </summary>
-    public static class SetDefaultChargingTariffStatusExtensions
+    public static class SetDefaultE2EChargingTariffStatusExtensions
     {
 
         #region Parse   (Text)
@@ -30,13 +30,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text as a set default charging tariff status.
         /// </summary>
         /// <param name="Text">A text representation of a set default charging tariff status.</param>
-        public static SetDefaultChargingTariffStatus Parse(String Text)
+        public static SetDefaultE2EChargingTariffStatus Parse(String Text)
         {
 
             if (TryParse(Text, out var setDefaultChargingTariffStatus))
                 return setDefaultChargingTariffStatus;
 
-            return SetDefaultChargingTariffStatus.Rejected;
+            return SetDefaultE2EChargingTariffStatus.Rejected;
 
         }
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a set default charging tariff status.
         /// </summary>
         /// <param name="Text">A text representation of a set default charging tariff status.</param>
-        public static SetDefaultChargingTariffStatus? TryParse(String Text)
+        public static SetDefaultE2EChargingTariffStatus? TryParse(String Text)
         {
 
             if (TryParse(Text, out var setDefaultChargingTariffStatus))
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TryParse(Text, out SetDefaultChargingTariffStatus)
+        #region TryParse(Text, out SetDefaultE2EChargingTariffStatus)
 
         /// <summary>
         /// Try to parse the given text as a set default charging tariff status.
         /// </summary>
         /// <param name="Text">A text representation of a set default charging tariff status.</param>
-        /// <param name="SetDefaultChargingTariffStatus">The parsed set default charging tariff status.</param>
-        public static Boolean TryParse(String Text, out SetDefaultChargingTariffStatus SetDefaultChargingTariffStatus)
+        /// <param name="SetDefaultE2EChargingTariffStatus">The parsed set default charging tariff status.</param>
+        public static Boolean TryParse(String Text, out SetDefaultE2EChargingTariffStatus SetDefaultE2EChargingTariffStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    SetDefaultChargingTariffStatus = SetDefaultChargingTariffStatus.Accepted;
+                    SetDefaultE2EChargingTariffStatus = SetDefaultE2EChargingTariffStatus.Accepted;
                     return true;
 
                 case "TooLarge":
-                    SetDefaultChargingTariffStatus = SetDefaultChargingTariffStatus.TooLarge;
+                    SetDefaultE2EChargingTariffStatus = SetDefaultE2EChargingTariffStatus.TooLarge;
                     return true;
 
                 default:
-                    SetDefaultChargingTariffStatus = SetDefaultChargingTariffStatus.Rejected;
+                    SetDefaultE2EChargingTariffStatus = SetDefaultE2EChargingTariffStatus.Rejected;
                     return false;
 
             }
@@ -89,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AsText(this SetDefaultChargingTariffStatus)
+        #region AsText(this SetDefaultE2EChargingTariffStatus)
 
-        public static String AsText(this SetDefaultChargingTariffStatus SetDefaultChargingTariffStatus)
+        public static String AsText(this SetDefaultE2EChargingTariffStatus SetDefaultE2EChargingTariffStatus)
 
-            => SetDefaultChargingTariffStatus switch {
-                   SetDefaultChargingTariffStatus.Accepted  => "Accepted",
-                   SetDefaultChargingTariffStatus.TooLarge  => "TooLarge",
+            => SetDefaultE2EChargingTariffStatus switch {
+                   SetDefaultE2EChargingTariffStatus.Accepted  => "Accepted",
+                   SetDefaultE2EChargingTariffStatus.TooLarge  => "TooLarge",
                    _                                        => "Rejected"
             };
 
@@ -105,9 +105,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// SetDefaultChargingTariffStatus types.
+    /// SetDefaultE2EChargingTariffStatus types.
     /// </summary>
-    public enum SetDefaultChargingTariffStatus
+    public enum SetDefaultE2EChargingTariffStatus
     {
 
         /// <summary>

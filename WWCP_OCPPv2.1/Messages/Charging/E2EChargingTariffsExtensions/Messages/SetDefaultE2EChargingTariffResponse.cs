@@ -32,11 +32,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The SetDefaultChargingTariff response.
+    /// The SetDefaultE2EChargingTariff response.
     /// </summary>
-    public class SetDefaultChargingTariffResponse : AResponse<SetDefaultChargingTariffRequest,
-                                                                   SetDefaultChargingTariffResponse>,
-                                                    IResponse
+    public class SetDefaultE2EChargingTariffResponse : AResponse<SetDefaultE2EChargingTariffRequest,
+                                                                 SetDefaultE2EChargingTariffResponse>,
+                                                       IResponse
     {
 
         #region Data
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/setDefaultChargingTariffResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/setDefaultE2EChargingTariffResponse");
 
         #endregion
 
@@ -57,13 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The SetDefaultChargingTariff status.
+        /// The SetDefaultE2EChargingTariff status.
         /// </summary>
         [Mandatory]
-        public SetDefaultChargingTariffStatus                               Status             { get; }
+        public SetDefaultE2EChargingTariffStatus                               Status             { get; }
 
         /// <summary>
-        /// An optional element providing more information about the SetDefaultChargingTariff status.
+        /// An optional element providing more information about the SetDefaultE2EChargingTariff status.
         /// </summary>
         [Optional]
         public StatusInfo?                                                  StatusInfo         { get; }
@@ -72,16 +72,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The optional enumeration of status infos for individual EVSEs.
         /// </summary>
         [Optional]
-        public IEnumerable<EVSEStatusInfo<SetDefaultChargingTariffStatus>>  EVSEStatusInfos    { get; }
+        public IEnumerable<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>  EVSEStatusInfos    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new SetDefaultChargingTariff response.
+        /// Create a new SetDefaultE2EChargingTariff response.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request leading to this response.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="EVSEStatusInfos">An optional enumeration of status infos for individual EVSEs.</param>
@@ -97,10 +97,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetDefaultChargingTariffResponse(SetDefaultChargingTariffRequest                               Request,
-                                                SetDefaultChargingTariffStatus                                Status,
+        public SetDefaultE2EChargingTariffResponse(SetDefaultE2EChargingTariffRequest                               Request,
+                                                SetDefaultE2EChargingTariffStatus                                Status,
                                                 StatusInfo?                                                   StatusInfo            = null,
-                                                IEnumerable<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?  EVSEStatusInfos       = null,
+                                                IEnumerable<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>?  EVSEStatusInfos       = null,
 
                                                 Result?                                                       Result                = null,
                                                 DateTime?                                                     ResponseTimestamp     = null,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.Status           = Status;
             this.StatusInfo       = StatusInfo;
-            this.EVSEStatusInfos  = EVSEStatusInfos ?? Array.Empty<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
+            this.EVSEStatusInfos  = EVSEStatusInfos ?? Array.Empty<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>();
 
             unchecked
             {
@@ -160,22 +160,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomSetDefaultChargingTariffResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomSetDefaultE2EChargingTariffResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a SetDefaultChargingTariff response.
+        /// Parse the given JSON representation of a SetDefaultE2EChargingTariff response.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request leading to this response.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom SetDefaultChargingTariff responses.</param>
-        public static SetDefaultChargingTariffResponse Parse(SetDefaultChargingTariffRequest                                               Request,
+        /// <param name="CustomSetDefaultE2EChargingTariffResponseParser">A delegate to parse custom SetDefaultE2EChargingTariff responses.</param>
+        public static SetDefaultE2EChargingTariffResponse Parse(SetDefaultE2EChargingTariffRequest                                               Request,
                                                              JObject                                                                       JSON,
                                                              SourceRouting                                                             Destination,
                                                              NetworkPath                                                                   NetworkPath,
                                                              DateTime?                                                                     ResponseTimestamp                              = null,
-                                                             CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?                CustomSetDefaultChargingTariffResponseParser   = null,
+                                                             CustomJObjectParserDelegate<SetDefaultE2EChargingTariffResponse>?                CustomSetDefaultE2EChargingTariffResponseParser   = null,
                                                              CustomJObjectParserDelegate<StatusInfo>?                                      CustomStatusInfoParser                         = null,
-                                                             CustomJObjectParserDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?  CustomEVSEStatusInfoParser                     = null,
+                                                             CustomJObjectParserDelegate<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>?  CustomEVSEStatusInfoParser                     = null,
                                                              CustomJObjectParserDelegate<Signature>?                                       CustomSignatureParser                          = null,
                                                              CustomJObjectParserDelegate<CustomData>?                                      CustomCustomDataParser                         = null)
         {
@@ -185,45 +185,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          Destination,
                          NetworkPath,
-                         out var setDefaultChargingTariffResponse,
+                         out var setDefaultE2EChargingTariffResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomSetDefaultChargingTariffResponseParser,
+                         CustomSetDefaultE2EChargingTariffResponseParser,
                          CustomStatusInfoParser,
                          CustomEVSEStatusInfoParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
-                return setDefaultChargingTariffResponse;
+                return setDefaultE2EChargingTariffResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a SetDefaultChargingTariff response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetDefaultE2EChargingTariff response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out SetDefaultChargingTariffResponse, out ErrorResponse, CustomSetDefaultChargingTariffResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SetDefaultE2EChargingTariffResponse, out ErrorResponse, CustomSetDefaultE2EChargingTariffResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a SetDefaultChargingTariff response.
+        /// Try to parse the given JSON representation of a SetDefaultE2EChargingTariff response.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request leading to this response.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SetDefaultChargingTariffResponse">The parsed SetDefaultChargingTariff response.</param>
+        /// <param name="SetDefaultE2EChargingTariffResponse">The parsed SetDefaultE2EChargingTariff response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom SetDefaultChargingTariff responses.</param>
-        public static Boolean TryParse(SetDefaultChargingTariffRequest                                               Request,
+        /// <param name="CustomSetDefaultE2EChargingTariffResponseParser">A delegate to parse custom SetDefaultE2EChargingTariff responses.</param>
+        public static Boolean TryParse(SetDefaultE2EChargingTariffRequest                                               Request,
                                        JObject                                                                       JSON,
                                        SourceRouting                                                             Destination,
                                        NetworkPath                                                                   NetworkPath,
-                                       [NotNullWhen(true)]  out SetDefaultChargingTariffResponse?                    SetDefaultChargingTariffResponse,
+                                       [NotNullWhen(true)]  out SetDefaultE2EChargingTariffResponse?                    SetDefaultE2EChargingTariffResponse,
                                        [NotNullWhen(false)] out String?                                              ErrorResponse,
                                        DateTime?                                                                     ResponseTimestamp                              = null,
-                                       CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?                CustomSetDefaultChargingTariffResponseParser   = null,
+                                       CustomJObjectParserDelegate<SetDefaultE2EChargingTariffResponse>?                CustomSetDefaultE2EChargingTariffResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                                      CustomStatusInfoParser                         = null,
-                                       CustomJObjectParserDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?  CustomEVSEStatusInfoParser                     = null,
+                                       CustomJObjectParserDelegate<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>?  CustomEVSEStatusInfoParser                     = null,
                                        CustomJObjectParserDelegate<Signature>?                                       CustomSignatureParser                          = null,
                                        CustomJObjectParserDelegate<CustomData>?                                      CustomCustomDataParser                         = null)
         {
@@ -231,14 +231,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                SetDefaultChargingTariffResponse = null;
+                SetDefaultE2EChargingTariffResponse = null;
 
                 #region Status             [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "SetDefaultChargingTariff status",
-                                         SetDefaultChargingTariffStatusExtensions.TryParse,
-                                         out SetDefaultChargingTariffStatus Status,
+                                         "SetDefaultE2EChargingTariff status",
+                                         SetDefaultE2EChargingTariffStatusExtensions.TryParse,
+                                         out SetDefaultE2EChargingTariffStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     return false;
                 }
 
-                var EVSEStatusInfos = new List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
+                var EVSEStatusInfos = new List<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>();
 
                 foreach (var evseStatusInfoProperty in EVSEStatusInfosJSON)
                 {
@@ -281,10 +281,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         return false;
                     }
 
-                    if (!EVSEStatusInfo<SetDefaultChargingTariffStatus>.TryParse(evseStatusInfoJObject,
+                    if (!EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>.TryParse(evseStatusInfoJObject,
                                                                                  out var evseStatusInfo,
                                                                                  out ErrorResponse,
-                                                                                 SetDefaultChargingTariffStatusExtensions.TryParse,
+                                                                                 SetDefaultE2EChargingTariffStatusExtensions.TryParse,
                                                                                  null) ||
                         evseStatusInfo is null)
                     {
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                SetDefaultChargingTariffResponse = new SetDefaultChargingTariffResponse(
+                SetDefaultE2EChargingTariffResponse = new SetDefaultE2EChargingTariffResponse(
 
                                                        Request,
                                                        Status,
@@ -347,17 +347,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                    );
 
-                if (CustomSetDefaultChargingTariffResponseParser is not null)
-                    SetDefaultChargingTariffResponse = CustomSetDefaultChargingTariffResponseParser(JSON,
-                                                                                                    SetDefaultChargingTariffResponse);
+                if (CustomSetDefaultE2EChargingTariffResponseParser is not null)
+                    SetDefaultE2EChargingTariffResponse = CustomSetDefaultE2EChargingTariffResponseParser(JSON,
+                                                                                                    SetDefaultE2EChargingTariffResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                SetDefaultChargingTariffResponse  = null;
-                ErrorResponse                     = "The given JSON representation of a SetDefaultChargingTariff response is invalid: " + e.Message;
+                SetDefaultE2EChargingTariffResponse  = null;
+                ErrorResponse                     = "The given JSON representation of a SetDefaultE2EChargingTariff response is invalid: " + e.Message;
                 return false;
             }
 
@@ -365,18 +365,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomSetDefaultChargingTariffResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomSetDefaultE2EChargingTariffResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetDefaultChargingTariffResponseSerializer">A delegate to serialize custom SetDefaultChargingTariff responses.</param>
+        /// <param name="CustomSetDefaultE2EChargingTariffResponseSerializer">A delegate to serialize custom SetDefaultE2EChargingTariff responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?                CustomSetDefaultChargingTariffResponseSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultE2EChargingTariffResponse>?                CustomSetDefaultE2EChargingTariffResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                                      CustomStatusInfoSerializer                         = null,
-                              CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?  CustomEVSEStatusInfoSerializer                     = null,
+                              CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>?  CustomEVSEStatusInfoSerializer                     = null,
                               CustomJObjectSerializerDelegate<Signature>?                                       CustomSignatureSerializer                          = null,
                               CustomJObjectSerializerDelegate<CustomData>?                                      CustomCustomDataSerializer                         = null)
         {
@@ -405,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomSetDefaultChargingTariffResponseSerializer is not null
-                       ? CustomSetDefaultChargingTariffResponseSerializer(this, json)
+            return CustomSetDefaultE2EChargingTariffResponseSerializer is not null
+                       ? CustomSetDefaultE2EChargingTariffResponseSerializer(this, json)
                        : json;
 
         }
@@ -417,10 +417,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The SetDefaultChargingTariff failed because of a request error.
+        /// The SetDefaultE2EChargingTariff failed because of a request error.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request.</param>
-        public static SetDefaultChargingTariffResponse RequestError(SetDefaultChargingTariffRequest  Request,
+        /// <param name="Request">The SetDefaultE2EChargingTariff request.</param>
+        public static SetDefaultE2EChargingTariffResponse RequestError(SetDefaultE2EChargingTariffRequest  Request,
                                                                     EventTracking_Id                 EventTrackingId,
                                                                     ResultCode                       ErrorCode,
                                                                     String?                          ErrorDescription    = null,
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => new (
 
                    Request,
-                   SetDefaultChargingTariffStatus.Rejected,
+                   SetDefaultE2EChargingTariffStatus.Rejected,
                    null,
                    null,
                    Result.FromErrorResponse(
@@ -462,58 +462,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
         /// <summary>
-        /// The SetDefaultChargingTariff failed.
+        /// The SetDefaultE2EChargingTariff failed.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetDefaultChargingTariffResponse FormationViolation(SetDefaultChargingTariffRequest  Request,
+        public static SetDefaultE2EChargingTariffResponse FormationViolation(SetDefaultE2EChargingTariffRequest  Request,
                                                                           String                           ErrorDescription)
 
             => new (Request,
-                    SetDefaultChargingTariffStatus.Rejected,
+                    SetDefaultE2EChargingTariffStatus.Rejected,
                     Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
 
         /// <summary>
-        /// The SetDefaultChargingTariff failed.
+        /// The SetDefaultE2EChargingTariff failed.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static SetDefaultChargingTariffResponse SignatureError(SetDefaultChargingTariffRequest  Request,
+        public static SetDefaultE2EChargingTariffResponse SignatureError(SetDefaultE2EChargingTariffRequest  Request,
                                                                       String                           ErrorDescription)
 
             => new (Request,
-                    SetDefaultChargingTariffStatus.Rejected,
+                    SetDefaultE2EChargingTariffStatus.Rejected,
                     Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
 
         /// <summary>
-        /// The SetDefaultChargingTariff failed.
+        /// The SetDefaultE2EChargingTariff failed.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static SetDefaultChargingTariffResponse Failed(SetDefaultChargingTariffRequest  Request,
+        public static SetDefaultE2EChargingTariffResponse Failed(SetDefaultE2EChargingTariffRequest  Request,
                                                               String?                          Description   = null)
 
             => new (Request,
-                    SetDefaultChargingTariffStatus.Rejected,
+                    SetDefaultE2EChargingTariffStatus.Rejected,
                     Result:  Result.Server(Description));
 
 
         /// <summary>
-        /// The SetDefaultChargingTariff failed because of an exception.
+        /// The SetDefaultE2EChargingTariff failed because of an exception.
         /// </summary>
-        /// <param name="Request">The SetDefaultChargingTariff request.</param>
+        /// <param name="Request">The SetDefaultE2EChargingTariff request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetDefaultChargingTariffResponse ExceptionOccured(SetDefaultChargingTariffRequest  Request,
+        public static SetDefaultE2EChargingTariffResponse ExceptionOccured(SetDefaultE2EChargingTariffRequest  Request,
                                                                         Exception                        Exception)
 
             => new (Request,
-                    SetDefaultChargingTariffStatus.Rejected,
+                    SetDefaultE2EChargingTariffStatus.Rejected,
                     Result:  Result.FromException(Exception));
 
         #endregion
@@ -521,83 +521,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Operator overloading
 
-        #region Operator == (SetDefaultChargingTariffResponse1, SetDefaultChargingTariffResponse2)
+        #region Operator == (SetDefaultE2EChargingTariffResponse1, SetDefaultE2EChargingTariffResponse2)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariff responses for equality.
+        /// Compares two SetDefaultE2EChargingTariff responses for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffResponse1">A SetDefaultChargingTariff response.</param>
-        /// <param name="SetDefaultChargingTariffResponse2">Another SetDefaultChargingTariff response.</param>
+        /// <param name="SetDefaultE2EChargingTariffResponse1">A SetDefaultE2EChargingTariff response.</param>
+        /// <param name="SetDefaultE2EChargingTariffResponse2">Another SetDefaultE2EChargingTariff response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse1,
-                                           SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse2)
+        public static Boolean operator == (SetDefaultE2EChargingTariffResponse? SetDefaultE2EChargingTariffResponse1,
+                                           SetDefaultE2EChargingTariffResponse? SetDefaultE2EChargingTariffResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(SetDefaultChargingTariffResponse1, SetDefaultChargingTariffResponse2))
+            if (ReferenceEquals(SetDefaultE2EChargingTariffResponse1, SetDefaultE2EChargingTariffResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (SetDefaultChargingTariffResponse1 is null || SetDefaultChargingTariffResponse2 is null)
+            if (SetDefaultE2EChargingTariffResponse1 is null || SetDefaultE2EChargingTariffResponse2 is null)
                 return false;
 
-            return SetDefaultChargingTariffResponse1.Equals(SetDefaultChargingTariffResponse2);
+            return SetDefaultE2EChargingTariffResponse1.Equals(SetDefaultE2EChargingTariffResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (SetDefaultChargingTariffResponse1, SetDefaultChargingTariffResponse2)
+        #region Operator != (SetDefaultE2EChargingTariffResponse1, SetDefaultE2EChargingTariffResponse2)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariff responses for inequality.
+        /// Compares two SetDefaultE2EChargingTariff responses for inequality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffResponse1">A SetDefaultChargingTariff response.</param>
-        /// <param name="SetDefaultChargingTariffResponse2">Another SetDefaultChargingTariff response.</param>
+        /// <param name="SetDefaultE2EChargingTariffResponse1">A SetDefaultE2EChargingTariff response.</param>
+        /// <param name="SetDefaultE2EChargingTariffResponse2">Another SetDefaultE2EChargingTariff response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse1,
-                                           SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse2)
+        public static Boolean operator != (SetDefaultE2EChargingTariffResponse? SetDefaultE2EChargingTariffResponse1,
+                                           SetDefaultE2EChargingTariffResponse? SetDefaultE2EChargingTariffResponse2)
 
-            => !(SetDefaultChargingTariffResponse1 == SetDefaultChargingTariffResponse2);
-
-        #endregion
+            => !(SetDefaultE2EChargingTariffResponse1 == SetDefaultE2EChargingTariffResponse2);
 
         #endregion
 
-        #region IEquatable<SetDefaultChargingTariffResponse> Members
+        #endregion
+
+        #region IEquatable<SetDefaultE2EChargingTariffResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariff responses for equality.
+        /// Compares two SetDefaultE2EChargingTariff responses for equality.
         /// </summary>
-        /// <param name="Object">A SetDefaultChargingTariff response to compare with.</param>
+        /// <param name="Object">A SetDefaultE2EChargingTariff response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is SetDefaultChargingTariffResponse setDefaultChargingTariffResponse &&
-                   Equals(setDefaultChargingTariffResponse);
+            => Object is SetDefaultE2EChargingTariffResponse setDefaultE2EChargingTariffResponse &&
+                   Equals(setDefaultE2EChargingTariffResponse);
 
         #endregion
 
-        #region Equals(SetDefaultChargingTariffResponse)
+        #region Equals(SetDefaultE2EChargingTariffResponse)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariff responses for equality.
+        /// Compares two SetDefaultE2EChargingTariff responses for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffResponse">A SetDefaultChargingTariff response to compare with.</param>
-        public override Boolean Equals(SetDefaultChargingTariffResponse? SetDefaultChargingTariffResponse)
+        /// <param name="SetDefaultE2EChargingTariffResponse">A SetDefaultE2EChargingTariff response to compare with.</param>
+        public override Boolean Equals(SetDefaultE2EChargingTariffResponse? SetDefaultE2EChargingTariffResponse)
 
-            => SetDefaultChargingTariffResponse is not null &&
+            => SetDefaultE2EChargingTariffResponse is not null &&
 
-               Status.Equals(SetDefaultChargingTariffResponse.Status) &&
+               Status.Equals(SetDefaultE2EChargingTariffResponse.Status) &&
 
-             ((StatusInfo is     null && SetDefaultChargingTariffResponse.StatusInfo is     null) ||
-              (StatusInfo is not null && SetDefaultChargingTariffResponse.StatusInfo is not null && StatusInfo.Equals(SetDefaultChargingTariffResponse.StatusInfo))) &&
+             ((StatusInfo is     null && SetDefaultE2EChargingTariffResponse.StatusInfo is     null) ||
+              (StatusInfo is not null && SetDefaultE2EChargingTariffResponse.StatusInfo is not null && StatusInfo.Equals(SetDefaultE2EChargingTariffResponse.StatusInfo))) &&
 
-               EVSEStatusInfos.Count().Equals(SetDefaultChargingTariffResponse.EVSEStatusInfos.Count()) &&
-               EVSEStatusInfos.All(kvp => SetDefaultChargingTariffResponse.EVSEStatusInfos.Contains(kvp)) &&
+               EVSEStatusInfos.Count().Equals(SetDefaultE2EChargingTariffResponse.EVSEStatusInfos.Count()) &&
+               EVSEStatusInfos.All(kvp => SetDefaultE2EChargingTariffResponse.EVSEStatusInfos.Contains(kvp)) &&
 
-               base.GenericEquals(SetDefaultChargingTariffResponse);
+               base.GenericEquals(SetDefaultE2EChargingTariffResponse);
 
         #endregion
 

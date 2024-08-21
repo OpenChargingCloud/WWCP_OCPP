@@ -3089,25 +3089,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             // E2E Charging Tariffs Extensions
 
-            #region OnSetDefaultChargingTariff
+            #region OnSetDefaultE2EChargingTariff
 
-            OCPP.IN.OnSetDefaultChargingTariff += (timestamp,
-                                                   sender,
-                                                   connection,
-                                                   request,
-                                                   cancellationToken) => {
+            OCPP.IN.OnSetDefaultE2EChargingTariff += (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request,
+                                                      cancellationToken) => {
 
-                SetDefaultChargingTariffResponse? response = null;
+                SetDefaultE2EChargingTariffResponse? response = null;
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetDefaultChargingTariff!");
 
-                List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>? evseStatusInfos = null;
+                List<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>? evseStatusInfos = null;
 
                 if (!request.ChargingTariff.Verify(out var err))
                 {
-                    response = new SetDefaultChargingTariffResponse(
+                    response = new SetDefaultE2EChargingTariffResponse(
                                    Request:      request,
-                                   Status:       SetDefaultChargingTariffStatus.InvalidSignature,
+                                   Status:       SetDefaultE2EChargingTariffStatus.InvalidSignature,
                                    StatusInfo:   new StatusInfo(
                                                      ReasonCode:       "Invalid charging tariff signature(s)!",
                                                      AdditionalInfo:   err,
@@ -3123,9 +3123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     foreach (var evse in evses.Values)
                         evse.DefaultChargingTariff = request.ChargingTariff;
 
-                    response = new SetDefaultChargingTariffResponse(
+                    response = new SetDefaultE2EChargingTariffResponse(
                                    Request:           request,
-                                   Status:            SetDefaultChargingTariffStatus.Accepted,
+                                   Status:            SetDefaultE2EChargingTariffStatus.Accepted,
                                    StatusInfo:        null,
                                    EVSEStatusInfos:   null,
                                    CustomData:        null
@@ -3140,9 +3140,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
                         if (!evses.ContainsKey(evseId))
                         {
-                            response = new SetDefaultChargingTariffResponse(
+                            response = new SetDefaultE2EChargingTariffResponse(
                                            Request:   request,
-                                           Status:    SetDefaultChargingTariffStatus.Rejected,
+                                           Status:    SetDefaultE2EChargingTariffStatus.Rejected,
                                            Result:    Result.GenericError(
                                                           $"Invalid EVSE identification: {evseId}"
                                                       )
@@ -3160,9 +3160,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                             evses[evseId].DefaultChargingTariff = request.ChargingTariff;
 
-                            evseStatusInfos.Add(new EVSEStatusInfo<SetDefaultChargingTariffStatus>(
+                            evseStatusInfos.Add(new EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>(
                                                     EVSEId:           evseId,
-                                                    Status:           SetDefaultChargingTariffStatus.Accepted,
+                                                    Status:           SetDefaultE2EChargingTariffStatus.Accepted,
                                                     ReasonCode:       null,
                                                     AdditionalInfo:   null,
                                                     CustomData:       null
@@ -3170,9 +3170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         }
 
-                        response = new SetDefaultChargingTariffResponse(
+                        response = new SetDefaultE2EChargingTariffResponse(
                                        Request:           request,
-                                       Status:            SetDefaultChargingTariffStatus.Accepted,
+                                       Status:            SetDefaultE2EChargingTariffStatus.Accepted,
                                        StatusInfo:        null,
                                        EVSEStatusInfos:   evseStatusInfos,
                                        CustomData:        null

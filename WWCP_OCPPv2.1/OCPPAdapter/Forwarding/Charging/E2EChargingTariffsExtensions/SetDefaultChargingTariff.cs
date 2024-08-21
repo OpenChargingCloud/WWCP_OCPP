@@ -33,24 +33,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
     /// <summary>
-    /// A SetDefaultChargingTariff request.
+    /// A SetDefaultE2EChargingTariff request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<SetDefaultChargingTariffRequest, SetDefaultChargingTariffResponse>>
+    public delegate Task<ForwardingDecision<SetDefaultE2EChargingTariffRequest, SetDefaultE2EChargingTariffResponse>>
 
-        OnSetDefaultChargingTariffRequestFilterDelegate(DateTime                          Timestamp,
+        OnSetDefaultE2EChargingTariffRequestFilterDelegate(DateTime                          Timestamp,
                                                         IEventSender                      Sender,
                                                         IWebSocketConnection              Connection,
-                                                        SetDefaultChargingTariffRequest   Request,
+                                                        SetDefaultE2EChargingTariffRequest   Request,
                                                         CancellationToken                 CancellationToken);
 
 
     /// <summary>
-    /// A filtered SetDefaultChargingTariff request.
+    /// A filtered SetDefaultE2EChargingTariff request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -60,11 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnSetDefaultChargingTariffRequestFilteredDelegate(DateTime                                                                                Timestamp,
+        OnSetDefaultE2EChargingTariffRequestFilteredDelegate(DateTime                                                                                Timestamp,
                                                           IEventSender                                                                            Sender,
                                                           IWebSocketConnection                                                                    Connection,
-                                                          SetDefaultChargingTariffRequest                                                         Request,
-                                                          ForwardingDecision<SetDefaultChargingTariffRequest, SetDefaultChargingTariffResponse>   ForwardingDecision,
+                                                          SetDefaultE2EChargingTariffRequest                                                         Request,
+                                                          ForwardingDecision<SetDefaultE2EChargingTariffRequest, SetDefaultE2EChargingTariffResponse>   ForwardingDecision,
                                                           CancellationToken                                                                       CancellationToken);
 
     #endregion
@@ -74,28 +74,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnSetDefaultChargingTariffRequestReceivedDelegate?    OnSetDefaultChargingTariffRequestReceived;
-        public event OnSetDefaultChargingTariffRequestFilterDelegate?      OnSetDefaultChargingTariffRequestFilter;
-        public event OnSetDefaultChargingTariffRequestFilteredDelegate?    OnSetDefaultChargingTariffRequestFiltered;
-        public event OnSetDefaultChargingTariffRequestSentDelegate?        OnSetDefaultChargingTariffRequestSent;
+        public event OnSetDefaultE2EChargingTariffRequestReceivedDelegate?    OnSetDefaultE2EChargingTariffRequestReceived;
+        public event OnSetDefaultE2EChargingTariffRequestFilterDelegate?      OnSetDefaultE2EChargingTariffRequestFilter;
+        public event OnSetDefaultE2EChargingTariffRequestFilteredDelegate?    OnSetDefaultE2EChargingTariffRequestFiltered;
+        public event OnSetDefaultE2EChargingTariffRequestSentDelegate?        OnSetDefaultE2EChargingTariffRequestSent;
 
-        public event OnSetDefaultChargingTariffResponseReceivedDelegate?   OnSetDefaultChargingTariffResponseReceived;
-        public event OnSetDefaultChargingTariffResponseSentDelegate?       OnSetDefaultChargingTariffResponseSent;
+        public event OnSetDefaultE2EChargingTariffResponseReceivedDelegate?   OnSetDefaultE2EChargingTariffResponseReceived;
+        public event OnSetDefaultE2EChargingTariffResponseSentDelegate?       OnSetDefaultE2EChargingTariffResponseSent;
 
         #endregion
 
         public async Task<ForwardingDecision>
 
-            Forward_SetDefaultChargingTariff(OCPP_JSONRequestMessage    JSONRequestMessage,
+            Forward_SetDefaultE2EChargingTariff(OCPP_JSONRequestMessage    JSONRequestMessage,
                                              OCPP_BinaryRequestMessage  BinaryRequestMessage,
                                              IWebSocketConnection       WebSocketConnection,
                                              CancellationToken          CancellationToken   = default)
 
         {
 
-            #region Parse the SetDefaultChargingTariff request
+            #region Parse the SetDefaultE2EChargingTariff request
 
-            if (!SetDefaultChargingTariffRequest.TryParse(JSONRequestMessage.Payload,
+            if (!SetDefaultE2EChargingTariffRequest.TryParse(JSONRequestMessage.Payload,
                                                           JSONRequestMessage.RequestId,
                                                           JSONRequestMessage.Destination,
                                                           JSONRequestMessage.NetworkPath,
@@ -104,17 +104,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                           JSONRequestMessage.RequestTimestamp,
                                                           JSONRequestMessage.RequestTimeout - Timestamp.Now,
                                                           JSONRequestMessage.EventTrackingId,
-                                                          parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffRequestParser))
+                                                          parentNetworkingNode.OCPP.CustomSetDefaultE2EChargingTariffRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
 
-            #region Send OnSetDefaultChargingTariffRequestReceived event
+            #region Send OnSetDefaultE2EChargingTariffRequestReceived event
 
             await LogEvent(
-                      OnSetDefaultChargingTariffRequestReceived,
+                      OnSetDefaultE2EChargingTariffRequestReceived,
                       loggingDelegate => loggingDelegate.Invoke(
                           Timestamp.Now,
                           parentNetworkingNode,
@@ -127,10 +127,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Send OnSetDefaultChargingTariffRequestFilter event
+            #region Send OnSetDefaultE2EChargingTariffRequestFilter event
 
             var forwardingDecision = await CallFilter(
-                                               OnSetDefaultChargingTariffRequestFilter,
+                                               OnSetDefaultE2EChargingTariffRequestFilter,
                                                filter => filter.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<SetDefaultChargingTariffRequest, SetDefaultChargingTariffResponse>(
+                forwardingDecision = new ForwardingDecision<SetDefaultE2EChargingTariffRequest, SetDefaultE2EChargingTariffResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -155,18 +155,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 var response = forwardingDecision?.RejectResponse ??
-                                   new SetDefaultChargingTariffResponse(
+                                   new SetDefaultE2EChargingTariffResponse(
                                        request,
-                                       SetDefaultChargingTariffStatus.Rejected,
+                                       SetDefaultE2EChargingTariffStatus.Rejected,
                                        Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<SetDefaultChargingTariffRequest, SetDefaultChargingTariffResponse>(
+                forwardingDecision = new ForwardingDecision<SetDefaultE2EChargingTariffRequest, SetDefaultE2EChargingTariffResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,
                                          response.ToJSON(
-                                             parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomSetDefaultE2EChargingTariffResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomEVSEStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -180,8 +180,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision.NewRequest is not null)
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
-                                                        parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffRequestSerializer,
-                                                        parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
+                                                        //parentNetworkingNode.OCPP.CustomSetDefaultE2EChargingTariffRequestSerializer,
+                                                        //parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
                                                         //parentNetworkingNode.OCPP.CustomPriceSerializer,
                                                         //parentNetworkingNode.OCPP.CustomTariffElementSerializer,
                                                         //parentNetworkingNode.OCPP.CustomPriceComponentSerializer,
@@ -192,14 +192,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         //parentNetworkingNode.OCPP.CustomEnvironmentalImpactSerializer,
                                                         //parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                                                         //parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-                                                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                        //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                        //parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );
 
-            #region Send OnSetDefaultChargingTariffRequestFiltered event
+            #region Send OnSetDefaultE2EChargingTariffRequestFiltered event
 
             await LogEvent(
-                      OnSetDefaultChargingTariffRequestFiltered,
+                      OnSetDefaultE2EChargingTariffRequestFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
                           Timestamp.Now,
                           parentNetworkingNode,
@@ -213,16 +213,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Attach OnSetDefaultChargingTariffRequestSent event
+            #region Attach OnSetDefaultE2EChargingTariffRequestSent event
 
             if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
-                var sentLogging = OnSetDefaultChargingTariffRequestSent;
+                var sentLogging = OnSetDefaultE2EChargingTariffRequestSent;
                 if (sentLogging is not null)
                     forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
                         await LogEvent(
-                                  OnSetDefaultChargingTariffRequestSent,
+                                  OnSetDefaultE2EChargingTariffRequestSent,
                                   loggingDelegate => loggingDelegate.Invoke(
                                       Timestamp.Now,
                                       parentNetworkingNode,

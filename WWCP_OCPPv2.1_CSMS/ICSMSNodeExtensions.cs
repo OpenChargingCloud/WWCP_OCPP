@@ -2972,12 +2972,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        #region ChangeTransactionTariff     (Destination, TransactionId, Tariff, ...)
+
+        /// <summary>
+        /// Change the tariff of the given transaction.
+        /// </summary>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff should be reported on.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.ChangeTransactionTariffResponse>
+
+            ChangeTransactionTariff(this ICSMSNode           CSMS,
+                                    SourceRouting            Destination,
+                                    Transaction_Id           TransactionId,
+                                    Tariff                   Tariff,
+
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
+
+                                    CustomData?              CustomData            = null,
+
+                                    Request_Id?              RequestId             = null,
+                                    DateTime?                RequestTimestamp      = null,
+                                    TimeSpan?                RequestTimeout        = null,
+                                    EventTracking_Id?        EventTrackingId       = null,
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.ChangeTransactionTariff(
+                       new ChangeTransactionTariffRequest(
+                           Destination,
+                           TransactionId,
+                           Tariff,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region ClearTariffs                (Destination, TariffIds = null, TariffKind = null, ...)
+
+        /// <summary>
+        /// Clear the specified tariffs.
+        /// </summary>
+        /// <param name="TariffIds">An optional enumeration of tariff identifications to be cleared. When empty, clear all tariffs.</param>
+        /// <param name="TariffKind">When present only clear tariffs of this kind.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.ClearTariffsResponse>
+
+            ClearTariffs(this ICSMSNode           CSMS,
+                         SourceRouting            Destination,
+                         IEnumerable<Tariff_Id>?  TariffIds             = null,
+                         TariffKinds?             TariffKind            = null,
+
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
+
+                         CustomData?              CustomData            = null,
+
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.ClearTariffs(
+                       new ClearTariffsRequest(
+                           Destination,
+                           TariffIds,
+                           TariffKind,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region GetTariffs                  (Destination, EVSEId = null, ...)
+
+        /// <summary>
+        /// Get all default tariffs, or the default tariff for the given EVSE Id.
+        /// </summary>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff should be reported on.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.GetTariffsResponse>
+
+            GetTariffs(this ICSMSNode           CSMS,
+                       SourceRouting            Destination,
+                       EVSE_Id?                 EVSEId                = null,
+
+                       IEnumerable<KeyPair>?    SignKeys              = null,
+                       IEnumerable<SignInfo>?   SignInfos             = null,
+                       IEnumerable<Signature>?  Signatures            = null,
+
+                       CustomData?              CustomData            = null,
+
+                       Request_Id?              RequestId             = null,
+                       DateTime?                RequestTimestamp      = null,
+                       TimeSpan?                RequestTimeout        = null,
+                       EventTracking_Id?        EventTrackingId       = null,
+                       SerializationFormats?    SerializationFormat   = null,
+                       CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.GetTariffs(
+                       new GetTariffsRequest(
+                           Destination,
+                           EVSEId,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SetDefaultTariff            (Destination, EVSEId, Tariff, ...)
+
+        /// <summary>
+        /// Set a default tariff for the given EVSE.
+        /// </summary>
+        /// <param name="Tariff">A charging tariff.</param>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff applies to.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SetDefaultTariffResponse>
+
+            SetDefaultTariff(this ICSMSNode           CSMS,
+                             SourceRouting            Destination,
+                             EVSE_Id                  EVSEId,
+                             Tariff                   Tariff,
+
+                             IEnumerable<KeyPair>?    SignKeys              = null,
+                             IEnumerable<SignInfo>?   SignInfos             = null,
+                             IEnumerable<Signature>?  Signatures            = null,
+
+                             CustomData?              CustomData            = null,
+
+                             Request_Id?              RequestId             = null,
+                             DateTime?                RequestTimestamp      = null,
+                             TimeSpan?                RequestTimeout        = null,
+                             EventTracking_Id?        EventTrackingId       = null,
+                             SerializationFormats?    SerializationFormat   = null,
+                             CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.SetDefaultTariff(
+                       new SetDefaultTariffRequest(
+                           Destination,
+                           EVSEId,
+                           Tariff,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
 
 
 
         // E2E Charging Tariffs Extensions
 
-        #region SetDefaultChargingTariff    (Destination, ChargingTariff,          EVSEIds = null, ...)
+        #region SetDefaultE2EChargingTariff    (Destination, ChargingTariff,          EVSEIds = null, ...)
 
         /// <summary>
         /// Set a default charging tariff for the charging station,
@@ -2994,29 +3233,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SetDefaultChargingTariffResponse>
+        public static Task<CS.SetDefaultE2EChargingTariffResponse>
 
-            SetDefaultChargingTariff(this ICSMSNode           CSMS,
-                                     SourceRouting            Destination,
-                                     Tariff           ChargingTariff,
-                                     IEnumerable<EVSE_Id>?    EVSEIds               = null,
+            SetDefaultE2EChargingTariff(this ICSMSNode           CSMS,
+                                        SourceRouting            Destination,
+                                        Tariff                   ChargingTariff,
+                                        IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys              = null,
-                                     IEnumerable<SignInfo>?   SignInfos             = null,
-                                     IEnumerable<Signature>?  Signatures            = null,
+                                        IEnumerable<KeyPair>?    SignKeys              = null,
+                                        IEnumerable<SignInfo>?   SignInfos             = null,
+                                        IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData            = null,
+                                        CustomData?              CustomData            = null,
 
-                                     Request_Id?              RequestId             = null,
-                                     DateTime?                RequestTimestamp      = null,
-                                     TimeSpan?                RequestTimeout        = null,
-                                     EventTracking_Id?        EventTrackingId       = null,
-                                     SerializationFormats?    SerializationFormat   = null,
-                                     CancellationToken        CancellationToken     = default)
+                                        Request_Id?              RequestId             = null,
+                                        DateTime?                RequestTimestamp      = null,
+                                        TimeSpan?                RequestTimeout        = null,
+                                        EventTracking_Id?        EventTrackingId       = null,
+                                        SerializationFormats?    SerializationFormat   = null,
+                                        CancellationToken        CancellationToken     = default)
 
 
-                => CSMS.OCPP.OUT.SetDefaultChargingTariff(
-                       new SetDefaultChargingTariffRequest(
+                => CSMS.OCPP.OUT.SetDefaultE2EChargingTariff(
+                       new SetDefaultE2EChargingTariffRequest(
                            Destination,
                            ChargingTariff,
                            EVSEIds,

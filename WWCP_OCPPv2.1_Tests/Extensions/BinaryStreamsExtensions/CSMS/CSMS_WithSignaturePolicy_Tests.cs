@@ -69,22 +69,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var now1            = Timestamp.Now;
                 var requestKeyPair  = KeyPair.GenerateKeys()!;
-                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffRequest. DefaultJSONLDContext,
+                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultE2EChargingTariffRequest. DefaultJSONLDContext,
                                                                           requestKeyPair!,
                                                                           UserIdGenerator:         (signableMessage) => "csms001",
                                                                           DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test request!"),
                                                                           TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultE2EChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
                 #region Set the charging station signature policy
 
                 var now2            = Timestamp.Now;
-                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultChargingTariffRequest. DefaultJSONLDContext);
+                chargingStation1.OCPP.SignaturePolicy.AddVerificationRule(SetDefaultE2EChargingTariffRequest. DefaultJSONLDContext);
 
-                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultChargingTariffResponse.DefaultJSONLDContext,
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (SetDefaultE2EChargingTariffResponse.DefaultJSONLDContext,
                                                                           requestKeyPair!,
                                                                           UserIdGenerator:         (signableMessage) => "cs001",
                                                                           DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test response!"),
@@ -94,9 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 #region Setup charging station incoming request monitoring
 
-                var setDefaultChargingTariffRequests = new ConcurrentList<SetDefaultChargingTariffRequest>();
+                var setDefaultChargingTariffRequests = new ConcurrentList<SetDefaultE2EChargingTariffRequest>();
 
-                chargingStation1.OCPP.IN.OnSetDefaultChargingTariffRequestReceived += (timestamp, sender, connection, setDefaultChargingTariffRequest, ct) => {
+                chargingStation1.OCPP.IN.OnSetDefaultE2EChargingTariffRequestReceived += (timestamp, sender, connection, setDefaultChargingTariffRequest, ct) => {
                     setDefaultChargingTariffRequests.TryAdd(setDefaultChargingTariffRequest);
                     return Task.CompletedTask;
                 };
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 #endregion
 
 
-                var response        = await testCSMS01.SetDefaultChargingTariff(
+                var response        = await testCSMS01.SetDefaultE2EChargingTariff(
                                                 Destination:      SourceRouting.To(chargingStation1.Id),
                                                 ChargingTariff:   (Tariff)chargingTariff,
                                                 CustomData:       null
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 #region Verify the response
 
                 ClassicAssert.AreEqual(ResultCode.OK,                            response.Result.ResultCode);
-                ClassicAssert.AreEqual(SetDefaultChargingTariffStatus.Accepted,   response.Status);
+                ClassicAssert.AreEqual(SetDefaultE2EChargingTariffStatus.Accepted,   response.Status);
 
                 #endregion
 

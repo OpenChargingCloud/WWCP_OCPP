@@ -52,7 +52,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// </summary>
     public readonly struct EVSE_Id : IId,
                                      IEquatable<EVSE_Id>,
-                                     IComparable<EVSE_Id>
+                                     IComparable<EVSE_Id>,
+                                     IComparable
     {
 
         #region Data

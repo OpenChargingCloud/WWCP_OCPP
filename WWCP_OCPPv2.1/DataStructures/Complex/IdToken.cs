@@ -33,7 +33,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A case insensitive identification token.
     /// </summary>
     public class IdToken : ACustomData,
-                           IEquatable<IdToken>
+                           IEquatable<IdToken>,
+                           IComparable<IdToken>,
+                           IComparable
     {
 
         #region Data
@@ -476,6 +478,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            IdToken? IdToken2)
 
             => !(IdToken1 == IdToken2);
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<EVSEId> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two identification tokens.
+        /// </summary>
+        /// <param name="Object">An identification token to compare with.</param>
+        public Int32 CompareTo(Object? Object)
+
+            => Object is IdToken idToken
+                   ? CompareTo(idToken)
+                   : throw new ArgumentException("The given object is not an identification token!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(EVSEId)
+
+        /// <summary>
+        /// Compares two identification tokens.
+        /// </summary>
+        /// <param name="EVSEId">An identification token to compare with.</param>
+        public Int32 CompareTo(IdToken? IdToken)
+        {
+
+            if (IdToken is null)
+                throw new ArgumentNullException(nameof(IdToken), "The given identification token must not be null!");
+
+            return String.Compare(Value, IdToken.Value, StringComparison.OrdinalIgnoreCase);
+
+        }
 
         #endregion
 

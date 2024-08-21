@@ -4820,7 +4820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         // E2E Charging Tariffs Extensions
 
-        #region SetDefaultChargingTariff    (Destination, ChargingTariff,          EVSEIds = null, ...)
+        #region SetDefaultE2EChargingTariff    (Destination, ChargingTariff,          EVSEIds = null, ...)
 
         /// <summary>
         /// Set a default charging tariff for the charging station,
@@ -4837,31 +4837,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<SetDefaultChargingTariffResponse>
+        public static Task<SetDefaultE2EChargingTariffResponse>
 
-            SetDefaultChargingTariff(this ILocalControllerNode     LocalController,
-                                     SourceRouting                 Destination,
-                                     Tariff                ChargingTariff,
-                                     IEnumerable<EVSE_Id>?         EVSEIds               = null,
+            SetDefaultE2EChargingTariff(this ILocalControllerNode     LocalController,
+                                        SourceRouting                 Destination,
+                                        Tariff                        ChargingTariff,
+                                        IEnumerable<EVSE_Id>?         EVSEIds               = null,
 
-                                     CustomData?                   CustomData            = null,
+                                        CustomData?                   CustomData            = null,
 
-                                     NetworkPath?                  NetworkPath           = null,
+                                        NetworkPath?                  NetworkPath           = null,
 
-                                     IEnumerable<KeyPair>?         SignKeys              = null,
-                                     IEnumerable<SignInfo>?        SignInfos             = null,
-                                     IEnumerable<Signature>?       Signatures            = null,
+                                        IEnumerable<KeyPair>?         SignKeys              = null,
+                                        IEnumerable<SignInfo>?        SignInfos             = null,
+                                        IEnumerable<Signature>?       Signatures            = null,
 
-                                     Request_Id?                   RequestId             = null,
-                                     DateTime?                     RequestTimestamp      = null,
-                                     TimeSpan?                     RequestTimeout        = null,
-                                     EventTracking_Id?             EventTrackingId       = null,
-                                     SerializationFormats?         SerializationFormat   = null,
-                                     CancellationToken             CancellationToken     = default)
+                                        Request_Id?                   RequestId             = null,
+                                        DateTime?                     RequestTimestamp      = null,
+                                        TimeSpan?                     RequestTimeout        = null,
+                                        EventTracking_Id?             EventTrackingId       = null,
+                                        SerializationFormats?         SerializationFormat   = null,
+                                        CancellationToken             CancellationToken     = default)
 
 
-                => LocalController.OCPP.OUT.SetDefaultChargingTariff(
-                       new SetDefaultChargingTariffRequest(
+                => LocalController.OCPP.OUT.SetDefaultE2EChargingTariff(
+                       new SetDefaultE2EChargingTariffRequest(
                            Destination,
                            ChargingTariff,
                            EVSEIds,

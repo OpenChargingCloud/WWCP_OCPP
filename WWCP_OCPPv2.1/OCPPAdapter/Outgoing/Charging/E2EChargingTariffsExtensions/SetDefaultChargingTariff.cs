@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Logging Delegates
 
     /// <summary>
-    /// A logging delegate called whenever an SetDefaultChargingTariff request was sent.
+    /// A logging delegate called whenever an SetDefaultE2EChargingTariff request was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -41,16 +41,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDefaultChargingTariffRequestSentDelegate(DateTime                          Timestamp,
+    public delegate Task OnSetDefaultE2EChargingTariffRequestSentDelegate(DateTime                          Timestamp,
                                                                        IEventSender                      Sender,
                                                                        IWebSocketConnection?             Connection,
-                                                                       SetDefaultChargingTariffRequest   Request,
+                                                                       SetDefaultE2EChargingTariffRequest   Request,
                                                                        SentMessageResults                SentMessageResult,
                                                                        CancellationToken                 CancellationToken);
 
 
     /// <summary>
-    /// A logging delegate called whenever an SetDefaultChargingTariff response was sent.
+    /// A logging delegate called whenever an SetDefaultE2EChargingTariff response was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -62,18 +62,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultChargingTariffResponseSentDelegate(DateTime                           Timestamp,
+        OnSetDefaultE2EChargingTariffResponseSentDelegate(DateTime                           Timestamp,
                                                        IEventSender                       Sender,
                                                        IWebSocketConnection?              Connection,
-                                                       SetDefaultChargingTariffRequest?   Request,
-                                                       SetDefaultChargingTariffResponse   Response,
+                                                       SetDefaultE2EChargingTariffRequest?   Request,
+                                                       SetDefaultE2EChargingTariffResponse   Response,
                                                        TimeSpan                           Runtime,
                                                        SentMessageResults                 SentMessageResult,
                                                        CancellationToken                  CancellationToken);
 
 
     /// <summary>
-    /// A logging delegate called whenever an SetDefaultChargingTariff request error was sent.
+    /// A logging delegate called whenever an SetDefaultE2EChargingTariff request error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request error.</param>
@@ -85,10 +85,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultChargingTariffRequestErrorSentDelegate(DateTime                           Timestamp,
+        OnSetDefaultE2EChargingTariffRequestErrorSentDelegate(DateTime                           Timestamp,
                                                            IEventSender                       Sender,
                                                            IWebSocketConnection?              Connection,
-                                                           SetDefaultChargingTariffRequest?   Request,
+                                                           SetDefaultE2EChargingTariffRequest?   Request,
                                                            OCPP_JSONRequestErrorMessage       RequestErrorMessage,
                                                            TimeSpan?                          Runtime,
                                                            SentMessageResults                 SentMessageResult,
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     /// <summary>
-    /// A logging delegate called whenever an SetDefaultChargingTariff response error was sent.
+    /// A logging delegate called whenever an SetDefaultE2EChargingTariff response error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
@@ -109,11 +109,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultChargingTariffResponseErrorSentDelegate(DateTime                            Timestamp,
+        OnSetDefaultE2EChargingTariffResponseErrorSentDelegate(DateTime                            Timestamp,
                                                             IEventSender                        Sender,
                                                             IWebSocketConnection?               Connection,
-                                                            SetDefaultChargingTariffRequest?    Request,
-                                                            SetDefaultChargingTariffResponse?   Response,
+                                                            SetDefaultE2EChargingTariffRequest?    Request,
+                                                            SetDefaultE2EChargingTariffResponse?   Response,
                                                             OCPP_JSONResponseErrorMessage       ResponseErrorMessage,
                                                             TimeSpan?                           Runtime,
                                                             SentMessageResults                  SentMessageResult,
@@ -124,22 +124,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT
     {
 
-        #region Send SetDefaultChargingTariff request
+        #region Send SetDefaultE2EChargingTariff request
 
         /// <summary>
-        /// An event fired whenever an SetDefaultChargingTariff request was sent.
+        /// An event fired whenever an SetDefaultE2EChargingTariff request was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffRequestSentDelegate?  OnSetDefaultChargingTariffRequestSent;
+        public event OnSetDefaultE2EChargingTariffRequestSentDelegate?  OnSetDefaultE2EChargingTariffRequestSent;
 
 
         /// <summary>
-        /// SetDefaultChargingTariff the given identification token.
+        /// SetDefaultE2EChargingTariff the given identification token.
         /// </summary>
-        /// <param name="Request">An SetDefaultChargingTariff request.</param>
-        public async Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
+        /// <param name="Request">An SetDefaultE2EChargingTariff request.</param>
+        public async Task<SetDefaultE2EChargingTariffResponse> SetDefaultE2EChargingTariff(SetDefaultE2EChargingTariffRequest Request)
         {
 
-            SetDefaultChargingTariffResponse? response = null;
+            SetDefaultE2EChargingTariffResponse? response = null;
 
             try
             {
@@ -149,26 +149,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
                         Request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffRequestSerializer,
-                            parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
+                            //parentNetworkingNode.OCPP.CustomSetDefaultE2EChargingTariffRequestSerializer,
+                            //parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
                             //parentNetworkingNode.OCPP.CustomPriceSerializer,
                             //parentNetworkingNode.OCPP.CustomTariffElementSerializer,
                             //parentNetworkingNode.OCPP.CustomPriceComponentSerializer,
                             //parentNetworkingNode.OCPP.CustomTaxRateSerializer,
                             //parentNetworkingNode.OCPP.CustomTariffRestrictionsSerializer,
+                            //parentNetworkingNode.OCPP.sCustomTariffRestrictionsSerializer,
                             //parentNetworkingNode.OCPP.CustomEnergyMixSerializer,
                             //parentNetworkingNode.OCPP.CustomEnergySourceSerializer,
                             //parentNetworkingNode.OCPP.CustomEnvironmentalImpactSerializer,
                             //parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                             //parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                            //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            //parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
                         out var signingErrors
                     ))
                 {
 
-                    response = SetDefaultChargingTariffResponse.SignatureError(
+                    response = SetDefaultE2EChargingTariffResponse.SignatureError(
                                    Request,
                                    signingErrors
                                );
@@ -187,8 +188,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
-                                                             parentNetworkingNode.OCPP.CustomSetDefaultChargingTariffRequestSerializer,
-                                                             parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
+                                                             //parentNetworkingNode.OCPP.CustomSetDefaultE2EChargingTariffRequestSerializer,
+                                                             //parentNetworkingNode.OCPP.CustomChargingTariffSerializer,
                                                              //parentNetworkingNode.OCPP.CustomPriceSerializer,
                                                              //parentNetworkingNode.OCPP.CustomTariffElementSerializer,
                                                              //parentNetworkingNode.OCPP.CustomPriceComponentSerializer,
@@ -199,13 +200,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              //parentNetworkingNode.OCPP.CustomEnvironmentalImpactSerializer,
                                                              //parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                                                              //parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                             //parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             //parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )
                                                      ),
 
                                                      sentMessageResult => LogEvent(
-                                                         OnSetDefaultChargingTariffRequestSent,
+                                                         OnSetDefaultE2EChargingTariffRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
@@ -222,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDefaultChargingTariffResponse(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDefaultE2EChargingTariffResponse(
                                              Request,
                                              jsonResponse,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -235,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
                     if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDefaultChargingTariffRequestError(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_SetDefaultE2EChargingTariffRequestError(
                                              Request,
                                              jsonRequestError,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -247,9 +248,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              Request.CancellationToken
                                          );
 
-                    response ??= new SetDefaultChargingTariffResponse(
+                    response ??= new SetDefaultE2EChargingTariffResponse(
                                      Request,
-                                     SetDefaultChargingTariffStatus.Rejected,
+                                     SetDefaultE2EChargingTariffStatus.Rejected,
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 
@@ -259,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = SetDefaultChargingTariffResponse.ExceptionOccured(
+                response = SetDefaultE2EChargingTariffResponse.ExceptionOccured(
                                Request,
                                e
                            );
@@ -273,25 +274,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region Send OnSetDefaultChargingTariffResponseSent event
+        #region Send OnSetDefaultE2EChargingTariffResponseSent event
 
         /// <summary>
-        /// An event sent whenever an SetDefaultChargingTariff response was sent.
+        /// An event sent whenever an SetDefaultE2EChargingTariff response was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffResponseSentDelegate?  OnSetDefaultChargingTariffResponseSent;
+        public event OnSetDefaultE2EChargingTariffResponseSentDelegate?  OnSetDefaultE2EChargingTariffResponseSent;
 
 
-        public Task SendOnSetDefaultChargingTariffResponseSent(DateTime                          Timestamp,
+        public Task SendOnSetDefaultE2EChargingTariffResponseSent(DateTime                          Timestamp,
                                                                IEventSender                      Sender,
                                                                IWebSocketConnection?             Connection,
-                                                               SetDefaultChargingTariffRequest   Request,
-                                                               SetDefaultChargingTariffResponse  Response,
+                                                               SetDefaultE2EChargingTariffRequest   Request,
+                                                               SetDefaultE2EChargingTariffResponse  Response,
                                                                TimeSpan                          Runtime,
                                                                SentMessageResults                SentMessageResult,
                                                                CancellationToken                 CancellationToken = default)
 
             => LogEvent(
-                   OnSetDefaultChargingTariffResponseSent,
+                   OnSetDefaultE2EChargingTariffResponseSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -306,25 +307,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnSetDefaultChargingTariffRequestErrorSent event
+        #region Send OnSetDefaultE2EChargingTariffRequestErrorSent event
 
         /// <summary>
-        /// An event sent whenever an SetDefaultChargingTariff request error was sent.
+        /// An event sent whenever an SetDefaultE2EChargingTariff request error was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffRequestErrorSentDelegate? OnSetDefaultChargingTariffRequestErrorSent;
+        public event OnSetDefaultE2EChargingTariffRequestErrorSentDelegate? OnSetDefaultE2EChargingTariffRequestErrorSent;
 
 
-        public Task SendOnSetDefaultChargingTariffRequestErrorSent(DateTime                          Timestamp,
+        public Task SendOnSetDefaultE2EChargingTariffRequestErrorSent(DateTime                          Timestamp,
                                                                    IEventSender                      Sender,
                                                                    IWebSocketConnection?             Connection,
-                                                                   SetDefaultChargingTariffRequest?  Request,
+                                                                   SetDefaultE2EChargingTariffRequest?  Request,
                                                                    OCPP_JSONRequestErrorMessage      RequestErrorMessage,
                                                                    TimeSpan                          Runtime,
                                                                    SentMessageResults                SentMessageResult,
                                                                    CancellationToken                 CancellationToken = default)
 
             => LogEvent(
-                   OnSetDefaultChargingTariffRequestErrorSent,
+                   OnSetDefaultE2EChargingTariffRequestErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -339,26 +340,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnSetDefaultChargingTariffResponseErrorSent event
+        #region Send OnSetDefaultE2EChargingTariffResponseErrorSent event
 
         /// <summary>
-        /// An event sent whenever an SetDefaultChargingTariff response error was sent.
+        /// An event sent whenever an SetDefaultE2EChargingTariff response error was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffResponseErrorSentDelegate? OnSetDefaultChargingTariffResponseErrorSent;
+        public event OnSetDefaultE2EChargingTariffResponseErrorSentDelegate? OnSetDefaultE2EChargingTariffResponseErrorSent;
 
 
-        public Task SendOnSetDefaultChargingTariffResponseErrorSent(DateTime                           Timestamp,
+        public Task SendOnSetDefaultE2EChargingTariffResponseErrorSent(DateTime                           Timestamp,
                                                                     IEventSender                       Sender,
                                                                     IWebSocketConnection?              Connection,
-                                                                    SetDefaultChargingTariffRequest?   Request,
-                                                                    SetDefaultChargingTariffResponse?  Response,
+                                                                    SetDefaultE2EChargingTariffRequest?   Request,
+                                                                    SetDefaultE2EChargingTariffResponse?  Response,
                                                                     OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
                                                                     TimeSpan                           Runtime,
                                                                     SentMessageResults                 SentMessageResult,
                                                                     CancellationToken                  CancellationToken = default)
 
             => LogEvent(
-                   OnSetDefaultChargingTariffResponseErrorSent,
+                   OnSetDefaultE2EChargingTariffResponseErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,

@@ -596,7 +596,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
-        /// 
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom MessageContent objects.</param>
+        /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom TaxRate JSON objects.</param>
+        /// <param name="CustomTariffConditionsSerializer">A delegate to serialize custom TariffConditions JSON objects.</param>
+        /// <param name="CustomTariffEnergySerializer">A delegate to serialize custom TariffEnergy JSON objects.</param>
+        /// <param name="CustomTariffEnergyPriceSerializer">A delegate to serialize custom TariffEnergyPrice JSON objects.</param>
+        /// <param name="CustomTariffTimeSerializer">A delegate to serialize custom TariffTime JSON objects.</param>
+        /// <param name="CustomTariffTimePriceSerializer">A delegate to serialize custom TariffTimePrice JSON objects.</param>
+        /// <param name="CustomTariffFixedSerializer">A delegate to serialize custom TariffFixed JSON objects.</param>
+        /// <param name="CustomTariffFixedPriceSerializer">A delegate to serialize custom TariffFixedPrice JSON objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Tariff>?             CustomTariffSerializer              = null,

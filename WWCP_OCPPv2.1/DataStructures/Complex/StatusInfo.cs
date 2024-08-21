@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// A predefined case-insensitive code for the reason why the status is returned in this response. [max 20]
         /// </summary>
-        public String?  ReasonCode        { get; }
+        public String   ReasonCode        { get; }
 
         /// <summary>
         /// Additional text to provide detailed information. [max 512]
@@ -266,6 +266,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public StatusInfo Clone()
+
+            => new(
+                   new String(ReasonCode.ToCharArray()),
+                   AdditionalInfo.IsNotNullOrEmpty() ? new String(AdditionalInfo.ToCharArray()) : null,
+                   CustomData
+               );
 
         #endregion
 
@@ -618,6 +633,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public new StatusInfo<T> Clone()
+
+            => new(
+                   Status,
+                   new String(ReasonCode.ToCharArray()),
+                   AdditionalInfo.IsNotNullOrEmpty() ? new String(AdditionalInfo.ToCharArray()) : null,
+                   CustomData
+               );
 
         #endregion
 
