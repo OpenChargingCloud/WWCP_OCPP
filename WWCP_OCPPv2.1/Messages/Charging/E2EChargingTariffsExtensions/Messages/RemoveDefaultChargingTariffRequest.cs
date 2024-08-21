@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional unique charging tariff identification of the default charging tariff to be removed.
         /// </summary>
         [Optional]
-        public ChargingTariff_Id?    ChargingTariffId    { get; }
+        public Tariff_Id?    ChargingTariffId    { get; }
 
         /// <summary>
         /// The optional enumeration of EVSEs the default charging tariff should be removed from.
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public RemoveDefaultChargingTariffRequest(SourceRouting            Destination,
-                                                  ChargingTariff_Id?       ChargingTariffId      = null,
+                                                  Tariff_Id?       ChargingTariffId      = null,
                                                   IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
                                                   IEnumerable<KeyPair>?    SignKeys              = null,
@@ -222,8 +222,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargingTariffId",
                                        "charging tariff identification",
-                                       ChargingTariff_Id.TryParse,
-                                       out ChargingTariff_Id? ChargingTariffId,
+                                       Tariff_Id.TryParse,
+                                       out Tariff_Id? ChargingTariffId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <summary>
     /// Tag a method, class, property or struct as part of the 'Charging Tickets Extensions'.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Property,
+    [AttributeUsage(AttributeTargets.All,
                     AllowMultiple  = false,
                     Inherited      = true)]
     public class ChargingTicketsExtensionsAttribute : Attribute

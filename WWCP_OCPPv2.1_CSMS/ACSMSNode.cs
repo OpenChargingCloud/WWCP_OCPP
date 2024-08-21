@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public String?            SignedStopMeterValue     { get; set; }
 
 
-        public ChargingTariff?    DefaultChargingTariff    { get; set; }
+        public Tariff?    DefaultChargingTariff    { get; set; }
 
         #endregion
 

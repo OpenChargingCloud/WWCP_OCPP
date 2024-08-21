@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 
 #endregion
 
@@ -41,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Maximum transactionLimits allowed transactionLimits(s) for this transaction in currency used for transaction.
         /// </summary>
         [Mandatory]
-        public Price?     MaxCost      { get; }
+        public Decimal?   MaxCost      { get; }
 
         /// <summary>
         /// Maximum energy allowed to charge during this transaction.
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MaxEnergy">Maximum energy allowed to charge during this transaction.</param>
         /// <param name="MaxTime">Maximum time allowed to charge during this transaction.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public TransactionLimits(Price?       MaxCost      = null,
+        public TransactionLimits(Decimal?     MaxCost      = null,
                                  WattHour?    MaxEnergy    = null,
                                  TimeSpan?    MaxTime      = null,
                                  CustomData?  CustomData   = null)
@@ -171,15 +172,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxCost",
                                        "maximum cost(s)",
-                                       out Decimal? MaxCostNumber,
+                                       out Decimal? MaxCost,
                                        out ErrorResponse))
                 {
                     return false;
                 }
 
-                var MaxCost = MaxCostNumber.HasValue
-                                  ? new Price?(new Price(MaxCostNumber.Value))
-                                  : null;
+                //var MaxCost = MaxCostNumber.HasValue
+                //                  ? new Price?(new Price(MaxCostNumber.Value))
+                //                  : null;
 
                 #endregion
 
@@ -269,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                            MaxCost.  HasValue
-                               ? new JProperty("maxCost",      MaxCost.  Value.ExcludingVAT)
+                               ? new JProperty("maxCost",      MaxCost.  Value)
                                : null,
 
                            MaxEnergy.HasValue
@@ -402,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new String[] {
 
                    MaxCost.HasValue
-                       ? $"max cost(s): {MaxCost.Value.ExcludingVAT}"
+                       ? $"max cost: {MaxCost.Value}"
                        : "",
 
                    MaxEnergy.HasValue

@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional unique charging tariff identification used for the transaction.
         /// </summary>
         [Optional]
-        public ChargingTariff_Id?      ChargingTariffId     { get; }
+        public Tariff_Id?      ChargingTariffId     { get; }
 
         #endregion
 
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RemoteStart_Id?         RemoteStartId       = null,
                            OperationMode?          OperationMode       = null,
                            TransactionLimits?      TransactionLimits   = null,
-                           ChargingTariff_Id?      ChargingTariffId    = null,
+                           Tariff_Id?      ChargingTariffId    = null,
 
                            CustomData?             CustomData          = null)
 
@@ -322,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("tariffId",
                                        "charging tariff identification",
-                                       ChargingTariff_Id.TryParse,
-                                       out ChargingTariff_Id? ChargingTariffId,
+                                       Tariff_Id.TryParse,
+                                       out Tariff_Id? ChargingTariffId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

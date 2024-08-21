@@ -174,12 +174,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             : this()
         {
 
-            messageContents.Add(new MessageContent(
-                                    Content,
-                                    Language,
-                                    Format,
-                                    CustomData
-                                ));
+            messageContents.Add(
+                new MessageContent(
+                    Content,
+                    Language,
+                    Format,
+                    CustomData
+                )
+            );
 
             GenerateHashCode();
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -40,37 +42,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Type of this tax, e.g. "VAT", "State", "Federal".
         /// </summary>
         [Mandatory]
-        public String   Type                           { get; }
+        public TaxType     Type    { get; }
 
         /// <summary>
         /// The tax percentage.
         /// </summary>
         [Mandatory]
-        public Decimal  Tax                            { get; }
-
-        /// <summary>
-        /// Whether the tax applies to the energy fee.
-        /// </summary>
-        [Mandatory]
-        public Boolean  AppliesToEnergyFee             { get; }
-
-        /// <summary>
-        /// Whether the tax applies to the parking fee.
-        /// </summary>
-        [Mandatory]
-        public Boolean  AppliesToParkingFee            { get; }
-
-        /// <summary>
-        /// Whether the tax applies to the overstay fee.
-        /// </summary>
-        [Mandatory]
-        public Boolean  AppliesToOverstayFee           { get; }
-
-        /// <summary>
-        /// Whether the tax applies to minimum/maximum cost.
-        /// </summary>
-        [Mandatory]
-        public Boolean  AppliesToMinimumMaximumCost    { get; }
+        public Percentage  Tax     { get; }
 
         #endregion
 
@@ -81,35 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Type">The type of this tax, e.g. "VAT", "State", "Federal".</param>
         /// <param name="Tax">The tax percentage.</param>
-        /// <param name="AppliesToEnergyFee">Whether the tax applies to the energy fee.</param>
-        /// <param name="AppliesToParkingFee">Whether the tax applies to the parking fee.</param>
-        /// <param name="AppliesToOverstayFee">Whether the tax applies to the overstay fee.</param>
-        /// <param name="AppliesToMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
-        public TaxRate(String  Type,
-                       Decimal Tax,
-                       Boolean AppliesToEnergyFee            = false,
-                       Boolean AppliesToParkingFee           = false,
-                       Boolean AppliesToOverstayFee          = false,
-                       Boolean AppliesToMinimumMaximumCost   = false)
+        public TaxRate(TaxType     Type,
+                       Percentage  Tax)
         {
 
-            this.Type                         = Type;
-            this.Tax                          = Tax;
-            this.AppliesToEnergyFee           = AppliesToEnergyFee;
-            this.AppliesToParkingFee          = AppliesToParkingFee;
-            this.AppliesToOverstayFee         = AppliesToOverstayFee;
-            this.AppliesToMinimumMaximumCost  = AppliesToMinimumMaximumCost;
+            this.Type  = Type;
+            this.Tax   = Tax;
 
             unchecked
             {
 
-                hashCode = this.Type.                       GetHashCode() * 17 ^
-                           this.Tax.                        GetHashCode() * 13 ^
-                           this.AppliesToEnergyFee.         GetHashCode() * 11 ^
-                           this.AppliesToParkingFee.        GetHashCode() *  7 ^
-                           this.AppliesToOverstayFee.       GetHashCode() *  5 ^
-                           this.AppliesToMinimumMaximumCost.GetHashCode() *  3 ^
-                           base.                            GetHashCode();
+                hashCode = this.Type.GetHashCode() * 5 ^
+                           this.Tax. GetHashCode() * 3 ^
+                           base.     GetHashCode();
 
             }
 
@@ -118,7 +80,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+        #region Documentation
+
+        // {
+        //     "description":           "Tax percentage",
+        //     "javaType":              "TaxRate",
+        //     "type":                  "object",
+        //     "additionalProperties":   false,
+        //     "properties": {
+        //         "type": {
+        //             "description":  "Type of this tax, e.g. "Federal", "State", for information on receipt.",
+        //             "type":         "string",
+        //             "maxLength":     20
+        //         },
+        //         "tax": {
+        //             "description":  "Tax percentage",
+        //             "type":         "number"
+        //         }
+        //     },
+        //     "required": [
+        //         "type",
+        //         "tax"
+        //     ]
+        // }
+
+        #endregion
 
         #region (static) Parse   (JSON, CustomTaxRateParser = null)
 
@@ -156,9 +142,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TaxRate">The parsed connector.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject      JSON,
-                                       out TaxRate  TaxRate,
-                                       out String?  ErrorResponse)
+        public static Boolean TryParse(JObject                           JSON,
+                                       [NotNullWhen(true)]  out TaxRate  TaxRate,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
 
             => TryParse(JSON,
                         out TaxRate,
@@ -174,8 +160,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTaxRateParser">An optional delegate to parse custom tax rate JSON objects.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       out TaxRate                            TaxRate,
-                                       out String?                            ErrorResponse,
+                                       [NotNullWhen(true)]  out TaxRate       TaxRate,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
                                        CustomJObjectParserDelegate<TaxRate>?  CustomTaxRateParser)
         {
 
@@ -190,71 +176,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                #region Parse Type                     [mandatory]
+                #region Parse Type    [mandatory]
 
-                if (!JSON.ParseMandatoryText("type",
-                                             "tax type",
-                                             out String Type,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("type",
+                                         "tax type",
+                                         TaxType.TryParse,
+                                         out TaxType Type,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Parse Tax                      [mandatory]
+                #region Parse Tax     [mandatory]
 
                 if (!JSON.ParseMandatory("tax",
                                          "tax percentage",
-                                         out Decimal Tax,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region AppliesToEnergyFee             [mandatory]
-
-                if (!JSON.ParseMandatory("appliesToEnergyFee",
-                                         "applies to energy fee",
-                                         out Boolean AppliesToEnergyFee,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region AppliesToParkingFee            [mandatory]
-
-                if (!JSON.ParseMandatory("appliesToParkingFee",
-                                         "applies to parking fee",
-                                         out Boolean AppliesToParkingFee,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region AppliesToOverstayFee           [mandatory]
-
-                if (!JSON.ParseMandatory("appliesToOverstayFee",
-                                         "applies to overstay fee",
-                                         out Boolean AppliesToOverstayFee,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region AppliesToMinimumMaximumCost    [mandatory]
-
-                if (!JSON.ParseMandatory("appliesToMinimumMaximumCost",
-                                         "applies to minimum/maximum cost",
-                                         out Boolean AppliesToMinimumMaximumCost,
+                                         Percentage.TryParse,
+                                         out Percentage Tax,
                                          out ErrorResponse))
                 {
                     return false;
@@ -265,11 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 TaxRate = new TaxRate(
                               Type,
-                              Tax,
-                              AppliesToEnergyFee,
-                              AppliesToParkingFee,
-                              AppliesToOverstayFee,
-                              AppliesToMinimumMaximumCost
+                              Tax
                           );
 
 
@@ -301,12 +237,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
-                           new JProperty("type",                          Type),
-                           new JProperty("tax",                           Tax),
-                           new JProperty("appliesToEnergyFee",            AppliesToEnergyFee),
-                           new JProperty("appliesToParkingFee",           AppliesToParkingFee),
-                           new JProperty("appliesToOverstayFee",          AppliesToOverstayFee),
-                           new JProperty("appliesToMinimumMaximumCost",   AppliesToMinimumMaximumCost)
+                           new JProperty("type",  Type.ToString()),
+                           new JProperty("tax",   Tax. Value)
                        );
 
             return CustomTaxRateSerializer is not null
@@ -325,12 +257,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public TaxRate Clone()
 
             => new (
-                   new String(Type.ToCharArray()),
-                   Tax,
-                   AppliesToEnergyFee,
-                   AppliesToParkingFee,
-                   AppliesToOverstayFee,
-                   AppliesToMinimumMaximumCost
+                   Type.Clone,
+                   Tax. Clone
                );
 
         #endregion
@@ -338,7 +266,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Static definitions
 
-        #region (static) VAT(Percentage)
+        #region (static) VAT     (Percentage)
+
+        /// <summary>
+        /// Valued Added Tax.
+        /// </summary>
+        /// <param name="Percentage">The tax percentage.</param>
+        public static TaxRate VAT(Percentage Percentage)
+
+            => new (
+                   Type:  TaxType.VAT,
+                   Tax:   Percentage
+               );
+
 
         /// <summary>
         /// Valued Added Tax.
@@ -347,12 +287,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static TaxRate VAT(Decimal Percentage)
 
             => new (
-                   Type:                         "VAT",
-                   Tax:                          Percentage,
-                   AppliesToEnergyFee:           true,
-                   AppliesToParkingFee:          true,
-                   AppliesToOverstayFee:         true,
-                   AppliesToMinimumMaximumCost:  true
+                   Type:  TaxType.VAT,
+                   Tax:   org.GraphDefined.Vanaheimr.Illias.Percentage.Parse(Percentage)
+               );
+
+        #endregion
+
+        #region (static) State   (Percentage)
+
+        /// <summary>
+        /// A state tax.
+        /// </summary>
+        /// <param name="Percentage">The tax percentage.</param>
+        public static TaxRate State(Percentage Percentage)
+
+            => new (
+                   Type:  TaxType.State,
+                   Tax:   Percentage
+               );
+
+        #endregion
+
+        #region (static) Federal (Percentage)
+
+        /// <summary>
+        /// A federal tax.
+        /// </summary>
+        /// <param name="Percentage">The tax percentage.</param>
+        public static TaxRate Federal(Percentage Percentage)
+
+            => new (
+                   Type:  TaxType.Federal,
+                   Tax:   Percentage
                );
 
         #endregion
@@ -480,24 +446,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Int32 CompareTo(TaxRate TaxRate)
         {
 
-            var c = String.                     Compare  (Type,
-                                                          TaxRate.Type,
-                                                          StringComparison.OrdinalIgnoreCase);
+            var c = Type.CompareTo(TaxRate.Type);
 
             if (c == 0)
-                c = Tax.                        CompareTo(TaxRate.Tax);
-
-            if (c == 0)
-                c = AppliesToEnergyFee.         CompareTo(TaxRate.AppliesToEnergyFee);
-
-            if (c == 0)
-                c = AppliesToParkingFee.        CompareTo(TaxRate.AppliesToParkingFee);
-
-            if (c == 0)
-                c = AppliesToOverstayFee.       CompareTo(TaxRate.AppliesToOverstayFee);
-
-            if (c == 0)
-                c = AppliesToMinimumMaximumCost.CompareTo(TaxRate.AppliesToMinimumMaximumCost);
+                c = Tax. CompareTo(TaxRate.Tax);
 
             return c;
 
@@ -530,12 +482,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TaxRate">A tax rate to compare with.</param>
         public Boolean Equals(TaxRate TaxRate)
 
-            => Type.                       Equals(TaxRate.Type, StringComparison.OrdinalIgnoreCase) &&
-               Tax.                        Equals(TaxRate.Tax)                                      &&
-               AppliesToEnergyFee.         Equals(TaxRate.AppliesToEnergyFee)                       &&
-               AppliesToParkingFee.        Equals(TaxRate.AppliesToParkingFee)                      &&
-               AppliesToOverstayFee.       Equals(TaxRate.AppliesToOverstayFee)                     &&
-               AppliesToMinimumMaximumCost.Equals(TaxRate.AppliesToMinimumMaximumCost);
+            => Type.Equals(TaxRate.Type) &&
+               Tax. Equals(TaxRate.Tax);
 
         #endregion
 
@@ -560,27 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   $"{Tax}% {Type}",
-
-                   AppliesToEnergyFee
-                       ? ", applies to energy fee"
-                       : "",
-
-                   AppliesToParkingFee
-                       ? ", applies to parking fee"
-                       : "",
-
-                   AppliesToOverstayFee
-                       ? ", applies to overstay fee"
-                       : "",
-
-                   AppliesToMinimumMaximumCost
-                       ? ", applies to minimum/maximum cost"
-                       : ""
-
-               );
+            => $"{Tax}% {Type}";
 
         #endregion
 

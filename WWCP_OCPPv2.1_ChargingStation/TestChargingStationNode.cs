@@ -3204,7 +3204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 var chargingTariffMap     = chargingTariffGroups.
                                                 Where (group => group.Key != "").
-                                                Select(group => new KeyValuePair<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                Select(group => new KeyValuePair<Tariff_Id, IEnumerable<EVSE_Id>>(
                                                                     group.First().DefaultChargingTariff!.Id,
                                                                     group.Select(evse => evse.Id)
                                                                 ));
@@ -3217,10 +3217,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ChargingTariffs:     chargingTariffGroups.
                                                         Where (group => group.Key != "").
                                                         Select(group => group.First().DefaultChargingTariff).
-                                                        Cast<ChargingTariff>(),
+                                                        Cast<Tariff>(),
                                ChargingTariffMap:   chargingTariffMap.Any()
-                                                        ? new ReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
-                                                              new Dictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                        ? new ReadOnlyDictionary<Tariff_Id, IEnumerable<EVSE_Id>>(
+                                                              new Dictionary<Tariff_Id, IEnumerable<EVSE_Id>>(
                                                                   chargingTariffMap
                                                               )
                                                           )

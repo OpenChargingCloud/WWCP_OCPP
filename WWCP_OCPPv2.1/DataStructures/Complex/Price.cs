@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -27,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The price of a charging session.
+    /// A price.
     /// </summary>
     public readonly struct Price : IEquatable<Price>,
                                    IComparable<Price>,
@@ -37,37 +39,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// Price/Cost excluding VAT.
+        /// Price/Cost excluding Taxes.
         /// </summary>
         [Mandatory]
-        public Decimal   ExcludingVAT    { get; }
+        public Decimal               ExcludingTaxes    { get; }
 
         /// <summary>
-        /// Price/Cost including VAT.
+        /// Price/Cost including Taxes.
+        /// </summary>
+        [Mandatory]
+        public Decimal               IncludingTaxes    { get; }
+
+        /// <summary>
+        /// The optional tax percentages that were used to calculate inclTax from exclTax(for displaying/printing on invoices).
+        /// May be absent for a total cost field that contains cost from multiple components with different tax rates.
         /// </summary>
         [Optional]
-        public Decimal?  IncludingVAT    { get; }
+        public IEnumerable<TaxRate>  TaxRates          { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new price for a charging session.
+        /// Create a new price.
         /// </summary>
-        /// <param name="ExcludingVAT">Price/Cost excluding VAT.</param>
-        /// <param name="IncludingVAT">Price/Cost including VAT.</param>
-        public Price(Decimal   ExcludingVAT,
-                     Decimal?  IncludingVAT   = null)
+        /// <param name="ExcludingTaxes">Price/Cost excluding taxes.</param>
+        /// <param name="IncludingTaxes">Price/Cost including taxes.</param>
+        /// <param name="TaxRates"></param>
+        public Price(Decimal                ExcludingTaxes,
+                     Decimal                IncludingTaxes,
+                     IEnumerable<TaxRate>?  TaxRates   = null)
         {
 
-            this.ExcludingVAT  = ExcludingVAT;
-            this.IncludingVAT  = IncludingVAT;
+            this.ExcludingTaxes  = ExcludingTaxes;
+            this.IncludingTaxes  = IncludingTaxes;
+            this.TaxRates        = TaxRates?.Distinct() ?? [];
+
+            unchecked
+            {
+
+                hashCode = this.ExcludingTaxes.GetHashCode() * 5 ^
+                           this.IncludingTaxes.GetHashCode() * 3 ^
+                           this.TaxRates.      CalcHashCode();
+
+            }
 
         }
 
         #endregion
 
+
+        #region Documentation
+
+        // {
+        //     "description":             "Price with and without tax\r\n",
+        //     "javaType":                "Price",
+        //     "type":                    "object",
+        //     "additionalProperties":     false,
+        //     "properties": {
+        //         "exclTax": {
+        //             "description":     "Price/cost excluding tax.\r\n",
+        //             "type":            "integer",
+        //             "minimum":          0.0
+        //         },
+        //         "inclTax": {
+        //             "description":     "Price/cost including tax\r\n",
+        //             "type":            "integer",
+        //             "minimum":          0.0
+        //         },
+        //         "taxRate": {
+        //             "type":            "array",
+        //             "additionalItems":  false,
+        //             "items": {
+        //                 "$ref":        "#/definitions/TaxRateType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 5
+        //         }
+        //     },
+        //     "required": [
+        //         "exclTax",
+        //         "inclTax"
+        //     ]
+        // }
+
+        #endregion
 
         #region (static) Parse   (JSON, CustomPriceParser = null)
 
@@ -76,45 +133,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
-        public static Price Parse(JObject                              JSON,
-                                  CustomJObjectParserDelegate<Price>?  CustomPriceParser   = null)
+        public static Price Parse(JObject                                JSON,
+                                  CustomJObjectParserDelegate<Price>?    CustomPriceParser     = null,
+                                  CustomJObjectParserDelegate<TaxRate>?  CustomTaxRateParser   = null)
         {
 
             if (TryParse(JSON,
                          out var price,
                          out var errorResponse,
-                         CustomPriceParser))
+                         CustomPriceParser,
+                         CustomTaxRateParser))
             {
                 return price;
             }
 
             throw new ArgumentException("The given JSON representation of a price is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, CustomPriceParser = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a price.
-        /// </summary>
-        /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
-        public static Price? TryParse(JObject                              JSON,
-                                      CustomJObjectParserDelegate<Price>?  CustomPriceParser   = null)
-        {
-
-            if (TryParse(JSON,
-                         out var price,
-                         out var errorResponse,
-                         CustomPriceParser))
-            {
-                return price;
-            }
-
-            return default;
 
         }
 
@@ -130,9 +164,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Price">The parsed price.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject      JSON,
-                                       out Price    Price,
-                                       out String?  ErrorResponse)
+        public static Boolean TryParse(JObject                           JSON,
+                                       [NotNullWhen(true)]  out Price    Price,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
 
             => TryParse(JSON,
                         out Price,
@@ -147,10 +181,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Price">The parsed price.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
-        public static Boolean TryParse(JObject                              JSON,
-                                       out Price                            Price,
-                                       out String?                          ErrorResponse,
-                                       CustomJObjectParserDelegate<Price>?  CustomPriceParser   = null)
+        public static Boolean TryParse(JObject                                JSON,
+                                       [NotNullWhen(true)]  out Price         Price,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
+                                       CustomJObjectParserDelegate<Price>?    CustomPriceParser     = null,
+                                       CustomJObjectParserDelegate<TaxRate>?  CustomTaxRateParser   = null)
         {
 
             try
@@ -164,11 +199,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                #region Parse ExcludingVAT    [mandatory]
+                #region Parse ExcludingTaxes    [mandatory]
 
-                if (!JSON.ParseMandatory("excl_vat",
-                                         "price excluding VAT",
-                                         out Decimal ExcludingVAT,
+                if (!JSON.ParseMandatory("exclTax",
+                                         "price excluding Taxes",
+                                         out Decimal ExcludingTaxes,
                                          out ErrorResponse))
                 {
                     return false;
@@ -176,12 +211,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse IncludingVAT    [optional]
+                #region Parse IncludingTaxes    [mandatory]
 
-                if (JSON.ParseOptional("incl_vat",
-                                       "price including VAT",
-                                       out Decimal? IncludingVAT,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("inclTax",
+                                         "price including Taxes",
+                                         out Decimal IncludingTaxes,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse TaxRates          [optional]
+
+                if (JSON.ParseOptionalHashSet("taxRate",
+                                              "tax rates",
+                                              TaxRate.TryParse,
+                                              out HashSet<TaxRate> TaxRates,
+                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -191,8 +239,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 Price = new Price(
-                            ExcludingVAT,
-                            IncludingVAT
+                            ExcludingTaxes,
+                            IncludingTaxes,
+                            TaxRates
                         );
 
 
@@ -214,21 +263,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomPriceSerializer = null)
+        #region ToJSON(CustomPriceSerializer = null,CustomTaxRateSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Price>? CustomPriceSerializer = null)
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom TaxRate JSON objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Price>?    CustomPriceSerializer     = null,
+                              CustomJObjectSerializerDelegate<TaxRate>?  CustomTaxRateSerializer   = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("excl_vat",  ExcludingVAT),
+                                 new JProperty("exclTax",  ExcludingTaxes),
+                                 new JProperty("inclTax",  IncludingTaxes),
 
-                           IncludingVAT.HasValue
-                               ? new JProperty("incl_vat",  IncludingVAT)
+                           TaxRates.Any()
+                               ? new JProperty("taxRate",  new JArray(TaxRates.Select(taxRate => taxRate.ToJSON(CustomTaxRateSerializer))))
                                : null
 
                        );
@@ -248,14 +300,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public Price Clone()
 
-            => new (ExcludingVAT,
-                    IncludingVAT);
+            => new (
+                   ExcludingTaxes,
+                   IncludingTaxes,
+                   TaxRates.Select(taxRate => taxRate.Clone())
+               );
 
         #endregion
 
 
         public static Price Zero
-            => new (0);
+            = new (0, 0);
 
 
         #region Operator overloading
@@ -363,8 +418,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         Price Price2)
 
             => new (
-                   Price1.ExcludingVAT       +  Price2.ExcludingVAT,
-                  (Price1.IncludingVAT ?? 0) + (Price2.IncludingVAT ?? 0)
+                   Price1.ExcludingTaxes + Price2.ExcludingTaxes,
+                   Price1.IncludingTaxes + Price2.IncludingTaxes,
+                   Price1.TaxRates.Concat(Price2.TaxRates)
                );
 
         #endregion
@@ -381,8 +437,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         Price Price2)
 
             => new (
-                   Price1.ExcludingVAT       -  Price2.ExcludingVAT,
-                  (Price1.IncludingVAT ?? 0) - (Price2.IncludingVAT ?? 0)
+                   Price1.ExcludingTaxes - Price2.ExcludingTaxes,
+                   Price1.IncludingTaxes - Price2.IncludingTaxes,
+                   Price1.TaxRates.Concat(Price2.TaxRates)
                );
 
         #endregion
@@ -415,10 +472,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Int32 CompareTo(Price Price)
         {
 
-            var c = ExcludingVAT.CompareTo(Price.ExcludingVAT);
+            var c = ExcludingTaxes.  CompareTo(Price.ExcludingTaxes);
 
-            if (c == 0 && IncludingVAT.HasValue && Price.IncludingVAT.HasValue)
-                c = IncludingVAT.Value.CompareTo(Price.IncludingVAT.Value);
+            if (c == 0)
+                c = IncludingTaxes.  CompareTo(Price.IncludingTaxes);
+
+            if (c == 0)
+                c = TaxRates.Count().CompareTo(Price.TaxRates.Count());
 
             return c;
 
@@ -451,10 +511,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Price">A price to compare with.</param>
         public Boolean Equals(Price Price)
 
-            => ExcludingVAT.Equals(Price.ExcludingVAT) &&
+            => ExcludingTaxes.  Equals(Price.ExcludingTaxes) &&
+               IncludingTaxes.  Equals(Price.IncludingTaxes) &&
 
-            ((!IncludingVAT.HasValue && !Price.IncludingVAT.HasValue) ||
-              (IncludingVAT.HasValue &&  Price.IncludingVAT.HasValue && IncludingVAT.Value.Equals(Price.IncludingVAT.Value)));
+               TaxRates.Count().Equals(Price.TaxRates.Count()) &&
+               TaxRates.All(taxRate => Price.TaxRates.Contains(taxRate));
 
         #endregion
 
@@ -462,20 +523,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ExcludingVAT. GetHashCode() * 3 ^
-                       IncludingVAT?.GetHashCode() ?? 0;
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -486,15 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   ExcludingVAT,
-
-                   IncludingVAT.HasValue
-                       ? " / " + IncludingVAT
-                       : ""
-
-               );
+            => $"{ExcludingTaxes} excl. taxes, {IncludingTaxes} incl. taxes, {TaxRates.Count()} tax rates";
 
         #endregion
 

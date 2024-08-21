@@ -4841,7 +4841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             SetDefaultChargingTariff(this ILocalControllerNode     LocalController,
                                      SourceRouting                 Destination,
-                                     ChargingTariff                ChargingTariff,
+                                     Tariff                ChargingTariff,
                                      IEnumerable<EVSE_Id>?         EVSEIds               = null,
 
                                      CustomData?                   CustomData            = null,
@@ -4965,7 +4965,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             RemoveDefaultChargingTariff(this ILocalControllerNode     LocalController,
                                         SourceRouting                 Destination,
-                                        ChargingTariff_Id?            ChargingTariffId      = null,
+                                        Tariff_Id?            ChargingTariffId      = null,
                                         IEnumerable<EVSE_Id>?         EVSEIds               = null,
 
                                         CustomData?                   CustomData            = null,

@@ -167,17 +167,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                           DateTime?                                                    ResponseTimestamp                           = null,
                                                           CustomJObjectParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null,
                                                           CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
-                                                          CustomJObjectParserDelegate<ChargingTariff>?                 CustomChargingTariffParser                  = null,
-                                                          CustomJObjectParserDelegate<Price>?                          CustomPriceParser                           = null,
-                                                          CustomJObjectParserDelegate<TariffElement>?                  CustomTariffElementParser                   = null,
-                                                          CustomJObjectParserDelegate<PriceComponent>?                 CustomPriceComponentParser                  = null,
-                                                          CustomJObjectParserDelegate<TaxRate>?                        CustomTaxRateParser                         = null,
-                                                          CustomJObjectParserDelegate<TariffRestrictions>?             CustomTariffRestrictionsParser              = null,
-                                                          CustomJObjectParserDelegate<EnergyMix>?                      CustomEnergyMixParser                       = null,
-                                                          CustomJObjectParserDelegate<EnergySource>?                   CustomEnergySourceParser                    = null,
-                                                          CustomJObjectParserDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactParser             = null,
-                                                          CustomJObjectParserDelegate<IdToken>?                        CustomIdTokenParser                         = null,
-                                                          CustomJObjectParserDelegate<AdditionalInfo>?                 CustomAdditionalInfoParser                  = null,
+                                                          CustomJObjectParserDelegate<Tariff>?                 CustomChargingTariffParser                  = null,
+                                                          //CustomJObjectParserDelegate<Price>?                          CustomPriceParser                           = null,
+                                                          //CustomJObjectParserDelegate<TariffElement>?                  CustomTariffElementParser                   = null,
+                                                          //CustomJObjectParserDelegate<PriceComponent>?                 CustomPriceComponentParser                  = null,
+                                                          //CustomJObjectParserDelegate<TaxRate>?                        CustomTaxRateParser                         = null,
+                                                          //CustomJObjectParserDelegate<TariffConditions>?             CustomTariffRestrictionsParser              = null,
+                                                          //CustomJObjectParserDelegate<EnergyMix>?                      CustomEnergyMixParser                       = null,
+                                                          //CustomJObjectParserDelegate<EnergySource>?                   CustomEnergySourceParser                    = null,
+                                                          //CustomJObjectParserDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactParser             = null,
+                                                          //CustomJObjectParserDelegate<IdToken>?                        CustomIdTokenParser                         = null,
+                                                          //CustomJObjectParserDelegate<AdditionalInfo>?                 CustomAdditionalInfoParser                  = null,
                                                           CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
                                                           CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
@@ -193,16 +193,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          CustomGetUserChargingTariffResponseParser,
                          CustomStatusInfoParser,
                          CustomChargingTariffParser,
-                         CustomPriceParser,
-                         CustomTariffElementParser,
-                         CustomPriceComponentParser,
-                         CustomTaxRateParser,
-                         CustomTariffRestrictionsParser,
-                         CustomEnergyMixParser,
-                         CustomEnergySourceParser,
-                         CustomEnvironmentalImpactParser,
-                         CustomIdTokenParser,
-                         CustomAdditionalInfoParser,
+                         //CustomPriceParser,
+                         //CustomTariffElementParser,
+                         //CustomPriceComponentParser,
+                         //CustomTaxRateParser,
+                         //CustomTariffRestrictionsParser,
+                         //CustomEnergyMixParser,
+                         //CustomEnergySourceParser,
+                         //CustomEnvironmentalImpactParser,
+                         //CustomIdTokenParser,
+                         //CustomAdditionalInfoParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
@@ -235,17 +235,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        DateTime?                                                    ResponseTimestamp                           = null,
                                        CustomJObjectParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
-                                       CustomJObjectParserDelegate<ChargingTariff>?                 CustomChargingTariffParser                  = null,
-                                       CustomJObjectParserDelegate<Price>?                          CustomPriceParser                           = null,
-                                       CustomJObjectParserDelegate<TariffElement>?                  CustomTariffElementParser                   = null,
-                                       CustomJObjectParserDelegate<PriceComponent>?                 CustomPriceComponentParser                  = null,
-                                       CustomJObjectParserDelegate<TaxRate>?                        CustomTaxRateParser                         = null,
-                                       CustomJObjectParserDelegate<TariffRestrictions>?             CustomTariffRestrictionsParser              = null,
-                                       CustomJObjectParserDelegate<EnergyMix>?                      CustomEnergyMixParser                       = null,
-                                       CustomJObjectParserDelegate<EnergySource>?                   CustomEnergySourceParser                    = null,
-                                       CustomJObjectParserDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactParser             = null,
-                                       CustomJObjectParserDelegate<IdToken>?                        CustomIdTokenParser                         = null,
-                                       CustomJObjectParserDelegate<AdditionalInfo>?                 CustomAdditionalInfoParser                  = null,
+                                       CustomJObjectParserDelegate<Tariff>?                 CustomChargingTariffParser                  = null,
+                                       //CustomJObjectParserDelegate<Price>?                          CustomPriceParser                           = null,
+                                       //CustomJObjectParserDelegate<TariffElement>?                  CustomTariffElementParser                   = null,
+                                       //CustomJObjectParserDelegate<PriceComponent>?                 CustomPriceComponentParser                  = null,
+                                       //CustomJObjectParserDelegate<TaxRate>?                        CustomTaxRateParser                         = null,
+                                       //CustomJObjectParserDelegate<TariffConditions>?             CustomTariffRestrictionsParser              = null,
+                                       //CustomJObjectParserDelegate<EnergyMix>?                      CustomEnergyMixParser                       = null,
+                                       //CustomJObjectParserDelegate<EnergySource>?                   CustomEnergySourceParser                    = null,
+                                       //CustomJObjectParserDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactParser             = null,
+                                       //CustomJObjectParserDelegate<IdToken>?                        CustomIdTokenParser                         = null,
+                                       //CustomJObjectParserDelegate<AdditionalInfo>?                 CustomAdditionalInfoParser                  = null,
                                        CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
                                        CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
@@ -286,8 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalHashSet("chargingTariffs",
                                               "charging tariffs",
-                                              ChargingTariff.TryParse,
-                                              out HashSet<ChargingTariff> ChargingTariffs,
+                                              Tariff.TryParse,
+                                              out HashSet<Tariff> ChargingTariffs,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region ChargingTariffMap    [optional]
 
-                var ChargingTariffMap = new Dictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>();
+                var ChargingTariffMap = new Dictionary<Tariff_Id, IEnumerable<EVSE_Id>>();
 
                 if (JSON.ParseOptional("chargingTariffMap",
                                        "charging tariff map",
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     foreach (var chargingTariffProperty in ChargingTariffMapJSON.Properties())
                     {
 
-                        var chargingTariffId = ChargingTariff_Id.TryParse(chargingTariffProperty.Name);
+                        var chargingTariffId = Tariff_Id.TryParse(chargingTariffProperty.Name);
 
                         if (!chargingTariffId.HasValue)
                             continue;
@@ -437,17 +437,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                     CustomStatusInfoSerializer                      = null,
-                              CustomJObjectSerializerDelegate<ChargingTariff>?                 CustomChargingTariffSerializer                  = null,
-                              CustomJObjectSerializerDelegate<Price>?                          CustomPriceSerializer                           = null,
-                              CustomJObjectSerializerDelegate<TariffElement>?                  CustomTariffElementSerializer                   = null,
-                              CustomJObjectSerializerDelegate<PriceComponent>?                 CustomPriceComponentSerializer                  = null,
-                              CustomJObjectSerializerDelegate<TaxRate>?                        CustomTaxRateSerializer                         = null,
-                              CustomJObjectSerializerDelegate<TariffRestrictions>?             CustomTariffRestrictionsSerializer              = null,
-                              CustomJObjectSerializerDelegate<EnergyMix>?                      CustomEnergyMixSerializer                       = null,
-                              CustomJObjectSerializerDelegate<EnergySource>?                   CustomEnergySourceSerializer                    = null,
-                              CustomJObjectSerializerDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactSerializer             = null,
-                              CustomJObjectSerializerDelegate<IdToken>?                        CustomIdTokenSerializer                         = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?                 CustomAdditionalInfoSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Tariff>?                 CustomChargingTariffSerializer                  = null,
+                              //CustomJObjectSerializerDelegate<Price>?                          CustomPriceSerializer                           = null,
+                              //CustomJObjectSerializerDelegate<TariffElement>?                  CustomTariffElementSerializer                   = null,
+                              //CustomJObjectSerializerDelegate<PriceComponent>?                 CustomPriceComponentSerializer                  = null,
+                              //CustomJObjectSerializerDelegate<TaxRate>?                        CustomTaxRateSerializer                         = null,
+                              //CustomJObjectSerializerDelegate<TariffConditions>?             CustomTariffRestrictionsSerializer              = null,
+                              //CustomJObjectSerializerDelegate<EnergyMix>?                      CustomEnergyMixSerializer                       = null,
+                              //CustomJObjectSerializerDelegate<EnergySource>?                   CustomEnergySourceSerializer                    = null,
+                              //CustomJObjectSerializerDelegate<EnvironmentalImpact>?            CustomEnvironmentalImpactSerializer             = null,
+                              //CustomJObjectSerializerDelegate<IdToken>?                        CustomIdTokenSerializer                         = null,
+                              //CustomJObjectSerializerDelegate<AdditionalInfo>?                 CustomAdditionalInfoSerializer                  = null,
                               CustomJObjectSerializerDelegate<Signature>?                      CustomSignatureSerializer                       = null,
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {

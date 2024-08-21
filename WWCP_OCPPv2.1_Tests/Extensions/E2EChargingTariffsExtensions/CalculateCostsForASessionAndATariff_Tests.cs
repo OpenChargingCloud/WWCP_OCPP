@@ -92,44 +92,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging tariff
 
-            var chargingTariff     = new ChargingTariff(
+            var chargingTariff     = new Tariff(
 
-                                         Id:                        ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                         ProviderId:                Provider_Id.      Parse("DE-GDF"),
-                                         ProviderName:              new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "GraphDefined EMP"
-                                                                    ),
+                                         Id:                        Tariff_Id.Parse("DE-GDF-T12345678"),
+                                         //ProviderId:                Provider_Id.      Parse("DE-GDF"),
+                                         //ProviderName:              new DisplayTexts(
+                                         //                               Languages.en,
+                                         //                               "GraphDefined EMP"
+                                         //                           ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            new[] {
-                                                                        new TariffElement(
-                                                                            new[] {
-                                                                                PriceComponent.FlatRate(
-                                                                                    Price:  42.0M,
-                                                                                    VAT:    23.5M
-                                                                                )
-                                                                            }
-                                                                        )
-                                                                    },
-
-                                         Created:                   timeReference,
-                                         Replaces:                  null,
-                                         References:                null,
-                                         TariffType:                TariffType.REGULAR,
-                                         Description:               new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "0.53 / kWh"
+                                         FixedFee:                  new TariffFixed(
+                                                                        [ new TariffFixedPrice(42.0M) ],
+                                                                        [ TaxRate.VAT(15)]
                                                                     ),
-                                         URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                         EnergyMix:                 null,
+                                         //TariffElements:            new[] {
+                                         //                               new TariffElement(
+                                         //                                   new[] {
+                                         //                                       PriceComponent.FlatRate(
+                                         //                                           Price:  42.0M,
+                                         //                                           VAT:    23.5M
+                                         //                                       )
+                                         //                                   }
+                                         //                               )
+                                         //                           },
+
+                                         //Created:                   timeReference,
+                                         //Replaces:                  null,
+                                         //References:                null,
+                                         //TariffType:                TariffType.REGULAR,
+                                         Description:               new MessageContents(
+                                                                        "0.53 / kWh",
+                                                                        Language_Id.EN
+                                                                    ),
+                                         //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                         //EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  new Price(
-                                                                        ExcludingVAT:  0.51M,
-                                                                        IncludingVAT:  0.53M
+                                                                        ExcludingTaxes:  0.51M,
+                                                                        IncludingTaxes:  0.53M
                                                                     ),
-                                         NotBefore:                 timeReference,
-                                         NotAfter:                  null,
+                                         //NotBefore:                 timeReference,
+                                         //NotAfter:                  null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,
@@ -351,8 +355,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
                     ClassicAssert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    ClassicAssert.AreEqual(42.00M,   cdr.TotalCost.ExcludingVAT,           "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(51.87M,   cdr.TotalCost.IncludingVAT,           "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(42.00M,   cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(51.87M,   cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
 
                 }
 
@@ -375,45 +379,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging tariff
 
-            var chargingTariff     = new ChargingTariff(
+            var chargingTariff     = new Tariff(
 
-                                         Id:                        ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                         ProviderId:                Provider_Id.      Parse("DE-GDF"),
-                                         ProviderName:              new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "GraphDefined EMP"
-                                                                    ),
+                                         Id:                        Tariff_Id.Parse("DE-GDF-T12345678"),
+                                         //ProviderId:                Provider_Id.      Parse("DE-GDF"),
+                                         //ProviderName:              new DisplayTexts(
+                                         //                               Languages.en,
+                                         //                               "GraphDefined EMP"
+                                         //                           ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            [
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.ChargeHours(
-                                                                                    Price:      6.50M,
-                                                                                    VAT:        19,
-                                                                                    StepSize:   TimeSpan.FromMinutes(15)
-                                                                                )
-                                                                            ]
-                                                                        )
-                                                                    ],
-
-                                         Created:                   timeReference,
-                                         Replaces:                  null,
-                                         References:                null,
-                                         TariffType:                TariffType.REGULAR,
-                                         Description:               new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "0.53 / kWh"
+                                         ChargingTime:              new TariffTime(
+                                                                        [ new TariffTimePrice(6.50M, StepSize: TimeSpan.FromMinutes(15)) ],
+                                                                        [ TaxRate.VAT(19)]
                                                                     ),
-                                         URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                         EnergyMix:                 null,
+                                         //TariffElements:            [
+                                         //                               new TariffElement(
+                                         //                                   [
+                                         //                                       PriceComponent.ChargeHours(
+                                         //                                           Price:      6.50M,
+                                         //                                           VAT:        19,
+                                         //                                           StepSize:   TimeSpan.FromMinutes(15)
+                                         //                                       )
+                                         //                                   ]
+                                         //                               )
+                                         //                           ],
+
+                                         //Created:                   timeReference,
+                                         //Replaces:                  null,
+                                         //References:                null,
+                                         //TariffType:                TariffType.REGULAR,
+                                         Description:               new MessageContents(
+                                                                        "0.53 / kWh",
+                                                                        Language_Id.EN
+                                                                    ),
+                                         //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                         //EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  new Price(
-                                                                        ExcludingVAT:  0.51M,
-                                                                        IncludingVAT:  0.53M
+                                                                        ExcludingTaxes:  0.51M,
+                                                                        IncludingTaxes:  0.53M
                                                                     ),
-                                         NotBefore:                 timeReference,
-                                         NotAfter:                  null,
+                                         //NotBefore:                 timeReference,
+                                         //NotAfter:                  null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,
@@ -632,16 +640,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                     ClassicAssert.AreEqual(39M,        cdr.TotalChargingTime.     TotalMinutes,   "Total charging time");
                     ClassicAssert.AreEqual(45M,        cdr.BilledChargingTime.    TotalMinutes,   "Billed charging time");
-                    ClassicAssert.AreEqual(4.875M,     cdr.BilledChargingTimeCost.ExcludingVAT,   "Billed charging time cost excl. VAT");
-                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledChargingTimeCost.IncludingVAT,   "Billed charging time cost incl. VAT");
+                    ClassicAssert.AreEqual(4.875M,     cdr.BilledChargingTimeCost.ExcludingTaxes,   "Billed charging time cost excl. VAT");
+                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledChargingTimeCost.IncludingTaxes,   "Billed charging time cost incl. VAT");
 
                     ClassicAssert.AreEqual(9999M,      cdr.TotalEnergy.           Value,          "Total energy");
                     ClassicAssert.AreEqual(0M,         cdr.BilledEnergy.          Value,          "Billed energy");
-                    ClassicAssert.AreEqual(4.875M,     cdr.BilledEnergyCost.      ExcludingVAT,   "Billed energy cost excl. VAT");
-                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledEnergyCost.      IncludingVAT,   "Billed energy cost incl. VAT");
+                    ClassicAssert.AreEqual(4.875M,     cdr.BilledEnergyCost.      ExcludingTaxes,   "Billed energy cost excl. VAT");
+                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledEnergyCost.      IncludingTaxes,   "Billed energy cost incl. VAT");
 
-                    ClassicAssert.AreEqual(4.875M,     cdr.TotalCost.             ExcludingVAT,   "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(5.80125M,   cdr.TotalCost.             IncludingVAT,   "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(4.875M,     cdr.TotalCost.             ExcludingTaxes,   "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(5.80125M,   cdr.TotalCost.             IncludingTaxes,   "Total cost incl. VAT");
 
                 }
 
@@ -664,44 +672,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging tariff
 
-            var chargingTariff     = new ChargingTariff(
+            var chargingTariff     = new Tariff(
 
-                                         Id:                        ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                         ProviderId:                Provider_Id.      Parse("DE-GDF"),
-                                         ProviderName:              new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "GraphDefined EMP"
-                                                                    ),
+                                         Id:                        Tariff_Id.Parse("DE-GDF-T12345678"),
+                                         //ProviderId:                Provider_Id.      Parse("DE-GDF"),
+                                         //ProviderName:              new DisplayTexts(
+                                         //                               Languages.en,
+                                         //                               "GraphDefined EMP"
+                                         //                           ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            [
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.Energy(
-                                                                                    Price:  0.51M,
-                                                                                    VAT:    19
-                                                                                )
-                                                                            ]
-                                                                        )
-                                                                    ],
-
-                                         Created:                   timeReference,
-                                         Replaces:                  null,
-                                         References:                null,
-                                         TariffType:                TariffType.REGULAR,
-                                         Description:               new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "0.53 / kWh"
+                                         Energy:                    new TariffEnergy(
+                                                                        [ new TariffEnergyPrice(0.51M) ],
+                                                                        [ TaxRate.VAT(19)]
                                                                     ),
-                                         URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                         EnergyMix:                 null,
+                                         //TariffElements:            [
+                                         //                               new TariffElement(
+                                         //                                   [
+                                         //                                       PriceComponent.Energy(
+                                         //                                           Price:  0.51M,
+                                         //                                           VAT:    19
+                                         //                                       )
+                                         //                                   ]
+                                         //                               )
+                                         //                           ],
+
+                                         //Created:                   timeReference,
+                                         //Replaces:                  null,
+                                         //References:                null,
+                                         //TariffType:                TariffType.REGULAR,
+                                         Description:               new MessageContents(
+                                                                        "0.53 / kWh",
+                                                                        Language_Id.EN
+                                                                    ),
+                                         //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                         //EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  new Price(
-                                                                        ExcludingVAT:  0.51M,
-                                                                        IncludingVAT:  0.53M
+                                                                        ExcludingTaxes:  0.51M,
+                                                                        IncludingTaxes:  0.53M
                                                                     ),
-                                         NotBefore:                 timeReference,
-                                         NotAfter:                  null,
+                                         //NotBefore:                 timeReference,
+                                         //NotAfter:                  null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,
@@ -923,8 +935,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
                     ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    ClassicAssert.AreEqual(5.1M,     cdr.TotalCost.ExcludingVAT,           "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(6.069M,   cdr.TotalCost.IncludingVAT,           "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(5.1M,     cdr.TotalCost.ExcludingTaxes,           "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(6.069M,   cdr.TotalCost.IncludingTaxes,           "Total cost incl. VAT");
 
                 }
 
@@ -949,64 +961,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging tariff
 
-            var chargingTariff     = new ChargingTariff(
+            var chargingTariff     = new Tariff(
 
-                                         Id:                        ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                         ProviderId:                Provider_Id.      Parse("DE-GDF"),
-                                         ProviderName:              new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "GraphDefined EMP"
-                                                                    ),
+                                         Id:                        Tariff_Id.Parse("DE-GDF-T12345678"),
+                                         //ProviderId:                Provider_Id.      Parse("DE-GDF"),
+                                         //ProviderName:              new DisplayTexts(
+                                         //                               Languages.en,
+                                         //                               "GraphDefined EMP"
+                                         //                           ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            [
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.Energy(
-                                                                                    Price:       0.40M,
-                                                                                    TaxRates:   TaxRates.VAT(10)
-                                                                                ),
-                                                                                PriceComponent.IdleHours(
-                                                                                    Price:      10.00M,
-                                                                                    TaxRates:   TaxRates.VAT(10)
-                                                                                )
-                                                                            ],
-                                                                            new TariffRestrictions(
-                                                                                StartTimeOfDay:   Time.FromHourMin( 8, 0),
-                                                                                EndTimeOfDay:     Time.FromHourMin(18, 0)
+                                         Energy:                    new TariffEnergy(
+                                                                        [
+                                                                            new TariffEnergyPrice(
+                                                                                PriceKWh:     0.40M,
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  StartTimeOfDay:   Time.FromHourMin( 8, 0),
+                                                                                                  EndTimeOfDay:     Time.FromHourMin(18, 0)
+                                                                                              )
+                                                                            ),
+                                                                            new TariffEnergyPrice(
+                                                                                PriceKWh:     0.25M,
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  StartTimeOfDay:   Time.FromHourMin(18, 0),
+                                                                                                  EndTimeOfDay:     Time.FromHourMin( 8, 0)
+                                                                                              )
                                                                             )
-                                                                        ),
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.Energy(
-                                                                                    Price:      0.25M,
-                                                                                    TaxRates:   TaxRates.VAT(10)
-                                                                                )
-                                                                            ],
-                                                                            new TariffRestrictions(
-                                                                                StartTimeOfDay:   Time.FromHourMin(18, 0),
-                                                                                EndTimeOfDay:     Time.FromHourMin( 8, 0)
-                                                                            )
-                                                                        )
-
-                                                                    ],
-
-                                         Created:                   timeReference,
-                                         Replaces:                  null,
-                                         References:                null,
-                                         TariffType:                TariffType.REGULAR,
-                                         Description:               new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "08:00h - 18:00h: 0.44 ct/kWh (idle fee 11 EUR/hr), 18.00h - 08.00h: 0.275 ct/kWh. Price incl. VAT"
+                                                                        ],
+                                                                        [ TaxRate.VAT(10)]
                                                                     ),
-                                         URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                         EnergyMix:                 null,
+                                         IdleTime:                  new TariffTime(
+                                                                        [
+                                                                            new TariffTimePrice(
+                                                                                PriceMinute:  10.00M,
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  StartTimeOfDay:   Time.FromHourMin( 8, 0),
+                                                                                                  EndTimeOfDay:     Time.FromHourMin(18, 0)
+                                                                                              )
+                                                                            )
+                                                                        ],
+                                                                        [ TaxRate.VAT(10)]
+                                                                    ),
+
+
+                                         //TariffElements:            [
+
+                                                                        //new TariffElement(
+                                                                        //    [
+                                                                        //        PriceComponent.Energy(
+                                                                        //            Price:       0.40M,
+                                                                        //            TaxRates:   TaxRates.VAT(10)
+                                                                        //        ),
+                                                                        //        PriceComponent.IdleHours(
+                                                                        //            Price:      10.00M,
+                                                                        //            TaxRates:   TaxRates.VAT(10)
+                                                                        //        )
+                                                                        //    ],
+                                                                        //    new TariffConditions(
+                                                                        //        StartTimeOfDay:   Time.FromHourMin( 8, 0),
+                                                                        //        EndTimeOfDay:     Time.FromHourMin(18, 0)
+                                                                        //    )
+                                                                        //),
+
+                                                                    //    new TariffElement(
+                                                                    //        [
+                                                                    //            PriceComponent.Energy(
+                                                                    //                Price:      0.25M,
+                                                                    //                TaxRates:   TaxRates.VAT(10)
+                                                                    //            )
+                                                                    //        ],
+                                                                    //        new TariffConditions(
+                                                                    //            StartTimeOfDay:   Time.FromHourMin(18, 0),
+                                                                    //            EndTimeOfDay:     Time.FromHourMin( 8, 0)
+                                                                    //        )
+                                                                    //    )
+
+                                                                    //],
+
+                                         //Created:                   timeReference,
+                                         //Replaces:                  null,
+                                         //References:                null,
+                                         //TariffType:                TariffType.REGULAR,
+                                         Description:               new MessageContents(
+                                                                        "08:00h - 18:00h: 0.44 ct/kWh (idle fee 11 EUR/hr), 18.00h - 08.00h: 0.275 ct/kWh. Price incl. VAT",
+                                                                        Language_Id.EN
+                                                                    ),
+                                         //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                         //EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  null,
-                                         NotBefore:                 timeReference,
-                                         NotAfter:                  null,
+                                         //NotBefore:                 timeReference,
+                                         //NotAfter:                  null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,
@@ -1228,8 +1273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
                     ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
 
-                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
-                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
+                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingTaxes);
+                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingTaxes);
 
                 }
 
@@ -1253,90 +1298,74 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging tariff
 
-            var chargingTariff     = new ChargingTariff(
+            var chargingTariff     = new Tariff(
 
-                                         Id:                        ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                         ProviderId:                Provider_Id.      Parse("DE-GDF"),
-                                         ProviderName:              new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "GraphDefined EMP"
-                                                                    ),
+                                         Id:                        Tariff_Id.Parse("DE-GDF-T12345678"),
+                                         //ProviderId:                Provider_Id.      Parse("DE-GDF"),
+                                         //ProviderName:              new DisplayTexts(
+                                         //                               Languages.en,
+                                         //                               "GraphDefined EMP"
+                                         //                           ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            [
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.FlatRate(
-                                                                                    Price:      2.50M,
-                                                                                    TaxRates:   TaxRates.VAT(15)
-                                                                                )
-                                                                            ]
-                                                                        ),
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.ChargeHours(
-                                                                                    Price:      1.00M,
-                                                                                    TaxRates:   TaxRates.VAT(20),
-                                                                                    StepSize:   TimeSpan.FromSeconds(900)
-                                                                                )
-                                                                            ],
-                                                                            new TariffRestrictions(
-                                                                                MinEnergy:   WattHour.ParseKWh(11)
-                                                                            )
-                                                                        ),
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.ChargeHours(
-                                                                                    Price:      2.00M,
-                                                                                    TaxRates:   TaxRates.VAT(20),
-                                                                                    StepSize:   TimeSpan.FromSeconds(600)
-                                                                                )
-                                                                            ],
-                                                                            new TariffRestrictions(
-                                                                                MinEnergy:   WattHour.ParseKWh(11)
-                                                                            )
-                                                                        ),
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.IdleHours(
-                                                                                    Price:      5.00M,
-                                                                                    TaxRates:   TaxRates.VAT(10),
-                                                                                    StepSize:   TimeSpan.FromSeconds(300)
-                                                                                )
-                                                                            ],
-                                                                            new TariffRestrictions(
-                                                                                StartTimeOfDay:   Time.FromHourMin( 9,00),
-                                                                                EndTimeOfDay:     Time.FromHourMin(18,00),
-                                                                                DaysOfWeek:       [
-                                                                                                      DayOfWeek.Monday,
-                                                                                                      DayOfWeek.Tuesday,
-                                                                                                      DayOfWeek.Wednesday,
-                                                                                                      DayOfWeek.Thursday,
-                                                                                                      DayOfWeek.Friday
-                                                                                                  ]
-                                                                            )
-                                                                        )
-
-                                                                    ],
-
-                                         Created:                   timeReference,
-                                         Replaces:                  null,
-                                         References:                null,
-                                         TariffType:                TariffType.REGULAR,
-                                         Description:               new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "Complex tariff"
+                                         FixedFee:                  new TariffFixed(
+                                                                        [ new TariffFixedPrice(2.50M) ],
+                                                                        [ TaxRate.VAT(15) ]
                                                                     ),
-                                         URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                         EnergyMix:                 null,
+                                         ChargingTime:              new TariffTime(
+                                                                        [
+                                                                            new TariffTimePrice(
+                                                                                PriceMinute:  1.00M,
+                                                                                StepSize:     TimeSpan.FromSeconds(900),
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  MinEnergy:  WattHour.ParseKWh(11)
+                                                                                              )
+                                                                            ),
+                                                                            new TariffTimePrice(
+                                                                                PriceMinute:  2.00M,
+                                                                                StepSize:     TimeSpan.FromSeconds(600),
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  MinEnergy:  WattHour.ParseKWh(11)
+                                                                                              )
+                                                                            )
+                                                                        ],
+                                                                        [ TaxRate.VAT(20) ]
+                                                                    ),
+                                         IdleTime:                  new TariffTime(
+                                                                        [
+                                                                            new TariffTimePrice(
+                                                                                PriceMinute:  5.00M,
+                                                                                StepSize:     TimeSpan.FromSeconds(300),
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  StartTimeOfDay:   Time.FromHourMin( 9,00),
+                                                                                                  EndTimeOfDay:     Time.FromHourMin(18,00),
+                                                                                                  DaysOfWeek:       [
+                                                                                                                        DayOfWeek.Monday,
+                                                                                                                        DayOfWeek.Tuesday,
+                                                                                                                        DayOfWeek.Wednesday,
+                                                                                                                        DayOfWeek.Thursday,
+                                                                                                                        DayOfWeek.Friday
+                                                                                                                    ]
+                                                                                              )
+                                                                            )
+                                                                        ],
+                                                                        [ TaxRate.VAT(10) ]
+                                                                    ),
+
+                                         //Created:                   timeReference,
+                                         //Replaces:                  null,
+                                         //References:                null,
+                                         //TariffType:                TariffType.REGULAR,
+                                         Description:               new MessageContents(
+                                                                        "Complex tariff",
+                                                                        Language_Id.EN
+                                                                    ),
+                                         //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                         //EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  null,
-                                         NotBefore:                 timeReference,
-                                         NotAfter:                  null,
+                                         //NotBefore:                 timeReference,
+                                         //NotAfter:                  null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,
@@ -1558,8 +1587,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
                     ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
 
-                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
-                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
+                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingTaxes);
+                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingTaxes);
 
                 }
 
@@ -1583,58 +1612,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging tariff
 
-            var chargingTariff     = new ChargingTariff(
+            var chargingTariff     = new Tariff(
 
-                                         Id:                        ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                         ProviderId:                Provider_Id.      Parse("DE-GDF"),
-                                         ProviderName:              new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "GraphDefined EMP"
-                                                                    ),
+                                         Id:                        Tariff_Id.Parse("DE-GDF-T12345678"),
+                                         //ProviderId:                Provider_Id.      Parse("DE-GDF"),
+                                         //ProviderName:              new DisplayTexts(
+                                         //                               Languages.en,
+                                         //                               "GraphDefined EMP"
+                                         //                           ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            [
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.Energy(
-                                                                                    Price:  0.40M,
-                                                                                    VAT:    10
-                                                                                )
-                                                                            ]
-                                                                        ),
-
-                                                                        new TariffElement(
-                                                                            [
-                                                                                PriceComponent.IdleHours(
-                                                                                    Price:  10.00M,
-                                                                                    VAT:    10
-                                                                                )
-                                                                            ],
-                                                                            new TariffRestrictions(
-                                                                                MinIdleHours:   TimeSpan.FromHours(2)
-                                                                            )
-                                                                        )
-
-                                                                    ],
-
-                                         Created:                   timeReference,
-                                         Replaces:                  null,
-                                         References:                null,
-                                         TariffType:                TariffType.REGULAR,
-                                         Description:               new DisplayTexts(
-                                                                        Languages.en,
-                                                                        "0.44 ct/kWh incl. VAT and an idle fee of 11 EUR/hr after 2 hours."
+                                         Energy:                    new TariffEnergy(
+                                                                        [ new TariffEnergyPrice(0.40M) ],
+                                                                        [ TaxRate.VAT(10) ]
                                                                     ),
-                                         URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                         EnergyMix:                 null,
+                                         IdleTime:                  new TariffTime(
+                                                                        [
+                                                                            new TariffTimePrice(
+                                                                                PriceMinute:  10.00M,
+                                                                                Conditions:   new TariffConditions(
+                                                                                                  MinIdleTime: TimeSpan.FromHours(2)
+                                                                                              )
+                                                                            )
+                                                                        ],
+                                                                        [ TaxRate.VAT(10) ]
+                                                                    ),
+                                         //TariffElements:            [
+
+                                         //                               new TariffElement(
+                                         //                                   [
+                                         //                                       PriceComponent.Energy(
+                                         //                                           Price:  0.40M,
+                                         //                                           VAT:    10
+                                         //                                       )
+                                         //                                   ]
+                                         //                               ),
+
+                                         //                               new TariffElement(
+                                         //                                   [
+                                         //                                       PriceComponent.IdleHours(
+                                         //                                           Price:  10.00M,
+                                         //                                           VAT:    10
+                                         //                                       )
+                                         //                                   ],
+                                         //                                   new TariffConditions(
+                                         //                                       MinIdleHours:   TimeSpan.FromHours(2)
+                                         //                                   )
+                                         //                               )
+
+                                         //                           ],
+
+                                         //Created:                   timeReference,
+                                         //Replaces:                  null,
+                                         //References:                null,
+                                         //TariffType:                TariffType.REGULAR,
+                                         Description:               new MessageContents(
+                                                                        "0.44 ct/kWh incl. VAT and an idle fee of 11 EUR/hr after 2 hours.",
+                                                                        Language_Id.EN
+                                                                    ),
+                                         //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                         //EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  new Price(
-                                                                        ExcludingVAT:  0.51M,
-                                                                        IncludingVAT:  0.53M
+                                                                        ExcludingTaxes:  0.51M,
+                                                                        IncludingTaxes:  0.53M
                                                                     ),
-                                         NotBefore:                 timeReference,
-                                         NotAfter:                  null,
+                                         //NotBefore:                 timeReference,
+                                         //NotAfter:                  null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,
@@ -1856,8 +1900,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
                     ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
 
-                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
-                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
+                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingTaxes);
+                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingTaxes);
 
                 }
 

@@ -2998,7 +2998,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetDefaultChargingTariff(this ICSMSNode           CSMS,
                                      SourceRouting            Destination,
-                                     ChargingTariff           ChargingTariff,
+                                     Tariff           ChargingTariff,
                                      IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
                                      IEnumerable<KeyPair>?    SignKeys              = null,
@@ -3118,7 +3118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RemoveDefaultChargingTariff(this ICSMSNode           CSMS,
                                         SourceRouting            Destination,
-                                        ChargingTariff_Id?       ChargingTariffId      = null,
+                                        Tariff_Id?       ChargingTariffId      = null,
                                         IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
                                         IEnumerable<KeyPair>?    SignKeys              = null,

@@ -480,12 +480,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // E2E Charging Tariff Extensions
-        public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<Tariff>?                                      CustomChargingTariffSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
-        public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<TaxRate>?                                             CustomTaxRateSerializer                                      { get; set; }
-        public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<TariffConditions>?                                    CustomTariffConditionsSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }

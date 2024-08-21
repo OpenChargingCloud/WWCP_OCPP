@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The charging tariff.
         /// </summary>
         [Mandatory]
-        public ChargingTariff        ChargingTariff    { get; }
+        public Tariff        ChargingTariff    { get; }
 
         /// <summary>
         /// The optional enumeration of EVSEs the default charging tariff applies to.
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SetDefaultChargingTariffRequest(SourceRouting            Destination,
-                                               ChargingTariff           ChargingTariff,
+                                               Tariff           ChargingTariff,
                                                IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
                                                IEnumerable<KeyPair>?    SignKeys              = null,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
-                                       SourceRouting                                              Destination,
+                                       SourceRouting                                                  Destination,
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out SetDefaultChargingTariffRequest?      SetDefaultChargingTariffRequest,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
@@ -228,8 +228,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatoryJSON("chargingTariff",
                                              "charging tariff",
-                                             OCPPv2_1.ChargingTariff.TryParse,
-                                             out ChargingTariff? ChargingTariff,
+                                             OCPPv2_1.Tariff.TryParse,
+                                             out Tariff? ChargingTariff,
                                              out ErrorResponse) ||
                      ChargingTariff is null)
                 {
@@ -339,36 +339,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingTariff>?                   CustomChargingTariffSerializer                    = null,
-                              CustomJObjectSerializerDelegate<Price>?                            CustomPriceSerializer                             = null,
-                              CustomJObjectSerializerDelegate<TariffElement>?                    CustomTariffElementSerializer                     = null,
-                              CustomJObjectSerializerDelegate<PriceComponent>?                   CustomPriceComponentSerializer                    = null,
-                              CustomJObjectSerializerDelegate<TaxRate>?                          CustomTaxRateSerializer                           = null,
-                              CustomJObjectSerializerDelegate<TariffRestrictions>?               CustomTariffRestrictionsSerializer                = null,
-                              CustomJObjectSerializerDelegate<EnergyMix>?                        CustomEnergyMixSerializer                         = null,
-                              CustomJObjectSerializerDelegate<EnergySource>?                     CustomEnergySourceSerializer                      = null,
-                              CustomJObjectSerializerDelegate<EnvironmentalImpact>?              CustomEnvironmentalImpactSerializer               = null,
-                              CustomJObjectSerializerDelegate<IdToken>?                          CustomIdTokenSerializer                           = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?                   CustomAdditionalInfoSerializer                    = null,
+                              CustomJObjectSerializerDelegate<Tariff>?                   CustomChargingTariffSerializer                    = null,
+                              //CustomJObjectSerializerDelegate<Price>?                            CustomPriceSerializer                             = null,
+                              //CustomJObjectSerializerDelegate<TariffElement>?                    CustomTariffElementSerializer                     = null,
+                              //CustomJObjectSerializerDelegate<PriceComponent>?                   CustomPriceComponentSerializer                    = null,
+                              //CustomJObjectSerializerDelegate<TaxRate>?                          CustomTaxRateSerializer                           = null,
+                              //CustomJObjectSerializerDelegate<TariffConditions>?               CustomTariffRestrictionsSerializer                = null,
+                              //CustomJObjectSerializerDelegate<EnergyMix>?                        CustomEnergyMixSerializer                         = null,
+                              //CustomJObjectSerializerDelegate<EnergySource>?                     CustomEnergySourceSerializer                      = null,
+                              //CustomJObjectSerializerDelegate<EnvironmentalImpact>?              CustomEnvironmentalImpactSerializer               = null,
+                              //CustomJObjectSerializerDelegate<IdToken>?                          CustomIdTokenSerializer                           = null,
+                              //CustomJObjectSerializerDelegate<AdditionalInfo>?                   CustomAdditionalInfoSerializer                    = null,
                               CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingTariff",   ChargingTariff.ToJSON(CustomChargingTariffSerializer,
-                                                                                         CustomPriceSerializer,
-                                                                                         CustomTariffElementSerializer,
-                                                                                         CustomPriceComponentSerializer,
-                                                                                         CustomTaxRateSerializer,
-                                                                                         CustomTariffRestrictionsSerializer,
-                                                                                         CustomEnergyMixSerializer,
-                                                                                         CustomEnergySourceSerializer,
-                                                                                         CustomEnvironmentalImpactSerializer,
-                                                                                         CustomIdTokenSerializer,
-                                                                                         CustomAdditionalInfoSerializer,
-                                                                                         CustomSignatureSerializer,
-                                                                                         CustomCustomDataSerializer)),
+                                 new JProperty("chargingTariff",   ChargingTariff.ToJSON(CustomChargingTariffSerializer
+                                                                                         //CustomPriceSerializer,
+                                                                                         //CustomTariffElementSerializer,
+                                                                                         //CustomPriceComponentSerializer,
+                                                                                         //CustomTaxRateSerializer,
+                                                                                         //CustomTariffRestrictionsSerializer,
+                                                                                         //CustomEnergyMixSerializer,
+                                                                                         //CustomEnergySourceSerializer,
+                                                                                         //CustomEnvironmentalImpactSerializer,
+                                                                                         //CustomIdTokenSerializer,
+                                                                                         //CustomAdditionalInfoSerializer,
+                                                                                         //CustomSignatureSerializer,
+                                                                                         //CustomCustomDataSerializer
+                                                                                         )),
 
                            EVSEIds.Any()
                                ? new JProperty("evseIds",          new JArray(EVSEIds.   Select(evseId    => evseId.   ToString())))

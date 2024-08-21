@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The enumeration of tariffs that can be used with this charging ticket.
         /// </summary>
         [Mandatory]
-        public IEnumerable<ChargingTariff>             ChargingTariffs             { get; }
+        public IEnumerable<Tariff>             ChargingTariffs             { get; }
 
 
         /// <summary>
@@ -160,8 +160,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The allowed current type: AC, DC, or both.
         /// </summary>
-        [Mandatory]
-        public CurrentTypes                            CurrentType          { get; }
+        [Optional]
+        public EVSEKinds?                              CurrentType                       { get; }
 
         /// <summary>
         /// The maximum allowed consumed energy during a charging session authorized by this charging ticket.
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               Provider_Id                              ProviderId,
                               DisplayTexts                             ProviderName,
                               PublicKey                                DriverPublicKey,
-                              IEnumerable<ChargingTariff>              ChargingTariffs,
+                              IEnumerable<Tariff>              ChargingTariffs,
 
                               URL?                                     ProviderURL                = null,
                               DisplayTexts?                            Description                = null,
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               IEnumerable<ChargingStation_Id>?         InvalidChargingStations    = null,
                               IEnumerable<GlobalEVSE_Id>?              InvalidEVSEs               = null,
 
-                              CurrentTypes?                            AllowedCurrentType         = null,
+                              EVSEKinds?                            AllowedCurrentType         = null,
                               WattHour?                                MaxEnergy                  = null,
                               Watt?                                    MaxPower                   = null,
                               Ampere?                                  MaxCurrent                 = null,
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.InvalidChargingStations   = InvalidChargingStations?.Distinct() ?? Array.Empty<ChargingStation_Id>();
             this.InvalidEVSEs              = InvalidEVSEs?.           Distinct() ?? Array.Empty<GlobalEVSE_Id>();
 
-            this.CurrentType               = AllowedCurrentType                  ?? CurrentTypes.Any;
+            this.CurrentType               = AllowedCurrentType;
             this.MaxEnergy                 = MaxEnergy;
             this.MaxPower                  = MaxPower;
             this.MaxCurrent                = MaxCurrent;
@@ -555,8 +555,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryHashSet("chargingTariffs",
                                                 "charging tariffs",
-                                                ChargingTariff.TryParse,
-                                                out HashSet<ChargingTariff> ChargingTariffs,
+                                                Tariff.TryParse,
+                                                out HashSet<Tariff> ChargingTariffs,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -733,8 +733,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("allowedCurrentType",
                                          "allowed current type",
-                                         CurrentTypesExtensions.TryParse,
-                                         out CurrentTypes AllowedCurrentType,
+                                         EVSEKindsExtensions.TryParse,
+                                         out EVSEKinds AllowedCurrentType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -1004,12 +1004,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTicket>?       CustomChargingTicketSerializer        = null,
                               CustomJObjectSerializerDelegate<PublicKey>?            CustomPublicKeySerializer             = null,
-                              CustomJObjectSerializerDelegate<ChargingTariff>?       CustomTariffSerializer                = null,
+                              CustomJObjectSerializerDelegate<Tariff>?       CustomTariffSerializer                = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
-                              CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
-                              CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
                               CustomJObjectSerializerDelegate<TaxRate>?              CustomTaxRateSerializer               = null,
-                              CustomJObjectSerializerDelegate<TariffRestrictions>?   CustomTariffRestrictionsSerializer    = null,
+                              CustomJObjectSerializerDelegate<TariffConditions>?   CustomTariffRestrictionsSerializer    = null,
                               CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
@@ -1033,19 +1031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("driverPublicKey",            DriverPublicKey.         ToJSON(CustomPublicKeySerializer,
                                                                                                              CustomCustomDataSerializer)),
 
-                                 new JProperty("tariffs",                    new JArray(ChargingTariffs.        Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer,
-                                                                                                                                                                     CustomPriceSerializer,
-                                                                                                                                                                     CustomTariffElementSerializer,
-                                                                                                                                                                     CustomPriceComponentSerializer,
-                                                                                                                                                                     CustomTaxRateSerializer,
-                                                                                                                                                                     CustomTariffRestrictionsSerializer,
-                                                                                                                                                                     CustomEnergyMixSerializer,
-                                                                                                                                                                     CustomEnergySourceSerializer,
-                                                                                                                                                                     CustomEnvironmentalImpactSerializer,
-                                                                                                                                                                     CustomIdTokenSerializer,
-                                                                                                                                                                     CustomAdditionalInfoSerializer,
-                                                                                                                                                                     CustomSignatureSerializer,
-                                                                                                                                                                     CustomCustomDataSerializer)))),
+                                 new JProperty("tariffs",                    new JArray(ChargingTariffs.        Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer)))),
 
                            Description.            Any()
                                ? new JProperty("description",                Description.             ToJSON())
@@ -1084,8 +1070,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("invalidEVSEIds",             new JArray(InvalidEVSEs.           Select(evseId            => evseId.           ToString())))
                                : null,
 
-
-                                 new JProperty("currentType",                CurrentType.             AsText()),
+                           CurrentType.HasValue
+                               ? new JProperty("currentType",                CurrentType.       Value.       AsText())
+                               : null,
 
                            MaxEnergy.     HasValue
                                ? new JProperty("maxEnergy",                  MaxEnergy.         Value.Value)

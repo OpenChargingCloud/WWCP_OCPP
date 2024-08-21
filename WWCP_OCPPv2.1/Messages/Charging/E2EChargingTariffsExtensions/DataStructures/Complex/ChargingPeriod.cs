@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional unique charging tariff identification used to calculate the costs for this charging period.
         /// </summary>
         [Optional]
-        public ChargingTariff_Id?                ChargingTariffId    { get; }
+        public Tariff_Id?                ChargingTariffId    { get; }
 
         /// <summary>
         /// The optional enumeration of volume per cost dimension for this charging period.
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingPeriod(TimeSpan                           StartPeriod,
-                              ChargingTariff_Id?                 ChargingTariffId   = null,
+                              Tariff_Id?                 ChargingTariffId   = null,
                               IEnumerable<CostDimensionVolume>?  Costs              = null,
                               CustomData?                        CustomData         = null)
 
@@ -198,8 +198,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("tariffId",
                                        "tariff identification",
-                                       ChargingTariff_Id.TryParse,
-                                       out ChargingTariff_Id? ChargingTariffId,
+                                       Tariff_Id.TryParse,
+                                       out Tariff_Id? ChargingTariffId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

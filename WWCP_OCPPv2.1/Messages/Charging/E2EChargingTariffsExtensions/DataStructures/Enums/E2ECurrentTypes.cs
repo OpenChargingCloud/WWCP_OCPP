@@ -15,13 +15,21 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
     /// Extensions methods for current types.
     /// </summary>
-    public static class CurrentTypesExtensions
+    public static class E2ECurrentTypesExtensions
     {
 
         #region Parse   (Text)
@@ -30,13 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text as a current type.
         /// </summary>
         /// <param name="Text">A text representation of a current type.</param>
-        public static CurrentTypes Parse(String Text)
+        public static E2ECurrentTypes Parse(String Text)
         {
 
             if (TryParse(Text, out var currentType))
                 return currentType;
 
-            return CurrentTypes.Any;
+            return E2ECurrentTypes.Any;
 
         }
 
@@ -48,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a current type.
         /// </summary>
         /// <param name="Text">A text representation of a current type.</param>
-        public static CurrentTypes? TryParse(String Text)
+        public static E2ECurrentTypes? TryParse(String Text)
         {
 
             if (TryParse(Text, out var currentType))
@@ -60,32 +68,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TryParse(Text, out CurrentType)
+        #region TryParse(Text, out E2ECurrentType)
 
         /// <summary>
         /// Try to parse the given text as a current type.
         /// </summary>
         /// <param name="Text">A text representation of a current type.</param>
-        /// <param name="CurrentType">The parsed current type.</param>
-        public static Boolean TryParse(String Text, out CurrentTypes CurrentType)
+        /// <param name="E2ECurrentType">The parsed current type.</param>
+        public static Boolean TryParse(String                                   Text,
+                                       [NotNullWhen(true)] out E2ECurrentTypes  E2ECurrentType)
         {
             switch (Text.Trim())
             {
 
                 case "AC":
-                    CurrentType = CurrentTypes.AC;
+                    E2ECurrentType = E2ECurrentTypes.AC;
                     return true;
 
                 case "DC":
-                    CurrentType = CurrentTypes.DC;
+                    E2ECurrentType = E2ECurrentTypes.DC;
                     return true;
 
                 case "HPC":
-                    CurrentType = CurrentTypes.HPC;
+                    E2ECurrentType = E2ECurrentTypes.HPC;
                     return true;
 
                 default:
-                    CurrentType = CurrentTypes.Any;
+                    E2ECurrentType = E2ECurrentTypes.Any;
                     return false;
 
             }
@@ -94,14 +103,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region AsText(this CurrentType)
+        #region AsText(this E2ECurrentType)
 
-        public static String AsText(this CurrentTypes CurrentType)
+        public static String AsText(this E2ECurrentTypes E2ECurrentType)
 
-            => CurrentType switch {
-                   CurrentTypes.AC   => "AC",
-                   CurrentTypes.DC   => "DC",
-                   CurrentTypes.HPC  => "HPC",
+            => E2ECurrentType switch {
+                   E2ECurrentTypes.AC   => "AC",
+                   E2ECurrentTypes.DC   => "DC",
+                   E2ECurrentTypes.HPC  => "HPC",
                    _                 => "any"
                };
 
@@ -113,7 +122,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Allowed currents for charging tickets.
     /// </summary>
-    public enum CurrentTypes
+    [ChargingTicketsExtensions]
+    public enum E2ECurrentTypes
     {
 
         /// <summary>

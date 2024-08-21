@@ -106,45 +106,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var providerKeyPair    = KeyPair.GenerateKeys()!;
 
-                var chargingTariff     = new ChargingTariff(
+                var chargingTariff     = new Tariff(
 
-                                             Id:               ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                             ProviderId:       Provider_Id.      Parse("DE-GDF"),
-                                             ProviderName:     new DisplayTexts(
-                                                                   Languages.en,
-                                                                   "GraphDefined EMP"
-                                                               ),
+                                             Id:               Tariff_Id.Parse("DE-GDF-T12345678"),
+                                             //ProviderId:       Provider_Id.      Parse("DE-GDF"),
+                                             //ProviderName:     new DisplayTexts(
+                                             //                      Languages.en,
+                                             //                      "GraphDefined EMP"
+                                             //                  ),
                                              Currency:         Currency.EUR,
-                                             TariffElements:   [
-                                                                   new TariffElement(
-                                                                       [
-                                                                           PriceComponent.Energy(
-                                                                               Price:      0.51M,
-                                                                               VAT:        0.02M,
-                                                                               StepSize:   WattHour.ParseKWh(1)
-                                                                           )
-                                                                       ]
-                                                                   )
-                                                               ],
-
-                                             Created:          timeReference,
-                                             Replaces:         null,
-                                             References:       null,
-                                             TariffType:       TariffType.REGULAR,
-                                             Description:      new DisplayTexts(
-                                                                   Languages.en,
-                                                                   "0.53 / kWh"
+                                             Energy:           new TariffEnergy(
+                                                                   [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                   [ TaxRate.VAT(15)]
                                                                ),
-                                             URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                             EnergyMix:        null,
+
+                                             //TariffElements:   [
+                                             //                      new TariffElement(
+                                             //                          [
+                                             //                              PriceComponent.Energy(
+                                             //                                  Price:      0.51M,
+                                             //                                  VAT:        0.02M,
+                                             //                                  StepSize:   WattHour.ParseKWh(1)
+                                             //                              )
+                                             //                          ]
+                                             //                      )
+                                             //                  ],
+
+                                             //Created:          timeReference,
+                                             //Replaces:         null,
+                                             //References:       null,
+                                             //TariffType:       TariffType.REGULAR,
+                                             Description:      new MessageContents(
+                                                                   "0.53 / kWh",
+                                                                   Language_Id.EN
+                                                               ),
+                                             //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                             //EnergyMix:        null,
 
                                              MinPrice:         null,
                                              MaxPrice:         new Price(
-                                                                   ExcludingVAT:  0.51M,
-                                                                   IncludingVAT:  0.53M
+                                                                   ExcludingTaxes:  0.51M,
+                                                                   IncludingTaxes:  0.53M
                                                                ),
-                                             NotBefore:        timeReference,
-                                             NotAfter:         null,
+                                             //NotBefore:        timeReference,
+                                             //NotAfter:         null,
 
                                              SignKeys:         null,
                                              SignInfos:        null,
@@ -162,19 +167,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
-                                                     testCSMS01.OCPP.CustomPriceSerializer,
-                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
-                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
-                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
-                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
-                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
-                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
-                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.OCPP.CustomSignatureSerializer,
-                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                     //testCSMS01.OCPP.CustomPriceSerializer,
+                                                     //testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     //testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     //testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     //testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     //testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     //testCSMS01.OCPP.CustomCustomDataSerializer
+                                                     ));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -182,8 +188,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                          Destination:    SourceRouting.To(chargingStation1.Id),
-                                          ChargingTariff:     chargingTariff,
+                                          Destination: SourceRouting.To(chargingStation1.Id),
+                                          ChargingTariff:     (Tariff)chargingTariff,
                                           CustomData:         null
                                       );
 
@@ -199,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.Count);
                 ClassicAssert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().DestinationId);
 
-                ClassicAssert.AreEqual(chargingTariff.Id,                         setDefaultChargingTariffRequests.First().ChargingTariff.Id);
+                ClassicAssert.AreEqual((object)chargingTariff.Id,                         setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
                 ClassicAssert.IsTrue  (                                           setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
@@ -428,45 +434,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var providerKeyPair  = KeyPair.GenerateKeys()!;
 
-                var chargingTariff   = new ChargingTariff(
+                var chargingTariff   = new Tariff(
 
-                                           Id:               ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                           ProviderId:       Provider_Id.      Parse("DE-GDF"),
-                                           ProviderName:     new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "GraphDefined EMP"
-                                                             ),
+                                           Id:               Tariff_Id.Parse("DE-GDF-T12345678"),
+                                           //ProviderId:       Provider_Id.      Parse("DE-GDF"),
+                                           //ProviderName:     new DisplayTexts(
+                                           //                      Languages.en,
+                                           //                      "GraphDefined EMP"
+                                           //                  ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   [
-                                                                 new TariffElement(
-                                                                     [
-                                                                         PriceComponent.Energy(
-                                                                             Price:      0.51M,
-                                                                             VAT:        0.02M,
-                                                                             StepSize:   WattHour.ParseKWh(1)
-                                                                         )
-                                                                     ]
-                                                                 )
-                                                             ],
-
-                                           Created:          timeReference,
-                                           Replaces:         null,
-                                           References:       null,
-                                           TariffType:       TariffType.REGULAR,
-                                           Description:      new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "0.53 / kWh"
+                                           Energy:           new TariffEnergy(
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ TaxRate.VAT(15)]
                                                              ),
-                                           URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                           EnergyMix:        null,
+                                           //TariffElements:   [
+                                           //                      new TariffElement(
+                                           //                          [
+                                           //                              PriceComponent.Energy(
+                                           //                                  Price:      0.51M,
+                                           //                                  VAT:        0.02M,
+                                           //                                  StepSize:   WattHour.ParseKWh(1)
+                                           //                              )
+                                           //                          ]
+                                           //                      )
+                                           //                  ],
+
+                                           //Created:          timeReference,
+                                           //Replaces:         null,
+                                           //References:       null,
+                                           //TariffType:       TariffType.REGULAR,
+                                           Description:      new MessageContents(
+                                                                 "0.53 / kWh",
+                                                                 Language_Id.EN
+                                                             ),
+                                           //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                           //EnergyMix:        null,
 
                                            MinPrice:         null,
                                            MaxPrice:         new Price(
-                                                                 ExcludingVAT:  0.51M,
-                                                                 IncludingVAT:  0.53M
+                                                                 ExcludingTaxes:  0.51M,
+                                                                 IncludingTaxes:  0.53M
                                                              ),
-                                           NotBefore:        timeReference,
-                                           NotAfter:         null,
+                                           //NotBefore:        timeReference,
+                                           //NotAfter:         null,
 
                                            SignKeys:         null,
                                            SignInfos:        null,
@@ -484,19 +494,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
-                                                     testCSMS01.OCPP.CustomPriceSerializer,
-                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
-                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
-                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
-                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
-                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
-                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
-                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.OCPP.CustomSignatureSerializer,
-                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                     //testCSMS01.OCPP.CustomPriceSerializer,
+                                                     //testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     //testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     //testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     //testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     //testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     //testCSMS01.OCPP.CustomCustomDataSerializer
+                                                     ));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -504,8 +515,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           Destination:    SourceRouting.To(chargingStation1.Id),
-                                           ChargingTariff:     chargingTariff,
+                                           Destination: SourceRouting.To(chargingStation1.Id),
+                                           ChargingTariff:     (Tariff)chargingTariff,
                                            CustomData:         null
                                        );
 
@@ -526,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(chargingStation1.Id,                               setDefaultChargingTariffRequests.First().DestinationId);
 
                 // Verify the signature of the charging tariff
-                ClassicAssert.AreEqual(chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
+                ClassicAssert.AreEqual((object)chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
                 ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
@@ -760,45 +771,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var providerKeyPair  = KeyPair.GenerateKeys()!;
 
-                var chargingTariff   = new ChargingTariff(
+                var chargingTariff   = new Tariff(
 
-                                           Id:               ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                           ProviderId:       Provider_Id.      Parse("DE-GDF"),
-                                           ProviderName:     new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "GraphDefined EMP"
-                                                             ),
+                                           Id:               Tariff_Id.Parse("DE-GDF-T12345678"),
+                                           //ProviderId:       Provider_Id.      Parse("DE-GDF"),
+                                           //ProviderName:     new DisplayTexts(
+                                           //                      Languages.en,
+                                           //                      "GraphDefined EMP"
+                                           //                  ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   [
-                                                                 new TariffElement(
-                                                                     [
-                                                                         PriceComponent.Energy(
-                                                                             Price:      0.51M,
-                                                                             VAT:        0.02M,
-                                                                             StepSize:   WattHour.ParseKWh(1)
-                                                                         )
-                                                                     ]
-                                                                 )
-                                                             ],
-
-                                           Created:          timeReference,
-                                           Replaces:         null,
-                                           References:       null,
-                                           TariffType:       TariffType.REGULAR,
-                                           Description:      new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "0.53 / kWh"
+                                           Energy:           new TariffEnergy(
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ TaxRate.VAT(15)]
                                                              ),
-                                           URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                           EnergyMix:        null,
+                                           //TariffElements:   [
+                                           //                      new TariffElement(
+                                           //                          [
+                                           //                              PriceComponent.Energy(
+                                           //                                  Price:      0.51M,
+                                           //                                  VAT:        0.02M,
+                                           //                                  StepSize:   WattHour.ParseKWh(1)
+                                           //                              )
+                                           //                          ]
+                                           //                      )
+                                           //                  ],
+
+                                           //Created:          timeReference,
+                                           //Replaces:         null,
+                                           //References:       null,
+                                           //TariffType:       TariffType.REGULAR,
+                                           Description:      new MessageContents(
+                                                                 "0.53 / kWh",
+                                                                 Language_Id.EN
+                                                             ),
+                                           //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                           //EnergyMix:        null,
 
                                            MinPrice:         null,
                                            MaxPrice:         new Price(
-                                                                 ExcludingVAT:  0.51M,
-                                                                 IncludingVAT:  0.53M
+                                                                 ExcludingTaxes:  0.51M,
+                                                                 IncludingTaxes:  0.53M
                                                              ),
-                                           NotBefore:        timeReference,
-                                           NotAfter:         null,
+                                           //NotBefore:        timeReference,
+                                           //NotAfter:         null,
 
                                            SignKeys:         null,
                                            SignInfos:        null,
@@ -816,19 +831,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
-                                                     testCSMS01.OCPP.CustomPriceSerializer,
-                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
-                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
-                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
-                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
-                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
-                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
-                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.OCPP.CustomSignatureSerializer,
-                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                     //testCSMS01.OCPP.CustomPriceSerializer,
+                                                     //testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     //testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     //testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     //testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     //testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     //testCSMS01.OCPP.CustomCustomDataSerializer
+                                                     ));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -836,8 +852,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           Destination:    SourceRouting.To(chargingStation2.Id),
-                                           ChargingTariff:     chargingTariff,
+                                           Destination: SourceRouting.To(chargingStation2.Id),
+                                           ChargingTariff:     (Tariff)chargingTariff,
                                            CustomData:         null
                                        );
 
@@ -858,7 +874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().DestinationId);
 
                 // Verify the signature of the charging tariff
-                ClassicAssert.AreEqual(chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
+                ClassicAssert.AreEqual((object)chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
                 ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
@@ -1092,45 +1108,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var providerKeyPair  = KeyPair.GenerateKeys()!;
 
-                var chargingTariff   = new ChargingTariff(
+                var chargingTariff   = new Tariff(
 
-                                           Id:               ChargingTariff_Id.Parse("DE-GDF-T12345678"),
-                                           ProviderId:       Provider_Id.      Parse("DE-GDF"),
-                                           ProviderName:     new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "GraphDefined EMP"
-                                                             ),
+                                           Id:               Tariff_Id.Parse("DE-GDF-T12345678"),
+                                           //ProviderId:       Provider_Id.      Parse("DE-GDF"),
+                                           //ProviderName:     new DisplayTexts(
+                                           //                      Languages.en,
+                                           //                      "GraphDefined EMP"
+                                           //                  ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   [
-                                                                 new TariffElement(
-                                                                     [
-                                                                         PriceComponent.Energy(
-                                                                             Price:      0.51M,
-                                                                             VAT:        0.02M,
-                                                                             StepSize:   WattHour.ParseKWh(1)
-                                                                         )
-                                                                     ]
-                                                                 )
-                                                             ],
-
-                                           Created:          timeReference,
-                                           Replaces:         null,
-                                           References:       null,
-                                           TariffType:       TariffType.REGULAR,
-                                           Description:      new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "0.53 / kWh"
+                                           Energy:           new TariffEnergy(
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ TaxRate.VAT(15)]
                                                              ),
-                                           URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                           EnergyMix:        null,
+                                           //TariffElements:   [
+                                           //                      new TariffElement(
+                                           //                          [
+                                           //                              PriceComponent.Energy(
+                                           //                                  Price:      0.51M,
+                                           //                                  VAT:        0.02M,
+                                           //                                  StepSize:   WattHour.ParseKWh(1)
+                                           //                              )
+                                           //                          ]
+                                           //                      )
+                                           //                  ],
+
+                                           //Created:          timeReference,
+                                           //Replaces:         null,
+                                           //References:       null,
+                                           //TariffType:       TariffType.REGULAR,
+                                           Description:      new MessageContents(
+                                                                 "0.53 / kWh",
+                                                                 Language_Id.EN
+                                                             ),
+                                           //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                           //EnergyMix:        null,
 
                                            MinPrice:         null,
                                            MaxPrice:         new Price(
-                                                                 ExcludingVAT:  0.51M,
-                                                                 IncludingVAT:  0.53M
+                                                                 ExcludingTaxes:  0.51M,
+                                                                 IncludingTaxes:  0.53M
                                                              ),
-                                           NotBefore:        timeReference,
-                                           NotAfter:         null,
+                                           //NotBefore:        timeReference,
+                                           //NotAfter:         null,
 
                                            SignKeys:         null,
                                            SignInfos:        null,
@@ -1148,19 +1168,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.OCPP.CustomChargingTariffSerializer,
-                                                     testCSMS01.OCPP.CustomPriceSerializer,
-                                                     testCSMS01.OCPP.CustomTaxRateSerializer,
-                                                     testCSMS01.OCPP.CustomTariffElementSerializer,
-                                                     testCSMS01.OCPP.CustomPriceComponentSerializer,
-                                                     testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.OCPP.CustomEnergyMixSerializer,
-                                                     testCSMS01.OCPP.CustomEnergySourceSerializer,
-                                                     testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.OCPP.CustomIdTokenSerializer,
-                                                     testCSMS01.OCPP.CustomAdditionalInfoSerializer,
-                                                     testCSMS01.OCPP.CustomSignatureSerializer,
-                                                     testCSMS01.OCPP.CustomCustomDataSerializer));
+                                                     testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                     //testCSMS01.OCPP.CustomPriceSerializer,
+                                                     //testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                     //testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                     //testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                     //testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                     //testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                     //testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                     //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                     //testCSMS01.OCPP.CustomSignatureSerializer,
+                                                     //testCSMS01.OCPP.CustomCustomDataSerializer
+                                                     ));
 
                 ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
 
@@ -1168,8 +1189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           Destination:    SourceRouting.To(chargingStation2.Id),
-                                           ChargingTariff:     chargingTariff,
+                                           Destination: SourceRouting.To(chargingStation2.Id),
+                                           ChargingTariff:     (Tariff)chargingTariff,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(1)
                                                                },
@@ -1193,7 +1214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().DestinationId);
 
                 // Verify the signature of the charging tariff
-                ClassicAssert.AreEqual(chargingTariff.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
+                ClassicAssert.AreEqual((object)chargingTariff.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
                 ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
@@ -1427,45 +1448,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 var providerKeyPair  = KeyPair.GenerateKeys()!;
 
-                var chargingTariff1  = new ChargingTariff(
+                var chargingTariff1  = new Tariff(
 
-                                           Id:               ChargingTariff_Id.Parse("DE-GDF-T12345678-1"),
-                                           ProviderId:       Provider_Id.      Parse("DE-GDF"),
-                                           ProviderName:     new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "GraphDefined EMP"
-                                                             ),
+                                           Id:               Tariff_Id.Parse("DE-GDF-T12345678-1"),
+                                           //ProviderId:       Provider_Id.      Parse("DE-GDF"),
+                                           //ProviderName:     new DisplayTexts(
+                                           //                      Languages.en,
+                                           //                      "GraphDefined EMP"
+                                           //                  ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   [
-                                                                 new TariffElement(
-                                                                     [
-                                                                         PriceComponent.Energy(
-                                                                             Price:      0.51M,
-                                                                             VAT:        0.02M,
-                                                                             StepSize:   WattHour.ParseKWh(1)
-                                                                         )
-                                                                     ]
-                                                                 )
-                                                             ],
-
-                                           Created:          timeReference,
-                                           Replaces:         null,
-                                           References:       null,
-                                           TariffType:       TariffType.REGULAR,
-                                           Description:      new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "0.53 / kWh"
+                                           Energy:           new TariffEnergy(
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ TaxRate.VAT(15)]
                                                              ),
-                                           URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                           EnergyMix:        null,
+                                           //TariffElements:   [
+                                           //                      new TariffElement(
+                                           //                          [
+                                           //                              PriceComponent.Energy(
+                                           //                                  Price:      0.51M,
+                                           //                                  VAT:        0.02M,
+                                           //                                  StepSize:   WattHour.ParseKWh(1)
+                                           //                              )
+                                           //                          ]
+                                           //                      )
+                                           //                  ],
+
+                                           //Created:          timeReference,
+                                           //Replaces:         null,
+                                           //References:       null,
+                                           //TariffType:       TariffType.REGULAR,
+                                           Description:      new MessageContents(
+                                                                 "0.53 / kWh",
+                                                                 Language_Id.EN
+                                                             ),
+                                           //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                           //EnergyMix:        null,
 
                                            MinPrice:         null,
                                            MaxPrice:         new Price(
-                                                                 ExcludingVAT:  0.51M,
-                                                                 IncludingVAT:  0.53M
+                                                                 ExcludingTaxes:  0.51M,
+                                                                 IncludingTaxes:  0.53M
                                                              ),
-                                           NotBefore:        timeReference,
-                                           NotAfter:         null,
+                                           //NotBefore:        timeReference,
+                                           //NotAfter:         null,
 
                                            SignKeys:         null,
                                            SignInfos:        null,
@@ -1483,19 +1508,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                              "emp1",
                                                              I18NString.Create("Just a signed charging tariff!"),
                                                              timeReference,
-                                                             testCSMS01.OCPP.CustomChargingTariffSerializer,
-                                                             testCSMS01.OCPP.CustomPriceSerializer,
-                                                             testCSMS01.OCPP.CustomTaxRateSerializer,
-                                                             testCSMS01.OCPP.CustomTariffElementSerializer,
-                                                             testCSMS01.OCPP.CustomPriceComponentSerializer,
-                                                             testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
-                                                             testCSMS01.OCPP.CustomEnergyMixSerializer,
-                                                             testCSMS01.OCPP.CustomEnergySourceSerializer,
-                                                             testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
-                                                             testCSMS01.OCPP.CustomIdTokenSerializer,
-                                                             testCSMS01.OCPP.CustomAdditionalInfoSerializer,
-                                                             testCSMS01.OCPP.CustomSignatureSerializer,
-                                                             testCSMS01.OCPP.CustomCustomDataSerializer));
+                                                             testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                             //testCSMS01.OCPP.CustomPriceSerializer,
+                                                             //testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                             //testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                             //testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                             //testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                             //testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                             //testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                             //testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                             //testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                             //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                             //testCSMS01.OCPP.CustomSignatureSerializer,
+                                                             //testCSMS01.OCPP.CustomCustomDataSerializer
+                                                             ));
 
                 ClassicAssert.IsTrue   (chargingTariff1.Signatures.Any());
 
@@ -1503,45 +1529,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Define 2. signed charging tariff
 
-                var chargingTariff2  = new ChargingTariff(
+                var chargingTariff2  = new Tariff(
 
-                                           Id:               ChargingTariff_Id.Parse("DE-GDF-T12345678-2"),
-                                           ProviderId:       Provider_Id.      Parse("DE-GDF"),
-                                           ProviderName:     new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "GraphDefined EMP"
-                                                             ),
+                                           Id:               Tariff_Id.Parse("DE-GDF-T12345678-2"),
+                                           //ProviderId:       Provider_Id.      Parse("DE-GDF"),
+                                           //ProviderName:     new DisplayTexts(
+                                           //                      Languages.en,
+                                           //                      "GraphDefined EMP"
+                                           //                  ),
                                            Currency:         Currency.EUR,
-                                           TariffElements:   [
-                                                                 new TariffElement(
-                                                                     [
-                                                                         PriceComponent.Energy(
-                                                                             Price:      0.51M,
-                                                                             VAT:        0.02M,
-                                                                             StepSize:   WattHour.ParseKWh(1)
-                                                                         )
-                                                                     ]
-                                                                 )
-                                                             ],
-
-                                           Created:          timeReference,
-                                           Replaces:         null,
-                                           References:       null,
-                                           TariffType:       TariffType.REGULAR,
-                                           Description:      new DisplayTexts(
-                                                                 Languages.en,
-                                                                 "0.53 / kWh"
+                                           Energy:           new TariffEnergy(
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ TaxRate.VAT(15)]
                                                              ),
-                                           URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-                                           EnergyMix:        null,
+
+                                           //TariffElements:   [
+                                           //                      new TariffElement(
+                                           //                          [
+                                           //                              PriceComponent.Energy(
+                                           //                                  Price:      0.51M,
+                                           //                                  VAT:        0.02M,
+                                           //                                  StepSize:   WattHour.ParseKWh(1)
+                                           //                              )
+                                           //                          ]
+                                           //                      )
+                                           //                  ],
+
+                                           //Created:          timeReference,
+                                           //Replaces:         null,
+                                           //References:       null,
+                                           //TariffType:       TariffType.REGULAR,
+                                           Description:      new MessageContents(
+                                                                 "0.53 / kWh",
+                                                                 Language_Id.EN
+                                                             ),
+                                           //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
+                                           //EnergyMix:        null,
 
                                            MinPrice:         null,
                                            MaxPrice:         new Price(
-                                                                 ExcludingVAT:  0.51M,
-                                                                 IncludingVAT:  0.53M
+                                                                 ExcludingTaxes:  0.51M,
+                                                                 IncludingTaxes:  0.53M
                                                              ),
-                                           NotBefore:        timeReference,
-                                           NotAfter:         null,
+                                           //NotBefore:        timeReference,
+                                           //NotAfter:         null,
 
                                            SignKeys:         null,
                                            SignInfos:        null,
@@ -1559,19 +1590,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                              "emp1",
                                                              I18NString.Create("Just a signed charging tariff!"),
                                                              timeReference,
-                                                             testCSMS01.OCPP.CustomChargingTariffSerializer,
-                                                             testCSMS01.OCPP.CustomPriceSerializer,
-                                                             testCSMS01.OCPP.CustomTaxRateSerializer,
-                                                             testCSMS01.OCPP.CustomTariffElementSerializer,
-                                                             testCSMS01.OCPP.CustomPriceComponentSerializer,
-                                                             testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
-                                                             testCSMS01.OCPP.CustomEnergyMixSerializer,
-                                                             testCSMS01.OCPP.CustomEnergySourceSerializer,
-                                                             testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
-                                                             testCSMS01.OCPP.CustomIdTokenSerializer,
-                                                             testCSMS01.OCPP.CustomAdditionalInfoSerializer,
-                                                             testCSMS01.OCPP.CustomSignatureSerializer,
-                                                             testCSMS01.OCPP.CustomCustomDataSerializer));
+                                                             testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                             //testCSMS01.OCPP.CustomPriceSerializer,
+                                                             //testCSMS01.OCPP.CustomTaxRateSerializer,
+                                                             //testCSMS01.OCPP.CustomTariffElementSerializer,
+                                                             //testCSMS01.OCPP.CustomPriceComponentSerializer,
+                                                             //testCSMS01.OCPP.CustomTariffRestrictionsSerializer,
+                                                             //testCSMS01.OCPP.CustomEnergyMixSerializer,
+                                                             //testCSMS01.OCPP.CustomEnergySourceSerializer,
+                                                             //testCSMS01.OCPP.CustomEnvironmentalImpactSerializer,
+                                                             //testCSMS01.OCPP.CustomIdTokenSerializer,
+                                                             //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
+                                                             //testCSMS01.OCPP.CustomSignatureSerializer,
+                                                             //testCSMS01.OCPP.CustomCustomDataSerializer
+                                                             ));
 
                 ClassicAssert.IsTrue   (chargingTariff2.Signatures.Any());
 
@@ -1579,9 +1611,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1a       = await testCSMS01.SetDefaultChargingTariff(
-                                           Destination:    SourceRouting.To(  chargingStation2.Id),
-                                           ChargingTariff:   chargingTariff1,
-                                           EVSEIds:          [ EVSE_Id.Parse(1) ],
+                                           Destination: SourceRouting.To(chargingStation2.Id),
+                                           ChargingTariff:   (Tariff)chargingTariff1,
+                                           EVSEIds:          [EVSE_Id.Parse(1) ],
                                            CustomData:       null
                                        );
 
@@ -1602,7 +1634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().DestinationId);
 
                 // Verify the signature of the charging tariff
-                ClassicAssert.AreEqual(chargingTariff1.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
+                ClassicAssert.AreEqual((object)chargingTariff1.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
                 ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
@@ -1622,9 +1654,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1b       = await testCSMS01.SetDefaultChargingTariff(
-                                           Destination:    SourceRouting.To(  chargingStation2.Id),
-                                           ChargingTariff:   chargingTariff2,
-                                           EVSEIds:          [ EVSE_Id.Parse(2) ],
+                                           Destination: SourceRouting.To(chargingStation2.Id),
+                                           ChargingTariff:   (Tariff)chargingTariff2,
+                                           EVSEIds:          [EVSE_Id.Parse(2) ],
                                            CustomData:       null
                                        );
 
@@ -1645,7 +1677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.ElementAt(1).DestinationId);
 
                 // Verify the signature of the charging tariff
-                ClassicAssert.AreEqual(chargingTariff2.Id,                                setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Id);
+                ClassicAssert.AreEqual((object)chargingTariff2.Id,                                setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.Count());
                 ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Verify(out var errr2));
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Status);
