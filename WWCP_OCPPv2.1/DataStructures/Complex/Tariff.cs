@@ -72,52 +72,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var tariff = new Tariff(
 
-                                     Tariff_Id.NewRandom(ProviderId),
-                                     Currency,
-                                     Description,
-                                     MinPrice,
-                                     MaxPrice,
-                                     Energy,
-                                     ChargingTime,
-                                     IdleTime,
-                                     FixedFee,
+                             Tariff_Id.New(ProviderId),
+                             Currency,
+                             Description,
+                             MinPrice,
+                             MaxPrice,
+                             Energy,
+                             ChargingTime,
+                             IdleTime,
+                             FixedFee,
 
-                                     null,
-                                     null,
-                                     null,
+                             null,
+                             null,
+                             null,
 
-                                     CustomData
+                             CustomData
 
-                                 );
+                         );
 
 
             return new (
 
-                   Tariff_Id.Generate(
+                   Tariff_Id.New(
                        ProviderId,
                        SHA256.HashData(
 
-                           tariff.ToJSON  (CustomTariffSerializer,
-                                                   CustomMessageContentSerializer,
-                                                   CustomPriceSerializer,
-                                                   CustomTaxRateSerializer,
-                                                   CustomTariffConditionsSerializer,
-                                                   CustomTariffEnergySerializer,
-                                                   CustomTariffEnergyPriceSerializer,
-                                                   CustomTariffTimeSerializer,
-                                                   CustomTariffTimePriceSerializer,
-                                                   CustomTariffFixedSerializer,
-                                                   CustomTariffFixedPriceSerializer,
-                                                   CustomSignatureSerializer,
-                                                   CustomCustomDataSerializer).
+                           tariff.ToJSON(CustomTariffSerializer,
+                                         CustomMessageContentSerializer,
+                                         CustomPriceSerializer,
+                                         CustomTaxRateSerializer,
+                                         CustomTariffConditionsSerializer,
+                                         CustomTariffEnergySerializer,
+                                         CustomTariffEnergyPriceSerializer,
+                                         CustomTariffTimeSerializer,
+                                         CustomTariffTimePriceSerializer,
+                                         CustomTariffFixedSerializer,
+                                         CustomTariffFixedPriceSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer).
 
-                                          ToString(Formatting.None,
-                                                   SignableMessage.DefaultJSONConverters).
+                                  ToString(Formatting.None,
+                                           SignableMessage.DefaultJSONConverters).
 
-                                          ToUTF8Bytes()
+                                  ToUTF8Bytes()
 
-                       ).ToBase64(),
-                       Timestamp.Now
+                       ).ToBase64()
                    ),
 
                    tariff.Currency,

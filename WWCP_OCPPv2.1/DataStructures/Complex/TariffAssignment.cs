@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse TariffKind    [mandatory]
 
-                if (!JSON.ParseMandatory("evseIds",
+                if (!JSON.ParseMandatory("tariffKind",
                                          "EVSE identifications",
                                          TariffKindsExtensions.TryParse,
                                          out TariffKinds TariffKind,
@@ -251,13 +251,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomTariffAssignmentSerializer = null)
+        #region ToJSON(CustomTariffAssignmentSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomTariffAssignmentSerializer">A delegate to serialize custom tariff assignment JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TariffAssignment>? CustomTariffAssignmentSerializer = null)
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TariffAssignment>? CustomTariffAssignmentSerializer = null,
+                              CustomJObjectSerializerDelegate<IdToken>?          CustomIdTokenSerializer          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?   CustomAdditionalInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer       = null)
         {
 
             var json = JSONObject.Create(
@@ -270,7 +276,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            IdTokens.Any()
-                               ? new JProperty("idTokens",     new JArray(IdTokens.Select(idToken => idToken.ToString())))
+                               ? new JProperty("idTokens",     new JArray(IdTokens.Select(idToken => idToken.ToJSON(CustomIdTokenSerializer,
+                                                                                                                    CustomAdditionalInfoSerializer,
+                                                                                                                    CustomCustomDataSerializer))))
                                : null
 
                        );

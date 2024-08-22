@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 return Task.FromResult(
                            new DeleteFileResponse(
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                   sender,
                                   connection,
                                   request,
-                                  cancellationToken) => {
+                                  ct) => {
 
                 var fileContent = "Hello world!".ToUTF8Bytes();
 
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 return Task.FromResult(
                            new ListDirectoryResponse(
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                    sender,
                                    connection,
                                    request,
-                                   cancellationToken) => {
+                                   ct) => {
 
                 return Task.FromResult(
                            new SendFileResponse(
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Local Controller '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Local Controller '{Id}': Incoming SecureDataTransfer request!");
 
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                        sender,
                                        connection,
                                        request,
-                                       cancellationToken) => {
+                                       ct) => {
 
                 DebugX.Log($"Energy Meter '{Id}': Incoming DataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                          sender,
                                                          connection,
                                                          request,
-                                                         cancellationToken) => {
+                                                         ct) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -516,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                          sender,
                                                          connection,
                                                          request,
-                                                         cancellationToken) => {
+                                                         ct) => {
 
                 DebugX.Log($"Energy Meter '{Id}': Incoming MessageTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
@@ -568,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                             sender,
                                                             connection,
                                                             request,
-                                                            cancellationToken) => {
+                                                            ct) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -615,7 +615,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                       sender,
                                       connection,
                                       request,
-                                      cancellationToken) => {
+                                      ct) => {
 
                 CS.ResetResponse? response = null;
 

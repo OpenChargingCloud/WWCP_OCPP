@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       sender,
                                       connection,
                                       request,
-                                      cancellationToken) => {
+                                      ct) => {
 
                 OCPPv2_1.CS.ResetResponse? response = null;
 
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 return Task.FromResult(
                            new DeleteFileResponse(
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   sender,
                                   connection,
                                   request,
-                                  cancellationToken) => {
+                                  ct) => {
 
                 var fileContent = "Hello world!".ToUTF8Bytes();
 
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 return Task.FromResult(
                            new ListDirectoryResponse(
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    sender,
                                    connection,
                                    request,
-                                   cancellationToken) => {
+                                   ct) => {
 
                 return Task.FromResult(
                            new SendFileResponse(
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming SecureDataTransfer request!");
 
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        sender,
                                        connection,
                                        request,
-                                       cancellationToken) => {
+                                       ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming DataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          sender,
                                                          connection,
                                                          request,
-                                                         cancellationToken) => {
+                                                         ct) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -569,7 +569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          sender,
                                                          connection,
                                                          request,
-                                                         cancellationToken) => {
+                                                         ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming MessageTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                             sender,
                                                             connection,
                                                             request,
-                                                            cancellationToken) => {
+                                                            ct) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -668,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       sender,
                                       connection,
                                       request,
-                                      cancellationToken) => {
+                                      ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
 
@@ -727,7 +727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          sender,
                                          connection,
                                          request,
-                                         cancellationToken) => {
+                                         ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming UpdateFirmware request ({request.UpdateFirmwareRequestId}) for '" + request.Firmware.FirmwareURL + "'.");
 
@@ -755,7 +755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           sender,
                                           connection,
                                           request,
-                                          cancellationToken) => {
+                                          ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming PublishFirmware request ({request.PublishFirmwareRequestId}) for '" + request.DownloadLocation + "'.");
 
@@ -784,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming UnpublishFirmware request for '" + request.MD5Checksum + "'.");
 
@@ -808,7 +808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}) accepted.");
 
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     sender,
                                     connection,
                                     request,
-                                    cancellationToken) => {
+                                    ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}) accepted.");
 
@@ -861,7 +861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  sender,
                                  connection,
                                  request,
-                                 cancellationToken) => {
+                                 ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetLog request ({request.LogRequestId}) accepted.");
 
@@ -890,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        sender,
                                        connection,
                                        request,
-                                       cancellationToken) => {
+                                       ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetVariables request accepted.");
 
@@ -1069,7 +1069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        sender,
                                        connection,
                                        request,
-                                       cancellationToken) => {
+                                       ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetVariables request accepted.");
 
@@ -1198,7 +1198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringBase request accepted.");
 
@@ -1223,7 +1223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               sender,
                                               connection,
                                               request,
-                                              cancellationToken) => {
+                                              ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}) accepted.");
 
@@ -1250,7 +1250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
 
@@ -1275,7 +1275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 sender,
                                                 connection,
                                                 request,
-                                                cancellationToken) => {
+                                                ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
 
@@ -1308,7 +1308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   sender,
                                                   connection,
                                                   request,
-                                                  cancellationToken) => {
+                                                  ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming ClearVariableMonitoring request (VariableMonitoringIds: {request.VariableMonitoringIds.AggregateWith(", ")})");
 
@@ -1337,7 +1337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetNetworkProfile request for configuration slot {request.ConfigurationSlot}!");
 
@@ -1362,7 +1362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 ChangeAvailabilityResponse? response = null;
 
@@ -1440,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          sender,
                                          connection,
                                          request,
-                                         cancellationToken) => {
+                                         ct) => {
 
                 TriggerMessageResponse? response = null;
 
@@ -1543,7 +1543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        sender,
                                        connection,
                                        request,
-                                       cancellationToken) => {
+                                       ct) => {
 
                 DataTransferResponse? response = null;
 
@@ -1619,7 +1619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value})" : "")}!");
 
@@ -1647,7 +1647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType}!");
 
@@ -1679,7 +1679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                      sender,
                                                      connection,
                                                      request,
-                                                     cancellationToken) => {
+                                                     ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
 
@@ -1721,7 +1721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming DeleteCertificate request!");
 
@@ -1752,7 +1752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     sender,
                                     connection,
                                     request,
-                                    cancellationToken) => {
+                                    ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming NotifyCRL request!");
 
@@ -1778,7 +1778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               sender,
                                               connection,
                                               request,
-                                              cancellationToken) => {
+                                              ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetLocalListVersion request!");
 
@@ -1802,7 +1802,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming SendLocalList request: '{request.UpdateType.AsText()}' version '{request.VersionNumber}'!");
 
@@ -1828,7 +1828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming ClearCache request!");
 
@@ -1853,7 +1853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming QRCodeScanned request (EVSE id: {request.EVSEId}, timeout: '{request.Timeout.TotalSeconds} secs)!");
 
@@ -1874,7 +1874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")})!");
 
@@ -1909,7 +1909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 var success = reservations.ContainsKey(request.ReservationId)
                                   ? reservations.TryRemove(request.ReservationId, out _)
@@ -1940,7 +1940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   sender,
                                                   connection,
                                                   request,
-                                                  cancellationToken) => {
+                                                  ct) => {
 
                 RequestStartTransactionResponse? response = null;
 
@@ -2055,7 +2055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                  sender,
                                                  connection,
                                                  request,
-                                                 cancellationToken) => {
+                                                 ct) => {
 
                 RequestStopTransactionResponse? response = null;
 
@@ -2157,7 +2157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                sender,
                                                connection,
                                                request,
-                                               cancellationToken) => {
+                                               ct) => {
 
                 GetTransactionStatusResponse? response = null;
 
@@ -2215,7 +2215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 SetChargingProfileResponse? response = null;
 
@@ -2275,7 +2275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               sender,
                                               connection,
                                               request,
-                                              cancellationToken) => {
+                                              ct) => {
 
                 GetChargingProfilesResponse? response = null;
 
@@ -2314,7 +2314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                sender,
                                                connection,
                                                request,
-                                               cancellationToken) => {
+                                               ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming ClearChargingProfile request for charging profile identification '{request.ChargingProfileId}'!");
 
@@ -2340,7 +2340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                sender,
                                                connection,
                                                request,
-                                               cancellationToken) => {
+                                               ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetCompositeSchedule request for the next {request.Duration.TotalMinutes} minutes of EVSE '{request.EVSEId}'!");
 
@@ -2368,7 +2368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 sender,
                                                 connection,
                                                 request,
-                                                cancellationToken) => {
+                                                ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming UpdateDynamicSchedule request for charging profile '{request.ChargingProfileId}'!");
 
@@ -2409,7 +2409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       sender,
                                                       connection,
                                                       request,
-                                                      cancellationToken) => {
+                                                      ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.ToString()).AggregateWith(", ")}'!");
 
@@ -2434,7 +2434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               sender,
                                               connection,
                                               request,
-                                              cancellationToken) => {
+                                              ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming UsePriorityCharging request for transaction '{request.TransactionId}': {(request.Activate ? "active" : "disabled")}!");
 
@@ -2460,7 +2460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            sender,
                                            connection,
                                            request,
-                                           cancellationToken) => {
+                                           ct) => {
 
                 UnlockConnectorResponse? response = null;
 
@@ -2506,7 +2506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming AFRRSignal '{request.Signal}' for timestamp '{request.ActivationTimestamp}'!");
 
@@ -2535,7 +2535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             sender,
                                             connection,
                                             request,
-                                            cancellationToken) => {
+                                            ct) => {
 
                 SetDisplayMessageResponse? response = null;
 
@@ -2575,7 +2575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                     DebugX.Log($"Charging station '{Id}': Incoming GetDisplayMessages request ({request.GetDisplayMessagesRequestId})!");
 
@@ -2619,7 +2619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               sender,
                                               connection,
                                               request,
-                                              cancellationToken) => {
+                                              ct) => {
 
                 ClearDisplayMessageResponse? response = null;
 
@@ -2655,7 +2655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       sender,
                                       connection,
                                       request,
-                                      cancellationToken) => {
+                                      ct) => {
 
                 CostUpdatedResponse? response = null;
 
@@ -2694,7 +2694,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               sender,
                                               connection,
                                               request,
-                                              cancellationToken) => {
+                                              ct) => {
 
                     var command   = new String[] {
 
@@ -2753,6 +2753,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
 
+
+            #region OnChangeTransactionTariff
+
+            OCPP.IN.OnChangeTransactionTariff +=
+                (timestamp, sender, connection, request, ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming ChangeTransactionTariff '{request.Tariff}' for transaction '{request.TransactionId}'!");
+
+                return Task.FromResult(
+                           new ChangeTransactionTariffResponse(
+                               Request:      request,
+                               Status:       //transactions.ContainsKey(request.TransactionId)
+                                             //    ? TariffStatus.Accepted
+                                             //    : TariffStatus.Rejected,
+                                             TariffStatus.Accepted,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnClearTariffs
+
+            OCPP.IN.OnClearTariffs +=
+                (timestamp, sender, connection, request, ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming ClearTariffs '{request}'!");
+
+                // TariffIds
+                // TariffKind
+
+                return Task.FromResult(
+                           new ClearTariffsResponse(
+                               Request:               request,
+                               ClearTariffsResults:   [
+                                                          new ClearTariffsResult(
+                                                              TariffId:    Tariff_Id.New(),
+                                                              Status:      TariffStatus.Accepted,
+                                                              StatusInfo:  null
+                                                          )
+                                                      ],
+                               CustomData:            null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetTariffs
+
+            OCPP.IN.OnGetTariffs +=
+                (timestamp, sender, connection, request, ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming ClearTariffs '{request}'!");
+
+                // TariffIds
+                // TariffKind
+
+                return Task.FromResult(
+                           new GetTariffsResponse(
+                               Request:             request,
+                               Status:              TariffStatus.Accepted,
+                               TariffAssignments:   [
+                                                        new TariffAssignment(
+                                                            TariffId:    Tariff_Id.New(),
+                                                            TariffKind:  TariffKinds.DefaultTariff,
+                                                            EVSEIds:     [ EVSE_Id.Parse(1), EVSE_Id.Parse(2)],
+                                                            IdTokens:    [IdToken.NewRandomRFID4(), IdToken.NewRandomRFID7() ]
+                                                        )
+                                                    ],
+                               StatusInfo:          null,
+                               CustomData:          null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetDefaultTariff
+
+            OCPP.IN.OnSetDefaultTariff +=
+                (timestamp, sender, connection, request, ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming DefaultTariff '{request.Tariff}' for {(request.EVSEId.Value == 0 ? "all EVSEs" : $"for EVSE '{request.EVSEId}'")}!");
+
+                return Task.FromResult(
+                           new SetDefaultTariffResponse(
+                               Request:      request,
+                               Status:       request.EVSEId.Value <= 2
+                                                 ? TariffStatus.Accepted
+                                                 : TariffStatus.Rejected,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+
+
             // Binary Data Streams Extensions
 
             #region OnBinaryDataTransfer
@@ -2761,7 +2868,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
@@ -2802,7 +2909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   sender,
                                   connection,
                                   request,
-                                  cancellationToken) => {
+                                  ct) => {
 
 
                 DebugX.Log($"Charging Station '{Id}': Incoming GetFile request: {request.FileName}!");
@@ -2837,7 +2944,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    sender,
                                    connection,
                                    request,
-                                   cancellationToken) => {
+                                   ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming SendFile request: {request.FileName}!");
 
@@ -2869,7 +2976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 DebugX.Log($"Charging Station '{Id}': Incoming DeleteFile request: {request.FileName}!");
 
@@ -2901,7 +3008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 var directoryListing = new DirectoryListing();
                 directoryListing.AddFile("/hello/world.txt");
@@ -2941,7 +3048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming AddSignaturePolicy!");
 
@@ -2966,7 +3073,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 sender,
                                                 connection,
                                                 request,
-                                                cancellationToken) => {
+                                                ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming UpdateSignaturePolicy!");
 
@@ -2991,7 +3098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 sender,
                                                 connection,
                                                 request,
-                                                cancellationToken) => {
+                                                ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming DeleteSignaturePolicy!");
 
@@ -3016,7 +3123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       sender,
                                       connection,
                                       request,
-                                      cancellationToken) => {
+                                      ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming AddUserRole!");
 
@@ -3041,7 +3148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          sender,
                                          connection,
                                          request,
-                                         cancellationToken) => {
+                                         ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming UpdateUserRole!");
 
@@ -3066,7 +3173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          sender,
                                          connection,
                                          request,
-                                         cancellationToken) => {
+                                         ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming DeleteUserRole!");
 
@@ -3095,7 +3202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       sender,
                                                       connection,
                                                       request,
-                                                      cancellationToken) => {
+                                                      ct) => {
 
                 SetDefaultE2EChargingTariffResponse? response = null;
 
@@ -3194,7 +3301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    sender,
                                                    connection,
                                                    request,
-                                                   cancellationToken) => {
+                                                   ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetDefaultChargingTariff!");
 
@@ -3239,7 +3346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       sender,
                                                       connection,
                                                       request,
-                                                      cancellationToken) => {
+                                                      ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming RemoveDefaultChargingTariff!");
 

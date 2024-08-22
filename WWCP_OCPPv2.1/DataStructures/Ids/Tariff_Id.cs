@@ -67,19 +67,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this tariff identification is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this tariff identification is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the tariff identification.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly UInt64   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -98,41 +98,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) NewRandom(ProviderId, Length = 30)
+        #region (static) New(ProviderId = null, Suffix = null)
 
         /// <summary>
-        /// Create a new random tariff identification based
-        /// on the given e-mobility provider identification,
-        /// the current timestamp and a random number of the given length.
+        /// Create a new (random) tariff identification based
+        /// on the given optional e-mobility provider identification and the given suffix.
+        /// When the suffix is empty, an UUIDv7 will be used (timestamp + random characters).
         /// </summary>
-        /// <param name="ProviderId">An e-mobility provider identification.</param>
-        /// <param name="Length">The expected length of the tariff identification.</param>
-        public static Tariff_Id NewRandom(Provider_Id  ProviderId,
-                                                  Byte         Length = 30)
+        /// <param name="ProviderId">An optional e-mobility provider identification as prefix.</param>
+        /// <param name="Suffix">The optional suffix to be used.</param>
+        public static Tariff_Id New(Provider_Id?  ProviderId   = null,
+                                    String?       Suffix       = null)
 
-            => new (String.Concat(
-                        ProviderId,                      "T",
-                        Timestamp.Now.ToUnixTimestamp(), "*",
-                        RandomExtensions.RandomString(Length)
-                    ));
-
-        #endregion
-
-        #region (static) Generate (ProviderId, Suffix, CreationTimestamp = null)
-
-        /// <summary>
-        /// Create a new tariff identification based
-        /// on the given e-mobility provider identification,
-        /// the current timestamp and a given suffix.
-        /// </summary>
-        /// <param name="ProviderId">An e-mobility provider identification.</param>
-        /// <param name="Suffix">The suffix of the tariff identification.</param>
-        /// <param name="CreationTimestamp">An optional creation timestamp.</param>
-        public static Tariff_Id Generate(Provider_Id  ProviderId,
-                                                 String       Suffix,
-                                                 DateTime?    CreationTimestamp   = null)
-
-            => new ($"{ProviderId}T{(CreationTimestamp ?? Timestamp.Now).ToUnixTimestamp()}*{Suffix}");
+            => new ($"{ProviderId?.ToString() ?? ""}T{Suffix ?? UUIDv7.Generate().ToString()}");
 
         #endregion
 

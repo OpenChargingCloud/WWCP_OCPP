@@ -59,13 +59,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// A value of 0 means "all EVSEs".
         /// </summary>
         [Mandatory]
-        public EVSE_Id        EVSEId            { get; }
+        public EVSE_Id        EVSEId    { get; }
 
         /// <summary>
         /// The tariff.
         /// </summary>
         [Mandatory]
-        public Tariff         ChargingTariff    { get; }
+        public Tariff         Tariff    { get; }
 
         #endregion
 
@@ -124,15 +124,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.EVSEId          = EVSEId;
-            this.ChargingTariff  = Tariff;
+            this.EVSEId  = EVSEId;
+            this.Tariff  = Tariff;
 
             unchecked
             {
 
-                hashCode = this.ChargingTariff.GetHashCode() * 5 ^
-                           this.EVSEId.        GetHashCode() * 3 ^
-                           base.               GetHashCode();
+                hashCode = this.EVSEId.GetHashCode() * 5 ^
+                           this.Tariff.GetHashCode() * 3 ^
+                           base.       GetHashCode();
 
             }
 
@@ -392,27 +392,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evseId",           EVSEId.        ToString()),
+                                 new JProperty("evseId",       EVSEId.    ToString()),
 
-                                 new JProperty("chargingTariff",   ChargingTariff.ToJSON(CustomTariffSerializer,
-                                                                                         CustomMessageContentSerializer,
-                                                                                         CustomPriceSerializer,
-                                                                                         CustomTaxRateSerializer,
-                                                                                         CustomTariffConditionsSerializer,
-                                                                                         CustomTariffEnergySerializer,
-                                                                                         CustomTariffEnergyPriceSerializer,
-                                                                                         CustomTariffTimeSerializer,
-                                                                                         CustomTariffTimePriceSerializer,
-                                                                                         CustomTariffFixedSerializer,
-                                                                                         CustomTariffFixedPriceSerializer)),
+                                 new JProperty("tariff",       Tariff.    ToJSON(CustomTariffSerializer,
+                                                                                 CustomMessageContentSerializer,
+                                                                                 CustomPriceSerializer,
+                                                                                 CustomTaxRateSerializer,
+                                                                                 CustomTariffConditionsSerializer,
+                                                                                 CustomTariffEnergySerializer,
+                                                                                 CustomTariffEnergyPriceSerializer,
+                                                                                 CustomTariffTimeSerializer,
+                                                                                 CustomTariffTimePriceSerializer,
+                                                                                 CustomTariffFixedSerializer,
+                                                                                 CustomTariffFixedPriceSerializer)),
 
                            Signatures.Any()
-                               ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                              CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.    ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -497,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => SetDefaultTariffRequest is not null &&
 
                EVSEId.        Equals(SetDefaultTariffRequest.EVSEId)         &&
-               ChargingTariff.Equals(SetDefaultTariffRequest.ChargingTariff) &&
+               Tariff.Equals(SetDefaultTariffRequest.Tariff) &&
 
                base.GenericEquals(SetDefaultTariffRequest);
 
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"Set default tariff '{ChargingTariff.Id}'{(EVSEId.Value != 0 ? $" on EVSE {EVSEId}" : " on all EVSEs")}";
+            => $"Set default tariff '{Tariff.Id}'{(EVSEId.Value != 0 ? $" on EVSE {EVSEId}" : " on all EVSEs")}";
 
         #endregion
 

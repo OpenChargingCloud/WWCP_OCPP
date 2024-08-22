@@ -167,6 +167,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          response.ToJSON(
                                              parentNetworkingNode.OCPP.CustomGetTariffsResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomTariffAssignmentSerializer,
+                                             parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+                                             parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer

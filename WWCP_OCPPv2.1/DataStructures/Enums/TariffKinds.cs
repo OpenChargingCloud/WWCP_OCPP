@@ -67,25 +67,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TryParse(Text, out TariffKinde)
+        #region TryParse(Text, out TariffKind)
 
         /// <summary>
         /// Try to parse the given text as a tariff kind.
         /// </summary>
         /// <param name="Text">A text representation of a tariff kind.</param>
-        /// <param name="TariffKinde">The parsed Tariff kind.</param>
+        /// <param name="TariffKind">The parsed Tariff kind.</param>
         public static Boolean TryParse(String                               Text,
-                                       [NotNullWhen(true)] out TariffKinds  TariffKinde)
+                                       [NotNullWhen(true)] out TariffKinds  TariffKind)
         {
             switch (Text.Trim())
             {
 
                 case "UserTariff":
-                    TariffKinde = TariffKinds.UserTariff;
+                    TariffKind = TariffKinds.UserTariff;
+                    return true;
+
+                case "DefaultTariff":
+                    TariffKind = TariffKinds.DefaultTariff;
                     return true;
 
                 default:
-                    TariffKinde = TariffKinds.DefaultTariff;
+                    TariffKind = TariffKinds.DefaultTariff;
                     return false;
 
             }
@@ -93,15 +97,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region AsText(this TariffKind)
 
-        #region AsText(this TariffKinde)
+        public static String AsText(this TariffKinds TariffKind)
 
-        public static String AsText(this TariffKinds TariffKinde)
-
-            => TariffKinde switch {
-                   TariffKinds.UserTariff  => "UserTariff",
-                   _                       => "DefaultTariff"
-            };
+            => TariffKind switch {
+                   TariffKinds.UserTariff     => "UserTariff",
+                   TariffKinds.DefaultTariff  => "DefaultTariff",
+                   _                          => throw new ArgumentException("Invalid tariff kind!", nameof(TariffKind))
+               };
 
         #endregion
 

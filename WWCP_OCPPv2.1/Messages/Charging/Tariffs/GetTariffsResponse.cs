@@ -175,6 +175,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                DateTime?                                         ResponseTimestamp                = null,
                                                CustomJObjectParserDelegate<GetTariffsResponse>?  CustomGetTariffsResponseParser   = null,
                                                CustomJObjectParserDelegate<TariffAssignment>?    CustomTariffAssignmentParser     = null,
+                                               CustomJObjectParserDelegate<IdToken>?             CustomIdTokenParser              = null,
+                                               CustomJObjectParserDelegate<AdditionalInfo>?      CustomAdditionalInfoParser       = null,
                                                CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
                                                CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
                                                CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
@@ -190,6 +192,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ResponseTimestamp,
                          CustomGetTariffsResponseParser,
                          CustomTariffAssignmentParser,
+                         CustomIdTokenParser,
+                         CustomAdditionalInfoParser,
                          CustomStatusInfoParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
@@ -223,6 +227,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        DateTime?                                         ResponseTimestamp                = null,
                                        CustomJObjectParserDelegate<GetTariffsResponse>?  CustomGetTariffsResponseParser   = null,
                                        CustomJObjectParserDelegate<TariffAssignment>?    CustomTariffAssignmentParser     = null,
+                                       CustomJObjectParserDelegate<IdToken>?             CustomIdTokenParser              = null,
+                                       CustomJObjectParserDelegate<AdditionalInfo>?      CustomAdditionalInfoParser       = null,
                                        CustomJObjectParserDelegate<StatusInfo>?          CustomStatusInfoParser           = null,
                                        CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
                                        CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
@@ -349,11 +355,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="CustomGetTariffsResponseSerializer">A delegate to serialize custom GetTariffs responses.</param>
         /// <param name="CustomTariffAssignmentSerializer">A delegate to serialize custom TariffAssignment JSON objects.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetTariffsResponse>?  CustomGetTariffsResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<TariffAssignment>?    CustomTariffAssignmentSerializer     = null,
+                              CustomJObjectSerializerDelegate<IdToken>?             CustomIdTokenSerializer              = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?      CustomAdditionalInfoSerializer       = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?          CustomStatusInfoSerializer           = null,
                               CustomJObjectSerializerDelegate<Signature>?           CustomSignatureSerializer            = null,
                               CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
@@ -364,7 +374,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("status",              Status.    AsText()),
 
                            TariffAssignments.Any()
-                               ? new JProperty("tariffAssignments",   new JArray (TariffAssignments.Select(tariffAssignment => tariffAssignment.ToJSON(CustomTariffAssignmentSerializer))))
+                               ? new JProperty("tariffAssignments",   new JArray (TariffAssignments.Select(tariffAssignment => tariffAssignment.ToJSON(CustomTariffAssignmentSerializer,
+                                                                                                                                                       CustomIdTokenSerializer,
+                                                                                                                                                       CustomAdditionalInfoSerializer,
+                                                                                                                                                       CustomCustomDataSerializer))))
                                : null,
 
                            StatusInfo is not null

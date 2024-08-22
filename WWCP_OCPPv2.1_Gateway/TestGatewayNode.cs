@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                      sender,
                                      connection,
                                      request,
-                                     cancellationToken) => {
+                                     ct) => {
 
                 return Task.FromResult(
                            new DeleteFileResponse(
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                        sender,
                                                        connection,
                                                        request,
-                                                       cancellationToken) =>
+                                                       ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                   sender,
                                   connection,
                                   request,
-                                  cancellationToken) => {
+                                  ct) => {
 
                 var fileContent = "Hello world!".ToUTF8Bytes();
 
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                     sender,
                                                     connection,
                                                     request,
-                                                    cancellationToken) =>
+                                                    ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                         sender,
                                         connection,
                                         request,
-                                        cancellationToken) => {
+                                        ct) => {
 
                 return Task.FromResult(
                            new ListDirectoryResponse(
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                           sender,
                                                           connection,
                                                           request,
-                                                          cancellationToken) =>
+                                                          ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                    sender,
                                    connection,
                                    request,
-                                   cancellationToken) => {
+                                   ct) => {
 
                 return Task.FromResult(
                            new SendFileResponse(
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                      sender,
                                                      connection,
                                                      request,
-                                                     cancellationToken) =>
+                                                     ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Gateway '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                                sender,
                                                                connection,
                                                                request,
-                                                               cancellationToken) =>
+                                                               ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                              sender,
                                              connection,
                                              request,
-                                             cancellationToken) => {
+                                             ct) => {
 
                 DebugX.Log($"Gateway '{Id}': Incoming SecureDataTransfer request!");
 
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                                sender,
                                                                connection,
                                                                request,
-                                                               cancellationToken) =>
+                                                               ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                        sender,
                                        connection,
                                        request,
-                                       cancellationToken) => {
+                                       ct) => {
 
                 DebugX.Log($"Gateway '{Id}': Incoming DataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
@@ -469,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                          sender,
                                                          connection,
                                                          request,
-                                                         cancellationToken) => {
+                                                         ct) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                          sender,
                                                          connection,
                                                          request,
-                                                         cancellationToken) => {
+                                                         ct) => {
 
                 DebugX.Log($"Gateway '{Id}': Incoming MessageTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
 
@@ -564,7 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                             sender,
                                                             connection,
                                                             request,
-                                                            cancellationToken) => {
+                                                            ct) => {
 
                 if (request.Data?.ToString() == "Please REJECT!")
                 {
@@ -611,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                       sender,
                                       connection,
                                       request,
-                                      cancellationToken) => {
+                                      ct) => {
 
                 CS.ResetResponse? response = null;
 
@@ -636,7 +636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                   sender,
                                                   connection,
                                                   request,
-                                                  cancellationToken) =>
+                                                  ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(
@@ -652,7 +652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                                     sender,
                                                                     connection,
                                                                     request,
-                                                                    cancellationToken) =>
+                                                                    ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<RequestStartTransactionRequest, CS.RequestStartTransactionResponse>.FORWARD(
@@ -668,10 +668,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                                    sender,
                                                                    connection,
                                                                    request,
-                                                                   cancellationToken) =>
+                                                                   ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<RequestStopTransactionRequest, CS.RequestStopTransactionResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+
+            #region OnChangeTransactionTariff
+
+            OCPP.FORWARD.OnChangeTransactionTariffRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<ChangeTransactionTariffRequest, CS.ChangeTransactionTariffResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnClearTariffs
+
+            OCPP.FORWARD.OnClearTariffsRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<ClearTariffsRequest, CS.ClearTariffsResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnSetDefaultTariff
+
+            OCPP.FORWARD.OnGetTariffsRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<GetTariffsRequest, CS.GetTariffsResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnSetDefaultTariff
+
+            OCPP.FORWARD.OnSetDefaultTariffRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<SetDefaultTariffRequest, CS.SetDefaultTariffResponse>.FORWARD(
                         request
                     )
                 );
@@ -688,7 +741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                       sender,
                                                       connection,
                                                       request,
-                                                      cancellationToken) =>
+                                                      ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
@@ -702,7 +755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                              sender,
                                                              connection,
                                                              request,
-                                                             cancellationToken) =>
+                                                             ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<CS.TransactionEventRequest, TransactionEventResponse>.FORWARD(request)
@@ -716,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                                                         sender,
                                                         connection,
                                                         request,
-                                                        cancellationToken) =>
+                                                        ct) =>
 
                 Task.FromResult(
                     ForwardingDecision<CS.MeterValuesRequest, MeterValuesResponse>.FORWARD(request)

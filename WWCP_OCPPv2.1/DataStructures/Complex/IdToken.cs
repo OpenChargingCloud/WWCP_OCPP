@@ -132,13 +132,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) NewRandomRFID  (Length)
+        #region (static) NewRandom(Length)
 
         /// <summary>
         /// Create a new random identification token.
         /// </summary>
         /// <param name="Length">The expected length of the random identification token.</param>
-        public static IdToken NewRandomRFID(Byte Length = 14)
+        public static IdToken NewRandom(Byte Length = 14)
 
             => new (
                    RandomExtensions.RandomString(Length).ToUpper(),
@@ -146,6 +146,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                );
 
         #endregion
+
+
+        #region (static) NewRandomRFID4()
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID4()
+
+            => new (
+                   RandomExtensions.RandomBytes(4).ToHexString().ToUpper(),
+                   IdTokenType.ISO14443
+               );
+
+        #endregion
+
+        #region (static) NewRandomRFID7()
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID7()
+
+            => new (
+                   RandomExtensions.RandomBytes(7).ToHexString().ToUpper(),
+                   IdTokenType.ISO14443
+               );
+
+        #endregion
+
+        #region (static) NewRandomRFID10()
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID10()
+
+            => new (
+                   RandomExtensions.RandomBytes(10).ToHexString().ToUpper(),
+                   IdTokenType.ISO14443
+               );
+
+        #endregion
+
 
         #region (static) TryParseRFID   (UID)
 

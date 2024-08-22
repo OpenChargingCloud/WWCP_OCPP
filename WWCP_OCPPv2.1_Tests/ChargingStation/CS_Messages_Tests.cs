@@ -1088,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 };
 
 
-                var idToken   = IdToken.NewRandomRFID();
+                var idToken   = IdToken.NewRandomRFID7();
                 var response  = await chargingStation1.Authorize(
                                           IdToken:                       idToken,
                                           Certificate:                   null,
@@ -1214,7 +1214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var evseId          = EVSE_Id.     Parse(1);
                 var connectorId     = Connector_Id.Parse(1);
-                var idToken         = IdToken.     NewRandomRFID();
+                var idToken         = IdToken.     NewRandomRFID7();
                 var startTimestamp  = Timestamp.Now;
                 var meterStart      = 1234UL;
                 var reservationId   = Reservation_Id.NewRandom;
