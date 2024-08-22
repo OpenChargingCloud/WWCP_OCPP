@@ -106,25 +106,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
                                     SerialNumber:             "SN-CS0001",
                                     FirmwareVersion:          "v0.1",
+
+                                    EVSEs:                    [
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.cType2 ],
+                                                                      MeterType:           "MT1",
+                                                                      MeterSerialNumber:   "MSN1",
+                                                                      MeterPublicKey:      "MPK1"
+                                                                  )
+                                                              ],
                                     Modem:                    new Modem(
                                                                   ICCID:   "0000",
                                                                   IMSI:    "1111"
                                                               ),
-                                    EVSEs:                    [
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(1),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT1",
-                                                                      MeterSerialNumber:   "MSN1",
-                                                                      MeterPublicKey:      "MPK1",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.sType2
-                                                                                               )
-                                                                                           ]
-                                                                  )
-                                                              ],
                                     UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
@@ -139,7 +134,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                 );
 
             ClassicAssert.IsNotNull(chargingStation1);
-
 
             if (testBackendWebSockets01 is not null ||
                 lcOCPPWebSocketServer01 is not null)
@@ -228,38 +222,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
                                     SerialNumber:             "SN-CS0002",
                                     FirmwareVersion:          "v0.2",
+                                    EVSEs:                    [
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.cType2 ],
+                                                                      MeterType:           "MT2",
+                                                                      MeterSerialNumber:   "MSN2.1",
+                                                                      MeterPublicKey:      "MPK2.1"
+                                                                  ),
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.cCCS2 ],
+                                                                      MeterType:           "MT2",
+                                                                      MeterSerialNumber:   "MSN2.2",
+                                                                      MeterPublicKey:      "MPK2.1"
+                                                                  )
+                                                              ],
                                     Modem:                    new Modem(
                                                                   ICCID:   "3333",
                                                                   IMSI:    "4444"
                                                               ),
-                                    EVSEs:                    [
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(1),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT2",
-                                                                      MeterSerialNumber:   "MSN2.1",
-                                                                      MeterPublicKey:      "MPK2.1",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.sType2
-                                                                                               )
-                                                                                           ]
-                                                                  ),
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(2),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT2",
-                                                                      MeterSerialNumber:   "MSN2.2",
-                                                                      MeterPublicKey:      "MPK2.1",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.cCCS2
-                                                                                               )
-                                                                                           ]
-                                                                  )
-                                                              ],
                                     UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
@@ -354,64 +336,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),
                                     SerialNumber:             "SN-CS0003",
                                     FirmwareVersion:          "v0.3",
+                                    EVSEs:                    [
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.sType2 ],
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.1",
+                                                                      MeterPublicKey:      "MPK3.1"
+                                                                  ),
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.sType2 ],
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.2",
+                                                                      MeterPublicKey:      "MPK3.2"
+                                                                  ),
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.cCCS2 ],
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.3",
+                                                                      MeterPublicKey:      "MPK3.3"
+                                                                  ),
+                                                                  new EVSESpec(
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      ConnectorTypes:      [ ConnectorType.cCCS2 ],
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.4",
+                                                                      MeterPublicKey:      "MPK3.4"
+                                                                  )
+                                                              ],
                                     Modem:                    new Modem(
                                                                   ICCID:   "5555",
                                                                   IMSI:    "6666"
                                                               ),
-                                    EVSEs:                    [
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(1),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT3",
-                                                                      MeterSerialNumber:   "MSN3.1",
-                                                                      MeterPublicKey:      "MPK3.1",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.sType2
-                                                                                               )
-                                                                                           ]
-                                                                  ),
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(2),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT3",
-                                                                      MeterSerialNumber:   "MSN3.2",
-                                                                      MeterPublicKey:      "MPK3.2",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.sType2
-                                                                                               )
-                                                                                           ]
-                                                                  ),
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(3),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT3",
-                                                                      MeterSerialNumber:   "MSN3.3",
-                                                                      MeterPublicKey:      "MPK3.3",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.cCCS2
-                                                                                               )
-                                                                                           ]
-                                                                  ),
-                                                                  new ChargingStationEVSE(
-                                                                      Id:                  EVSE_Id.Parse(4),
-                                                                      AdminStatus:         OperationalStatus.Operative,
-                                                                      MeterType:           "MT3",
-                                                                      MeterSerialNumber:   "MSN3.4",
-                                                                      MeterPublicKey:      "MPK3.4",
-                                                                      Connectors:          [
-                                                                                               new ChargingStationConnector(
-                                                                                                   Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorType.cCCS2
-                                                                                               )
-                                                                                           ]
-                                                                  )
-                                                              ],
                                     UplinkEnergyMeter:        new Energy_Meter(
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",

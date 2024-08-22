@@ -127,18 +127,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
                                                                      IMSI:    "1111"
                                                                  ),
                                        EVSEs:                    [
-                                                                     new OCPPv2_1.CS.ChargingStationEVSE(
-                                                                         Id:                  EVSE_Id.Parse(1),
+                                                                     new EVSESpec(
                                                                          AdminStatus:         OperationalStatus.Operative,
+                                                                         ConnectorTypes:      [ ConnectorType.sType2 ],
                                                                          MeterType:           "MT1",
                                                                          MeterSerialNumber:   "MSN1",
-                                                                         MeterPublicKey:      "MPK1",
-                                                                         Connectors:          [
-                                                                                                  new OCPPv2_1.CS.ChargingStationConnector(
-                                                                                                      Id:              Connector_Id.Parse(1),
-                                                                                                      ConnectorType:   ConnectorType.sType2
-                                                                                                  )
-                                                                                              ]
+                                                                         MeterPublicKey:      "MPK1"
                                                                      )
                                                                  ],
                                        UplinkEnergyMeter:        new Energy_Meter(

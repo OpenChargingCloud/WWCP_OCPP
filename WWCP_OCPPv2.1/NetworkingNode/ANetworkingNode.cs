@@ -948,8 +948,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 DoMaintenance(State).Wait();
         }
 
-        protected internal virtual async Task _DoMaintenance(Object State)
+        private async Task DoMaintenance(Object State)
         {
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    await DoMaintenanceAsync(State);
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException is not null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the maintenance tasks lock!");
+
+        }
+
+        protected virtual async Task DoMaintenanceAsync(Object State)
+        {
+
+            await Task.Delay(1);
 
             foreach (var enqueuedRequest in EnqueuedRequests.ToArray())
             {
@@ -969,37 +1002,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 //}
             }
-
-        }
-
-        private async Task DoMaintenance(Object State)
-        {
-
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
-                                           ConfigureAwait(false))
-            {
-                try
-                {
-
-                    await _DoMaintenance(State);
-
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException is not null)
-                        e = e.InnerException;
-
-                    DebugX.LogException(e);
-
-                }
-                finally
-                {
-                    MaintenanceSemaphore.Release();
-                }
-            }
-            else
-                DebugX.LogT("Could not aquire the maintenance tasks lock!");
 
         }
 

@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Security.Cryptography;
-using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 using Newtonsoft.Json.Linq;
@@ -43,16 +42,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    IChargingStationNode
     {
 
-        #region Data
-
-        private readonly ConcurrentDictionary<DisplayMessage_Id,     MessageInfo>     displayMessages   = new ();
-        private readonly ConcurrentDictionary<Reservation_Id,        Reservation_Id>  reservations      = new ();
-        private readonly ConcurrentDictionary<Transaction_Id,        Transaction>     transactions      = new ();
-        private readonly ConcurrentDictionary<Transaction_Id,        Decimal>         totalCosts        = new ();
-        private readonly ConcurrentDictionary<InstallCertificateUse, Certificate>     certificates      = new ();
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -67,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        String?                            FirmwareVersion                = null,
                                        Modem?                             Modem                          = null,
 
-                                       IEnumerable<ChargingStationEVSE>?  EVSEs                          = null,
+                                       IEnumerable<EVSESpec>?             EVSEs                          = null,
                                        IEnergyMeter?                      UplinkEnergyMeter              = null,
 
                                        TimeSpan?                          DefaultRequestTimeout          = null,
@@ -132,6 +121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    CustomData,
                    DNSClient)
+
+        #endregion
 
         {
 
@@ -3453,9 +3444,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
         }
-
-        #endregion
-
 
     }
 

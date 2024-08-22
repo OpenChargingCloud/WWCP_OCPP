@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The nummeric value of the EVSE identification.
         /// </summary>
-        public readonly UInt64 Value;
+        public readonly Byte Value;
 
         #endregion
 
@@ -70,19 +70,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly Boolean  IsNullOrEmpty
             => false;
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly Boolean  IsNotNullOrEmpty
             => true;
 
         /// <summary>
         /// The length of the EVSE identification.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly UInt64   Length
             => (UInt64) Value.ToString().Length;
 
         #endregion
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new EVSE identification based on the given number.
         /// </summary>
         /// <param name="Number">A numeric representation of a display message identification.</param>
-        private EVSE_Id(UInt64 Number)
+        private EVSE_Id(Byte Number)
         {
             this.Value = Number;
         }
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given number as an EVSE identification.
         /// </summary>
         /// <param name="Number">A numeric representation of an EVSE identification.</param>
-        public static EVSE_Id Parse(UInt64 Number)
+        public static EVSE_Id Parse(Byte Number)
 
             => new (Number);
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given number as an EVSE identification.
         /// </summary>
         /// <param name="Number">A numeric representation of an EVSE identification.</param>
-        public static EVSE_Id? TryParse(UInt64 Number)
+        public static EVSE_Id? TryParse(Byte Number)
         {
 
             if (TryParse(Number, out var evseId))
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty() &&
-                UInt64.TryParse(Text, out var number))
+                Byte.TryParse(Text, out var number))
             {
                 EVSEId = new EVSE_Id(number);
                 return true;
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Number">A numeric representation of an EVSE identification.</param>
         /// <param name="EVSEId">The parsed EVSE identification.</param>
-        public static Boolean TryParse(UInt64 Number, out EVSE_Id EVSEId)
+        public static Boolean TryParse(Byte Number, out EVSE_Id EVSEId)
         {
 
             EVSEId = new EVSE_Id(Number);
@@ -218,7 +218,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Clone this EVSE identification.
         /// </summary>
         public EVSE_Id Clone
-
             => new (Value);
 
         #endregion

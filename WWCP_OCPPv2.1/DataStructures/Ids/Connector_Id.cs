@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The nummeric value of the connector identification.
         /// </summary>
-        public readonly UInt64 Value;
+        public readonly Byte Value;
 
         #endregion
 
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new connector identification based on the given number.
         /// </summary>
         /// <param name="Number">A numeric representation of a connector identification.</param>
-        private Connector_Id(UInt64 Number)
+        private Connector_Id(Byte Number)
         {
             this.Value = Number;
         }
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given number as a connector identification.
         /// </summary>
         /// <param name="Number">A numeric representation of a connector identification.</param>
-        public static Connector_Id Parse(UInt64 Number)
+        public static Connector_Id Parse(Byte Number)
 
             => new (Number);
 
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given number as a connector identification.
         /// </summary>
         /// <param name="Number">A numeric representation of a connector identification.</param>
-        public static Connector_Id? TryParse(UInt64 Number)
+        public static Connector_Id? TryParse(Byte Number)
         {
 
             if (TryParse(Number, out var connectorId))
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty() &&
-                UInt64.TryParse(Text, out var number))
+                Byte.TryParse(Text, out var number))
             {
                 ConnectorId = new Connector_Id(number);
                 return true;
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Number">A numeric representation of a connector identification.</param>
         /// <param name="ConnectorId">The parsed connector identification.</param>
-        public static Boolean TryParse(UInt64 Number, out Connector_Id ConnectorId)
+        public static Boolean TryParse(Byte Number, out Connector_Id ConnectorId)
         {
 
             ConnectorId = new Connector_Id(Number);
