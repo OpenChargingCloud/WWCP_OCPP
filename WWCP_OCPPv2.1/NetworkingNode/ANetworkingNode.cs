@@ -31,8 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod.Mail;
-using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
 #endregion
 
@@ -50,8 +48,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         protected static readonly  TimeSpan                                                    SemaphoreSlimTimeout         = TimeSpan.FromSeconds(5);
 
         private          readonly  HashSet<SignaturePolicy>                                    signaturePolicies            = [];
-
-        protected        readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>  reachableViaNetworkingHubs   = [];
 
         private                    Int64                                                       internalRequestId            = 900000;
 
@@ -76,6 +72,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public ConcurrentDictionary<String, List<ComponentConfig>>                             ComponentConfigs             = [];
 
         public List<UserRole>                                                                  UserRoles                    = [];
+
+        private DateTime lastRoutesBroadcast = Timestamp.Now;
 
         #endregion
 
@@ -126,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
-        public Boolean                     DisableMaintenanceTasks    { get; set; }
+        public Boolean                     DisableMaintenanceTasks    { get; set; } = true;
 
         /// <summary>
         /// The maintenance interval.
@@ -293,15 +291,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.Description              = Description;
             this.CustomData               = CustomData       ?? new CustomData(Vendor_Id.GraphDefined);
 
-            this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
-            this.MaintenanceEvery         = MaintenanceEvery ?? DefaultMaintenanceEvery;
-            this.MaintenanceTimer         = new Timer(
-                                                DoMaintenanceSync,
-                                                null,
-                                                this.MaintenanceEvery,
-                                                this.MaintenanceEvery
-                                            );
-
             this.DNSClient                = DNSClient        ?? new DNSClient(SearchForIPv6DNSServers: false);
 
             this.OCPP                     = new OCPPAdapter(
@@ -322,6 +311,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 null,
                                                 this.SendHeartbeatsEvery,
                                                 this.SendHeartbeatsEvery
+                                            );
+
+            this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
+            this.MaintenanceEvery         = MaintenanceEvery ?? DefaultMaintenanceEvery;
+            this.MaintenanceTimer         = new Timer(
+                                                DoMaintenanceSync,
+                                                null,
+                                                this.MaintenanceEvery,
+                                                this.MaintenanceEvery
                                             );
 
         }
@@ -983,6 +981,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             await Task.Delay(1);
+
+            if (Timestamp.Now > lastRoutesBroadcast + TimeSpan.FromSeconds(10))
+            {
+
+                lastRoutesBroadcast = Timestamp.Now;
+
+                var routes = OCPP.Routing.GetNetworkRoutingInformation();
+                if (routes.Any())
+                {
+
+                    var notifyNetworkTopologyMessage = new NotifyNetworkTopologyMessage(
+                                                           Destination:                  SourceRouting.Broadcast,
+                                                           NetworkTopologyInformation:   new NetworkTopologyInformation(
+                                                                                             RoutingNode:  Id,
+                                                                                             Routes:       routes,
+                                                                                             NotBefore:    null,
+                                                                                             NotAfter:     null,
+                                                                                             Priority:     null
+                                                                                         )
+                                                       );
+
+                    var rr = OCPP.OUT.NotifyNetworkTopology(notifyNetworkTopologyMessage);
+
+                }
+
+            }
 
             foreach (var enqueuedRequest in EnqueuedRequests.ToArray())
             {

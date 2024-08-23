@@ -40,49 +40,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyNetworkTopologyRequestReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnNotifyNetworkTopologyMessageReceivedDelegate(DateTime                       Timestamp,
                                                                         IEventSender                   Sender,
                                                                         IWebSocketConnection           Connection,
-                                                                        NotifyNetworkTopologyRequest   Request,
+                                                                        NotifyNetworkTopologyMessage   Request,
                                                                         CancellationToken              CancellationToken);
 
 
-    /// <summary>
-    /// A logging delegate called whenever a NotifyNetworkTopology response was received.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the response logging.</param>
-    /// <param name="Sender">The sender of the request/response.</param>
-    /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request, when available.</param>
-    /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
-    /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyNetworkTopologyResponseReceivedDelegate(DateTime                        Timestamp,
-                                                                         IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
-                                                                         NotifyNetworkTopologyRequest?   Request,
-                                                                         NotifyNetworkTopologyResponse   Response,
-                                                                         TimeSpan?                       Runtime,
-                                                                         CancellationToken               CancellationToken);
+    ///// <summary>
+    ///// A logging delegate called whenever a NotifyNetworkTopology response was received.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp of the response logging.</param>
+    ///// <param name="Sender">The sender of the request/response.</param>
+    ///// <param name="Connection">The connection of the request.</param>
+    ///// <param name="Request">The request, when available.</param>
+    ///// <param name="Response">The response.</param>
+    ///// <param name="Runtime">The optional runtime of the request/response pair.</param>
+    ///// <param name="CancellationToken">An optional cancellation token.</param>
+    //public delegate Task OnNotifyNetworkTopologyResponseReceivedDelegate(DateTime                        Timestamp,
+    //                                                                     IEventSender                    Sender,
+    //                                                                     IWebSocketConnection            Connection,
+    //                                                                     NotifyNetworkTopologyMessage?   Request,
+    //                                                                     NotifyNetworkTopologyResponse   Response,
+    //                                                                     TimeSpan?                       Runtime,
+    //                                                                     CancellationToken               CancellationToken);
 
 
-    /// <summary>
-    /// A logging delegate called whenever a NotifyNetworkTopology request error was received.
-    /// </summary>
-    /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The connection of the request.</param>
-    /// <param name="Request">The request, when available.</param>
-    /// <param name="RequestErrorMessage">The request error message.</param>
-    /// <param name="Runtime">The runtime of the request/request error pair.</param>
-    /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyNetworkTopologyRequestErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                             IEventSender                    Sender,
-                                                                             IWebSocketConnection            Connection,
-                                                                             NotifyNetworkTopologyRequest?   Request,
-                                                                             OCPP_JSONRequestErrorMessage    RequestErrorMessage,
-                                                                             TimeSpan?                       Runtime,
-                                                                             CancellationToken               CancellationToken);
+    ///// <summary>
+    ///// A logging delegate called whenever a NotifyNetworkTopology request error was received.
+    ///// </summary>
+    ///// <param name="Timestamp">The logging timestamp.</param>
+    ///// <param name="Sender">The sender of the request.</param>
+    ///// <param name="Connection">The connection of the request.</param>
+    ///// <param name="Request">The request, when available.</param>
+    ///// <param name="RequestErrorMessage">The request error message.</param>
+    ///// <param name="Runtime">The runtime of the request/request error pair.</param>
+    ///// <param name="CancellationToken">An optional cancellation token.</param>
+    //public delegate Task OnNotifyNetworkTopologyMessageErrorReceivedDelegate(DateTime                        Timestamp,
+    //                                                                         IEventSender                    Sender,
+    //                                                                         IWebSocketConnection            Connection,
+    //                                                                         NotifyNetworkTopologyMessage?   Request,
+    //                                                                         OCPP_JSONRequestErrorMessage    RequestErrorMessage,
+    //                                                                         TimeSpan?                       Runtime,
+    //                                                                         CancellationToken               CancellationToken);
 
 
     /// <summary>
@@ -99,8 +99,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public delegate Task OnNotifyNetworkTopologyResponseErrorReceivedDelegate(DateTime                         Timestamp,
                                                                               IEventSender                     Sender,
                                                                               IWebSocketConnection             Connection,
-                                                                              NotifyNetworkTopologyRequest?    Request,
-                                                                              NotifyNetworkTopologyResponse?   Response,
+                                                                              NotifyNetworkTopologyMessage?    Request,
+                                                                              //NotifyNetworkTopologyResponse?   Response,
                                                                               OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
                                                                               TimeSpan?                        Runtime,
                                                                               CancellationToken                CancellationToken);
@@ -108,22 +108,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #endregion
 
 
-    /// <summary>
-    /// A delegate called whenever a NotifyNetworkTopology response is expected
-    /// for a received NotifyNetworkTopology request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<NotifyNetworkTopologyResponse>
+    ///// <summary>
+    ///// A delegate called whenever a NotifyNetworkTopology response is expected
+    ///// for a received NotifyNetworkTopology request.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp of the request.</param>
+    ///// <param name="Sender">The sender of the request.</param>
+    ///// <param name="Connection">The HTTP Web Socket client connection.</param>
+    ///// <param name="Request">The request.</param>
+    ///// <param name="CancellationToken">A token to cancel this request.</param>
+    //public delegate Task<NotifyNetworkTopologyResponse>
 
-        OnNotifyNetworkTopologyDelegate(DateTime                       Timestamp,
-                                        IEventSender                   Sender,
-                                        IWebSocketConnection           Connection,
-                                        NotifyNetworkTopologyRequest   Request,
-                                        CancellationToken              CancellationToken);
+    //    OnNotifyNetworkTopologyDelegate(DateTime                       Timestamp,
+    //                                    IEventSender                   Sender,
+    //                                    IWebSocketConnection           Connection,
+    //                                    NotifyNetworkTopologyMessage   Request,
+    //                                    CancellationToken              CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -136,12 +136,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a NotifyNetworkTopology request was received.
         /// </summary>
-        public event OnNotifyNetworkTopologyRequestReceivedDelegate?  OnNotifyNetworkTopologyRequestReceived;
+        public event OnNotifyNetworkTopologyMessageReceivedDelegate?  OnNotifyNetworkTopologyMessageReceived;
 
-        /// <summary>
-        /// An event sent whenever a NotifyNetworkTopology request was received for processing.
-        /// </summary>
-        public event OnNotifyNetworkTopologyDelegate?                 OnNotifyNetworkTopology;
+        ///// <summary>
+        ///// An event sent whenever a NotifyNetworkTopology request was received for processing.
+        ///// </summary>
+        //public event OnNotifyNetworkTopologyDelegate?                 OnNotifyNetworkTopology;
 
 
         public async Task<OCPP_Response>
@@ -162,25 +162,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                if (NotifyNetworkTopologyRequest.TryParse(JSONRequest,
+                if (NotifyNetworkTopologyMessage.TryParse(JSONRequest,
                                                           RequestId,
                                                           Destination,
                                                           NetworkPath,
-                                                          out var request,
+                                                          out var message,
                                                           out var errorResponse,
                                                           RequestTimestamp,
-                                                          parentNetworkingNode.OCPP.DefaultRequestTimeout,
                                                           EventTrackingId,
-                                                          parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyRequestParser)) {
+                                                          parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyMessageParser)) {
 
-                    NotifyNetworkTopologyResponse? response = null;
+                    //NotifyNetworkTopologyResponse? response = null;
 
                     #region Verify request signature(s)
 
-                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyRequestSerializer,
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifySendMessage(
+                        message,
+                        message.ToJSON(
+                            parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyMessageSerializer,
                             parentNetworkingNode.OCPP.CustomNetworkTopologyInformationSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -188,24 +187,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         out errorResponse))
                     {
 
-                        response = NotifyNetworkTopologyResponse.SignatureError(
-                                       request,
-                                       errorResponse
-                                   );
+                        //response = NotifyNetworkTopologyResponse.SignatureError(
+                        //               message,
+                        //               errorResponse
+                        //           );
 
                     }
 
                     #endregion
 
-                    #region Send OnNotifyNetworkTopologyRequestReceived event
+                    #region Send OnNotifyNetworkTopologyMessageReceived event
 
                     await LogEvent(
-                              OnNotifyNetworkTopologyRequestReceived,
+                              OnNotifyNetworkTopologyMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
                                   Timestamp.Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
-                                  request,
+                                  message,
                                   CancellationToken
                               )
                           );
@@ -213,58 +212,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    response ??= await CallProcessor(
-                                           OnNotifyNetworkTopology,
-                                           filter => filter.Invoke(
-                                                         Timestamp.Now,
-                                                         parentNetworkingNode,
-                                                         WebSocketConnection,
-                                                         request,
-                                                         CancellationToken
-                                                     )
-                                       );
+                    //response ??= await CallProcessor(
+                    //                       OnNotifyNetworkTopology,
+                    //                       filter => filter.Invoke(
+                    //                                     Timestamp.Now,
+                    //                                     parentNetworkingNode,
+                    //                                     WebSocketConnection,
+                    //                                     message,
+                    //                                     CancellationToken
+                    //                                 )
+                    //                   );
 
-                    response ??= NotifyNetworkTopologyResponse.Failed(request);
+                    //response ??= NotifyNetworkTopologyResponse.Failed(message);
 
 
                     #region Sign response message
 
-                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2
-                    );
+                    //parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                    //    response,
+                    //    response.ToJSON(
+                    //        parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
+                    //        parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                    //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                    //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                    //    ),
+                    //    out var errorResponse2
+                    //);
 
                     #endregion
 
-                    ocppResponse = OCPP_Response.JSONResponse(
-                                       EventTrackingId,
-                                       SourceRouting.To(NetworkPath.Source),
-                                       NetworkPath.From(parentNetworkingNode.Id),
-                                       RequestId,
-                                       response.ToJSON(
-                                           parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
-                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                           parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                           parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       ),
-                                       async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnNotifyNetworkTopologyResponseSent(
-                                                                            Timestamp.Now,
-                                                                            parentNetworkingNode,
-                                                                            sentMessageResult.Connection,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime,
-                                                                            sentMessageResult.Result,
-                                                                            CancellationToken
-                                                                        ),
-                                       CancellationToken
-                                   );
+                    //ocppResponse = OCPP_Response.JSONResponse(
+                    //                   EventTrackingId,
+                    //                   SourceRouting.To(NetworkPath.Source),
+                    //                   NetworkPath.From(parentNetworkingNode.Id),
+                    //                   RequestId,
+                    //                   response.ToJSON(
+                    //                       parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
+                    //                       parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                    //                       parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                    //                       parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                    //                   ),
+                    //                   async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnNotifyNetworkTopologyResponseSent(
+                    //                                                        Timestamp.Now,
+                    //                                                        parentNetworkingNode,
+                    //                                                        sentMessageResult.Connection,
+                    //                                                        message,
+                    //                                                        response,
+                    //                                                        response.Runtime,
+                    //                                                        sentMessageResult.Result,
+                    //                                                        CancellationToken
+                    //                                                    ),
+                    //                   CancellationToken
+                    //               );
 
                 }
 
@@ -291,6 +290,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
+            ocppResponse ??= OCPP_Response.Empty();
+
             return ocppResponse;
 
         }
@@ -299,257 +300,257 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Receive NotifyNetworkTopology response
 
-        /// <summary>
-        /// An event fired whenever a NotifyNetworkTopology response was received.
-        /// </summary>
-        public event OnNotifyNetworkTopologyResponseReceivedDelegate? OnNotifyNetworkTopologyResponseReceived;
+        ///// <summary>
+        ///// An event fired whenever a NotifyNetworkTopology response was received.
+        ///// </summary>
+        //public event OnNotifyNetworkTopologyResponseReceivedDelegate? OnNotifyNetworkTopologyResponseReceived;
 
 
-        public async Task<NotifyNetworkTopologyResponse>
+        //public async Task<NotifyNetworkTopologyResponse>
 
-            Receive_NotifyNetworkTopologyResponse(NotifyNetworkTopologyRequest  Request,
-                                                  JObject                       ResponseJSON,
-                                                  IWebSocketConnection          WebSocketConnection,
-                                                  SourceRouting                 Destination,
-                                                  NetworkPath                   NetworkPath,
-                                                  EventTracking_Id              EventTrackingId,
-                                                  Request_Id                    RequestId,
-                                                  DateTime?                     ResponseTimestamp   = null,
-                                                  CancellationToken             CancellationToken   = default)
+        //    Receive_NotifyNetworkTopologyResponse(NotifyNetworkTopologyMessage  Request,
+        //                                          JObject                       ResponseJSON,
+        //                                          IWebSocketConnection          WebSocketConnection,
+        //                                          SourceRouting                 Destination,
+        //                                          NetworkPath                   NetworkPath,
+        //                                          EventTracking_Id              EventTrackingId,
+        //                                          Request_Id                    RequestId,
+        //                                          DateTime?                     ResponseTimestamp   = null,
+        //                                          CancellationToken             CancellationToken   = default)
 
-        {
+        //{
 
-            NotifyNetworkTopologyResponse? response = null;
+        //    NotifyNetworkTopologyResponse? response = null;
 
-            try
-            {
+        //    try
+        //    {
 
-                if (NotifyNetworkTopologyResponse.TryParse(Request,
-                                                           ResponseJSON,
-                                                           Destination,
-                                                           NetworkPath,
-                                                           out response,
-                                                           out var errorResponse,
-                                                           ResponseTimestamp,
-                                                           parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseParser,
-                                                           parentNetworkingNode.OCPP.CustomStatusInfoParser,
-                                                           parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                           parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+        //        if (NotifyNetworkTopologyResponse.TryParse(Request,
+        //                                                   ResponseJSON,
+        //                                                   Destination,
+        //                                                   NetworkPath,
+        //                                                   out response,
+        //                                                   out var errorResponse,
+        //                                                   ResponseTimestamp,
+        //                                                   parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseParser,
+        //                                                   parentNetworkingNode.OCPP.CustomStatusInfoParser,
+        //                                                   parentNetworkingNode.OCPP.CustomSignatureParser,
+        //                                                   parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 
-                    #region Verify response signature(s)
+        //            #region Verify response signature(s)
 
-                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-                            response,
-                            response.ToJSON(
-                                parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
-                                parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
-                                parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                            ),
-                            out errorResponse
-                        ))
-                    {
+        //            if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+        //                    response,
+        //                    response.ToJSON(
+        //                        parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
+        //                        parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+        //                        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+        //                        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+        //                    ),
+        //                    out errorResponse
+        //                ))
+        //            {
 
-                        response = NotifyNetworkTopologyResponse.SignatureError(
-                                       Request,
-                                       errorResponse
-                                   );
+        //                response = NotifyNetworkTopologyResponse.SignatureError(
+        //                               Request,
+        //                               errorResponse
+        //                           );
 
-                    }
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                }
+        //        }
 
-                else
-                    response = NotifyNetworkTopologyResponse.FormationViolation(
-                                   Request,
-                                   errorResponse
-                               );
+        //        else
+        //            response = NotifyNetworkTopologyResponse.FormationViolation(
+        //                           Request,
+        //                           errorResponse
+        //                       );
 
-            }
-            catch (Exception e)
-            {
+        //    }
+        //    catch (Exception e)
+        //    {
 
-                response = NotifyNetworkTopologyResponse.ExceptionOccured(
-                               Request,
-                               e
-                           );
+        //        response = NotifyNetworkTopologyResponse.ExceptionOccured(
+        //                       Request,
+        //                       e
+        //                   );
 
-            }
+        //    }
 
 
-            #region Send OnNotifyNetworkTopologyResponseReceived event
+        //    #region Send OnNotifyNetworkTopologyResponseReceived event
 
-            await LogEvent(
-                      OnNotifyNetworkTopologyResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          WebSocketConnection,
-                          Request,
-                          response,
-                          response.Runtime,
-                          CancellationToken
-                      )
-                  );
+        //    await LogEvent(
+        //              OnNotifyNetworkTopologyResponseReceived,
+        //              loggingDelegate => loggingDelegate.Invoke(
+        //                  Timestamp.Now,
+        //                  parentNetworkingNode,
+        //                  WebSocketConnection,
+        //                  Request,
+        //                  response,
+        //                  response.Runtime,
+        //                  CancellationToken
+        //              )
+        //          );
 
-            #endregion
+        //    #endregion
 
-            return response;
+        //    return response;
 
-        }
+        //}
 
         #endregion
 
         #region Receive NotifyNetworkTopology request error
 
-        /// <summary>
-        /// An event fired whenever a NotifyNetworkTopology request error was received.
-        /// </summary>
-        public event OnNotifyNetworkTopologyRequestErrorReceivedDelegate? NotifyNetworkTopologyRequestErrorReceived;
+        ///// <summary>
+        ///// An event fired whenever a NotifyNetworkTopology request error was received.
+        ///// </summary>
+        //public event OnNotifyNetworkTopologyMessageErrorReceivedDelegate? NotifyNetworkTopologyMessageErrorReceived;
 
 
-        public async Task<NotifyNetworkTopologyResponse>
+        //public async Task<NotifyNetworkTopologyResponse>
 
-            Receive_NotifyNetworkTopologyRequestError(NotifyNetworkTopologyRequest  Request,
-                                                      OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                      IWebSocketConnection          Connection,
-                                                      SourceRouting                 Destination,
-                                                      NetworkPath                   NetworkPath,
-                                                      EventTracking_Id              EventTrackingId,
-                                                      Request_Id                    RequestId,
-                                                      DateTime?                     ResponseTimestamp   = null,
-                                                      CancellationToken             CancellationToken   = default)
-        {
+        //    Receive_NotifyNetworkTopologyMessageError(NotifyNetworkTopologyMessage  Request,
+        //                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+        //                                              IWebSocketConnection          Connection,
+        //                                              SourceRouting                 Destination,
+        //                                              NetworkPath                   NetworkPath,
+        //                                              EventTracking_Id              EventTrackingId,
+        //                                              Request_Id                    RequestId,
+        //                                              DateTime?                     ResponseTimestamp   = null,
+        //                                              CancellationToken             CancellationToken   = default)
+        //{
 
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
+        //    //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+        //    //    response,
+        //    //    response.ToJSON(
+        //    //        parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+        //    //    ),
+        //    //    out errorResponse
+        //    //);
 
-            #region Send NotifyNetworkTopologyRequestErrorReceived event
+        //    #region Send NotifyNetworkTopologyMessageErrorReceived event
 
-            await LogEvent(
-                      NotifyNetworkTopologyRequestErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          RequestErrorMessage,
-                          RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
-                          CancellationToken
-                      )
-                  );
+        //    await LogEvent(
+        //              NotifyNetworkTopologyMessageErrorReceived,
+        //              loggingDelegate => loggingDelegate.Invoke(
+        //                  Timestamp.Now,
+        //                  parentNetworkingNode,
+        //                  Connection,
+        //                  Request,
+        //                  RequestErrorMessage,
+        //                  RequestErrorMessage.ResponseTimestamp - Request.RequestTimestamp,
+        //                  CancellationToken
+        //              )
+        //          );
 
-            #endregion
+        //    #endregion
 
 
-            var response = NotifyNetworkTopologyResponse.RequestError(
-                               Request,
-                               RequestErrorMessage.EventTrackingId,
-                               RequestErrorMessage.ErrorCode,
-                               RequestErrorMessage.ErrorDescription,
-                               RequestErrorMessage.ErrorDetails,
-                               RequestErrorMessage.ResponseTimestamp,
-                               RequestErrorMessage.Destination,
-                               RequestErrorMessage.NetworkPath
-                           );
+        //    var response = NotifyNetworkTopologyResponse.RequestError(
+        //                       Request,
+        //                       RequestErrorMessage.EventTrackingId,
+        //                       RequestErrorMessage.ErrorCode,
+        //                       RequestErrorMessage.ErrorDescription,
+        //                       RequestErrorMessage.ErrorDetails,
+        //                       RequestErrorMessage.ResponseTimestamp,
+        //                       RequestErrorMessage.Destination,
+        //                       RequestErrorMessage.NetworkPath
+        //                   );
 
-            #region Send OnNotifyNetworkTopologyResponseReceived event
+        //    #region Send OnNotifyNetworkTopologyResponseReceived event
 
-            await LogEvent(
-                      OnNotifyNetworkTopologyResponseReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          response,
-                          response.Runtime,
-                          CancellationToken
-                      )
-                  );
+        //    await LogEvent(
+        //              OnNotifyNetworkTopologyResponseReceived,
+        //              loggingDelegate => loggingDelegate.Invoke(
+        //                  Timestamp.Now,
+        //                  parentNetworkingNode,
+        //                  Connection,
+        //                  Request,
+        //                  response,
+        //                  response.Runtime,
+        //                  CancellationToken
+        //              )
+        //          );
 
-            #endregion
+        //    #endregion
 
-            return response;
+        //    return response;
 
-        }
+        //}
 
         #endregion
 
         #region Receive NotifyNetworkTopology response error
 
-        /// <summary>
-        /// An event fired whenever a NotifyNetworkTopology response error was received.
-        /// </summary>
-        public event OnNotifyNetworkTopologyResponseErrorReceivedDelegate? NotifyNetworkTopologyResponseErrorReceived;
+        ///// <summary>
+        ///// An event fired whenever a NotifyNetworkTopology response error was received.
+        ///// </summary>
+        //public event OnNotifyNetworkTopologyResponseErrorReceivedDelegate? NotifyNetworkTopologyResponseErrorReceived;
 
 
-        public async Task
+        //public async Task
 
-            Receive_NotifyNetworkTopologyResponseError(NotifyNetworkTopologyRequest?   Request,
-                                                       NotifyNetworkTopologyResponse?  Response,
-                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                       IWebSocketConnection            Connection,
-                                                       SourceRouting                   Destination,
-                                                       NetworkPath                     NetworkPath,
-                                                       EventTracking_Id                EventTrackingId,
-                                                       Request_Id                      RequestId,
-                                                       DateTime?                       ResponseTimestamp   = null,
-                                                       CancellationToken               CancellationToken   = default)
+        //    Receive_NotifyNetworkTopologyResponseError(NotifyNetworkTopologyMessage?   Request,
+        //                                               NotifyNetworkTopologyResponse?  Response,
+        //                                               OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+        //                                               IWebSocketConnection            Connection,
+        //                                               SourceRouting                   Destination,
+        //                                               NetworkPath                     NetworkPath,
+        //                                               EventTracking_Id                EventTrackingId,
+        //                                               Request_Id                      RequestId,
+        //                                               DateTime?                       ResponseTimestamp   = null,
+        //                                               CancellationToken               CancellationToken   = default)
 
-        {
+        //{
 
-            //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
-            //    response,
-            //    response.ToJSON(
-            //        parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
-            //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
-            //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
-            //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
-            //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
-            //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
-            //    ),
-            //    out errorResponse
-            //);
+        //    //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+        //    //    response,
+        //    //    response.ToJSON(
+        //    //        parentNetworkingNode.OCPP.CustomNotifyNetworkTopologyResponseSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomIdTokenInfoSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomIdTokenSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomSignatureSerializer,
+        //    //        parentNetworkingNode.OCPP.CustomCustomDataSerializer
+        //    //    ),
+        //    //    out errorResponse
+        //    //);
 
-            #region Send NotifyNetworkTopologyResponseErrorReceived event
+        //    #region Send NotifyNetworkTopologyResponseErrorReceived event
 
-            await LogEvent(
-                      NotifyNetworkTopologyResponseErrorReceived,
-                      loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
-                          parentNetworkingNode,
-                          Connection,
-                          Request,
-                          Response,
-                          ResponseErrorMessage,
-                          Response is not null
-                              ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
-                              : null,
-                          CancellationToken
-                      )
-                  );
+        //    await LogEvent(
+        //              NotifyNetworkTopologyResponseErrorReceived,
+        //              loggingDelegate => loggingDelegate.Invoke(
+        //                  Timestamp.Now,
+        //                  parentNetworkingNode,
+        //                  Connection,
+        //                  Request,
+        //                  Response,
+        //                  ResponseErrorMessage,
+        //                  Response is not null
+        //                      ? ResponseErrorMessage.ResponseTimestamp - Response.ResponseTimestamp
+        //                      : null,
+        //                  CancellationToken
+        //              )
+        //          );
 
-            #endregion
+        //    #endregion
 
 
-        }
+        //}
 
         #endregion
 

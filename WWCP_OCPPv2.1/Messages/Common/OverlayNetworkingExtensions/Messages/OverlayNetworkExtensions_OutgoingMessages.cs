@@ -29,11 +29,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region NotifyNetworkTopology          (Request)
 
-        /// <summary>
-        /// Notify about network topology changes.
-        /// </summary>
-        /// <param name="Request">A NotifyNetworkTopology request.</param>
-        Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
+        ///// <summary>
+        ///// Notify about network topology changes.
+        ///// </summary>
+        ///// <param name="Request">A NotifyNetworkTopology request.</param>
+        //Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
 
         #endregion
 

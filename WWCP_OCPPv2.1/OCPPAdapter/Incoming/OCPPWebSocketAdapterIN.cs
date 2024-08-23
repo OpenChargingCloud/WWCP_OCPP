@@ -195,6 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             this.parentNetworkingNode = ParentNetworkingNode;
 
+            this.AnycastIds.Add(NetworkingNode_Id.Broadcast);
+
             #region Reflect "Receive_XXX" messages and wire them...
 
             foreach (var methodInfo in typeof(OCPPWebSocketAdapterIN).

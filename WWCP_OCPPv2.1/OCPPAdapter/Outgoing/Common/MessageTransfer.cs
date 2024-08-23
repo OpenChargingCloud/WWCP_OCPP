@@ -85,7 +85,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send vendor-specific binary data.
         /// </summary>
         /// <param name="Message">A message.</param>
-        public async Task<SentMessageResult> MessageTransfer(MessageTransferMessage Message)
+        public async Task<SentMessageResult>
+
+            MessageTransfer(MessageTransferMessage Message)
+
         {
 
             SentMessageResult? response = null;

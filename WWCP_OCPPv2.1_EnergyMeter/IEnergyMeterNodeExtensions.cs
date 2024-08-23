@@ -594,7 +594,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                          Vendor_Id                VendorId,
                          Message_Id?              MessageId             = null,
                          JToken?                  Data                  = null,
-                         CustomData?              CustomData            = null,
 
                          IEnumerable<KeyPair>?    SignKeys              = null,
                          IEnumerable<SignInfo>?   SignInfos             = null,
@@ -620,8 +619,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            SignKeys,
                            SignInfos,
                            Signatures,
-
-                           CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,

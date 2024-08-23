@@ -36,38 +36,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public NetworkingNode_Id      DestinationId          { get; }
+        /// <summary>
+        /// The destination node identification.
+        /// </summary>
+        public NetworkingNode_Id              DestinationId          { get; }
 
-        public IOCPPWebSocketClient?  OCPPWebSocketClient    { get; }
 
-        public IOCPPWebSocketServer?  OCPPWebSocketServer    { get; }
+        /// <summary>
+        /// The OCPP WebSocket client to use to reach the destination node.
+        /// </summary>
+        public IOCPPWebSocketClient?          OCPPWebSocketClient    { get; }
 
-        public NetworkingNode_Id?     NetworkingHub          { get; }
+        /// <summary>
+        /// The OCPP WebSocket server to use to reach the destination node.
+        /// </summary>
+        public IOCPPWebSocketServer?          OCPPWebSocketServer    { get; }
 
-        public Byte                   Priority               { get; }
+        /// <summary>
+        /// The networking hub to use to reach the destination node.
+        /// </summary>
+        public NetworkingNode_Id?             NetworkingHub          { get; }
 
-        public Byte                   Weight                 { get; }
 
-        public DateTime               Timestamp              { get; }
+        public VirtualNetworkLinkInformation  Uplink                 { get; }
 
-        public DateTime?              Timeout                { get; }
+        public VirtualNetworkLinkInformation  Downlink               { get; }
+
+
+        /// <summary>
+        /// The priority of this reachability, when multiple paths are available.
+        /// </summary>
+        public Byte                           Priority               { get; }
+
+        /// <summary>
+        /// The weight of this reachability under the same priority,
+        /// when multiple paths are available.
+        /// </summary>
+        public Byte                           Weight                 { get; }
+
+
+        public DateTime                       Timestamp              { get; }
+
+        public DateTime?                      Timeout                { get; }
 
         #endregion
 
         #region Constructor(s)
+        private Reachability(NetworkingNode_Id               DestinationId,
+                             IOCPPWebSocketClient?           OCPPWebSocketClient = null,
+                             IOCPPWebSocketServer?           WebSocketServer     = null,
+                             NetworkingNode_Id?              NetworkingHub       = null,
 
-        #region Reachability(DestinationId, OCPPWebSocketClient, Priority = 0, Timestamp = null, Timeout = null)
+                             VirtualNetworkLinkInformation?  Uplink              = null,
+                             VirtualNetworkLinkInformation?  Downlink            = null,
 
-        public Reachability(NetworkingNode_Id     DestinationId,
-                            IOCPPWebSocketClient  OCPPWebSocketClient,
-                            Byte?                 Priority    = 0,
-                            Byte?                 Weight      = 1,
-                            DateTime?             Timestamp   = null,
-                            DateTime?             Timeout     = null)
+                             Byte?                           Priority            = 0,
+                             Byte?                           Weight              = 1,
+                             DateTime?                       Timestamp           = null,
+                             DateTime?                       Timeout             = null)
         {
 
             this.DestinationId        = DestinationId;
             this.OCPPWebSocketClient  = OCPPWebSocketClient;
+            this.OCPPWebSocketServer  = WebSocketServer;
+            this.NetworkingHub        = NetworkingHub;
+            this.Uplink               = Uplink    ?? new VirtualNetworkLinkInformation(Distance: 1);
+            this.Downlink             = Downlink  ?? new VirtualNetworkLinkInformation(Distance: 1);
             this.Priority             = Priority  ?? 0;
             this.Weight               = Weight    ?? 1;
             this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -77,49 +111,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Reachability(DestinationId, OCPPWebSocketServer, Priority = 0, Timestamp = null, Timeout = null)
 
-        public Reachability(NetworkingNode_Id     DestinationId,
-                            IOCPPWebSocketServer  OCPPWebSocketServer,
-                            Byte?                 Priority    = 0,
-                            Byte?                 Weight      = 1,
-                            DateTime?             Timestamp   = null,
-                            DateTime?             Timeout     = null)
-        {
 
-            this.DestinationId        = DestinationId;
-            this.OCPPWebSocketServer  = OCPPWebSocketServer;
-            this.Priority             = Priority  ?? 0;
-            this.Weight               = Weight    ?? 1;
-            this.Timestamp            = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.Timeout              = Timeout;
+        #region (static) FromWebSocketClient (DestinationId, WebSocketClient, ...)
 
-        }
+        public static Reachability FromWebSocketClient(NetworkingNode_Id               DestinationId,
+                                                       IOCPPWebSocketClient            WebSocketClient,
+                                                       VirtualNetworkLinkInformation?  Uplink       = null,
+                                                       VirtualNetworkLinkInformation?  Downlink     = null,
+                                                       Byte?                           Priority     = 0,
+                                                       Byte?                           Weight       = 1,
+                                                       DateTime?                       Timestamp    = null,
+                                                       DateTime?                       Timeout      = null)
 
-        #endregion
+            => new (DestinationId,
+                    WebSocketClient,
+                    null,
+                    null,
+                    Uplink,
+                    Downlink,
+                    Priority,
+                    Weight,
+                    Timestamp,
+                    Timeout);
 
-        #region Reachability(DestinationId, NetworkingHub,       Priority = 0, Timestamp = null, Timeout = null)
-
-        public Reachability(NetworkingNode_Id  DestinationId,
-                            NetworkingNode_Id  NetworkingHub,
-                            Byte?              Priority    = 0,
-                            Byte?              Weight      = 1,
-                            DateTime?          Timestamp   = null,
-                            DateTime?          Timeout     = null)
-        {
-
-            this.DestinationId  = DestinationId;
-            this.NetworkingHub  = NetworkingHub;
-            this.Priority       = Priority  ?? 0;
-            this.Weight         = Weight    ?? 1;
-            this.Timestamp      = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.Timeout        = Timeout;
-
-        }
 
         #endregion
 
+        #region (static) FromWebSocketServer (DestinationId, WebSocketClient, ...)
+
+        public static Reachability FromWebSocketServer(NetworkingNode_Id               DestinationId,
+                                                       IOCPPWebSocketServer            WebSocketServer,
+                                                       VirtualNetworkLinkInformation?  Uplink       = null,
+                                                       VirtualNetworkLinkInformation?  Downlink     = null,
+                                                       Byte?                           Priority     = 0,
+                                                       Byte?                           Weight       = 1,
+                                                       DateTime?                       Timestamp    = null,
+                                                       DateTime?                       Timeout      = null)
+
+            => new (DestinationId,
+                    null,
+                    WebSocketServer,
+                    null,
+                    Uplink,
+                    Downlink,
+                    Priority,
+                    Weight,
+                    Timestamp,
+                    Timeout);
+
+
         #endregion
+
+        #region(static) FromNetworkingHub   (DestinationId, NetworkingHub,   ...)
+
+        public static Reachability FromNetworkingHub(NetworkingNode_Id               DestinationId,
+                                                     NetworkingNode_Id               NetworkingHub,
+                                                     VirtualNetworkLinkInformation?  Uplink       = null,
+                                                     VirtualNetworkLinkInformation?  Downlink     = null,
+                                                     Byte?                           Priority     = 0,
+                                                     Byte?                           Weight       = 1,
+                                                     DateTime?                       Timestamp    = null,
+                                                     DateTime?                       Timeout      = null)
+
+            => new (DestinationId,
+                    null,
+                    null,
+                    NetworkingHub,
+                    Uplink,
+                    Downlink,
+                    Priority,
+                    Weight,
+                    Timestamp,
+                    Timeout);
+
+        #endregion
+
 
 
         public JObject ToJSON(Boolean IgnoreDestinationId = false)
@@ -130,6 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            IgnoreDestinationId
                                ? null
                                : new JProperty("destinationId",     DestinationId.                ToString()),
+
 
                            OCPPWebSocketClient is not null
                                ? new JProperty("webSocketClient",   OCPPWebSocketClient.RemoteURL.ToString())
@@ -143,8 +211,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                ? new JProperty("networkingHub",     NetworkingHub.                ToString())
                                : null,
 
+                                 new JProperty("uplink",            Uplink.                       ToJSON()),
+                                 new JProperty("downlink",          Downlink.                     ToJSON()),
+
                                  new JProperty("priority",          Priority),
                                  new JProperty("weight",            Weight),
+
+
                                  new JProperty("timestamp",         Timestamp.                    ToIso8601()),
 
                            Timeout.HasValue

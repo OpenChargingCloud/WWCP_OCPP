@@ -1450,23 +1450,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnIncomingNotifyNetworkTopology
 
-            OCPP.IN.OnNotifyNetworkTopology += (timestamp,
-                                                sender,
-                                                connection,
-                                                request,
-                                                cancellationToken) => {
+            OCPP.IN.OnNotifyNetworkTopologyMessageReceived += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                 DebugX.Log("OnIncomingNotifyNetworkTopology: " + request.NetworkTopologyInformation);
 
                 // NetworkTopologyInformation
 
-                return Task.FromResult(
-                           new NotifyNetworkTopologyResponse(
-                               Request:      request,
-                               Status:       NetworkTopologyStatus.Accepted,
-                               CustomData:   null
-                           )
-                       );
+                return Task.CompletedTask;
 
             };
 

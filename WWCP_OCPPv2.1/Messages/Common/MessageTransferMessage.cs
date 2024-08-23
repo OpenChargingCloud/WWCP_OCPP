@@ -85,7 +85,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Data">Optional vendor-specific message data (a JSON token).</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -93,22 +92,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public MessageTransferMessage(SourceRouting            Destination,
-                       Vendor_Id                VendorId,
-                       Message_Id?              MessageId             = null,
-                       JToken?                  Data                  = null,
+                                      Vendor_Id                VendorId,
+                                      Message_Id?              MessageId             = null,
+                                      JToken?                  Data                  = null,
 
-                       IEnumerable<KeyPair>?    SignKeys              = null,
-                       IEnumerable<SignInfo>?   SignInfos             = null,
-                       IEnumerable<Signature>?  Signatures            = null,
+                                      IEnumerable<KeyPair>?    SignKeys              = null,
+                                      IEnumerable<SignInfo>?   SignInfos             = null,
+                                      IEnumerable<Signature>?  Signatures            = null,
 
-                       CustomData?              CustomData            = null,
-
-                       Request_Id?              RequestId             = null,
-                       DateTime?                RequestTimestamp      = null,
-                       EventTracking_Id?        EventTrackingId       = null,
-                       NetworkPath?             NetworkPath           = null,
-                       SerializationFormats?    SerializationFormat   = null,
-                       CancellationToken        CancellationToken     = default)
+                                      Request_Id?              RequestId             = null,
+                                      DateTime?                RequestTimestamp      = null,
+                                      EventTracking_Id?        EventTrackingId       = null,
+                                      NetworkPath?             NetworkPath           = null,
+                                      SerializationFormats?    SerializationFormat   = null,
+                                      CancellationToken        CancellationToken     = default)
 
             : base(Destination,
                    nameof(MessageTransferMessage)[..^7],
@@ -117,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SignInfos,
                    Signatures,
 
-                   CustomData,
+                   null,
 
                    RequestId,
                    RequestTimestamp,
@@ -281,20 +278,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData           [optional]
-
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
-                                           out CustomData? CustomData,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
 
                 MessageTransferMessage = new MessageTransferMessage(
 
@@ -307,8 +290,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              null,
                                              Signatures,
 
-                                             CustomData,
-
                                              MessageId,
                                              MessageTimestamp,
                                              EventTrackingId,
@@ -318,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (CustomMessageTransferMessageParser is not null)
                     MessageTransferMessage = CustomMessageTransferMessageParser(JSON,
-                                                                         MessageTransferMessage);
+                                                                                MessageTransferMessage);
 
                 return true;
 
@@ -326,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 MessageTransferMessage  = null;
-                ErrorResponse    = "The given JSON representation of a Datagram request is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a Datagram request is invalid: " + e.Message;
                 return false;
             }
 

@@ -27,10 +27,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public interface OverlayNetworkExtensions_IncomingMessages
     {
 
-        /// <summary>
-        /// An event sent whenever a NotifyNetworkTopology request was received.
-        /// </summary>
-        event OnNotifyNetworkTopologyDelegate    OnNotifyNetworkTopology;
+        ///// <summary>
+        ///// An event sent whenever a NotifyNetworkTopology request was received.
+        ///// </summary>
+        //event OnNotifyNetworkTopologyDelegate    OnNotifyNetworkTopology;
 
     }
 

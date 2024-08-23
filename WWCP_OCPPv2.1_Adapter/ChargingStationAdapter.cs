@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                              AdditionalInfos:   null,
                                                                              CustomData:        null
                                                                          ),
-                                     EVSEId:                             EVSE_Id.Parse(0),
+                                     EVSEId:                             EVSE_Id.Parse(1),
                                      ChargingProfile:                    null,
                                      GroupIdToken:                       null,
                                      TransactionLimits:                  null,

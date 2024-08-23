@@ -385,8 +385,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Overlay Network Extensions
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?                        CustomNotifyNetworkTopologyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?                       CustomNotifyNetworkTopologyResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyMessage>?                        CustomNotifyNetworkTopologyMessageSerializer           { get; set; }
+        //public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?                        CustomNotifyNetworkTopologyRequestSerializer                 { get; set; }
+        //public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?                       CustomNotifyNetworkTopologyResponseSerializer                { get; set; }
 
 
         #region Data Structures
@@ -814,8 +815,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Overlay Network Extensions
-        public CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?                              CustomNotifyNetworkTopologyRequestParser                 { get; set; }
-        public CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?                             CustomNotifyNetworkTopologyResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<NotifyNetworkTopologyMessage>?                              CustomNotifyNetworkTopologyMessageParser                 { get; set; }
+        //public CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?                              CustomNotifyNetworkTopologyRequestParser                 { get; set; }
+        //public CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?                             CustomNotifyNetworkTopologyResponseParser                { get; set; }
 
         #endregion
 
@@ -1102,7 +1104,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
+            #region Broadcast
+
+            if (JSONSendMessage.Destination.Next == NetworkingNode_Id.Broadcast)
+            {
+
+                foreach (var webSocketClient in Routing.AllWebSocketClients)
+                    sentMessageResult = await webSocketClient.SendJSONSendMessage(JSONSendMessage);
+
+                foreach (var webSocketServer in Routing.AllWebSocketServers)
+                    sentMessageResult = await webSocketServer.SendJSONSendMessage(JSONSendMessage);
+
+                sentMessageResult = SentMessageResult.Broadcast();
+
+            }
+
+            #endregion
+
+            else if (Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
                 if      (reachability.OCPPWebSocketClient is not null)

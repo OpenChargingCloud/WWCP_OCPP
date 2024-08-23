@@ -648,7 +648,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">A vendor-specific JSON token.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -662,7 +661,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          Vendor_Id                  VendorId,
                          Message_Id?                MessageId             = null,
                          JToken?                    Data                  = null,
-                         CustomData?                CustomData            = null,
 
                          IEnumerable<KeyPair>?      SignKeys              = null,
                          IEnumerable<SignInfo>?     SignInfos             = null,
@@ -688,8 +686,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            SignKeys,
                            SignInfos,
                            Signatures,
-
-                           CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
@@ -725,7 +721,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         Vendor_Id                  VendorId,
                         Message_Id?                MessageId             = null,
                         JToken?                    Data                  = null,
-                        CustomData?                CustomData            = null,
 
                         IEnumerable<KeyPair>?      SignKeys              = null,
                         IEnumerable<SignInfo>?     SignInfos             = null,
@@ -750,8 +745,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            SignKeys,
                            SignInfos,
                            Signatures,
-
-                           CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,

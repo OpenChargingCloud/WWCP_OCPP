@@ -1616,11 +1616,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var data       = RandomExtensions.RandomString(40);
 
                 var response   = await testCSMS01.TransferData(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           VendorId:            vendorId,
-                                           MessageId:           messageId,
-                                           Data:                data,
-                                           CustomData:          null
+                                           Destination:   SourceRouting.To( chargingStation1.Id),
+                                           VendorId:      vendorId,
+                                           MessageId:     messageId,
+                                           Data:          data
                                        );
 
 
@@ -1677,11 +1676,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                  );
 
                 var response   = await testCSMS01.TransferData(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           VendorId:            vendorId,
-                                           MessageId:           messageId,
-                                           Data:                data,
-                                           CustomData:          null
+                                           Destination:   SourceRouting.To( chargingStation1.Id),
+                                           VendorId:      vendorId,
+                                           MessageId:     messageId,
+                                           Data:          data
                                        );
 
 
@@ -1737,11 +1735,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                  );
 
                 var response   = await testCSMS01.TransferData(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           VendorId:            vendorId,
-                                           MessageId:           messageId,
-                                           Data:                data,
-                                           CustomData:          null
+                                           Destination:   SourceRouting.To( chargingStation1.Id),
+                                           VendorId:      vendorId,
+                                           MessageId:     messageId,
+                                           Data:          data
                                        );
 
 
@@ -1794,11 +1791,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
                 var response   = await testCSMS01.TransferData(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           VendorId:            vendorId,
-                                           MessageId:           messageId,
-                                           Data:                data,
-                                           CustomData:          null
+                                           Destination:   SourceRouting.To( chargingStation1.Id),
+                                           VendorId:      vendorId,
+                                           MessageId:     messageId,
+                                           Data:          data
                                        );
 
                 ClassicAssert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);

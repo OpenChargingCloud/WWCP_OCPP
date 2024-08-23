@@ -85,7 +85,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Data">Optional vendor-specific message data (a JSON token).</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -102,8 +101,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    IEnumerable<SignInfo>?   SignInfos             = null,
                                    IEnumerable<Signature>?  Signatures            = null,
 
-                                   CustomData?              CustomData            = null,
-
                                    Request_Id?              RequestId             = null,
                                    DateTime?                RequestTimestamp      = null,
                                    TimeSpan?                RequestTimeout        = null,
@@ -119,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SignInfos,
                    Signatures,
 
-                   CustomData,
+                   null,
 
                    RequestId,
                    RequestTimestamp,
@@ -346,20 +343,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData           [optional]
-
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
-                                           out CustomData? CustomData,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
 
                 DataTransferRequest = new DataTransferRequest(
 
@@ -371,8 +354,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           null,
                                           null,
                                           Signatures,
-
-                                          CustomData,
 
                                           RequestId,
                                           RequestTimestamp,

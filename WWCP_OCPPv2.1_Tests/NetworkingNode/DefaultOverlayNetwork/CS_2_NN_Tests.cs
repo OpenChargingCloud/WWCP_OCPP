@@ -267,8 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var response   = await chargingStation.TransferData(
                                            VendorId:     vendorId,
                                            MessageId:    messageId,
-                                           Data:         data,
-                                           CustomData:   null
+                                           Data:         data
                                        );
 
 
@@ -277,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Charging Station Request OUT
                     Assert.That(csDataTransferRequestsSent.     Count,                    Is.EqualTo(1), "The DataTransfer request did not leave the charging station!");
                     var csDataTransferRequest = csDataTransferRequestsSent.First();
-                    Assert.That(csDataTransferRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csDataTransferRequest.DestinationId,                      Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csDataTransferRequest.NetworkPath.Length,                 Is.EqualTo(0)); // Because of "standard" networking mode
                     Assert.That(csDataTransferRequest.VendorId,                           Is.EqualTo(vendorId));
                     Assert.That(csDataTransferRequest.MessageId,                          Is.EqualTo(messageId));
@@ -289,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.Destination,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.Destination,                         Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(chargingStation.Id));
@@ -298,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Request IN
                     Assert.That(nnDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The DataTransfer request did not reach the networking node!");
                     var nnDataTransferRequestReceived = nnDataTransferRequestsReceived.First();
-                    Assert.That(nnDataTransferRequestReceived.DestinationId,          Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnDataTransferRequestReceived.DestinationId,              Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(chargingStation.Id));
@@ -314,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Response OUT
                     Assert.That(nnDataTransferResponsesSent.    Count,                    Is.EqualTo(1), "The DataTransfer response did not leave the networking node!");
                     var nnDataTransferResponseSent = nnDataTransferResponsesSent.First();
-                    Assert.That(nnDataTransferResponseSent.DestinationId,             Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransferResponseSent.DestinationId,                 Is.EqualTo(chargingStation.Id));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(localController.Id));

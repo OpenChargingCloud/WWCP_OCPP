@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<NotifyNetworkTopologyResponse>
+        public static Task<SentMessageResult>
 
             NotifyNetworkTopology(this INetworkingNodeButNotCSMS  NetworkingNode,
 
@@ -62,14 +63,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                   Request_Id?                     RequestId             = null,
                                   DateTime?                       RequestTimestamp      = null,
-                                  TimeSpan?                       RequestTimeout        = null,
                                   EventTracking_Id?               EventTrackingId       = null,
                                   SerializationFormats?           SerializationFormat   = null,
                                   CancellationToken               CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
-                       new NotifyNetworkTopologyRequest(
+                       new NotifyNetworkTopologyMessage(
 
                            Destination ?? SourceRouting.CSMS,
 
@@ -83,7 +83,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
                            SerializationFormat,
@@ -110,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<NotifyNetworkTopologyResponse>
+        public static Task<SentMessageResult>
 
             NotifyNetworkTopology(this INetworkingNode        NetworkingNode,
 
@@ -127,14 +126,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                   Request_Id?                 RequestId             = null,
                                   DateTime?                   RequestTimestamp      = null,
-                                  TimeSpan?                   RequestTimeout        = null,
                                   EventTracking_Id?           EventTrackingId       = null,
                                   SerializationFormats?       SerializationFormat   = null,
                                   CancellationToken           CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
-                       new NotifyNetworkTopologyRequest(
+                       new NotifyNetworkTopologyMessage(
 
                            Destination ?? SourceRouting.CSMS,
 
@@ -148,7 +146,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
                            SerializationFormat,
@@ -196,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         //        => NetworkingNode.ocppOUT.NotifyNetworkTopology(
-        //               new OCPP.NN.NotifyNetworkTopologyRequest(
+        //               new OCPP.NN.NotifyNetworkTopologyMessage(
 
         //                   Destination,
         //                   NetworkTopologyInformation,

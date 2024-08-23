@@ -1117,7 +1117,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -1135,8 +1134,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          IEnumerable<KeyPair>?    SignKeys              = null,
                          IEnumerable<SignInfo>?   SignInfos             = null,
                          IEnumerable<Signature>?  Signatures            = null,
-
-                         CustomData?              CustomData            = null,
 
                          Request_Id?              RequestId             = null,
                          DateTime?                RequestTimestamp      = null,
@@ -1156,8 +1153,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            SignKeys,
                            SignInfos,
                            Signatures,
-
-                           CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,

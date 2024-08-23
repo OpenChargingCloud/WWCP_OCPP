@@ -257,11 +257,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!";
                 var response   = await CSMS.TransferData(
-                                           Destination:    SourceRouting.To(chargingStation.Id),
-                                           VendorId:           vendorId,
-                                           MessageId:          messageId,
-                                           Data:               data,
-                                           CustomData:         null
+                                           Destination:   SourceRouting.To(chargingStation.Id),
+                                           VendorId:      vendorId,
+                                           MessageId:     messageId,
+                                           Data:          data
                                        );
 
 

@@ -1532,6 +1532,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             if (NetworkingNodeId == NetworkingNode_Id.Zero)
                 return [];
 
+            if (NetworkingNodeId == NetworkingNode_Id.Broadcast)
+                return WebSocketConnections;
+
             var lookUpNetworkingNodeId = NetworkingNodeId;
 
             if (OCPPAdapter.Routing.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
@@ -1543,11 +1546,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
             {
                 lookUpNetworkingNodeId = networkingHubId;
-                return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId);
+                return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId);
             }
 
-            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(NetworkingNode.OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).ToArray();
-                            //            Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingNodeId == lookUpNetworkingNodeId ? NetworkingMode.Standard : NetworkingMode.OverlayNetwork));
+            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).ToArray();
 
         }
 

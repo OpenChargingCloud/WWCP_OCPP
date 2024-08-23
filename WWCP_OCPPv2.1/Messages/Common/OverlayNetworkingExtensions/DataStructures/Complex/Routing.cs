@@ -42,6 +42,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        public IEnumerable<OCPPWebSocketClient> AllWebSocketClients
+            => reachableNetworkingNodes.Values.
+                   SelectMany(fff => fff).
+                   Select    (rrr => rrr.OCPPWebSocketClient).
+                   Where     (www => www is not null).
+                   Cast<OCPPWebSocketClient>();
+
+        public IEnumerable<OCPPWebSocketServer> AllWebSocketServers
+            => reachableNetworkingNodes.Values.
+                   SelectMany(fff => fff).
+                   Select    (rrr => rrr.OCPPWebSocketServer).
+                   Where     (www => www is not null).
+                   Cast<OCPPWebSocketServer>();
+
+
+        public IEnumerable<NetworkRoutingInformation> GetNetworkRoutingInformation()
+        {
+
+            var xx = reachableNetworkingNodes.
+                   SelectMany(kvp => kvp.Value).
+                   Select    (reachability => new NetworkRoutingInformation(
+                                                  reachability.DestinationId,
+                                                  new VirtualNetworkLinkInformation(
+                                                      Distance:     1,
+                                                      Capacity:     null,
+                                                      Latency:      null,
+                                                      PacketLoss:   null,
+                                                      CustomData:   null
+                                                  ),
+                                                  new VirtualNetworkLinkInformation(
+                                                      Distance:     1,
+                                                      Capacity:     null,
+                                                      Latency:      null,
+                                                      PacketLoss:   null,
+                                                      CustomData:   null
+                                                  ),
+                                                  reachability.Priority,
+                                                  reachability.Weight,
+                                                  null
+                                                  //reachability.NetworkingHub,
+                                                  //reachability.Timestamp,
+                                                  //reachability.Timeout
+                                              )).
+                   ToArray();
+
+            return xx;
+
+        }
+
+
         #region LookupNetworkingNode (DestinationId, out Reachability)
 
         public Boolean LookupNetworkingNode(NetworkingNode_Id                      DestinationId,
@@ -116,23 +166,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    DestinationId,
 
                    (id)                   => [
-                                                 new Reachability(
+                                                 Reachability.FromWebSocketClient(
                                                      DestinationId,
                                                      WebSocketClient,
+                                                     new VirtualNetworkLinkInformation(Distance: 1),
+                                                     new VirtualNetworkLinkInformation(Distance: 1),
                                                      Priority,
                                                      Weight,
-                                                     Timeout
+                                                     Timeout: Timeout
                                                  )
                                              ],
 
                    (id, reachabilityList) => {
 
-                       var reachability = new Reachability(
+                       var reachability = Reachability.FromWebSocketClient(
                                               DestinationId,
                                               WebSocketClient,
+                                              new VirtualNetworkLinkInformation(Distance: 1),
+                                              new VirtualNetworkLinkInformation(Distance: 1),
                                               Priority,
                                               Weight,
-                                              Timeout
+                                              Timeout: Timeout
                                           );
 
                        if (reachabilityList is null)
@@ -198,23 +252,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    DestinationId,
 
                    (id)                   => [
-                                                 new Reachability(
+                                                 Reachability.FromWebSocketServer(
                                                      DestinationId,
                                                      WebSocketServer,
+                                                     new VirtualNetworkLinkInformation(Distance: 1),
+                                                     new VirtualNetworkLinkInformation(Distance: 1),
                                                      Priority,
                                                      Weight,
-                                                     Timeout
+                                                     Timeout: Timeout
                                                  )
                                              ],
 
                    (id, reachabilityList) => {
 
-                       var reachability = new Reachability(
+                       var reachability = Reachability.FromWebSocketServer(
                                               DestinationId,
                                               WebSocketServer,
+                                              new VirtualNetworkLinkInformation(Distance: 1),
+                                              new VirtualNetworkLinkInformation(Distance: 1),
                                               Priority,
-                                              Weight,   
-                                              Timeout
+                                              Weight,
+                                              Timeout: Timeout
                                           );
 
                        if (reachabilityList is null)
@@ -280,24 +338,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    DestinationId,
 
                    (id)                   => [
-                                                 new Reachability(
+                                                 Reachability.FromNetworkingHub(
                                                      DestinationId,
                                                      NetworkingHubId,
+                                                     new VirtualNetworkLinkInformation(Distance: 1),
+                                                     new VirtualNetworkLinkInformation(Distance: 1),
                                                      Priority,
                                                      Weight,
-                                                     Timeout
+                                                     Timeout: Timeout
                                                  )
                                              ],
 
                    (id, reachabilityList) => {
 
-                       var reachability = new Reachability(
-                                                 DestinationId,
-                                                 NetworkingHubId,
-                                                 Priority,
-                                                 Weight,
-                                                 Timeout
-                                             );
+                       var reachability = Reachability.FromNetworkingHub(
+                                              DestinationId,
+                                              NetworkingHubId,
+                                              new VirtualNetworkLinkInformation(Distance: 1),
+                                              new VirtualNetworkLinkInformation(Distance: 1),
+                                              Priority,
+                                              Weight,
+                                              Timeout: Timeout
+                                          );
 
                        if (reachabilityList is null)
                            return [ reachability ];

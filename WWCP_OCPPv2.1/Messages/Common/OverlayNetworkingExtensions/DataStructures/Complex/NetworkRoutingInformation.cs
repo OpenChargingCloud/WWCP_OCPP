@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -47,13 +48,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The JSON-LD context of this object.
         /// </summary>
         [Mandatory]
-        public JSONLDContext      Context
+        public JSONLDContext                  Context
             => DefaultJSONLDContext;
 
-        public NetworkingNode_Id        DestinationId    { get; }
-        public UInt16?                  Priority            { get; }
-        public NetworkLinkInformation?  Uplink              { get; }
-        public NetworkLinkInformation?  Downlink            { get; }
+        public NetworkingNode_Id              DestinationId    { get; }
+        public VirtualNetworkLinkInformation  Uplink           { get; }
+        public VirtualNetworkLinkInformation  Downlink         { get; }
+        public Byte                           Priority         { get; }
+        public Byte                           Weight           { get; }
+        public TimeSpan?                      Timeout          { get; }
 
         #endregion
 
@@ -63,34 +66,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP CSE network routing information.
         /// </summary>
         /// <param name="DestinationId"></param>
-        /// <param name="Priority"></param>
         /// <param name="Uplink"></param>
         /// <param name="Downlink"></param>
-        /// 
+        /// <param name="Priority"></param>
+        /// <param name="Weight"></param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NetworkRoutingInformation(NetworkingNode_Id        DestinationId,
-                                         UInt16?                  Priority     = null,
-                                         NetworkLinkInformation?  Uplink       = null,
-                                         NetworkLinkInformation?  Downlink     = null,
-
-                                         CustomData?              CustomData   = null)
+        public NetworkRoutingInformation(NetworkingNode_Id               DestinationId,
+                                         VirtualNetworkLinkInformation?  Uplink       = null,
+                                         VirtualNetworkLinkInformation?  Downlink     = null,
+                                         Byte?                           Priority     = null,
+                                         Byte?                           Weight       = null,
+                                         TimeSpan?                       Timeout      = null,
+                                         CustomData?                     CustomData   = null)
 
             : base(CustomData)
 
         {
 
             this.DestinationId  = DestinationId;
-            this.Priority       = Priority;
-            this.Uplink         = Uplink;
-            this.Downlink       = Downlink;
+            this.Uplink         = Uplink   ?? new VirtualNetworkLinkInformation(Distance: 1);
+            this.Downlink       = Downlink ?? new VirtualNetworkLinkInformation(Distance: 1);
+            this.Priority       = Priority ?? 1;
+            this.Weight         = Weight   ?? 1;
+            this.Timeout        = Timeout;
 
             unchecked
             {
 
-                hashCode = this.DestinationId.GetHashCode()       * 11 ^
-                          (this.Priority?.    GetHashCode() ?? 0) *  7 ^
-                          (this.Uplink?.      GetHashCode() ?? 0) *  5 ^
-                          (this.Downlink?.    GetHashCode() ?? 0) *  3 ^
+                hashCode = this.DestinationId.GetHashCode()       * 17 ^
+                          (this.Uplink?.      GetHashCode() ?? 0) * 13 ^
+                          (this.Downlink?.    GetHashCode() ?? 0) * 11 ^
+                           this.Priority.     GetHashCode()       *  7 ^
+                           this.Weight.       GetHashCode()       *  5 ^
+                          (this.Timeout?.     GetHashCode() ?? 0) *  3 ^
                            base.              GetHashCode();
 
             }
@@ -112,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Parse the given JSON representation of a network routing information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNetworkRoutingInformationParser">An optional delegate to parse custom network routing information.</param>
+        /// <param name="CustomVirtualNetworkLinkInformationParser">An optional delegate to parse custom network routing information.</param>
         public static NetworkRoutingInformation Parse(JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<NetworkRoutingInformation>?  CustomNetworkRoutingInformationParser   = null)
         {
@@ -120,8 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (TryParse(JSON,
                          out var networkRoutingInformation,
                          out var errorResponse,
-                         CustomNetworkRoutingInformationParser) &&
-                networkRoutingInformation is not null)
+                         CustomNetworkRoutingInformationParser))
             {
                 return networkRoutingInformation;
             }
@@ -143,9 +150,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NetworkRoutingInformation">Network routing information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                         JSON,
-                                       out NetworkRoutingInformation?  NetworkRoutingInformation,
-                                       out String?                     ErrorResponse)
+        public static Boolean TryParse(JObject                                              JSON,
+                                       [NotNullWhen(true)]  out NetworkRoutingInformation?  NetworkRoutingInformation,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse)
 
             => TryParse(JSON,
                         out NetworkRoutingInformation,
@@ -154,15 +161,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a network routing information.
+        /// Try to parse the given JSON representation of a NetworkRoutingInformation.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NetworkRoutingInformation">Network routing information.</param>
+        /// <param name="NetworkRoutingInformation">The parsed NetworkRoutingInformation.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNetworkRoutingInformationParser">An optional delegate to parse custom network routing information.</param>
+        /// <param name="CustomNetworkRoutingInformationParser">An optional delegate to parse NetworkRoutingInformation information.</param>
         public static Boolean TryParse(JObject                                                  JSON,
-                                       out NetworkRoutingInformation?                           NetworkRoutingInformation,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out NetworkRoutingInformation?      NetworkRoutingInformation,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<NetworkRoutingInformation>?  CustomNetworkRoutingInformationParser)
         {
 
@@ -184,11 +191,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region Priority            [optional]
+                #region Uplink           [optional]
 
-                if (JSON.ParseOptional("priority",
-                                       "network routing information priority",
-                                       out UInt16? Priority,
+                if (JSON.ParseOptionalJSON("uplink",
+                                           "network uplink",
+                                           VirtualNetworkLinkInformation.TryParse,
+                                           out VirtualNetworkLinkInformation? Uplink,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Downlink         [optional]
+
+                if (JSON.ParseOptionalJSON("downlink",
+                                           "network downlink",
+                                           VirtualNetworkLinkInformation.TryParse,
+                                           out VirtualNetworkLinkInformation? Downlink,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Priority         [optional]
+
+                if (JSON.ParseMandatory("priority",
+                                        "priority",
+                                        out Byte Priority,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Weight           [optional]
+
+                if (JSON.ParseMandatory("weight",
+                                        "weight",
+                                        out Byte Weight,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Timeout          [optional]
+
+                if (JSON.ParseOptional("timeout",
+                                       "timeout",
+                                       out TimeSpan? Timeout,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -197,35 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region Uplink              [optional]
-
-                if (JSON.ParseOptionalJSON("uplink",
-                                           "network uplink",
-                                           NetworkLinkInformation.TryParse,
-                                           out NetworkLinkInformation? Uplink,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Downlink            [optional]
-
-                if (JSON.ParseOptionalJSON("downlink",
-                                           "network downlink",
-                                           NetworkLinkInformation.TryParse,
-                                           out NetworkLinkInformation? Downlink,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region CustomData          [optional]
+                #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -243,10 +276,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 NetworkRoutingInformation = new NetworkRoutingInformation(
 
                                                 DestinationId,
-                                                Priority,
                                                 Uplink,
                                                 Downlink,
-
+                                                Priority,
+                                                Weight,
+                                                Timeout,
                                                 CustomData
 
                                             );
@@ -261,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 NetworkRoutingInformation  = default;
-                ErrorResponse              = "The given JSON representation of a network routing information is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a NetworkRoutingInformation is invalid: " + e.Message;
                 return false;
             }
 
@@ -286,16 +320,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                  new JProperty("destinationId",   DestinationId.ToString()),
 
-                           Priority.        HasValue
-                               ? new JProperty("priority",        Priority.     Value)
-                               : null,
-
                            Uplink is not null
                                ? new JProperty("uplink",          Uplink.       ToJSON(CustomNetworkLinkInformationSerializer))
                                : null,
 
                            Downlink is not null
                                ? new JProperty("downlink",        Downlink.     ToJSON(CustomNetworkLinkInformationSerializer))
+                               : null,
+
+                                 new JProperty("priority",        Priority),
+                                 new JProperty("weight",          Weight),
+
+                           Timeout.HasValue
+                               ? new JProperty("timeout",         Timeout.Value.TotalSeconds)
                                : null,
 
                            CustomData is not null

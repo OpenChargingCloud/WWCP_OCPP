@@ -666,8 +666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var response   = await chargingStation1.TransferData(
                                            VendorId:    vendorId,
                                            MessageId:   messageId,
-                                           Data:        data,
-                                           CustomData:  null
+                                           Data:        data
                                        );
 
 
@@ -726,8 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var response   = await chargingStation1.TransferData(
                                            VendorId:    vendorId,
                                            MessageId:   messageId,
-                                           Data:        data,
-                                           CustomData:  null
+                                           Data:        data
                                        );
 
 
@@ -785,8 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var response   = await chargingStation1.TransferData(
                                            VendorId:    vendorId,
                                            MessageId:   messageId,
-                                           Data:        data,
-                                           CustomData:  null
+                                           Data:        data
                                        );
 
 

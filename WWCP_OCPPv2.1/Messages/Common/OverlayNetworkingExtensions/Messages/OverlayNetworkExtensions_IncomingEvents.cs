@@ -29,15 +29,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region OnNotifyNetworkTopology    (RequestReceived/-ResponseSent)
 
-        /// <summary>
-        /// An event sent whenever a NotifyNetworkTopology request was received.
-        /// </summary>
-        event OnNotifyNetworkTopologyRequestReceivedDelegate?      OnNotifyNetworkTopologyRequestReceived;
+        ///// <summary>
+        ///// An event sent whenever a NotifyNetworkTopology request was received.
+        ///// </summary>
+        //event OnNotifyNetworkTopologyRequestReceivedDelegate?      OnNotifyNetworkTopologyRequestReceived;
 
-        /// <summary>
-        /// An event fired whenever a response to a NotifyNetworkTopology request was received.
-        /// </summary>
-        event OnNotifyNetworkTopologyResponseReceivedDelegate?     OnNotifyNetworkTopologyResponseReceived;
+        ///// <summary>
+        ///// An event fired whenever a response to a NotifyNetworkTopology request was received.
+        ///// </summary>
+        //event OnNotifyNetworkTopologyResponseReceivedDelegate?     OnNotifyNetworkTopologyResponseReceived;
 
         #endregion
 

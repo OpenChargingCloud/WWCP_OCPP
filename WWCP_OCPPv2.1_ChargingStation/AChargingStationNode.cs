@@ -888,7 +888,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         protected override async Task DoMaintenanceAsync(Object State)
         {
 
-            await Task.Delay(1);
+            await base.DoMaintenanceAsync(State);
 
             foreach (var evse in EVSEs)
                 await evse.DoMaintenanceAsync(this, State);

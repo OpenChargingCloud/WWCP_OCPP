@@ -278,8 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var response   = await chargingStation.TransferData(
                                            VendorId:     vendorId,
                                            MessageId:    messageId,
-                                           Data:         data,
-                                           CustomData:   null
+                                           Data:         data
                                        );
 
 
@@ -435,10 +434,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Please REJECT!";
                 var response   = await chargingStation.TransferData(
-                                           VendorId:     vendorId,
-                                           MessageId:    messageId,
-                                           Data:         data,
-                                           CustomData:   null
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data
                                        );
 
 

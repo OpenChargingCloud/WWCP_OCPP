@@ -194,6 +194,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Do not route this message over multiple hops.
         /// </summary>
+        public static NetworkingNode_Id  Broadcast     { get; }
+            = new ("*");
+
+        /// <summary>
+        /// Do not route this message over multiple hops.
+        /// </summary>
         public static NetworkingNode_Id  Zero    { get; }
             = new ("0");
 

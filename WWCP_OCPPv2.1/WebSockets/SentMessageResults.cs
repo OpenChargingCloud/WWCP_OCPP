@@ -59,6 +59,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
             => new(SentMessageResults.UnknownClient);
 
+        public static SentMessageResult Broadcast()
+
+            => new (SentMessageResults.Broadcast);
+
         public static SentMessageResult TransmissionFailed (Exception             Exception)
 
             => new (SentMessageResults.TransmissionFailed,
@@ -101,6 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     {
         Unknown,
         UnknownClient,
+        Broadcast,
         TransmissionFailed,
         Timeout,
         Success
