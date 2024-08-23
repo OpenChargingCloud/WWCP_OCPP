@@ -704,6 +704,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #endregion
 
 
+            #region DeviceModel
+
+            #region Variables
+
+            #region OnGetBaseReport
+
+            OCPP.FORWARD.OnGetBaseReportRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<GetBaseReportRequest, CS.GetBaseReportResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnGetReport
+
+            OCPP.FORWARD.OnGetReportRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<GetReportRequest, CS.GetReportResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnGetVariables
+
+            OCPP.FORWARD.OnGetVariablesRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<GetVariablesRequest, CS.GetVariablesResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnNotifyReport
+
+            OCPP.FORWARD.OnNotifyReportRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<CS.NotifyReportRequest, NotifyReportResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #region OnSetVariables
+
+            OCPP.FORWARD.OnSetVariablesRequestFilter +=
+                (timestamp, sender, connection, request, ct) =>
+
+                Task.FromResult(
+                    ForwardingDecision<SetVariablesRequest, CS.SetVariablesResponse>.FORWARD(
+                        request
+                    )
+                );
+
+            #endregion
+
+            #endregion
+
+            #endregion
+
+
+            #region Charging
+
+            #region Tariffs
+
             #region OnChangeTransactionTariff
 
             OCPP.FORWARD.OnChangeTransactionTariffRequestFilter +=
@@ -756,6 +834,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #endregion
 
+            #endregion
+
+            #endregion
 
 
             // CS -> CSMS

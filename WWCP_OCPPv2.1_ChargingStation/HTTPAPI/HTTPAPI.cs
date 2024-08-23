@@ -234,6 +234,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         private void RegisterURITemplates()
         {
 
+            HTTPBaseAPI.HTTPServer.AddAuth(request => {
+
+                if (request.Path.ToString() == "/evses")
+                {
+                    return HTTPExtAPI.Anonymous;
+                }
+
+                return null;
+
+            });
+
+
             #region / (HTTPRoot)
 
             //HTTPBaseAPI.RegisterResourcesFolder(this,
@@ -317,6 +329,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
+
+            #region ~/evses
+
+            // --------------------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:9010/evses?pretty
+            // curl -v -H "Accept: application/json" http://127.0.0.1:9020/evses?pretty
+            // curl -v -H "Accept: application/json" http://127.0.0.1:9030/evses?pretty
+            // --------------------------------------------------------------------------------
+            HTTPBaseAPI.AddMethodCallback(
+                HTTPHostname.Any,
+                HTTPMethod.GET,
+                URLPathPrefix + "evses",
+                HTTPContentType.Application.JSON_UTF8,
+                HTTPDelegate: request => {
+
+                    #region Get HTTP user and its organizations
+
+                    //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    //if (!TryGetHTTPUser(Request,
+                    //                    out User                   HTTPUser,
+                    //                    out HashSet<Organization>  HTTPOrganizations,
+                    //                    out HTTPResponse.Builder   Response,
+                    //                    Recursive:                 true))
+                    //{
+                    //    return Task.FromResult(Response.AsImmutable);
+                    //}
+
+                    #endregion
+
+                    #region Check HTTP Query parameters
+
+                    var pretty          = request.QueryString.GetBoolean("pretty");
+                    var jsonFormatting  = pretty.HasValue
+                                              ? pretty.Value
+                                                    ? Formatting.Indented
+                                                    : Formatting.None
+                                              : JSONFormatting;
+
+                    #endregion
+
+
+                    return Task.FromResult(
+                               new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.OK,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                   Content                    = new JArray(chargingStation.EVSEs.Select(evse => evse.ToJSON())).ToUTF8Bytes(jsonFormatting),
+                                   Connection                 = "close",
+                                   Vary                       = "Accept"
+                               }.AsImmutable);
+
+                }
+            );
+
+            #endregion
 
         }
 

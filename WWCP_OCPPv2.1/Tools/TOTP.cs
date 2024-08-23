@@ -51,7 +51,7 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(slotBytes);
 
-            Debug.Write($"Current slot bytes: {String.Join("-", slotBytes.Select(b => b.ToString()))}");
+            //Debug.Write($"Current slot bytes: {String.Join("-", slotBytes.Select(b => b.ToString()))}");
 
             var currentHash    = HMAC.ComputeHash(slotBytes);
             var stringBuilder  = new StringBuilder((Int32) TOTPLength);
@@ -70,20 +70,51 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
         #endregion
 
 
-        #region GenerateTOTPs(Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
+        #region GenerateTOTP (Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
 
         /// <summary>
-        /// Calculate TOTP and the remaining time until the TOTP will change.
+        /// Calculate the current TOTP and the remaining time until the TOTP will change.
         /// </summary>
         /// <param name="Timestamp"></param>
         /// <param name="SharedSecret"></param>
         /// <param name="ValidityTime"></param>
         /// <param name="TOTPLength"></param>
         /// <param name="Alphabet"></param>
-        public static (String    Previous,
-                       String    Current,
-                       String    Next,
-                       TimeSpan  RemainingTime)
+        public static (String          Current,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateTOTP (DateTime   Timestamp,
+                          String     SharedSecret,
+                          TimeSpan?  ValidityTime   = null,
+                          UInt32?    TOTPLength     = 12,
+                          String?    Alphabet       = null)
+
+                => GenerateTOTP(
+                       SharedSecret,
+                       ValidityTime,
+                       TOTPLength,
+                       Alphabet,
+                       new DateTimeOffset(Timestamp)
+                   );
+
+        #endregion
+
+        #region GenerateTOTPs(Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
+
+        /// <summary>
+        /// Calculate TOTPs and the remaining time until the TOTPs will change.
+        /// </summary>
+        /// <param name="Timestamp"></param>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        public static (String          Previous,
+                       String          Current,
+                       String          Next,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
 
             GenerateTOTPs(DateTime   Timestamp,
                           String     SharedSecret,
@@ -101,20 +132,104 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 
         #endregion
 
-        #region GenerateTOTPs(SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+        #region GenerateTOTP (SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
 
         /// <summary>
-        /// Calculate TOTP and the remaining time until the TOTP will change.
+        /// Calculate the current TOTP and the remaining time until the TOTP will change.
         /// </summary>
         /// <param name="SharedSecret"></param>
         /// <param name="ValidityTime"></param>
         /// <param name="TOTPLength"></param>
         /// <param name="Alphabet"></param>
         /// <param name="Timestamp"></param>
-        public static (String    Previous,
-                       String    Current,
-                       String    Next,
-                       TimeSpan  RemainingTime)
+        public static (String          Current,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateTOTP(String           SharedSecret,
+                         TimeSpan?        ValidityTime   = null,
+                         UInt32?          TOTPLength     = 12,
+                         String?          Alphabet       = null,
+                         DateTimeOffset?  Timestamp      = null)
+
+        {
+
+            #region Initial Checks
+
+            SharedSecret   = SharedSecret.Trim();
+            ValidityTime ??= TimeSpan.FromSeconds(30);
+            TOTPLength   ??= 12;
+            Alphabet     ??= "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            Alphabet       = Alphabet.Trim();
+
+            if (String.IsNullOrEmpty(SharedSecret))
+                throw new ArgumentNullException(nameof(SharedSecret),
+                                                "The given shared secret must not be null or empty!");
+
+            if (SharedSecret.Any(Char.IsWhiteSpace))
+                throw new ArgumentException    ("The given shared secret must not contain any whitespace characters!",
+                                                nameof(Alphabet));
+
+            if (SharedSecret.Length < 16)
+                throw new ArgumentException    ("The length of the given shared secret must be at least 16 characters!",
+                                                nameof(Alphabet));
+
+            if (TOTPLength < 4)
+                throw new ArgumentException    ("The expected length of the TOTP must be between 4 and 255 characters!",
+                                                nameof(Alphabet));
+
+            if (String.IsNullOrEmpty(Alphabet))
+                throw new ArgumentNullException(nameof(Alphabet),
+                                                "The given alphabet must not be null or empty!");
+
+            if (Alphabet.Length < 4)
+                throw new ArgumentException    ("The given alphabet must contain at least 4 characters!",
+                                                nameof(Alphabet));
+
+            if (Alphabet.Length != Alphabet.Distinct().Count())
+                throw new ArgumentException    ("The given alphabet must not contain duplicate characters!",
+                                                nameof(Alphabet));
+
+            if (Alphabet.Any(Char.IsWhiteSpace))
+                throw new ArgumentException    ("The given alphabet must not contain any whitespace characters!",
+                                                nameof(Alphabet));
+
+            #endregion
+
+            using var hmac       = new HMACSHA256(Encoding.UTF8.GetBytes(SharedSecret));
+
+            var timeReference    = Timestamp ?? DateTimeOffset.UtcNow;
+            var currentUnixTime  = timeReference.ToUnixTimeSeconds();
+            var currentSlot      = (UInt64) (currentUnixTime / ValidityTime.Value.TotalSeconds);
+            var remainingTime    = TimeSpan.FromSeconds(
+                                       (Int32) ValidityTime.Value.TotalSeconds
+                                         -
+                                       (currentUnixTime % (Int32) ValidityTime.Value.TotalSeconds)
+                                   );
+
+            return (CalcTOTPSlot(currentSlot, TOTPLength.Value, Alphabet, hmac),
+                    remainingTime,
+                    timeReference + remainingTime);
+
+        }
+
+        #endregion
+
+        #region GenerateTOTPs(SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+
+        /// <summary>
+        /// Calculate TOTPs and the remaining time until the TOTPs will change.
+        /// </summary>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        /// <param name="Timestamp"></param>
+        public static (String          Previous,
+                       String          Current,
+                       String          Next,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
 
             GenerateTOTPs(String           SharedSecret,
                           TimeSpan?        ValidityTime   = null,
@@ -168,7 +283,8 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 
             using var hmac       = new HMACSHA256(Encoding.UTF8.GetBytes(SharedSecret));
 
-            var currentUnixTime  = (Timestamp ?? DateTimeOffset.UtcNow).ToUnixTimeSeconds();
+            var timeReference    = Timestamp ?? DateTimeOffset.UtcNow;
+            var currentUnixTime  = timeReference.ToUnixTimeSeconds();
             var currentSlot      = (UInt64) (currentUnixTime / ValidityTime.Value.TotalSeconds);
             var remainingTime    = TimeSpan.FromSeconds(
                                        (Int32) ValidityTime.Value.TotalSeconds
@@ -176,16 +292,115 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
                                        (currentUnixTime % (Int32) ValidityTime.Value.TotalSeconds)
                                    );
 
-            Debug.Write($"Current slot: {currentSlot}");
+            //Debug.Write($"Current slot: {currentSlot}");
 
-            var previousTOTP     = CalcTOTPSlot(currentSlot - 1, TOTPLength.Value, Alphabet, hmac);
-            var currentTOTP      = CalcTOTPSlot(currentSlot,     TOTPLength.Value, Alphabet, hmac);
-            var nextTOTP         = CalcTOTPSlot(currentSlot + 1, TOTPLength.Value, Alphabet, hmac);
+            return (CalcTOTPSlot(currentSlot - 1, TOTPLength.Value, Alphabet, hmac),
+                    CalcTOTPSlot(currentSlot,     TOTPLength.Value, Alphabet, hmac),
+                    CalcTOTPSlot(currentSlot + 1, TOTPLength.Value, Alphabet, hmac),
+                    remainingTime,
+                    timeReference + remainingTime);
 
-            return (previousTOTP,
-                    currentTOTP,
-                    nextTOTP,
-                    remainingTime);
+        }
+
+        #endregion
+
+
+        #region ProcessURLTemplate(URLTemplate, TOTP)
+
+        private static String ProcessURLTemplate(String URLTemplate, String TOTP)
+        {
+            return URLTemplate.Replace("{TOTP}", TOTP);
+        }
+
+        #endregion
+
+        #region GenerateURL (SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+
+        /// <summary>
+        /// Calculate the current TOTP URL and the remaining time until the URL will change.
+        /// </summary>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        /// <param name="Timestamp"></param>
+        public static (String          Current,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateURL(String           URLTemplate,
+                        String           SharedSecret,
+                        TimeSpan?        ValidityTime   = null,
+                        UInt32?          TOTPLength     = 12,
+                        String?          Alphabet       = null,
+                        DateTimeOffset?  Timestamp      = null)
+
+        {
+
+            var (currentTOTP,
+                 remainingTime,
+                 endTime) = GenerateTOTP(
+                                SharedSecret,
+                                ValidityTime,
+                                TOTPLength,
+                                Alphabet,
+                                Timestamp
+                            );
+
+            return (
+                       ProcessURLTemplate(URLTemplate, currentTOTP),
+                       remainingTime,
+                       endTime
+                   );
+
+        }
+
+        #endregion
+
+        #region GenerateURLs(SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+
+        /// <summary>
+        /// Calculate the TOTP URLs and the remaining time until the URLs will change.
+        /// </summary>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        /// <param name="Timestamp"></param>
+        public static (String          Previous,
+                       String          Current,
+                       String          Next,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateURLs(String           URLTemplate,
+                         String           SharedSecret,
+                         TimeSpan?        ValidityTime   = null,
+                         UInt32?          TOTPLength     = 12,
+                         String?          Alphabet       = null,
+                         DateTimeOffset?  Timestamp      = null)
+
+        {
+
+            var (previousTOTP,
+                 currentTOTP,
+                 nextTOTP,
+                 remainingTime,
+                 endTime) = GenerateTOTPs(
+                                SharedSecret,
+                                ValidityTime,
+                                TOTPLength,
+                                Alphabet,
+                                Timestamp
+                            );
+
+            return (
+                       ProcessURLTemplate(URLTemplate, previousTOTP),
+                       ProcessURLTemplate(URLTemplate, currentTOTP),
+                       ProcessURLTemplate(URLTemplate, nextTOTP),
+                       remainingTime,
+                       endTime
+                   );
 
         }
 

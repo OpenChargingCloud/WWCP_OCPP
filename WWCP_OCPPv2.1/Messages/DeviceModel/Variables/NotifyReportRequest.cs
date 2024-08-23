@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// and variable report data that caused the event.
         /// </summary>
         [Mandatory]
-        public IEnumerable<ReportData>  ReportData           { get; }
+        public IEnumerable<ReportData>  ReportData               { get; }
 
         /// <summary>
         /// The optional "to be continued" indicator whether another part of the report
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Default value when omitted is false.
         /// </summary>
         [Optional]
-        public Boolean?                     ToBeContinued                      { get; }
+        public Boolean?                 ToBeContinued            { get; }
 
         #endregion
 

@@ -17,7 +17,8 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -31,29 +32,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class QRCodePaymentsCtrlr : APhysicalComponentConfig
     {
 
+        #region Data
+
+        public const Byte SharedSecretMinmumLength = 16;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
         /// QR-Code payments controller enabled.
         /// </summary>
-        public Boolean?             Enabled                             { get; set; }
+        public Boolean?   Enabled          { get; set; }
 
+        public String?    URLTemplate      { get; set; }
 
-        public String?              URLTemplate                         { get; set; }
+        public TimeSpan?  ValidityTime     { get; set; }
 
-        public TimeSpan?            ValidityTime                        { get; set; }
+        public String?    HashAlgorithm    { get; set; }
 
-        public String?              HashAlgorithm                       { get; set; }
+        public String     SharedSecret     { get; set; }
 
-        public String?              SharedSecret                        { get; set; }
+        public Byte?      Length           { get; set; }
 
-        public Byte?                Length                              { get; set; }
+        public String?    Encoding         { get; set; }
 
-        public String?              Encoding                            { get; set; }
+        public String?    QRCodeQuality    { get; set; }
 
-        public String?              QRCodeQuality                       { get; set; }
-
-        public String?              Signature                           { get; set; }
+        public String?    Signature        { get; set; }
 
         #endregion
 
@@ -94,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.URLTemplate    = URLTemplate;
             this.ValidityTime   = ValidityTime;
             this.HashAlgorithm  = HashAlgorithm;
-            this.SharedSecret   = SharedSecret;
+            this.SharedSecret   = SharedSecret ?? RandomExtensions.RandomString(SharedSecretMinmumLength);
             this.Length         = Length;
             this.Encoding       = Encoding;
             this.QRCodeQuality  = QRCodeQuality;
@@ -112,6 +118,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       ? "true"
                                                       : "false"
                                                 : null,
+                    ValueSetter:      (newV, oldV) => {
+
+                                          if (newV == "true")
+                                          {
+                                              this.Enabled = true;
+                                              return new ValueSetterResponse(newV);
+                                          }
+
+                                          return new ValueSetterResponse(newV, "Invalid value!");
+
+                                      },
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
@@ -135,6 +152,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "URLTemplate",
                     ValueGetter:      () => this.URLTemplate,
+                    ValueSetter:      (newV, oldV) => {
+
+                                          this.URLTemplate = newV;
+
+                                          return new ValueSetterResponse(newV);
+
+                                      },
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
@@ -158,15 +182,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "ValidityTime",
                     ValueGetter:      () => this.ValidityTime?.TotalSeconds.ToString(),
+                    ValueSetter:      (newV, oldV) => {
+
+                                          if (UInt32.TryParse(newV, out var time) &&
+                                              time >= 6)
+                                          {
+                                              this.ValidityTime = TimeSpan.FromSeconds(time);
+                                              return new ValueSetterResponse(newV);
+                                          }
+
+                                          return new ValueSetterResponse(newV, "Invalid value!");
+
+                                      },
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
                                       ),
 
                     Characteristics:  new VariableCharacteristics(
-                                          DataType:   DataTypes.Integer,
-                                          Unit:       UnitsOfMeasure.TimeSpan(),
-                                          MinLimit:   6
+                                          DataType:    DataTypes.Integer,
+                                          Unit:        UnitsOfMeasure.TimeSpan(),
+                                          MinLimit:    6
                                       ),
 
                     Description:      I18NString.Create("The validity time of the time-based one-time passwords.")
@@ -183,6 +219,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "HashAlgorithm",
                     ValueGetter:      () => this.HashAlgorithm,
+                    ValueSetter:      (newV, oldV) => {
+
+                                          if (newV == "HMAC-SHA256")
+                                          {
+                                              this.URLTemplate = newV;
+                                              return new ValueSetterResponse(newV);
+                                          }
+
+                                          return new ValueSetterResponse(newV, "Invalid value!");
+
+                                      },
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
@@ -207,6 +254,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "SharedSecret",
                     ValueGetter:      () => this.SharedSecret,
+                    ValueSetter:      (newV, oldV) => {
+
+                                          if (newV.IsNotNullOrEmpty() &&
+                                              newV.Length >= SharedSecretMinmumLength)
+                                          {
+                                              this.SharedSecret = newV;
+                                              return new ValueSetterResponse(newV);
+                                          }
+
+                                          return new ValueSetterResponse(newV, "Invalid value!");
+
+                                      },
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
@@ -214,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Characteristics:  new VariableCharacteristics(
                                           DataType:   DataTypes.String,
-                                          MinLimit:   16
+                                          MinLimit:   SharedSecretMinmumLength
                                       ),
 
                     Description:      I18NString.Create("The shared secret used for the time-based one-time passwords.")
@@ -231,13 +290,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "Length",
                     ValueGetter:      () => this.Length?.ToString(),
+                    ValueSetter:      (newV, oldV) => {
 
+                                          if (Byte.TryParse(newV, out var length) &&
+                                              length >= 6)
+                                          {
+                                              this.Length = length;
+                                              return new ValueSetterResponse(newV);
+                                          }
+
+                                          return new ValueSetterResponse(newV, "Invalid value!");
+
+                                      },
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
                                       ),
 
                     Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.Integer
+                                          DataType:    DataTypes.Integer,
+                                          MinLimit:    6,
+                                          MaxLimit:    255
                                       ),
 
                     Description:      I18NString.Create("The length of the time-based one-time passwords.")
@@ -317,10 +389,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-
         }
 
         #endregion
+
+
+
+        public JObject ToJSON()
+        {
+
+            var json = JSONObject.Create(
+
+                           new JProperty("enabled",        Enabled),
+                           // URLTemplate
+                           new JProperty("validityTime",   ValidityTime?.TotalSeconds),
+                           // HashAlgorithm
+                           // SharedSecret
+                           // Length
+                           // Encoding
+                           // QRCodeQuality
+                           // Signature
+                           new JProperty("totp",           ValidityTime)
+
+                       );
+
+            return json;
+
+        }
 
 
     }

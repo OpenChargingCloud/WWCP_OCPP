@@ -30,285 +30,21 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.utils.QRCodes.TOTP;
 using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region (class) ChargingStationConnector
-
-    /// <summary>
-    /// A connector at a charging station.
-    /// </summary>
-    public class ChargingStationConnector
-    {
-
-        #region Data
-
-        private readonly ChargingStationEVSE                                  parentEVSE;
-        public           ConcurrentDictionary<String, List<ComponentConfig>>  ComponentConfigs   = [];
-
-        #endregion
-
-        #region Properties
-        public Connector_Id   Id               { get; }
-        public ConnectorType  ConnectorType    { get; }
-
-        #endregion
-
-        #region Controllers
-
-        #region Generic
-
-        public IEnumerable<T> GetComponentConfigs<T>(String         Name,
-                                                     Connector_Id?  ConnectorId   = null,
-                                                     String?        Instance      = null)
-
-            where T : ComponentConfig
-
-            => ComponentConfigs.TryGetValue(Name, out var controllerList)
-                   ? controllerList.Where  (controller => controller.Name              == Name           &&
-                                                          controller.EVSE?.Id          == parentEVSE?.Id &&
-                                                          controller.EVSE?.ConnectorId == Id             &&
-                                                          ( Instance.IsNullOrEmpty() || controller.Instance == Instance)).
-                                    Cast<T>()
-                   : [];
-
-        #endregion
-
-        #endregion
-
-        #region ChargingStationConnector(Id, ConnectorType, ParentEVSE = null)
-
-        public ChargingStationConnector(ChargingStationEVSE  ParentEVSE,
-                                        Connector_Id         Id,
-                                        ConnectorType        ConnectorType)
-        {
-
-            this.parentEVSE     = ParentEVSE;
-            this.Id             = Id;
-            this.ConnectorType  = ConnectorType;
-
-        }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region (class) ChargingStationEVSE
-
-    public class EVSESpec(OperationalStatus            AdminStatus,
-                          IEnumerable<ConnectorType>?  ConnectorTypes       = null,
-                          String?                      MeterType            = null,
-                          String?                      MeterSerialNumber    = null,
-                          String?                      MeterPublicKey       = null)
-
-        : EVSESpec0(AdminStatus,
-                    MeterType,
-                    MeterSerialNumber,
-                    MeterPublicKey)
-
-    {
-
-        public IEnumerable<ConnectorType> ConnectorTypes { get; set; } = ConnectorTypes ?? [];
-
-
-    }
-
-    public class EVSESpec0(OperationalStatus  AdminStatus,
-                           String?            MeterType           = null,
-                           String?            MeterSerialNumber   = null,
-                           String?            MeterPublicKey      = null)
-    {
-
-        public OperationalStatus  AdminStatus              { get; set; } = AdminStatus;
-        public String?            MeterType                { get; set; } = MeterType;
-        public String?            MeterSerialNumber        { get; set; } = MeterSerialNumber;
-        public String?            MeterPublicKey           { get; set; } = MeterPublicKey;
-
-    }
-
-
-    /// <summary>
-    /// An EVSE at a charging station.
-    /// </summary>
-    public class ChargingStationEVSE : EVSESpec0
-    {
-
-        #region Data
-
-        private   readonly AChargingStationNode                                          parentChargingStation;
-
-        protected readonly ConcurrentDictionary<Connector_Id, ChargingStationConnector>  connectors         = [];
-        public             ConcurrentDictionary<String, List<ComponentConfig>>           ComponentConfigs   = [];
-
-        #endregion
-
-        #region Properties
-
-        public EVSE_Id            Id                       { get; }
-
-        public Reservation_Id?    ReservationId            { get; set; }
-
-        public ConnectorStatus    Status                   { get; set; }
-
-        public Boolean            IsReserved               { get; set; }
-
-        public Boolean            IsCharging               { get; set; }
-
-        public IdToken?           IdToken                  { get; set; }
-
-        public IdToken?           GroupIdToken             { get; set; }
-
-        public Transaction_Id?    TransactionId            { get; set; }
-
-        public RemoteStart_Id?    RemoteStartId            { get; set; }
-
-        public ChargingProfile?   ChargingProfile          { get; set; }
-
-
-        public DateTime?          StartTimestamp           { get; set; }
-
-        public Decimal?           MeterStartValue          { get; set; }
-
-        public String?            SignedStartMeterValue    { get; set; }
-
-        public DateTime?          StopTimestamp            { get; set; }
-
-        public Decimal?           MeterStopValue           { get; set; }
-
-        public String?            SignedStopMeterValue     { get; set; }
-
-        public Tariff?            DefaultChargingTariff    { get; set; }
-
-        #endregion
-
-        #region Controllers
-
-        #region Generic
-
-        public IEnumerable<T> GetComponentConfigs<T>(String         Name,
-                                                     Connector_Id?  ConnectorId   = null,
-                                                     String?        Instance      = null)
-
-            where T : ComponentConfig
-
-            => ComponentConfigs.TryGetValue(Name, out var controllerList)
-                   ? controllerList.Where  (controller => controller.Name     == Name &&
-                                                          controller.EVSE?.Id == Id   &&
-                                                          (!ConnectorId.HasValue        || controller.EVSE?.ConnectorId == ConnectorId) &&
-                                                          ( Instance.   IsNullOrEmpty() || controller.Instance          == Instance)).
-                                    Cast<T>()
-                   : [];
-
-        #endregion
-
-
-        /// <summary>
-        /// The QR-Code Payments Controller
-        /// </summary>
-        public QRCodePaymentsCtrlr? QRCodePaymentsController
-            => GetComponentConfigs<QRCodePaymentsCtrlr>(nameof(QRCodePaymentsCtrlr)).FirstOrDefault();
-
-        #endregion
-
-        #region ChargingStationEVSE(Id, AdminStatus, ...)
-
-        internal ChargingStationEVSE(AChargingStationNode         ChargingStation,
-                                     EVSE_Id                      Id,
-                                     OperationalStatus            AdminStatus,
-                                     IEnumerable<ConnectorType>?  ConnectorTypes      = null,
-                                     String?                      MeterType           = null,
-                                     String?                      MeterSerialNumber   = null,
-                                     String?                      MeterPublicKey      = null)
-
-            : base(AdminStatus)
-
-        {
-
-            this.parentChargingStation  = ChargingStation;
-            this.Id                     = Id;
-            this.AdminStatus            = AdminStatus;
-            this.MeterType              = MeterType;
-            this.MeterSerialNumber      = MeterSerialNumber;
-            this.MeterPublicKey         = MeterPublicKey;
-
-            foreach (var connectorType in ConnectorTypes ?? [])
-                AddConnector(connectorType);
-
-            AddComponent(new QRCodePaymentsCtrlr(
-                             EVSE:             new EVSE(Id),
-                             Enabled:          null,
-                             URLTemplate:      null,
-                             ValidityTime:     null,
-                             HashAlgorithm:    null,
-                             SharedSecret:     null,
-                             Length:           null,
-                             Encoding:         null,
-                             QRCodeQuality:    null,
-                             Signature:        null,
-
-                             Instance:         null,
-                             CustomData:       null
-                         ));
-
-        }
-
-        #endregion
-
-
-        #region Connectors
-
-        public IEnumerable<ChargingStationConnector> Connectors
-            => connectors.Values;
-
-        public Boolean TryGetConnector(Connector_Id ConnectorId, [NotNullWhen(true)] out ChargingStationConnector? Connector)
-            => connectors.TryGetValue(ConnectorId, out Connector);
-
-
-        public ChargingStationConnector? AddConnector(ConnectorType ConnectorType)
-        {
-
-            lock (connectors)
-            {
-
-                var connector = new ChargingStationConnector(
-                                    this,
-                                    Connector_Id.Parse((Byte) (connectors.Count + 1)),
-                                    ConnectorType
-                                );
-
-                return connectors.TryAdd(connector.Id, connector)
-                           ? connector
-                           : null;
-
-            }
-
-        }
-
-        #endregion
-
-
-
-
-        public void AddComponent(ComponentConfig Component)
-        {
-
-            ComponentConfigs.AddOrUpdate(
-                                 Component.Name,
-                                 name => [Component],
-                                 (name, list) => list.AddAndReturnList(Component)
-                             );
-
-        }
-
-
-    }
-
-    #endregion
+    public delegate Task OnQRCodeChangedDelegate (DateTime              Timestamp,
+                                                  AChargingStationNode  ChargingStation,
+                                                  EVSE_Id               EVSEId,
+                                                  String                QRCodeURL,
+                                                  TimeSpan              RemainingTime,
+                                                  DateTimeOffset        EndTime,
+                                                  CancellationToken     CancellationToken);
 
 
     /// <summary>
@@ -385,8 +121,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Controllers
 
-        #region QRCodePaymentsController
-
         #region Generics
 
         public IEnumerable<T> GetComponentConfigs<T>(String Name)
@@ -441,8 +175,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EVSEId">An EVSE identification.</param>
         public QRCodePaymentsCtrlr?              QRCodePaymentsController(EVSE_Id EVSEId)
             => GetComponentConfigs<QRCodePaymentsCtrlr>(nameof(QRCodePaymentsCtrlr), EVSEId).FirstOrDefault();
-
-        #endregion
 
         #endregion
 
@@ -806,6 +538,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Events
 
+        public event OnQRCodeChangedDelegate? OnQRCodeChanged;
+
         #endregion
 
         #region Constructor(s)
@@ -897,14 +631,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.UplinkEnergyMeter      = UplinkEnergyMeter;
 
             foreach (var evseSpec in EVSEs ?? [])
-                AddEVSE(evseSpec.AdminStatus,
-                        evseSpec.ConnectorTypes,
-                        evseSpec.MeterType,
-                        evseSpec.MeterSerialNumber,
-                        evseSpec.MeterPublicKey);
+            {
+
+                var evse = AddEVSE(evseSpec.AdminStatus,
+                                   evseSpec.ConnectorTypes,
+                                   evseSpec.MeterType,
+                                   evseSpec.MeterSerialNumber,
+                                   evseSpec.MeterPublicKey);
+
+                if (evse is not null)
+                {
+                    evse.OnQRCodeChanged += (timestamp, evseId, qrCodeURL, remainingTime, endTime, ct) =>
+                        LogEvent(OnQRCodeChanged, logger => logger.Invoke(timestamp, this, evseId, qrCodeURL, remainingTime, endTime, ct));
+                }
+
+            }
 
 
-            #region Setup Web-/Upload-/DownloadAPIs
+            #region Setup HTTP- and WebAPI
 
             this.WebAPI_Path            = WebAPI_Path ?? HTTPPath.Parse("webapi");
 
@@ -1123,6 +867,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         }
 
 
+        public IEnumerable<ComponentConfig> GetComponentConfigs(String Name, EVSE? EVSE = null)
+        {
+
+            List<ComponentConfig>? componentConfigList = null;
+
+            if (EVSE is null)
+                ComponentConfigs.TryGetValue(Name, out componentConfigList);
+
+            else if (evses.TryGetValue(EVSE.Id, out var evse))
+                evse.ComponentConfigs.TryGetValue(Name, out componentConfigList);
+
+            return componentConfigList ?? [];
+
+        }
+
+
         #region (Timer) DoMaintenance(State)
 
         protected override async Task DoMaintenanceAsync(Object State)
@@ -1130,29 +890,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             await Task.Delay(1);
 
-            foreach (var qrCodePaymentsController in QRCodePaymentsController())
-            {
-                if (qrCodePaymentsController.Enabled       == true            &&
-                    qrCodePaymentsController.SharedSecret. IsNotNullOrEmpty())
-                {
-
-                    QRCodeTOTPGenerator.GenerateTOTPs(Timestamp.Now,
-                                                      qrCodePaymentsController.SharedSecret,
-                                                      qrCodePaymentsController.ValidityTime,
-                                                      qrCodePaymentsController.Length);
-
-                    // Check if the QR code payment is still valid...
-                    // If not, disable it!
-
-                }
-            }
+            foreach (var evse in EVSEs)
+                await evse.DoMaintenanceAsync(this, State);
 
         }
 
         #endregion
 
 
+        public JObject ToJSON()
+        {
 
+            var json = JSONObject.Create(
+
+                           new JProperty("id",  Id.ToString())
+
+                       );
+
+            return json;
+
+        }
+
+
+        #region (private)  LogEvent    (Logger, LogHandler,    ...)
+
+        private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
+                                         Func<TDelegate, Task>                              LogHandler,
+                                         [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+                                         [CallerMemberName()]                       String  OCPPCommand   = "")
+
+            where TDelegate : Delegate
+
+            => LogEvent(
+                   nameof(ChargingStationEVSE),
+                   Logger,
+                   LogHandler,
+                   EventName,
+                   OCPPCommand
+               );
+
+        #endregion
 
         #region (override) HandleErrors(Module, Caller, ErrorResponse)
 

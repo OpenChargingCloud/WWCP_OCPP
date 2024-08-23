@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",                AttributeStatus.    AsText()),
+                                 new JProperty("attributeStatus",       AttributeStatus.    AsText()),
 
                                  new JProperty("component",             Component.          ToJSON(CustomComponentSerializer,
                                                                                                    CustomEVSESerializer,

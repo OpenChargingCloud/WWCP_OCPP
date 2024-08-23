@@ -48,42 +48,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new networking node for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
-        public TestChargingStationNode(NetworkingNode_Id                  Id,
-                                       String                             VendorName,
-                                       String                             Model,
-                                       I18NString?                        Description                    = null,
-                                       String?                            SerialNumber                   = null,
-                                       String?                            FirmwareVersion                = null,
-                                       Modem?                             Modem                          = null,
+        public TestChargingStationNode(NetworkingNode_Id       Id,
+                                       String                  VendorName,
+                                       String                  Model,
+                                       I18NString?             Description                    = null,
+                                       String?                 SerialNumber                   = null,
+                                       String?                 FirmwareVersion                = null,
+                                       Modem?                  Modem                          = null,
 
-                                       IEnumerable<EVSESpec>?             EVSEs                          = null,
-                                       IEnergyMeter?                      UplinkEnergyMeter              = null,
+                                       IEnumerable<EVSESpec>?  EVSEs                          = null,
+                                       IEnergyMeter?           UplinkEnergyMeter              = null,
 
-                                       TimeSpan?                          DefaultRequestTimeout          = null,
+                                       TimeSpan?               DefaultRequestTimeout          = null,
 
-                                       SignaturePolicy?                   SignaturePolicy                = null,
-                                       SignaturePolicy?                   ForwardingSignaturePolicy      = null,
+                                       SignaturePolicy?        SignaturePolicy                = null,
+                                       SignaturePolicy?        ForwardingSignaturePolicy      = null,
 
-                                       Boolean                            HTTPAPI_Disabled               = false,
-                                       IPPort?                            HTTPAPI_Port                   = null,
-                                       String?                            HTTPAPI_ServerName             = null,
-                                       String?                            HTTPAPI_ServiceName            = null,
-                                       EMailAddress?                      HTTPAPI_RobotEMailAddress      = null,
-                                       String?                            HTTPAPI_RobotGPGPassphrase     = null,
-                                       Boolean                            HTTPAPI_EventLoggingDisabled   = false,
+                                       Boolean                 HTTPAPI_Disabled               = false,
+                                       IPPort?                 HTTPAPI_Port                   = null,
+                                       String?                 HTTPAPI_ServerName             = null,
+                                       String?                 HTTPAPI_ServiceName            = null,
+                                       EMailAddress?           HTTPAPI_RobotEMailAddress      = null,
+                                       String?                 HTTPAPI_RobotGPGPassphrase     = null,
+                                       Boolean                 HTTPAPI_EventLoggingDisabled   = false,
 
-                                       WebAPI?                            WebAPI                         = null,
-                                       Boolean                            WebAPI_Disabled                = false,
-                                       HTTPPath?                          WebAPI_Path                    = null,
+                                       WebAPI?                 WebAPI                         = null,
+                                       Boolean                 WebAPI_Disabled                = false,
+                                       HTTPPath?               WebAPI_Path                    = null,
 
-                                       Boolean                            DisableSendHeartbeats          = false,
-                                       TimeSpan?                          SendHeartbeatsEvery            = null,
+                                       Boolean                 DisableSendHeartbeats          = false,
+                                       TimeSpan?               SendHeartbeatsEvery            = null,
 
-                                       Boolean                            DisableMaintenanceTasks        = false,
-                                       TimeSpan?                          MaintenanceEvery               = null,
+                                       Boolean                 DisableMaintenanceTasks        = false,
+                                       TimeSpan?               MaintenanceEvery               = null,
 
-                                       CustomData?                        CustomData                     = null,
-                                       DNSClient?                         DNSClient                      = null)
+                                       CustomData?             CustomData                     = null,
+                                       DNSClient?              DNSClient                      = null)
 
             : base(Id,
                    VendorName,
@@ -125,6 +125,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         {
+
+            this.OnQRCodeChanged += (timestamp, chargingStation, evseId, qrCodeURL, remainingTime, endTime, ct) => {
+                DebugX.Log($"New QR-Code URL for EVSE '{chargingStation.Id}/{evseId}': {qrCodeURL} ({(UInt32) remainingTime.TotalSeconds} sec.)");
+                return Task.CompletedTask;
+            };
+
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
@@ -899,7 +905,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         var variableFound           = false;
                         var variableInstanceFound   = false;
 
-                        if (ComponentConfigs.TryGetValue(setVariableData.Component.Name, out var componentConfigList))
+                        var componentConfigList     = GetComponentConfigs(
+                                                          setVariableData.Component.Name,
+                                                          setVariableData.Component.EVSE
+                                                      );
+
+                        if (componentConfigList is not null)
                         {
 
                             foreach (var componentConfig in componentConfigList)
@@ -1073,9 +1084,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     var variableFound           = false;
                     var variableInstanceFound   = false;
 
-                    if (ComponentConfigs.TryGetValue(getVariableData.Component.Name, out var componentConfigList))
-                    {
+                    var componentConfigList     = GetComponentConfigs(
+                                                      getVariableData.Component.Name,
+                                                      getVariableData.Component.EVSE
+                                                  );
 
+                    if (componentConfigList.Any())
+                    {
                         foreach (var componentConfig in componentConfigList)
                         {
                             if (componentConfig.Instance == getVariableData.Component.Instance)
