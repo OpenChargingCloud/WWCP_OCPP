@@ -40,90 +40,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (static) ToUserRole1(this KeyPair, Name          = null, Description          = null, Timestamp          = null)
 
-        /// <summary>
-        /// Convert the given key pair to a signature information.
-        /// </summary>
-        /// <param name="KeyPair">The key pair.</param>
-        /// <param name="Name">An optional name of a person or process signing the message.</param>
-        /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
-        /// <param name="Timestamp">An optional timestamp of the message signature.</param>
-        public static UserRole ToUserRole1(this KeyPair  KeyPair,
-                                           String?       Name          = null,
-                                           I18NString?   Description   = null,
-                                           DateTime?     Timestamp     = null)
+        ///// <summary>
+        ///// Convert the given key pair to a signature information.
+        ///// </summary>
+        ///// <param name="KeyPair">The key pair.</param>
+        ///// <param name="Name">An optional name of a person or process signing the message.</param>
+        ///// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
+        ///// <param name="Timestamp">An optional timestamp of the message signature.</param>
+        //public static UserRole ToUserRole1(this KeyPair  KeyPair,
+        //                                   String?       Name          = null,
+        //                                   I18NString?   Description   = null,
+        //                                   DateTime?     Timestamp     = null)
 
-            => new (KeyPair.Private,
-                    KeyPair.Public,
-                    KeyPair.Algorithm,
-                    KeyPair.Serialization,
-                    KeyPair.Encoding,
-                    null,
-                    Name        is not null ? (signableMessage) => Name            : null,
-                    Description is not null ? (signableMessage) => Description     : null,
-                    Timestamp.HasValue      ? (signableMessage) => Timestamp.Value : null,
-                    KeyPair.CustomData);
+        //    => new (KeyPair.PrivateKeyBytes,
+        //            KeyPair.PublicKeyBytes,
+        //            KeyPair.Algorithm,
+        //            KeyPair.Serialization,
+        //            KeyPair.Encoding,
+        //            null,
+        //            null,
+        //            Name        is not null ? (signableMessage) => Name            : null,
+        //            Description is not null ? (signableMessage) => Description     : null,
+        //            Timestamp.HasValue      ? (signableMessage) => Timestamp.Value : null,
+        //            KeyPair.CustomData);
 
         #endregion
 
         #region (static) ToUserRole2(this KeyPair, NameGenerator = null, DescriptionGenerator = null, TimestampGenerator = null)
 
-        /// <summary>
-        /// Convert the given key pair to a signature information.
-        /// </summary>
-        /// <param name="KeyPair">The key pair.</param>
-        /// <param name="NameGenerator">An optional name of a person or process signing the message.</param>
-        /// <param name="DescriptionGenerator">An optional multi-language description or explanation for signing the message.</param>
-        /// <param name="TimestampGenerator">An optional timestamp of the message signature.</param>
-        public static UserRole ToUserRole2(this KeyPair                         KeyPair,
-                                           Func<ISignableMessage, String>?      NameGenerator          = null,
-                                           Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
-                                           Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
+        ///// <summary>
+        ///// Convert the given key pair to a signature information.
+        ///// </summary>
+        ///// <param name="KeyPair">The key pair.</param>
+        ///// <param name="NameGenerator">An optional name of a person or process signing the message.</param>
+        ///// <param name="DescriptionGenerator">An optional multi-language description or explanation for signing the message.</param>
+        ///// <param name="TimestampGenerator">An optional timestamp of the message signature.</param>
+        //public static UserRole ToUserRole2(this KeyPair                         KeyPair,
+        //                                   Func<ISignableMessage, String>?      NameGenerator          = null,
+        //                                   Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
+        //                                   Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
 
-            => new (KeyPair.Private,
-                    KeyPair.Public,
-                    KeyPair.Algorithm,
-                    KeyPair.Serialization,
-                    KeyPair.Encoding,
-                    null,
-                    NameGenerator,
-                    DescriptionGenerator,
-                    TimestampGenerator,
-                    KeyPair.CustomData);
+        //    => new (KeyPair.PrivateKeyBytes,
+        //            KeyPair.PublicKeyBytes,
+        //            KeyPair.Algorithm,
+        //            KeyPair.Serialization,
+        //            KeyPair.Encoding,
+        //            null,
+        //            null,
+        //            NameGenerator,
+        //            DescriptionGenerator,
+        //            TimestampGenerator,
+        //            KeyPair.CustomData);
 
         #endregion
 
         #region (static) ToUserRole(this SignaturePolicyEntry)
 
-        /// <summary>
-        /// Convert the given key pair to a signature information.
-        /// </summary>
-        /// <param name="SignaturePolicyEntry">A signature policy entry.</param>
-        public static UserRole? ToUserRole(this SigningRule SignaturePolicyEntry)
-        {
+        ///// <summary>
+        ///// Convert the given key pair to a signature information.
+        ///// </summary>
+        ///// <param name="SignaturePolicyEntry">A signature policy entry.</param>
+        //public static UserRole? ToUserRole(this SigningRule SignaturePolicyEntry)
+        //{
 
-            if (SignaturePolicyEntry.KeyPair is KeyPair keyPair &&
-                keyPair.Private is not null &&
-                keyPair.Public  is not null)
-            {
+        //    if (SignaturePolicyEntry.KeyPair is KeyPair keyPair &&
+        //        keyPair.PrivateKeyBytes is not null &&
+        //        keyPair.PublicKeyBytes  is not null)
+        //    {
 
-                return new (keyPair.Private,
-                            keyPair.Public,
-                            keyPair.Algorithm,
-                            keyPair.Serialization,
-                            keyPair.Encoding,
-                            null,
-                            SignaturePolicyEntry.UserIdGenerator,
-                            SignaturePolicyEntry.DescriptionGenerator,
-                            SignaturePolicyEntry.TimestampGenerator,
-                            SignaturePolicyEntry.CustomData);
+        //        return new (keyPair.PrivateKeyBytes,
+        //                    keyPair.PublicKeyBytes,
+        //                    keyPair.Algorithm,
+        //                    keyPair.Serialization,
+        //                    keyPair.Encoding,
+        //                    null,
+        //                    null,
+        //                    SignaturePolicyEntry.UserIdGenerator,
+        //                    SignaturePolicyEntry.DescriptionGenerator,
+        //                    SignaturePolicyEntry.TimestampGenerator,
+        //                    SignaturePolicyEntry.CustomData);
 
-            }
+        //    }
 
-            return null;
+        //    return null;
 
-        }
+        //}
 
         #endregion
+
+
+
+        public static Boolean Include(this IEnumerable<UserRole>  UserRoles,
+                                      UserRole_Id                 UserRoleId)
+
+            => UserRoles.Any(userRole => userRole.Id == UserRoleId);
+
+        public static Boolean IsMissing(this IEnumerable<UserRole>  UserRoles,
+                                        UserRole_Id                 UserRoleId)
+
+            => !UserRoles.Any(userRole => userRole.Id == UserRoleId);
 
     }
 
@@ -131,17 +146,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// An user role.
     /// </summary>
-    public class UserRole : AUserRole,
+    public class UserRole : ACustomData,
                             IEquatable<UserRole>
     {
 
         #region Properties
 
         /// <summary>
+        /// The unique identification of the user role.
+        /// </summary>
+        public UserRole_Id                          Id                       { get; }
+
+        /// <summary>
+        /// The description of the user role.
+        /// </summary>
+        public I18NString                           Description              { get; }
+
+
+
+        public IEnumerable<KeyPair>                 KeyPairs                 { get; }
+
+
+        /// <summary>
         /// The optional access rights on device model components.
         /// </summary>
         [Optional]
-        public IEnumerable<ComponentAccessRights>  ComponentAccessRights    { get; }
+        public IEnumerable<ComponentAccessRights>   ComponentAccessRights    { get; }
+
+
+        /// <summary>
+        /// The optional name of a person or process signing the message.
+        /// </summary>
+        [Optional]
+        public Func<ISignableMessage, String>?      SignerNameCreator        { get; }
+
+        /// <summary>
+        /// The optional multi-language description or explanation for signing the message.
+        /// </summary>
+        [Optional]
+        public Func<ISignableMessage, I18NString>?  DescriptionCreator       { get; }
+
+        /// <summary>
+        /// The optional timestamp of the message signature.
+        /// </summary>
+        [Optional]
+        public Func<ISignableMessage, DateTime>?    TimestampCreator         { get; }
 
         #endregion
 
@@ -159,32 +208,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UserRole(KeyPair                              KeyPair,
+        public UserRole(UserRole_Id                          Id,
+                        I18NString?                          Description             = null,
+                        IEnumerable<KeyPair>?                KeyPairs                = null,
+
                         IEnumerable<ComponentAccessRights>?  ComponentAccessRights   = null,
                         CustomData?                          CustomData              = null)
 
-            : base(KeyPair.Public,
-                   KeyPair.Private,
-                   KeyPair.Algorithm,
-                   KeyPair.Serialization,
-                   KeyPair.Encoding,
-                   null, //KeyPair.SignerName,
-                   null, //KeyPair.Description,
-                   null, //KeyPair.Timestamp,
-                   CustomData)
+            : base(CustomData)
 
         {
 
-            this.ComponentAccessRights = ComponentAccessRights?.Distinct() ?? [];
+            this.Id                     = Id;
+            this.Description            = Description ?? I18NString.Empty;
+
+            this.KeyPairs               = KeyPairs?.Distinct() ?? [];
+
+            this.ComponentAccessRights  = ComponentAccessRights?.Distinct() ?? [];
+
+            this.SignerNameCreator      = SignerNameCreator;
+            this.DescriptionCreator     = DescriptionCreator;
+            this.TimestampCreator       = TimestampCreator;
 
             unchecked
             {
 
-                hashCode = (this.SignerName?. GetHashCode() ?? 0) * 7 ^
-                           (this.Description?.GetHashCode() ?? 0) * 5 ^
-                           (this.Timestamp?.  GetHashCode() ?? 0) * 3 ^
-
-                            base.             GetHashCode();
+                hashCode = (this.SignerNameCreator?. GetHashCode() ?? 0) * 7 ^
+                           (this.DescriptionCreator?.GetHashCode() ?? 0) * 5 ^
+                           (this.TimestampCreator?.  GetHashCode() ?? 0) * 3 ^
+                            base.                    GetHashCode();
 
             }
 
@@ -194,39 +246,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new OCPP CSE asymmetric cryptographic signature information.
         /// </summary>
-        /// <param name="Private">The private key.</param>
         /// <param name="Public">The public key.</param>
+        /// <param name="Private">The private key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
-        /// <param name="SignerName">An optional name of a person or process signing the message.</param>
-        /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
-        /// <param name="Timestamp">An optional timestamp of the message signature.</param>
+        /// <param name="SignerNameCreator">An optional name of a person or process signing the message.</param>
+        /// <param name="DescriptionCreator">An optional multi-language description or explanation for signing the message.</param>
+        /// <param name="TimestampCreator">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UserRole(Byte[]                               Public,
+        public UserRole(//Byte[]                               Public,
 
-                        Byte[]?                              Private                 = null,
-                        CryptoAlgorithm?                     Algorithm               = null,
-                        CryptoSerialization?                 Serialization           = null,
-                        CryptoEncoding?                      Encoding                = null,
+                        //Byte[]?                              Private                 = null,
+                        //CryptoAlgorithm?                     Algorithm               = null,
+                        //CryptoSerialization?                 Serialization           = null,
+                        //CryptoEncoding?                      Encoding                = null,
+
+                        UserRole_Id                          Id,
+                        I18NString?                          Description             = null,
+                        IEnumerable<KeyPair>?                KeyPairs                = null,
 
                         IEnumerable<ComponentAccessRights>?  ComponentAccessRights   = null,
 
-                        Func<ISignableMessage, String>?      SignerName              = null,
-                        Func<ISignableMessage, I18NString>?  Description             = null,
-                        Func<ISignableMessage, DateTime>?    Timestamp               = null,
+                        Func<ISignableMessage, String>?      SignerNameCreator       = null,
+                        Func<ISignableMessage, I18NString>?  DescriptionCreator      = null,
+                        Func<ISignableMessage, DateTime>?    TimestampCreator        = null,
 
                         CustomData?                          CustomData              = null)
 
-            : base(Public,
-                   Private,
-                   Algorithm,
-                   Serialization,
-                   Encoding,
-                   SignerName,
-                   Description,
-                   Timestamp,
-                   CustomData)
+            //: base(Public,
+            //       Private,
+            //       Algorithm,
+            //       Serialization,
+            //       Encoding,
+
+            //       Description,
+
+            //       SignerNameCreator,
+            //       DescriptionCreator,
+            //       TimestampCreator,
+
+            //       CustomData)
 
         {
 
@@ -235,9 +295,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = (this.SignerName?. GetHashCode() ?? 0) * 7 ^
-                           (this.Description?.GetHashCode() ?? 0) * 5 ^
-                           (this.Timestamp?.  GetHashCode() ?? 0) * 3 ^
+                hashCode = (this.SignerNameCreator?. GetHashCode() ?? 0) * 7 ^
+                           (this.DescriptionCreator?.GetHashCode() ?? 0) * 5 ^
+                           (this.TimestampCreator?.  GetHashCode() ?? 0) * 3 ^
 
                             base.             GetHashCode();
 
@@ -256,14 +316,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (static) GenerateKeys(Algorithm = secp256r1)
 
-        public static UserRole? GenerateKeys(String?                              Algorithm     = "secp256r1",
-                                             Func<ISignableMessage, String>?      Name          = null,
-                                             Func<ISignableMessage, I18NString>?  Description   = null,
-                                             Func<ISignableMessage, DateTime>?    Timestamp     = null)
+        //public static UserRole? GenerateKeys(String?                              Algorithm     = "secp256r1",
+        //                                     Func<ISignableMessage, String>?      Name          = null,
+        //                                     Func<ISignableMessage, I18NString>?  Description   = null,
+        //                                     Func<ISignableMessage, DateTime>?    Timestamp     = null)
 
-            => KeyPair.GenerateKeys(Algorithm)?.ToUserRole2(Name,
-                                                            Description,
-                                                            Timestamp);
+        //    => KeyPair.GenerateKeys(Algorithm)?.ToUserRole2(Name,
+        //                                                    Description,
+        //                                                    Timestamp);
 
         #endregion
 
@@ -332,81 +392,126 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UserRole = default;
 
-                #region Private           [mandatory]
+                #region Id              [mandatory]
 
-                if (!JSON.ParseMandatoryText("private",
-                                             "private key",
-                                             out String PrivateText,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("id",
+                                         "user identification",
+                                         UserRole_Id.TryParse,
+                                         out UserRole_Id Id,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Public            [mandatory]
+                #region Description     [optional]
 
-                if (!JSON.ParseMandatoryText("public",
-                                             "public key",
-                                             out String PublicText,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-
-                #region Algorithm         [optional]
-
-                if (JSON.ParseOptional("algorithm",
-                                       "crypto algorithm",
-                                       CryptoAlgorithm.TryParse,
-                                       out CryptoAlgorithm? Algorithm,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Serialization     [optional]
-
-                if (JSON.ParseOptional("serialization",
-                                       "crypto serialization",
-                                       CryptoSerialization.TryParse,
-                                       out CryptoSerialization? Serialization,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Encoding          [optional]
-
-                if (JSON.ParseOptional("encoding",
+                if (JSON.ParseOptional("description",
                                        "encoding method",
-                                       CryptoEncoding.TryParse,
-                                       out CryptoEncoding? Encoding,
+                                       I18NString.TryParse,
+                                       out I18NString? Description,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
 
-                var Private = PrivateText.FromBase64();
-                var Public  = PublicText. FromBase64();
+                #endregion
+
+
+                #region KeyPairs        [optional]
+
+                if (JSON.ParseOptionalHashSet("keyPairs",
+                                              "crypto algorithm",
+                                              KeyPair.TryParse,
+                                              out HashSet<KeyPair> KeyPairs,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
 
-                #region Encoding          [optional]
+                //#region Private           [mandatory]
 
-                if (JSON.ParseOptionalHashSet("encoding",
-                                              "encoding method",
+                //if (!JSON.ParseMandatoryText("private",
+                //                             "private key",
+                //                             out String PrivateText,
+                //                             out ErrorResponse))
+                //{
+                //    return false;
+                //}
+
+                //#endregion
+
+                //#region Public            [mandatory]
+
+                //if (!JSON.ParseMandatoryText("public",
+                //                             "public key",
+                //                             out String PublicText,
+                //                             out ErrorResponse))
+                //{
+                //    return false;
+                //}
+
+                //#endregion
+
+
+                //#region Algorithm         [optional]
+
+                //if (JSON.ParseOptional("algorithm",
+                //                       "crypto algorithm",
+                //                       CryptoAlgorithm.TryParse,
+                //                       out CryptoAlgorithm? Algorithm,
+                //                       out ErrorResponse))
+                //{
+                //    if (ErrorResponse is not null)
+                //        return false;
+                //}
+
+                //#endregion
+
+                //#region Serialization     [optional]
+
+                //if (JSON.ParseOptional("serialization",
+                //                       "crypto serialization",
+                //                       CryptoSerialization.TryParse,
+                //                       out CryptoSerialization? Serialization,
+                //                       out ErrorResponse))
+                //{
+                //    if (ErrorResponse is not null)
+                //        return false;
+                //}
+
+                //#endregion
+
+                //#region Encoding          [optional]
+
+                //if (JSON.ParseOptional("encoding",
+                //                       "encoding method",
+                //                       CryptoEncoding.TryParse,
+                //                       out CryptoEncoding? Encoding,
+                //                       out ErrorResponse))
+                //{
+                //    if (ErrorResponse is not null)
+                //        return false;
+                //}
+
+                //var Private = PrivateText.FromBase64();
+                //var Public  = PublicText. FromBase64();
+
+                //#endregion
+
+
+
+
+                #region ComponentAccessRights    [optional]
+
+                if (JSON.ParseOptionalHashSet("componentAccessRights",
+                                              "component access rights",
                                               OCPPv2_1.ComponentAccessRights.TryParse,
                                               out HashSet<ComponentAccessRights> ComponentAccessRights,
                                               out ErrorResponse))
@@ -418,18 +523,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                #region SignerName        [optional]
+                #region SignerNameCreator        [optional]
 
-                var SignerName     = JSON.GetString("signerName");
+                var SignerNameCreator = JSON.GetString("signerNameCreator");
 
                 #endregion
 
-                #region Description       [optional]
+                #region DescriptionCreator       [optional]
 
-                if (JSON.ParseOptional("description",
-                                       "description",
+                if (JSON.ParseOptional("descriptionCreator",
+                                       "description creator",
                                        I18NString.TryParse,
-                                       out I18NString? Description,
+                                       out I18NString? DescriptionCreator,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -438,11 +543,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Timestamp         [optional]
+                #region TimestampCreator         [optional]
 
-                if (JSON.ParseOptional("timestamp",
-                                       "timestamp",
-                                       out DateTime? Timestamp,
+                if (JSON.ParseOptional("timestampCreator",
+                                       "timestamp creator",
+                                       out DateTime? TimestampCreator,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -468,18 +573,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 UserRole = new UserRole(
-                               Private,
-                               Public,
-                               Algorithm,
-                               Serialization,
-                               Encoding,
+                               Id,
+                               //Private,
+                               //Public,
+                               //Algorithm,
+                               //Serialization,
+                               //Encoding,
+
+                               Description,
+                               KeyPairs,
 
                                ComponentAccessRights,
 
-                               SignerName  is not null ? (signableMessage) => SignerName      : null,
-                               Description is not null ? (signableMessage) => Description     : null,
-                               Timestamp.HasValue      ? (signableMessage) => Timestamp.Value : null,
+                               SignerNameCreator  is not null ? (signableMessage) => SignerNameCreator      : null,
+                               DescriptionCreator is not null ? (signableMessage) => DescriptionCreator     : null,
+                               TimestampCreator.HasValue      ? (signableMessage) => TimestampCreator.Value : null,
+
                                CustomData
+
                            );
 
                 if (CustomUserRoleParser is not null)
@@ -515,19 +626,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("private",         Private),
-                                 new JProperty("public",          Public),
+                                 //new JProperty("private",         PrivateKeyBytes),
+                                 //new JProperty("public",          PublicKeyBytes),
 
-                           SignerName  is not null && SignableMessage is not null
-                               ? new JProperty("signerName",      SignerName (SignableMessage))
+                           SignerNameCreator  is not null && SignableMessage is not null
+                               ? new JProperty("signerName",      SignerNameCreator (SignableMessage))
                                : null,
 
-                           Description is not null && SignableMessage is not null
-                               ? new JProperty("description",     Description(SignableMessage))
+                           DescriptionCreator is not null && SignableMessage is not null
+                               ? new JProperty("description",     DescriptionCreator(SignableMessage))
                                : null,
 
-                           Timestamp   is not null && SignableMessage is not null
-                               ? new JProperty("timestamp",       Timestamp  (SignableMessage).ToIso8601())
+                           TimestampCreator   is not null && SignableMessage is not null
+                               ? new JProperty("timestamp",       TimestampCreator  (SignableMessage).ToIso8601())
                                : null,
 
                            CustomData  is not null
@@ -553,22 +664,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
 
-                   (Byte[]) Private.Clone(),
-                   (Byte[]) Public. Clone(),
+                   Id,
+                   Description.Clone(),
+                   KeyPairs,
 
-                   Algorithm?.    Clone,
-                   Serialization?.Clone,
-                   Encoding?.     Clone,
+
+                   //(Byte[]) PrivateKeyBytes.Clone(),
+                   //(Byte[]) PublicKeyBytes. Clone(),
+
+                   //Algorithm?.      Clone,
+                   //Serialization?.  Clone,
+                   //Encoding?.       Clone,
 
                    ComponentAccessRights.Select(componentAccessRights => componentAccessRights.Clone()),
 
-                   SignerName,
-                   Description,
-                   Timestamp,
+                   SignerNameCreator,
+                   DescriptionCreator,
+                   TimestampCreator,
 
                    CustomData
 
-               );
+                );
 
         #endregion
 
@@ -643,14 +759,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => UserRole is not null &&
 
-             ((SignerName        is     null && UserRole.SignerName        is     null) ||
-              (SignerName        is not null && UserRole.SignerName        is not null && SignerName.       Equals(UserRole.SignerName)))        &&
+             ((SignerNameCreator        is     null && UserRole.SignerNameCreator        is     null) ||
+              (SignerNameCreator        is not null && UserRole.SignerNameCreator        is not null && SignerNameCreator.       Equals(UserRole.SignerNameCreator)))        &&
 
-             ((Description is     null && UserRole.Description is     null) ||
-              (Description is not null && UserRole.Description is not null && Description.Equals(UserRole.Description))) &&
+             ((DescriptionCreator is     null && UserRole.DescriptionCreator is     null) ||
+              (DescriptionCreator is not null && UserRole.DescriptionCreator is not null && DescriptionCreator.Equals(UserRole.DescriptionCreator))) &&
 
-             ((Timestamp   is     null && UserRole.Timestamp   is     null) ||
-              (Timestamp   is not null && UserRole.Timestamp   is not null && Timestamp.  Equals(UserRole.Timestamp)))   &&
+             ((TimestampCreator   is     null && UserRole.TimestampCreator   is     null) ||
+              (TimestampCreator   is not null && UserRole.TimestampCreator   is not null && TimestampCreator.  Equals(UserRole.TimestampCreator)))   &&
 
                base.Equals(UserRole);
 
@@ -682,16 +798,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     base.ToString(),
 
-                    SignerName  is not null && SignerName (SignableMessage).IsNotNullOrEmpty()
-                        ? $", Name: '{SignerName}'"
+                    SignerNameCreator  is not null && SignerNameCreator (SignableMessage).IsNotNullOrEmpty()
+                        ? $", Name: '{SignerNameCreator}'"
                         : null,
 
-                    Description is not null && Description(SignableMessage).IsNotNullOrEmpty()
-                        ? $", Description: '{Description}'"
+                    DescriptionCreator is not null && DescriptionCreator(SignableMessage).IsNotNullOrEmpty()
+                        ? $", Description: '{DescriptionCreator}'"
                         : null,
 
-                    Timestamp   is not null
-                        ? $", Timestamp: '{Timestamp(SignableMessage)}'"
+                    TimestampCreator   is not null
+                        ? $", Timestamp: '{TimestampCreator(SignableMessage)}'"
                         : null
 
                );
@@ -712,16 +828,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        base.ToString(),
 
-                       SignerName  is not null && SignerName (signableMessage).IsNotNullOrEmpty()
-                           ? $", Name: '{SignerName}'"
+                       SignerNameCreator  is not null && SignerNameCreator (signableMessage).IsNotNullOrEmpty()
+                           ? $", Name: '{SignerNameCreator}'"
                            : null,
 
-                       Description is not null && Description(signableMessage).IsNotNullOrEmpty()
-                           ? $", Description: '{Description}'"
+                       DescriptionCreator is not null && DescriptionCreator(signableMessage).IsNotNullOrEmpty()
+                           ? $", Description: '{DescriptionCreator}'"
                            : null,
 
-                       Timestamp   is not null
-                           ? $", Timestamp: '{Timestamp(signableMessage)}'"
+                       TimestampCreator   is not null
+                           ? $", Timestamp: '{TimestampCreator(signableMessage)}'"
                            : null
 
                    );

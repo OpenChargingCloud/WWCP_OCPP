@@ -724,13 +724,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         }
 
 
-                        if (signInfo.Private is null || signInfo.Private.IsNullOrEmpty())
+                        if (signInfo.PrivateKeyBytes is null || signInfo.PrivateKeyBytes.IsNullOrEmpty())
                         {
                             ErrorResponse = "The given key pair must contain a serialized private key!";
                             return false;
                         }
 
-                        if (signInfo.Public  is null || signInfo.Public. IsNullOrEmpty())
+                        if (signInfo.PublicKeyBytes  is null || signInfo.PublicKeyBytes. IsNullOrEmpty())
                         {
                             ErrorResponse = "The given key pair must contain a serialized public key!";
                             return false;
@@ -765,16 +765,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         var signature    = signer.GenerateSignature();
 
                         SignableMessage.AddSignature(
-                                            new Signature(
-                                                KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes(),
-                                                Value:           signature,
-                                                Algorithm:       signInfo.Algorithm,
-                                                SigningMethod:   null,
-                                                Encoding:  signInfo.Encoding,
-                                                Name:            signInfo.SignerName?. Invoke(SignableMessage),
-                                                Description:     signInfo.Description?.Invoke(SignableMessage),
-                                                Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
-                                            ));
+                            new Signature(
+                                //KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKey.GetBytes(),
+                                KeyId:           signInfo.PublicKey.Q.GetEncoded(),
+                                Value:           signature,
+                                Algorithm:       signInfo.Algorithm,
+                                SigningMethod:   null,
+                                Encoding:        signInfo.Encoding,
+                                Name:            signInfo.SignerName?. Invoke(SignableMessage),
+                                Description:     signInfo.Description?.Invoke(SignableMessage),
+                                Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
+                            )
+                        );
 
                     }
 
@@ -946,13 +948,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         }
 
 
-                        if (signInfo.Private is null || signInfo.Private.IsNullOrEmpty())
+                        if (signInfo.PrivateKeyBytes is null || signInfo.PrivateKeyBytes.IsNullOrEmpty())
                         {
                             ErrorResponse = "The given key pair must contain a serialized private key!";
                             return false;
                         }
 
-                        if (signInfo.Public  is null || signInfo.Public. IsNullOrEmpty())
+                        if (signInfo.PublicKeyBytes  is null || signInfo.PublicKeyBytes. IsNullOrEmpty())
                         {
                             ErrorResponse = "The given key pair must contain a serialized public key!";
                             return false;

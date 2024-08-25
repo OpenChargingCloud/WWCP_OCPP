@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Text;
-using System.Diagnostics;
 using System.Security.Cryptography;
 
 #endregion
@@ -27,12 +26,17 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 {
 
     /// <summary>
-    /// The TOTP algorithm typically has a standard length of 6-8 digits and uses a defined set of characters
-    /// (e.g., digits only for numeric TOTP, see RFC 6238).
+    /// Generate Time-based One-Time Passwords (TOTPs) for the QR code payment process, as
+    /// outlined in the European Alternative Fuels Infrastructure Directive (AFIR). This
+    /// ensures that the payment IT backend can verify the authenticity of the payment request.
     /// 
-    /// Dynamic truncation method like as described in RFC 4226?
+    /// Typically, TOTP algorithms generate passwords using only the digits 0 through 9, with
+    /// a standard length of 6 to 8 digits (as specified in RFC 6238). However, since this
+    /// TOTP is used exclusively for machine-to-machine communication and does not require
+    /// human input, we extend the specification to include a larger character set and a
+    /// longer default length to enhance security.
     /// 
-    /// Standard TOTP uses digits only: "0123456789"
+    /// ((ToDo: Dynamic truncation method like as described in RFC 4226?))
     /// </summary>
     public static class QRCodeTOTPGenerator
     {
@@ -69,70 +73,7 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 
         #endregion
 
-
-        #region GenerateTOTP (Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
-
-        /// <summary>
-        /// Calculate the current TOTP and the remaining time until the TOTP will change.
-        /// </summary>
-        /// <param name="Timestamp"></param>
-        /// <param name="SharedSecret"></param>
-        /// <param name="ValidityTime"></param>
-        /// <param name="TOTPLength"></param>
-        /// <param name="Alphabet"></param>
-        public static (String          Current,
-                       TimeSpan        RemainingTime,
-                       DateTimeOffset  EndTime)
-
-            GenerateTOTP (DateTime   Timestamp,
-                          String     SharedSecret,
-                          TimeSpan?  ValidityTime   = null,
-                          UInt32?    TOTPLength     = 12,
-                          String?    Alphabet       = null)
-
-                => GenerateTOTP(
-                       SharedSecret,
-                       ValidityTime,
-                       TOTPLength,
-                       Alphabet,
-                       new DateTimeOffset(Timestamp)
-                   );
-
-        #endregion
-
-        #region GenerateTOTPs(Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
-
-        /// <summary>
-        /// Calculate TOTPs and the remaining time until the TOTPs will change.
-        /// </summary>
-        /// <param name="Timestamp"></param>
-        /// <param name="SharedSecret"></param>
-        /// <param name="ValidityTime"></param>
-        /// <param name="TOTPLength"></param>
-        /// <param name="Alphabet"></param>
-        public static (String          Previous,
-                       String          Current,
-                       String          Next,
-                       TimeSpan        RemainingTime,
-                       DateTimeOffset  EndTime)
-
-            GenerateTOTPs(DateTime   Timestamp,
-                          String     SharedSecret,
-                          TimeSpan?  ValidityTime   = null,
-                          UInt32?    TOTPLength     = 12,
-                          String?    Alphabet       = null)
-
-                => GenerateTOTPs(
-                       SharedSecret,
-                       ValidityTime,
-                       TOTPLength,
-                       Alphabet,
-                       new DateTimeOffset(Timestamp)
-                   );
-
-        #endregion
-
-        #region GenerateTOTP (SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+        #region GenerateTOTP  (           SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
 
         /// <summary>
         /// Calculate the current TOTP and the remaining time until the TOTP will change.
@@ -215,7 +156,7 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 
         #endregion
 
-        #region GenerateTOTPs(SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+        #region GenerateTOTPs (           SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
 
         /// <summary>
         /// Calculate TOTPs and the remaining time until the TOTPs will change.
@@ -304,17 +245,127 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 
         #endregion
 
+        #region GenerateTOTP  (Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
 
-        #region ProcessURLTemplate(URLTemplate, TOTP)
+        /// <summary>
+        /// Calculate the current TOTP and the remaining time until the TOTP will change.
+        /// </summary>
+        /// <param name="Timestamp"></param>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        public static (String          Current,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
 
-        private static String ProcessURLTemplate(String URLTemplate, String TOTP)
-        {
-            return URLTemplate.Replace("{TOTP}", TOTP);
-        }
+            GenerateTOTP (DateTime   Timestamp,
+                          String     SharedSecret,
+                          TimeSpan?  ValidityTime   = null,
+                          UInt32?    TOTPLength     = 12,
+                          String?    Alphabet       = null)
+
+                => GenerateTOTP(
+                       SharedSecret,
+                       ValidityTime,
+                       TOTPLength,
+                       Alphabet,
+                       new DateTimeOffset(Timestamp)
+                   );
 
         #endregion
 
-        #region GenerateURL (SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+        #region GenerateTOTPs (Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
+
+        /// <summary>
+        /// Calculate TOTPs and the remaining time until the TOTPs will change.
+        /// </summary>
+        /// <param name="Timestamp"></param>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        public static (String          Previous,
+                       String          Current,
+                       String          Next,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateTOTPs(DateTime   Timestamp,
+                          String     SharedSecret,
+                          TimeSpan?  ValidityTime   = null,
+                          UInt32?    TOTPLength     = 12,
+                          String?    Alphabet       = null)
+
+                => GenerateTOTPs(
+                       SharedSecret,
+                       ValidityTime,
+                       TOTPLength,
+                       Alphabet,
+                       new DateTimeOffset(Timestamp)
+                   );
+
+        #endregion
+
+
+
+        #region (private) ProcessURLTemplate (URLTemplate, TOTP, Version = null, EVSEId = null, ...)
+
+        /// <summary>
+        /// Processes the URL template and replaces all template parameters with the given values.
+        /// </summary>
+        /// <param name="URLTemplate">The URL template.</param>
+        /// <param name="TOTP">The time-based one-time password.</param>
+        /// <param name="Version">The version of the URL template.</param>
+        /// <param name="EVSEId">The OCPP EVSE identification (1, 2, ...).</param>
+        /// <param name="ConnectorId">The OCPP Connector identification (1, 2, ...).</param>
+        /// <param name="EVRoamingEVSEId">The EV Roaming EVSE Id (e.g. DE*GEF*E12345678*1)</param>
+        /// <param name="MaxEnergy">The maximum energy to be charged.</param>
+        /// <param name="MaxTime">The maximum time to be charged.</param>
+        /// <param name="MaxSoC">The maximum state of charge to be charged.</param>
+        /// <param name="TariffId">The tariff identification.</param>
+        /// <param name="MaxCost">The maximum cost to be charged.</param>
+        /// <param name="ChargingProfile">The charging profile.</param>
+        /// <param name="EndTime">The end time of the charging process.</param>
+        /// <param name="ChargingSpeed">The charging speed.</param>
+        /// <param name="UILanguage">The user interface language.</param>
+        /// <param name="Currency">The currency.</param>
+        private static String ProcessURLTemplate(String   URLTemplate,
+                                                 String   TOTP,
+                                                 String?  Version           = null,
+                                                 String?  EVSEId            = null,
+                                                 String?  ConnectorId       = null,
+                                                 String?  EVRoamingEVSEId   = null,
+                                                 String?  MaxEnergy         = null,
+                                                 String?  MaxTime           = null,
+                                                 String?  MaxSoC            = null,
+                                                 String?  TariffId          = null,
+                                                 String?  MaxCost           = null,
+                                                 String?  ChargingProfile   = null,
+                                                 String?  EndTime           = null,
+                                                 String?  ChargingSpeed     = null,
+                                                 String?  UILanguage        = null,
+                                                 String?  Currency          = null)
+
+            => URLTemplate.Replace("{TOTP}",             TOTP).
+                           Replace("{version}",          Version         ?? "").
+                           Replace("{evseId}",           EVSEId          ?? "").
+                           Replace("{ConnectorId}",      ConnectorId     ?? "").
+                           Replace("{EVRoamingEVSEId}",  EVRoamingEVSEId ?? "").
+                           Replace("{maxEnergy}",        MaxEnergy       ?? "").
+                           Replace("{maxTime}",          MaxTime         ?? "").
+                           Replace("{maxSoC}",           MaxSoC          ?? "").
+                           Replace("{tariffId}",         TariffId        ?? "").
+                           Replace("{maxCost}",          MaxCost         ?? "").
+                           Replace("{chargingProfile}",  ChargingProfile ?? "").
+                           Replace("{endTime}",          EndTime         ?? "").
+                           Replace("{chargingSpeed}",    ChargingSpeed   ?? "").
+                           Replace("{uiLanguage}",       UILanguage      ?? "").
+                           Replace("{currency}",         Currency        ?? "");
+
+        #endregion
+
+        #region GenerateURL  (           SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
 
         /// <summary>
         /// Calculate the current TOTP URL and the remaining time until the URL will change.
@@ -357,7 +408,7 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
 
         #endregion
 
-        #region GenerateURLs(SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
+        #region GenerateURLs (           SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null, Timestamp = null)
 
         /// <summary>
         /// Calculate the TOTP URLs and the remaining time until the URLs will change.
@@ -392,6 +443,98 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
                                 TOTPLength,
                                 Alphabet,
                                 Timestamp
+                            );
+
+            return (
+                       ProcessURLTemplate(URLTemplate, previousTOTP),
+                       ProcessURLTemplate(URLTemplate, currentTOTP),
+                       ProcessURLTemplate(URLTemplate, nextTOTP),
+                       remainingTime,
+                       endTime
+                   );
+
+        }
+
+        #endregion
+
+        #region GenerateURL  (Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
+
+        /// <summary>
+        /// Calculate the current TOTP URL and the remaining time until the URL will change.
+        /// </summary>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        /// <param name="Timestamp"></param>
+        public static (String          Current,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateURL(DateTime   Timestamp,
+                        String     URLTemplate,
+                        String     SharedSecret,
+                        TimeSpan?  ValidityTime   = null,
+                        UInt32?    TOTPLength     = 12,
+                        String?    Alphabet       = null)
+
+        {
+
+            var (currentTOTP,
+                 remainingTime,
+                 endTime) = GenerateTOTP(
+                                SharedSecret,
+                                ValidityTime,
+                                TOTPLength,
+                                Alphabet,
+                                new DateTimeOffset(Timestamp)
+                            );
+
+            return (
+                       ProcessURLTemplate(URLTemplate, currentTOTP),
+                       remainingTime,
+                       endTime
+                   );
+
+        }
+
+        #endregion
+
+        #region GenerateURLs (Timestamp, SharedSecret, ValidityTime = null, TOTPLength = 12, Alphabet = null)
+
+        /// <summary>
+        /// Calculate the TOTP URLs and the remaining time until the URLs will change.
+        /// </summary>
+        /// <param name="SharedSecret"></param>
+        /// <param name="ValidityTime"></param>
+        /// <param name="TOTPLength"></param>
+        /// <param name="Alphabet"></param>
+        /// <param name="Timestamp"></param>
+        public static (String          Previous,
+                       String          Current,
+                       String          Next,
+                       TimeSpan        RemainingTime,
+                       DateTimeOffset  EndTime)
+
+            GenerateURLs(DateTime   Timestamp,
+                         String     URLTemplate,
+                         String     SharedSecret,
+                         TimeSpan?  ValidityTime   = null,
+                         UInt32?    TOTPLength     = 12,
+                         String?    Alphabet       = null)
+
+        {
+
+            var (previousTOTP,
+                 currentTOTP,
+                 nextTOTP,
+                 remainingTime,
+                 endTime) = GenerateTOTPs(
+                                SharedSecret,
+                                ValidityTime,
+                                TOTPLength,
+                                Alphabet,
+                                new DateTimeOffset(Timestamp)
                             );
 
             return (

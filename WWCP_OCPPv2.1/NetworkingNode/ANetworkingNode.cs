@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -929,6 +930,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return 1;
         }
 
+
+
+        #region (private) GetValidUserRolesFor(Signatures)
+
+        /// <summary>
+        /// Return the valid user roles for the given request.
+        /// </summary>
+        /// <param name="Request"></param>
+        private IEnumerable<UserRole> GetValidUserRolesFor(IEnumerable<Signature> Signatures)
+        {
+
+            var userRoles = new List<UserRole>();
+
+            foreach (var signature in Signatures)
+            {
+                if (signature.Status == VerificationStatus.ValidSignature)
+                {
+                    foreach (var userRole in UserRoles)
+                    {
+                        if (userRole.KeyPairs.Any(keyPair => signature.KeyId.SequenceEqual(keyPair.PublicKeyBytes)))
+                        {
+                            userRoles.Add(userRole);
+                        }
+                    }
+                }
+            }
+
+            return userRoles;
+
+        }
+
+        #endregion
+
+        #region GetValidUserRolesFor(SignedRequest)
+
+        /// <summary>
+        /// Return the valid user roles for the given request.
+        /// </summary>
+        /// <param name="SignedRequest">A signed request.</param>
+        public IEnumerable<UserRole> GetValidUserRolesFor(IRequest SignedRequest)
+            => GetValidUserRolesFor(SignedRequest.Signatures);
+
+        #endregion
+
+        #region GetValidUserRolesFor(SignedResponse)
+
+        /// <summary>
+        /// Return the valid user roles for the given response.
+        /// </summary>
+        /// <param name="SignedResponse">A signed response.</param>
+        public IEnumerable<UserRole> GetValidUserRolesFor(IResponse SignedResponse)
+            => GetValidUserRolesFor(SignedResponse.Signatures);
+
+        #endregion
+
+        #region GetValidUserRolesFor(SignedMessage)
+
+        /// <summary>
+        /// Return the valid user roles for the given message.
+        /// </summary>
+        /// <param name="SignedMessage">A signed message.</param>
+        public IEnumerable<UserRole> GetValidUserRolesFor(IMessage SignedMessage)
+            => GetValidUserRolesFor(SignedMessage.Signatures);
+
+        #endregion
 
 
         #region (Timer) DoSendHeartbeatSync(State)

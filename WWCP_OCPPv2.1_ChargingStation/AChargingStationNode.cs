@@ -35,6 +35,25 @@ using System.Runtime.CompilerServices;
 
 #endregion
 
+namespace cloud.charging.open.protocols.OCPPv2_1
+{
+
+    public static class ChargingStationSettings
+    {
+
+        /// <summary>
+        /// Well-known User Roles for Charging Stations.
+        /// </summary>
+        public static class UserRoles
+        {
+            public static readonly UserRole_Id Admin  = UserRole_Id.Parse("admin");
+            public static readonly UserRole_Id User   = UserRole_Id.Parse("user");
+        }
+
+    }
+
+}
+
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
@@ -719,25 +738,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ));
 
             // A CSMS can request a report of the CustomizationCtrlr component to get a list of all customizations that are supported by the charging station.
-
-            #endregion
-
-            #region Register User Roles
-
-            var ur1 = KeyPair.GenerateKeys()!;
-
-            UserRoles.Add(new UserRole(
-
-                              KeyPair:                 ur1,
-                              ComponentAccessRights:   null,
-
-                              //SignerName:              null,
-                              //Description:             null,
-                              //Timestamp:               null,
-
-                              CustomData:              null
-
-                          ));
 
             #endregion
 

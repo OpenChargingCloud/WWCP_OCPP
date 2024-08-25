@@ -174,13 +174,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Initial checks
 
-                if (KeyPair.Private is null || KeyPair.Private.IsNullOrEmpty())
+                if (KeyPair.PrivateKeyBytes is null || KeyPair.PrivateKeyBytes.IsNullOrEmpty())
                 {
                     ErrorResponse = "The given key pair must contain a serialized private key!";
                     return false;
                 }
 
-                if (KeyPair.Public  is null || KeyPair.Public. IsNullOrEmpty())
+                if (KeyPair.PublicKeyBytes  is null || KeyPair.PublicKeyBytes. IsNullOrEmpty())
                 {
                     ErrorResponse = "The given key pair must contain a serialized public key!";
                     return false;
@@ -283,13 +283,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Initial checks
 
-                if (KeyPair.Private is null || KeyPair.Private.IsNullOrEmpty())
+                if (KeyPair.PrivateKeyBytes is null || KeyPair.PrivateKeyBytes.IsNullOrEmpty())
                 {
                     ErrorResponse = "The given key pair must contain a serialized private key!";
                     return false;
                 }
 
-                if (KeyPair.Public  is null || KeyPair.Public. IsNullOrEmpty())
+                if (KeyPair.PublicKeyBytes  is null || KeyPair.PublicKeyBytes. IsNullOrEmpty())
                 {
                     ErrorResponse = "The given key pair must contain a serialized public key!";
                     return false;

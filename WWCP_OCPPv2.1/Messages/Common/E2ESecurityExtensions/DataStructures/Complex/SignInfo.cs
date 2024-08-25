@@ -48,8 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            I18NString?   Description   = null,
                                            DateTime?     Timestamp     = null)
 
-            => new (KeyPair.Private,
-                    KeyPair.Public,
+            => new (KeyPair.PrivateKeyBytes,
+                    KeyPair.PublicKeyBytes,
                     KeyPair.Algorithm,
                     KeyPair.Serialization,
                     KeyPair.Encoding,
@@ -74,8 +74,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
                                            Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
 
-            => new (KeyPair.Private,
-                    KeyPair.Public,
+            => new (KeyPair.PrivateKeyBytes,
+                    KeyPair.PublicKeyBytes,
                     KeyPair.Algorithm,
                     KeyPair.Serialization,
                     KeyPair.Encoding,
@@ -96,12 +96,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (SignaturePolicyEntry.KeyPair is KeyPair keyPair &&
-                keyPair.Private is not null &&
-                keyPair.Public  is not null)
+                keyPair.PrivateKeyBytes is not null &&
+                keyPair.PublicKeyBytes  is not null)
             {
 
-                return new (keyPair.Private,
-                            keyPair.Public,
+                return new (keyPair.PrivateKeyBytes,
+                            keyPair.PublicKeyBytes,
                             keyPair.Algorithm,
                             keyPair.Serialization,
                             keyPair.Encoding,
@@ -448,8 +448,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("private",         Private),
-                                 new JProperty("public",          Public),
+                                 new JProperty("private",         PrivateKeyBytes),
+                                 new JProperty("public",          PublicKeyBytes),
 
                            Algorithm.    HasValue && Algorithm.    Value != CryptoAlgorithm.    secp256r1
                                ? new JProperty("algorithm",       Algorithm)

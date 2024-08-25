@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An access right for a device model component.
     /// </summary>
     public class ComponentAccessRights : ACustomData,
-                                        IEquatable<ComponentAccessRights>
+                                         IEquatable<ComponentAccessRights>
     {
 
         #region Properties
