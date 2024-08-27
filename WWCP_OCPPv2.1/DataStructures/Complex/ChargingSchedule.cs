@@ -22,7 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 
 #endregion
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {

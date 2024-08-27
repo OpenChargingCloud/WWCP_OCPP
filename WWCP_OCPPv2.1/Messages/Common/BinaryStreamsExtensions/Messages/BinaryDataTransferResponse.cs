@@ -23,7 +23,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -35,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     public class BinaryDataTransferResponse : AResponse<BinaryDataTransferRequest,
                                                         BinaryDataTransferResponse>,
-                                              IResponse
+                                              IResponse<Result>
     {
 
         #region Data
@@ -158,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomBinaryDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static BinaryDataTransferResponse Parse(BinaryDataTransferRequest                                Request,
                                                        Byte[]                                                   Binary,
-                                                       SourceRouting                                        Destination,
+                                                       SourceRouting                                            Destination,
                                                        NetworkPath                                              NetworkPath,
                                                        DateTime?                                                ResponseTimestamp                        = null,
                                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null,
@@ -472,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    BinaryDataTransferStatus.Rejected,
                    null,
                    null,
-                   Result.FromErrorResponse(
+                  OCPPv2_1.Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -499,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (Request,
                     BinaryDataTransferStatus.Rejected,
-                    Result:  Result.FormationViolation(
+                    Result:  OCPPv2_1.Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -514,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (Request,
                     BinaryDataTransferStatus.Rejected,
-                    Result:  Result.SignatureError(
+                    Result:  OCPPv2_1.Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -529,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (Request,
                     BinaryDataTransferStatus.Rejected,
-                    Result:  Result.Server(Description));
+                    Result:  OCPPv2_1.Result.Server(Description));
 
 
         /// <summary>
@@ -542,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => new (Request,
                     BinaryDataTransferStatus.Rejected,
-                    Result:  Result.FromException(Exception));
+                    Result:  OCPPv2_1.Result.FromException(Exception));
 
         #endregion
 

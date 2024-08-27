@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 

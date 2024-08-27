@@ -31,6 +31,8 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -237,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             CSMS.AddOrUpdateHTTPBasicAuth(localController.Id, "1234abcd");
 
-            var connectionSetupResponse1 = await localController.ConnectWebSocketClient(
+            var connectionSetupResponse1 = await localController.ConnectOCPPWebSocketClient(
                                                      NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                                      RemoteURL:                URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{localController.Id}"),
                                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(localController.Id.ToString(), "1234abcd"),
@@ -340,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
             lcOCPPWebSocketServer.AddOrUpdateHTTPBasicAuth(chargingStation.Id, "1234abcd");
 
-            var connectionSetupResponse2  = await chargingStation.ConnectWebSocketClient(
+            var connectionSetupResponse2  = await chargingStation.ConnectOCPPWebSocketClient(
                                                       NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                                       RemoteURL:                URL.Parse("http://127.0.0.1:" + lcOCPPWebSocketServer.IPPort.ToString() + "/" + chargingStation.Id),
                                                       HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation.Id.ToString(), "1234abcd"),

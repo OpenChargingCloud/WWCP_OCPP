@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -171,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
     /// <summary>
     /// An abstract OCPP Local Controller node.
     /// </summary>
-    public abstract class ALocalControllerNode : ANetworkingNode,
+    public abstract class ALocalControllerNode : AOCPPNetworkingNode,
                                                  LC.ILocalControllerNode
     {
 

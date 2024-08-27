@@ -23,6 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -33,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     public class DeleteFileResponse : AResponse<DeleteFileRequest,
                                                 DeleteFileResponse>,
-                                      IResponse
+                                      IResponse<Result>
 
     {
 
@@ -287,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {
@@ -409,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    Request.FileName,
                    DeleteFileStatus.Rejected,
                    null,
-                   Result.FromErrorResponse(
+                  OCPPv2_1.Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -439,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     DeleteFileStatus.FormationViolation,
-                    Result: Result.FormationViolation(
+                    Result:OCPPv2_1.Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -455,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     DeleteFileStatus.InvalidSignature,
-                    Result:  Result.SignatureError(
+                    Result:  OCPPv2_1.Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -471,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     DeleteFileStatus.Rejected,
-                    Result:  Result.Server(Description));
+                    Result:  OCPPv2_1.Result.Server(Description));
 
 
         /// <summary>
@@ -485,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     DeleteFileStatus.Rejected,
-                    Result:  Result.FromException(Exception));
+                    Result:  OCPPv2_1.Result.FromException(Exception));
 
         #endregion
 

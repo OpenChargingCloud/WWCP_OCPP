@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,6 +26,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.WebSockets;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -41,23 +45,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>  requests                        = [];
-        private readonly        HashSet<SignaturePolicy>                            signaturePolicies               = [];
-        private                 Int64                                               internalRequestId               = 800000;
+        private readonly        ConcurrentDictionary<String, List<ComponentConfig>>  componentConfigs                = [];
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>   requests                        = [];
+        private readonly        HashSet<SignaturePolicy>                             signaturePolicies               = [];
+        private                 Int64                                                internalRequestId               = 800000;
 
         /// <summary>
         /// The default time span between heartbeat requests.
         /// </summary>
-        public static readonly  TimeSpan                                            DefaultSendHeartbeatsEvery      = TimeSpan.FromMinutes(5);
+        public static readonly  TimeSpan                                             DefaultSendHeartbeatsEvery      = TimeSpan.FromMinutes(5);
 
         /// <summary>
         /// The default request timeout default.
         /// </summary>
-        public static readonly  TimeSpan                                            DefaultRequestTimeoutDefault    = TimeSpan.FromSeconds(30);
-
-        public const            String                                              X_OCPP_NetworkingMode           = "X-OCPP-NetworkingMode";
-        public const            String                                              NetworkingNodeId_WebSocketKey   = "NetworkingNodeId";
-        public const            String                                              NetworkingMode_WebSocketKey     = "NetworkingMode";
+        public static readonly  TimeSpan                                             DefaultRequestTimeoutDefault    = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The unique identification of the networking node hosting this OCPP adapter.
         /// </summary>
-        public NetworkingNode_Id            Id                       { get; }
+        public INetworkingNode              NetworkingNode           { get; }
 
         /// <summary>
         /// Incoming OCPP messages.
@@ -82,11 +83,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Forwarded OCPP messages.
         /// </summary>
         public OCPPWebSocketAdapterFORWARD  FORWARD                  { get; }
-
-        /// <summary>
-        /// OCPP Routing of messages.
-        /// </summary>
-        public Routing                      Routing                  { get; }
 
         /// <summary>
         /// Disable the sending of heartbeats.
@@ -851,13 +847,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.Id                     = NetworkingNode.Id;
+            this.NetworkingNode         = NetworkingNode;
             this.DisableSendHeartbeats  = DisableSendHeartbeats;
             this.SendHeartbeatsEvery    = SendHeartbeatsEvery   ?? DefaultSendHeartbeatsEvery;
 
             this.DefaultRequestTimeout  = DefaultRequestTimeout ?? DefaultRequestTimeoutDefault;
-
-            this.Routing                = new Routing();
 
             this.IN                     = new OCPPWebSocketAdapterIN(
                                               NetworkingNode
@@ -880,6 +874,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        public Boolean TryGetComponentConfig(String Name, [NotNullWhen(true)] out List<ComponentConfig>? Components)
+        {
+
+            if (componentConfigs.TryGetValue(Name, out Components))
+                return true;
+
+            return false;
+
+        }
+
+        public List<ComponentConfig> AddOrUpdateComponentConfig(String                                                      Name,
+                                                                Func<String, List<ComponentConfig>>                         AddValueFactory,
+                                                                Func<String, List<ComponentConfig>, List<ComponentConfig>>  UpdateValueFactory)
+
+            => componentConfigs.AddOrUpdate(
+                   Name,
+                   AddValueFactory,
+                   UpdateValueFactory
+               );
+
+
+
         #region Send    JSON   messages
 
         #region (internal) SendJSONRequest          (JSONRequestMessage, SentMessageResultDelegate = null)
@@ -890,14 +906,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendJSONRequest(JSONRequestMessage);
 
-                else if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendJSONRequest(JSONRequestMessage);
 
             }
 
@@ -978,7 +994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                      JSONRequestMessage.EventTrackingId,
                                                                      NetworkingMode.Unknown,
                                                                      SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
-                                                                     NetworkPath.From(Id),
+                                                                     NetworkPath.From(NetworkingNode.Id),
                                                                      JSONRequestMessage.RequestId,
 
                                                                      ErrorCode: ResultCode.Timeout
@@ -1011,7 +1027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      JSONRequestMessage.EventTrackingId,
                                                      NetworkingMode.Unknown,
                                                      SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
-                                                     NetworkPath.From(Id),
+                                                     NetworkPath.From(NetworkingNode.Id),
                                                      JSONRequestMessage.RequestId,
 
                                                      ErrorCode: ResultCode.InternalError
@@ -1031,14 +1047,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONResponse(JSONResponseMessage);
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendJSONResponse(JSONResponseMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONResponse(JSONResponseMessage);
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendJSONResponse(JSONResponseMessage);
 
             }
 
@@ -1055,14 +1071,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
 
             }
 
@@ -1079,14 +1095,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
 
             }
 
@@ -1109,11 +1125,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (JSONSendMessage.Destination.Next == NetworkingNode_Id.Broadcast)
             {
 
-                foreach (var webSocketClient in Routing.AllWebSocketClients)
-                    sentMessageResult = await webSocketClient.SendJSONSendMessage(JSONSendMessage);
+                foreach (var webSocketClient in NetworkingNode.Routing.AllWebSocketClients)
+                    if (webSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                        sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
 
-                foreach (var webSocketServer in Routing.AllWebSocketServers)
-                    sentMessageResult = await webSocketServer.SendJSONSendMessage(JSONSendMessage);
+                foreach (var webSocketServer in NetworkingNode.Routing.AllWebSocketServers)
+                    if (webSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                        sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
 
                 sentMessageResult = SentMessageResult.Broadcast();
 
@@ -1121,14 +1139,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            else if (Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
+            else if (NetworkingNode.Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendJSONSendMessage(JSONSendMessage);
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
 
-                else if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendJSONSendMessage(JSONSendMessage);
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
 
             }
 
@@ -1153,14 +1171,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
 
-                else if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
 
             }
 
@@ -1241,7 +1259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                      BinaryRequestMessage.EventTrackingId,
                                                                      NetworkingMode.Unknown,
                                                                      SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
-                                                                     NetworkPath.From(Id),
+                                                                     NetworkPath.From(NetworkingNode.Id),
                                                                      BinaryRequestMessage.RequestId,
 
                                                                      ErrorCode: ResultCode.Timeout
@@ -1274,7 +1292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      BinaryRequestMessage.EventTrackingId,
                                                      NetworkingMode.Unknown,
                                                      SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
-                                                     NetworkPath.From(Id),
+                                                     NetworkPath.From(NetworkingNode.Id),
                                                      BinaryRequestMessage.RequestId,
 
                                                      ErrorCode: ResultCode.InternalError
@@ -1294,14 +1312,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
 
             }
 
@@ -1318,14 +1336,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             }
 
@@ -1342,14 +1360,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
 
-                if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             }
 
@@ -1367,14 +1385,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (Routing.LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
+            if (NetworkingNode.Routing.LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.OCPPWebSocketClient is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketClient.SendBinarySendMessage(BinarySendMessage);
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
+                    sentMessageResult = await ocppWebSocketClient.SendBinarySendMessage(BinarySendMessage);
 
-                else if (reachability.OCPPWebSocketServer is not null)
-                    sentMessageResult = await reachability.OCPPWebSocketServer.SendBinarySendMessage(BinarySendMessage);
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
+                    sentMessageResult = await ocppWebSocketServer.SendBinarySendMessage(BinarySendMessage);
 
             }
 
@@ -1410,7 +1428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            DebugX.Log($"Received an unknown OCPP response with identificaiton '{JSONResponseMessage.RequestId}' within {Id}:{Environment.NewLine}'{JSONResponseMessage.Payload.ToString(Formatting.None)}'!");
+            DebugX.Log($"Received an unknown OCPP response with identificaiton '{JSONResponseMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{JSONResponseMessage.Payload.ToString(Formatting.None)}'!");
             return false;
 
         }
@@ -1436,7 +1454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            DebugX.Log($"Received an unknown OCPP JSON request error message with identificaiton '{JSONRequestErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{JSONRequestErrorMessage.ToJSON().ToString(Formatting.None)}'!");
+            DebugX.Log($"Received an unknown OCPP JSON request error message with identificaiton '{JSONRequestErrorMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{JSONRequestErrorMessage.ToJSON().ToString(Formatting.None)}'!");
             return false;
 
         }
@@ -1464,7 +1482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            DebugX.Log($"Received an unknown OCPP JSON response error message with identificaiton '{JSONResponseErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{JSONResponseErrorMessage.ToJSON().ToString(Formatting.None)}'!");
+            DebugX.Log($"Received an unknown OCPP JSON response error message with identificaiton '{JSONResponseErrorMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{JSONResponseErrorMessage.ToJSON().ToString(Formatting.None)}'!");
             return false;
 
         }
@@ -1494,7 +1512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            DebugX.Log($"Received an unknown OCPP response with identificaiton '{BinaryResponseMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryResponseMessage.Payload.ToBase64()}'!");
+            DebugX.Log($"Received an unknown OCPP response with identificaiton '{BinaryResponseMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{BinaryResponseMessage.Payload.ToBase64()}'!");
             return false;
 
         }
@@ -1520,7 +1538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            DebugX.Log($"Received an unknown OCPP Binary request error message with identificaiton '{BinaryRequestErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryRequestErrorMessage.ToByteArray().ToBase64()}'!");
+            DebugX.Log($"Received an unknown OCPP Binary request error message with identificaiton '{BinaryRequestErrorMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{BinaryRequestErrorMessage.ToByteArray().ToBase64()}'!");
             return false;
 
         }
@@ -1548,7 +1566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-            DebugX.Log($"Received an unknown OCPP Binary response error message with identificaiton '{BinaryResponseErrorMessage.RequestId}' within {Id}:{Environment.NewLine}'{BinaryResponseErrorMessage.ToByteArray().ToBase64()}'!");
+            DebugX.Log($"Received an unknown OCPP Binary response error message with identificaiton '{BinaryResponseErrorMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{BinaryResponseErrorMessage.ToByteArray().ToBase64()}'!");
             return false;
 
         }
@@ -1563,13 +1581,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var json = JSONObject.Create(
 
-                           new JProperty("id",                            Id.ToString()),
+                           new JProperty("id",                            NetworkingNode.Id.ToString()),
 
                            new JProperty("IN",                            IN.     ToJSON()),
                            new JProperty("OUT",                           OUT.    ToJSON()),
                            new JProperty("FORWARD",                       FORWARD.ToJSON()),
 
-                           new JProperty("routing",                       Routing.ToJSON()),
+                           new JProperty("routing",                       NetworkingNode.Routing.ToJSON()),
 
                            new JProperty("disableSendHeartbeats",         DisableSendHeartbeats),
                            new JProperty("sendHeartbeatsEvery",           SendHeartbeatsEvery.TotalSeconds),

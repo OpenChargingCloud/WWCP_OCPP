@@ -21,8 +21,10 @@ using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 
 #endregion
 

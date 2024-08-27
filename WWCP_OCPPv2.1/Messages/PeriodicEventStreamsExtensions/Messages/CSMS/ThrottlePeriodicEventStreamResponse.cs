@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     public class ThrottlePeriodicEventStreamResponse : AResponse<CSMS.ThrottlePeriodicEventStreamRequest,
                                                                       ThrottlePeriodicEventStreamResponse>,
-                                                       IResponse
+                                                       IResponse<Result>
     {
 
         #region Data
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {

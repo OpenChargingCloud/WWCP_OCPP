@@ -67,19 +67,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this charging ticket identification is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this charging ticket identification is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the charging ticket identification.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly UInt64   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -98,19 +98,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) NewRandom(EMPId, Length = 20)
+        #region (static) NewRandom(EMPId)
 
         /// <summary>
         /// Create a new random charging ticket identification based
-        /// on an e-mobility provider Identification, the current timestamp
-        /// and a random number.
+        /// on an e-mobility provider Identification and an UUIDv7
+        /// (current timestamp and a random number).
         /// </summary>
-        /// <param name="Length">The expected length of the charging ticket identification.</param>
-        public static ChargingTicket_Id NewRandom(String   EMPId,
-                                                  Byte     Length         = 30,
-                                                  String?  RandomSuffix   = null)
+        /// <param name="EMPId">The e-mobility provider identification.</param>
+        public static ChargingTicket_Id NewRandom(String EMPId)
 
-            => new ($"{EMPId}-{Timestamp.Now.ToUnixTimestamp()}-{RandomSuffix ?? RandomExtensions.RandomString(Length)}");
+            => new ($"{EMPId}-CT-{UUIDv7.Generate()}");
 
         #endregion
 
@@ -123,8 +121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static ChargingTicket_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out var ticketId))
-                return ticketId;
+            if (TryParse(Text, out var chargingTicketId))
+                return chargingTicketId;
 
             throw new ArgumentException($"Invalid text representation of a charging ticket identification: '{Text}'!",
                                         nameof(Text));
@@ -142,8 +140,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static ChargingTicket_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var ticketId))
-                return ticketId;
+            if (TryParse(Text, out var chargingTicketId))
+                return chargingTicketId;
 
             return null;
 
@@ -157,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a charging ticket identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging ticket identification.</param>
-        /// <param name="TicketId">The parsed charging ticket identification.</param>
+        /// <param name="ChargingTicketId">The parsed charging ticket identification.</param>
         public static Boolean TryParse(String Text, out ChargingTicket_Id ChargingTicketId)
         {
 
@@ -299,8 +297,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging ticket identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is ChargingTicket_Id ticketId
-                   ? CompareTo(ticketId)
+            => Object is ChargingTicket_Id chargingTicketId
+                   ? CompareTo(chargingTicketId)
                    : throw new ArgumentException("The given object is not a charging ticket identification!",
                                                  nameof(Object));
 
@@ -332,8 +330,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging ticket identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChargingTicket_Id ticketId &&
-                   Equals(ticketId);
+            => Object is ChargingTicket_Id chargingTicketId &&
+                   Equals(chargingTicketId);
 
         #endregion
 

@@ -23,6 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -194,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom AddUserRole requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       SourceRouting                                 Destination,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out AddUserRoleRequest?      AddUserRoleRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
@@ -213,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (!JSON.ParseMandatoryJSON("signaturePolicy",
                                              "user role",
-                                             OCPPv2_1.UserRole.TryParse,
+                                             WWCP.UserRole.TryParse,
                                              out UserRole? UserRole,
                                              out ErrorResponse) ||
                      UserRole is null)
@@ -241,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {

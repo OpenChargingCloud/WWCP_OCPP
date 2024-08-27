@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -61,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetBaseReportResponseReceivedDelegate(DateTime                Timestamp,
                                                                  IEventSender            Sender,
-                                                                 IWebSocketConnection    Connection,
+                                                                 IWebSocketConnection?   Connection,
                                                                  GetBaseReportRequest?   Request,
                                                                  GetBaseReportResponse   Response,
                                                                  TimeSpan?               Runtime,
@@ -311,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_GetBaseReportResponse(GetBaseReportRequest  Request,
                                           JObject               ResponseJSON,
                                           IWebSocketConnection  WebSocketConnection,
-                                          SourceRouting     Destination,
+                                          SourceRouting         Destination,
                                           NetworkPath           NetworkPath,
                                           EventTracking_Id      EventTrackingId,
                                           Request_Id            RequestId,

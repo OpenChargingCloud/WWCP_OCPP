@@ -330,6 +330,7 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
         /// <param name="ChargingSpeed">The charging speed.</param>
         /// <param name="UILanguage">The user interface language.</param>
         /// <param name="Currency">The currency.</param>
+        /// <param name="Signature">The digital signature for the URL.</param>
         private static String ProcessURLTemplate(String   URLTemplate,
                                                  String   TOTP,
                                                  String?  Version           = null,
@@ -345,7 +346,8 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
                                                  String?  EndTime           = null,
                                                  String?  ChargingSpeed     = null,
                                                  String?  UILanguage        = null,
-                                                 String?  Currency          = null)
+                                                 String?  Currency          = null,
+                                                 String?  Signature         = null)
 
             => URLTemplate.Replace("{TOTP}",             TOTP).
                            Replace("{version}",          Version         ?? "").
@@ -361,7 +363,8 @@ namespace cloud.charging.open.utils.QRCodes.TOTP
                            Replace("{endTime}",          EndTime         ?? "").
                            Replace("{chargingSpeed}",    ChargingSpeed   ?? "").
                            Replace("{uiLanguage}",       UILanguage      ?? "").
-                           Replace("{currency}",         Currency        ?? "");
+                           Replace("{currency}",         Currency        ?? "").
+                           Replace("{signature}",        Signature       ?? "");
 
         #endregion
 

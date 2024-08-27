@@ -23,6 +23,7 @@ using cloud.charging.open.protocols.OCPP;
 using System.Runtime.InteropServices;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using System.Drawing;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 

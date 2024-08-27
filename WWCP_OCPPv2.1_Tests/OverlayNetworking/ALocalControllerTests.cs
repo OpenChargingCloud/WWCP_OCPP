@@ -28,6 +28,7 @@ using cloud.charging.open.protocols.OCPPv2_1.tests.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -147,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
 
                     testCSMS01.AddOrUpdateHTTPBasicAuth(networkingNode1Id, "1234abcd");
 
-                    var response = localController1.ConnectWebSocketClient(
+                    var response = localController1.ConnectOCPPWebSocketClient(
                                        NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                        RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + localController1.Id),
                                        HTTPAuthentication:       HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),

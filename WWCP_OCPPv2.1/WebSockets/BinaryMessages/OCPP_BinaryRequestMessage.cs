@@ -19,7 +19,8 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="RequestTimestamp">The request time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The networking mode to use.</param>
-    /// <param name="DestinationId">The networking node identification of the message destination.</param>
+    /// <param name="Destination">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>

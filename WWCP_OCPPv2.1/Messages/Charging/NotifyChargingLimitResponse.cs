@@ -24,7 +24,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -36,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     public class NotifyChargingLimitResponse : AResponse<NotifyChargingLimitRequest,
                                                          NotifyChargingLimitResponse>,
-                                               IResponse
+                                               IResponse<Result>
     {
 
         #region Data
@@ -233,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -339,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
-                   Result.FromErrorResponse(
+                  OCPPv2_1.Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -367,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                      String                      ErrorDescription)
 
             => new (Request,
-                    Result.FormationViolation(
+                   OCPPv2_1.Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -381,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  String                      ErrorDescription)
 
             => new (Request,
-                    Result.SignatureError(
+                   OCPPv2_1.Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -395,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          String?                     Description   = null)
 
             => new (Request,
-                    Result.Server(Description));
+                    OCPPv2_1.Result.Server(Description));
 
 
         /// <summary>
@@ -407,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    Exception                   Exception)
 
             => new (Request,
-                    Result.FromException(Exception));
+                    OCPPv2_1.Result.FromException(Exception));
 
         #endregion
 

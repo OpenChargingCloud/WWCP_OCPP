@@ -25,7 +25,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -38,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
-    /// <param name="DestinationId">The networking node identification of the message destination.</param>
+    /// <param name="Destination">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="ErrorCode">An OCPP error code.</param>

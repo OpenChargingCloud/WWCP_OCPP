@@ -24,8 +24,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using System.Runtime.Versioning;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     public class UnpublishFirmwareResponse : AResponse<UnpublishFirmwareRequest,
                                                        UnpublishFirmwareResponse>,
-                                             IResponse
+                                             IResponse<Result>
     {
 
         #region Data
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    Request,
                    UnpublishFirmwareStatus.Error,
-                   Result.FromErrorResponse(
+                  OCPPv2_1.Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UnpublishFirmwareStatus.Error,
-                    Result:  Result.FormationViolation(
+                    Result:  OCPPv2_1.Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UnpublishFirmwareStatus.Error,
-                    Result:  Result.SignatureError(
+                    Result:  OCPPv2_1.Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UnpublishFirmwareStatus.Error,
-                    Result:  Result.Server(Description));
+                    Result:  OCPPv2_1.Result.Server(Description));
 
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UnpublishFirmwareStatus.Error,
-                    Result:  Result.FromException(Exception));
+                    Result:  OCPPv2_1.Result.FromException(Exception));
 
         #endregion
 

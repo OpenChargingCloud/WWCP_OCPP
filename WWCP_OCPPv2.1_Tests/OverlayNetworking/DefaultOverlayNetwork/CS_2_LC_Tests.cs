@@ -26,6 +26,8 @@ using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -58,12 +60,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
         {
 
             Assert.Multiple(() => {
-                Assert.That(localController,         Is.Not.Null);
+                Assert.That(localController,        Is.Not.Null);
                 Assert.That(lcOCPPWebSocketServer,  Is.Not.Null);
                 Assert.That(chargingStation,        Is.Not.Null);
             });
 
-            if (localController         is not null &&
+            if (localController        is not null &&
                 lcOCPPWebSocketServer  is not null &&
                 chargingStation        is not null)
             {

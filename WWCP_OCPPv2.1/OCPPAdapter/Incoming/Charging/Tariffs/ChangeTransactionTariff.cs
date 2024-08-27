@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -63,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeTransactionTariffResponseReceivedDelegate(DateTime                          Timestamp,
                                                                            IEventSender                      Sender,
-                                                                           IWebSocketConnection              Connection,
+                                                                           IWebSocketConnection?             Connection,
                                                                            ChangeTransactionTariffRequest?   Request,
                                                                            ChangeTransactionTariffResponse   Response,
                                                                            TimeSpan?                         Runtime,

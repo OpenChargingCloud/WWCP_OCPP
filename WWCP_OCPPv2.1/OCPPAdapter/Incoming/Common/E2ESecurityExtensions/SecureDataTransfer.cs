@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -61,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecureDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
                                                                       IEventSender                 Sender,
-                                                                      IWebSocketConnection         Connection,
+                                                                      IWebSocketConnection?        Connection,
                                                                       SecureDataTransferRequest?   Request,
                                                                       SecureDataTransferResponse   Response,
                                                                       TimeSpan?                    Runtime,
@@ -121,11 +123,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SecureDataTransferResponse>
 
-        OnSecureDataTransferDelegate(DateTime                 Timestamp,
-                                  IEventSender                Sender,
-                                  IWebSocketConnection        Connection,
-                                  SecureDataTransferRequest   Request,
-                                  CancellationToken           CancellationToken);
+        OnSecureDataTransferDelegate(DateTime                    Timestamp,
+                                     IEventSender                Sender,
+                                     IWebSocketConnection        Connection,
+                                     SecureDataTransferRequest   Request,
+                                     CancellationToken           CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -150,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SecureDataTransfer(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
-                                       SourceRouting     Destination,
+                                       SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
                                        EventTracking_Id      EventTrackingId,
                                        Request_Id            RequestId,

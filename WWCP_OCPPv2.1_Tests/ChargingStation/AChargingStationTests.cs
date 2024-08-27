@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -142,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testCSMS01.              AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
                 lcOCPPWebSocketServer01?.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
-                var response = chargingStation1.ConnectWebSocketClient(
+                var response = chargingStation1.ConnectOCPPWebSocketClient(
                                    NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                    RemoteURL:                URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
                                    HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
@@ -260,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation2Id, "1234abcd");
 
-                var response = chargingStation2.ConnectWebSocketClient(
+                var response = chargingStation2.ConnectOCPPWebSocketClient(
                                    NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                    RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
                                    HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation2Id.ToString(), "1234abcd"),

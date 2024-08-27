@@ -17,7 +17,7 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 

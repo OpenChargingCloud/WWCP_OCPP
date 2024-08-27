@@ -241,7 +241,7 @@
 
 //                if (JSON.ParseOptionalJSON("customData",
 //                                           "custom data",
-//                                           OCPPv2_1.CustomData.TryParse,
+//                                           WWCP.CustomData.TryParse,
 //                                           out CustomData CustomData,
 //                                           out ErrorResponse))
 //                {

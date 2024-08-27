@@ -28,7 +28,8 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -40,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// </summary>
     public class SecureDataTransferResponse : AResponse<SecureDataTransferRequest,
                                                         SecureDataTransferResponse>,
-                                              IResponse
+                                              IResponse<Result>
     {
 
         #region Data
@@ -555,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    null,
                    null,
                    null,
-                   Result.FromErrorResponse(
+                  OCPPv2_1.Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -582,7 +583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     SecureDataTransferStatus.Rejected,
-                    Result:  Result.SignatureError(
+                    Result:  OCPPv2_1.Result.SignatureError(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -597,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     SecureDataTransferStatus.Rejected,
-                    Result:  Result.SignatureError(
+                    Result:  OCPPv2_1.Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -612,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     SecureDataTransferStatus.Rejected,
-                    Result:  Result.Server(Description));
+                    Result:  OCPPv2_1.Result.Server(Description));
 
 
         /// <summary>
@@ -625,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     SecureDataTransferStatus.Rejected,
-                    Result:  Result.FromException(Exception));
+                    Result:  OCPPv2_1.Result.FromException(Exception));
 
         #endregion
 

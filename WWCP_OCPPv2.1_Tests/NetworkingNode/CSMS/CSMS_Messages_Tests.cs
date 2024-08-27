@@ -24,6 +24,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -97,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.OCPP.Routing.AddOrUpdateStaticRouting(
+                testCSMS01.Routing.AddOrUpdateStaticRouting(
                     chargingStation1.Id,
                     localController1.Id
                 );
@@ -209,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.OCPP.Routing.AddOrUpdateStaticRouting(
+                testCSMS01.Routing.AddOrUpdateStaticRouting(
                     chargingStation1.Id,
                     localController1.Id
                 );
@@ -331,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.OCPP.Routing.AddOrUpdateStaticRouting(
+                testCSMS01.Routing.AddOrUpdateStaticRouting(
                     chargingStation1.Id,
                     localController1.Id
                 );

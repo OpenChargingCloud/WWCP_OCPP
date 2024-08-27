@@ -32,6 +32,8 @@ using cloud.charging.open.utils.QRCodes.TOTP;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -69,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// An abstract charging station node.
     /// </summary>
-    public abstract class AChargingStationNode : ANetworkingNode,
+    public abstract class AChargingStationNode : AOCPPNetworkingNode,
                                                  IChargingStationNode
     {
 
@@ -147,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            var componentConfigs = ComponentConfigs.TryGetValue(Name, out var controllerList)
+            var componentConfigs = OCPP.TryGetComponentConfig(Name, out var controllerList)
                                        ? controllerList.Cast<T>().ToList()
                                        : [];
 
@@ -171,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public IEnumerable<T> GetComponentConfigs<T>(String Name, EVSE_Id EVSEId, Connector_Id ConnectorId)
             where T : ComponentConfig
 
-            => ComponentConfigs.TryGetValue(Name, out var controllerList)
+            => OCPP.TryGetComponentConfig(Name, out var controllerList)
                    ? controllerList.Where  (componentConfig => componentConfig.EVSE?.Id          == EVSEId &&
                                                                componentConfig.EVSE?.ConnectorId == ConnectorId).
                                     Cast<T>()
@@ -855,16 +857,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        public void AddComponent(ComponentConfig Component)
-        {
+        public List<ComponentConfig> AddComponent(ComponentConfig Component)
 
-            ComponentConfigs.AddOrUpdate(
-                                 Component.Name,
-                                 name => [Component],
-                                 (name, list) => list.AddAndReturnList(Component)
-                             );
-
-        }
+            => OCPP.AddOrUpdateComponentConfig(
+                   Component.Name,
+                   name         => [ Component ],
+                   (name, list) => list.AddAndReturnList(Component)
+               );
 
 
         public IEnumerable<ComponentConfig> GetComponentConfigs(String Name, EVSE? EVSE = null)
@@ -873,7 +872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             List<ComponentConfig>? componentConfigList = null;
 
             if (EVSE is null)
-                ComponentConfigs.TryGetValue(Name, out componentConfigList);
+                OCPP.TryGetComponentConfig(Name, out componentConfigList);
 
             else if (evses.TryGetValue(EVSE.Id, out var evse))
                 evse.ComponentConfigs.TryGetValue(Name, out componentConfigList);

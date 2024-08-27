@@ -19,6 +19,9 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -112,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<BinaryDataTransferResponse>
 
-            TransferBinaryData(this INetworkingNode     NetworkingNode,
+            TransferBinaryData(this NetworkingNode.INetworkingNode NetworkingNode,
 
                                SourceRouting            Destination,
                                Vendor_Id                VendorId,
@@ -175,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<GetFileResponse>
 
-            GetFile(this INetworkingNode     NetworkingNode,
+            GetFile(this NetworkingNode.INetworkingNode     NetworkingNode,
 
                     SourceRouting            Destination,
                     FilePath                 FileName,
@@ -244,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<SendFileResponse>
 
-            SendFile(this INetworkingNode     NetworkingNode,
+            SendFile(this NetworkingNode.INetworkingNode     NetworkingNode,
 
                      SourceRouting            Destination,
                      FilePath                 FileName,
@@ -320,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<DeleteFileResponse>
 
-            DeleteFile(this INetworkingNode     NetworkingNode,
+            DeleteFile(this NetworkingNode.INetworkingNode     NetworkingNode,
 
                        SourceRouting            Destination,
                        FilePath                 FileName,
@@ -386,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<ListDirectoryResponse>
 
-            ListDirectory(this INetworkingNode     NetworkingNode,
+            ListDirectory(this NetworkingNode.INetworkingNode     NetworkingNode,
 
                           SourceRouting            Destination,
                           FilePath                 DirectoryPath,

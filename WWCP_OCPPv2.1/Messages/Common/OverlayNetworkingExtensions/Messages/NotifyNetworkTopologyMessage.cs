@@ -23,6 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -205,10 +208,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (!JSON.ParseMandatoryJSON("networkTopologyInformation",
                                              "network topology information",
-                                             NetworkingNode.NetworkTopologyInformation.TryParse,
+                                             WWCP.NetworkingNode.NetworkTopologyInformation.TryParse,
                                              out NetworkTopologyInformation? NetworkTopologyInformation,
-                                             out ErrorResponse) ||
-                     NetworkTopologyInformation is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -233,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {

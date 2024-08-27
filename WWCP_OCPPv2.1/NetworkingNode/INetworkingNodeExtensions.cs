@@ -17,10 +17,13 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 
 #endregion
 
@@ -105,8 +108,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>

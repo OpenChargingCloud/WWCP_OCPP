@@ -261,7 +261,7 @@
 
 //                if (JSON.ParseOptionalJSON("customData",
 //                                           "custom data",
-//                                           OCPPv2_1.CustomData.TryParse,
+//                                           WWCP.CustomData.TryParse,
 //                                           out CustomData CustomData,
 //                                           out ErrorResponse))
 //                {
@@ -376,7 +376,7 @@
 //                   Request,
 //                   NetworkTopologyStatus.Error,
 //                   null,
-//                   Result.FromErrorResponse(
+//                  OCPPv2_1.Result.FromErrorResponse(
 //                       ErrorCode,
 //                       ErrorDescription,
 //                       ErrorDetails
@@ -405,7 +405,7 @@
 
 //            => new (Request,
 //                    NetworkTopologyStatus.Error,
-//                    Result:  Result.FormationViolation(
+//                    Result:  OCPPv2_1.Result.FormationViolation(
 //                                 $"Invalid data format: {ErrorDescription}"
 //                             ));
 
@@ -420,7 +420,7 @@
 
 //            => new (Request,
 //                    NetworkTopologyStatus.Error,
-//                    Result:  Result.SignatureError(
+//                    Result:  OCPPv2_1.Result.SignatureError(
 //                                 $"Invalid signature(s): {ErrorDescription}"
 //                             ));
 
@@ -435,7 +435,7 @@
 
 //            => new (Request,
 //                    NetworkTopologyStatus.Error,
-//                    Result:  Result.Server(Description));
+//                    Result:  OCPPv2_1.Result.Server(Description));
 
 
 //        /// <summary>
@@ -448,7 +448,7 @@
 
 //            => new (Request,
 //                    NetworkTopologyStatus.Error,
-//                    Result:  Result.FromException(Exception));
+//                    Result:  OCPPv2_1.Result.FromException(Exception));
 
 //        #endregion
 

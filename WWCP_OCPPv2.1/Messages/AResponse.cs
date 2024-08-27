@@ -21,7 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -34,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public abstract class AResponse<TRequest, TResponse> : AResponse<TResponse>
 
         where TRequest  : class, IRequest
-        where TResponse : class, IResponse
+        where TResponse : class, IResponse<Result>
 
     {
 
@@ -232,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public abstract class AResponse<TResponse> : ACustomSignableData,
                                                  IEquatable<TResponse>
 
-        where TResponse : class, IResponse
+        where TResponse : class, IResponse<Result>
 
     {
 
@@ -333,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ResponseTimestamp    = ResponseTimestamp;
             this.Runtime              = Runtime;
 
-            this.Destination        = Destination;
+            this.Destination          = Destination;
             this.NetworkPath          = NetworkPath;
 
             this.SerializationFormat  = SerializationFormat ?? SerializationFormats.Default;

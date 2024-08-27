@@ -27,7 +27,8 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -38,8 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An energy meter.
     /// </summary>
     public class Energy_Meter : IEquatable<Energy_Meter>,
-                               IComparable<Energy_Meter>,
-                               IEnergyMeter
+                                IComparable<Energy_Meter>,
+                                IEnergyMeter
     {
 
         #region Data

@@ -19,6 +19,8 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -136,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<SecureDataTransferResponse>
 
-            TransferSecureData(this INetworkingNode     NetworkingNode,
+            TransferSecureData(this NetworkingNode.INetworkingNode     NetworkingNode,
                                SourceRouting            Destination,
                                UInt16                   Parameter,
                                Byte[]                   Payload,

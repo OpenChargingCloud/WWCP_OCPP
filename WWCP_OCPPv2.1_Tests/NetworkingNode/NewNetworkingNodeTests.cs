@@ -28,6 +28,8 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.LocalController;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -94,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             testCSMS01.AddOrUpdateHTTPBasicAuth(tn01.Id, "1234abcd");
 
 
-            var xxx = await tn01.ConnectWebSocketClient(
+            var xxx = await tn01.ConnectOCPPWebSocketClient(
                                 NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                 RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + tn01.Id),
                                 HTTPAuthentication:       HTTPBasicAuthentication.Create(tn01.Id.ToString(), "1234abcd"),
@@ -147,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
 
             server1.AddOrUpdateHTTPBasicAuth(chargingStation1.Id, "1234abcd");
 
-            var response = await chargingStation1.ConnectWebSocketClient(
+            var response = await chargingStation1.ConnectOCPPWebSocketClient(
                                      NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                      RemoteURL:                URL.Parse($"http://127.0.0.1:{server1.IPPort}/{chargingStation1.Id}"),
                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation1.Id.ToString(), "1234abcd"),

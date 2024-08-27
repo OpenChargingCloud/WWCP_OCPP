@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -36,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
     /// <summary>
     /// An abstract energy meter node.
     /// </summary>
-    public abstract class AEnergyMeterNode : ANetworkingNode,
+    public abstract class AEnergyMeterNode : AOCPPNetworkingNode,
                                              EM.IEnergyMeterNode
     {
 

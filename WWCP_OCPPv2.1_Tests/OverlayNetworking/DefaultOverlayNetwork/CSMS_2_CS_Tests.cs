@@ -25,6 +25,9 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 
 #endregion
 
@@ -107,13 +110,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.Routing.AddOrUpdateStaticRouting(
+                CSMS.           Routing.AddOrUpdateStaticRouting(
                     chargingStation.Id,
                     localController.Id
                 );
 
                 //Fix me!
-                localController.OCPP.Routing.AddOrUpdateStaticRouting(
+                localController.Routing.AddOrUpdateStaticRouting(
                     CSMS.Id,
                     NetworkingNode_Id.CSMS
                 );
@@ -241,13 +244,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.Routing.AddOrUpdateStaticRouting(
+                CSMS.           Routing.AddOrUpdateStaticRouting(
                     chargingStation.Id,
                     localController.Id
                 );
 
                 //Fix me!
-                localController.OCPP.Routing.AddOrUpdateStaticRouting(
+                localController.Routing.AddOrUpdateStaticRouting(
                     CSMS.Id,
                     NetworkingNode_Id.CSMS
                 );

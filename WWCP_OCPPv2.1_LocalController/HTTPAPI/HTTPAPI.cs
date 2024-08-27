@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -587,7 +587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -604,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -660,7 +660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -697,7 +697,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -733,7 +733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -750,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -790,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -806,7 +806,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -823,7 +823,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -843,7 +843,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -902,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                                new JProperty("timestamp",    timestamp. ToIso8601()),
                                                new JProperty("sender",       sender.Id),
-                                               new JProperty("connection",   connection.ToJSON()),
+                                               new JProperty("connection",   connection?.ToJSON()),
                                                new JProperty("request",      request?.  ToJSON()),
                                                new JProperty("response",     response.  ToJSON()),
                                          runtime.HasValue
@@ -924,7 +924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",           timestamp. ToIso8601()),
                                          new JProperty("sender",              sender.Id),
-                                         new JProperty("connection",          connection.ToJSON()),
+                                         new JProperty("connection",          connection?.ToJSON()),
                                          new JProperty("request",             request?.  ToJSON()),
                                          new JProperty("response",            response.  ToJSON()),
                                          new JProperty("runtime",             runtime.   TotalMilliseconds),
@@ -945,7 +945,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -961,7 +961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -978,7 +978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -998,7 +998,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1018,7 +1018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1034,7 +1034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1051,7 +1051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1071,7 +1071,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1091,7 +1091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1107,7 +1107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1124,7 +1124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1144,7 +1144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1164,7 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1180,7 +1180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1197,7 +1197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1217,7 +1217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1237,7 +1237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1253,7 +1253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1270,7 +1270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1290,7 +1290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1310,7 +1310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1326,7 +1326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1343,7 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1363,7 +1363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1383,7 +1383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1399,7 +1399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1416,7 +1416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1436,7 +1436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1456,7 +1456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1472,7 +1472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1489,7 +1489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1509,7 +1509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1529,7 +1529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1545,7 +1545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1562,7 +1562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1582,7 +1582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1602,7 +1602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1618,7 +1618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1635,7 +1635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1655,7 +1655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1675,7 +1675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1691,7 +1691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1708,7 +1708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1728,7 +1728,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1748,7 +1748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1764,7 +1764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1781,7 +1781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1801,7 +1801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1825,7 +1825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1841,7 +1841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1858,7 +1858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1878,7 +1878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1898,7 +1898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1914,7 +1914,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1931,7 +1931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -1951,7 +1951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -1975,7 +1975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -1991,7 +1991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2008,7 +2008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2028,7 +2028,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2048,7 +2048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2064,7 +2064,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2081,7 +2081,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2101,7 +2101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2121,7 +2121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2137,7 +2137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2154,7 +2154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2174,7 +2174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2194,7 +2194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2210,7 +2210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2227,7 +2227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2247,7 +2247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2267,7 +2267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2283,7 +2283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2300,7 +2300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2320,7 +2320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2344,7 +2344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2360,7 +2360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2377,7 +2377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                                new JProperty("timestamp",   timestamp. ToIso8601()),
                                                new JProperty("sender",      sender.Id),
-                                               new JProperty("connection",  connection.ToJSON()),
+                                               new JProperty("connection",  connection?.ToJSON()),
                                                new JProperty("request",     request?.  ToJSON()),
                                                new JProperty("response",    response.  ToJSON()),
                                          runtime.HasValue
@@ -2399,7 +2399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2419,7 +2419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2435,7 +2435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2452,7 +2452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2472,7 +2472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2492,7 +2492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2508,7 +2508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2525,7 +2525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2545,7 +2545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2565,7 +2565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2581,7 +2581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2598,7 +2598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2618,7 +2618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2646,7 +2646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2662,7 +2662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2679,7 +2679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2699,7 +2699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2719,7 +2719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2735,7 +2735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2752,7 +2752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2772,7 +2772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2792,7 +2792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2808,7 +2808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2825,7 +2825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2845,7 +2845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2865,7 +2865,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2881,7 +2881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2898,7 +2898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2918,7 +2918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -2938,7 +2938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2954,7 +2954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -2971,7 +2971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -2991,7 +2991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3015,7 +3015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3031,7 +3031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3048,7 +3048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3068,7 +3068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3088,7 +3088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3104,7 +3104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3121,7 +3121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3141,7 +3141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3161,7 +3161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3177,7 +3177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3194,7 +3194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3214,7 +3214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3234,7 +3234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3250,7 +3250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3267,7 +3267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3287,7 +3287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3307,7 +3307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3323,7 +3323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3340,7 +3340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3360,7 +3360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3380,7 +3380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3396,7 +3396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3413,7 +3413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3433,7 +3433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3453,7 +3453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3469,7 +3469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3486,7 +3486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3506,7 +3506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3526,7 +3526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3542,7 +3542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3559,7 +3559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3579,7 +3579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3599,7 +3599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3615,7 +3615,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3632,7 +3632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3652,7 +3652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3672,7 +3672,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3688,7 +3688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3705,7 +3705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3725,7 +3725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3745,7 +3745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3761,7 +3761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3778,7 +3778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3798,7 +3798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3818,7 +3818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3834,7 +3834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3851,7 +3851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3871,7 +3871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3891,7 +3891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3907,7 +3907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3924,7 +3924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -3944,7 +3944,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -3968,7 +3968,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -3984,7 +3984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4001,7 +4001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4021,7 +4021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4041,7 +4041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4057,7 +4057,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4074,7 +4074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4094,7 +4094,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4114,7 +4114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4130,7 +4130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4147,7 +4147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4167,7 +4167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4187,7 +4187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4203,7 +4203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4220,7 +4220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4240,7 +4240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4260,7 +4260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4276,7 +4276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4293,7 +4293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4313,7 +4313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4337,7 +4337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4353,7 +4353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4370,7 +4370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4390,7 +4390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4410,7 +4410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4426,7 +4426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4443,7 +4443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4463,7 +4463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4483,7 +4483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4499,7 +4499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4516,7 +4516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4536,7 +4536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4556,7 +4556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4572,7 +4572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4589,7 +4589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4609,7 +4609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4629,7 +4629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4645,7 +4645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4662,7 +4662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4682,7 +4682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4702,7 +4702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4718,7 +4718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4735,7 +4735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4755,7 +4755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4775,7 +4775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4791,7 +4791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4808,7 +4808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4828,7 +4828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4848,7 +4848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4864,7 +4864,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4881,7 +4881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4901,7 +4901,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4921,7 +4921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4937,7 +4937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -4954,7 +4954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -4974,7 +4974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -4994,7 +4994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5010,7 +5010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5027,7 +5027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5047,7 +5047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5067,7 +5067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5083,7 +5083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5100,7 +5100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5120,7 +5120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5140,7 +5140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5156,7 +5156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5173,7 +5173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5193,7 +5193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5213,7 +5213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5229,7 +5229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5246,7 +5246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5266,7 +5266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5290,7 +5290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5306,7 +5306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5323,7 +5323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5343,7 +5343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5363,7 +5363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5379,7 +5379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5396,7 +5396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                                new JProperty("timestamp",   timestamp. ToIso8601()),
                                                new JProperty("sender",      sender.Id),
-                                               new JProperty("connection",  connection.ToJSON()),
+                                               new JProperty("connection",  connection?.ToJSON()),
                                                new JProperty("request",     request?.  ToJSON()),
                                                new JProperty("response",    response.  ToJSON()),
                                          runtime.HasValue
@@ -5418,7 +5418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5438,7 +5438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5454,7 +5454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5471,7 +5471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5491,7 +5491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5511,7 +5511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5527,7 +5527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5544,7 +5544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5564,7 +5564,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5588,7 +5588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5604,7 +5604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5621,7 +5621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5641,7 +5641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5665,7 +5665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5681,7 +5681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5698,7 +5698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5718,7 +5718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5738,7 +5738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5754,7 +5754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5771,7 +5771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5791,7 +5791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5811,7 +5811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5827,7 +5827,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5844,7 +5844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request?.  ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime?.  TotalMilliseconds)
@@ -5864,7 +5864,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON()),
                                          new JProperty("response",    response.  ToJSON()),
                                          new JProperty("runtime",     runtime.   TotalMilliseconds)
@@ -5890,7 +5890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToJSON())
                                      ));
 
@@ -5924,7 +5924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
-                              new JProperty("connection",  connection.ToJSON()),
+                              new JProperty("connection",  connection?.ToJSON()),
                         request is not null
                             ? new JProperty("request",     request.   ToJSON())
                             : null,
@@ -5950,7 +5950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
-                              new JProperty("connection",  connection.ToJSON()),
+                              new JProperty("connection",  connection?.ToJSON()),
                         request is not null
                             ? new JProperty("request",     request.   ToJSON())
                             : null,
@@ -5975,7 +5975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                      JSONObject.Create(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection.ToJSON()),
+                                         new JProperty("connection",  connection?.ToJSON()),
                                          new JProperty("request",     request.   ToBinary().ToBase64())
                                      ));
 
@@ -6009,7 +6009,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
-                              new JProperty("connection",  connection.ToJSON()),
+                              new JProperty("connection",  connection?.ToJSON()),
                         request is not null
                             ? new JProperty("request",     request.   ToBinary().ToBase64())
                             : null,
@@ -6035,7 +6035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     JSONObject.Create(
                               new JProperty("timestamp",   timestamp. ToIso8601()),
                               new JProperty("sender",      sender.Id),
-                              new JProperty("connection",  connection.ToJSON()),
+                              new JProperty("connection",  connection?.ToJSON()),
                         request is not null
                             ? new JProperty("request",     request.   ToBinary().ToBase64())
                             : null,

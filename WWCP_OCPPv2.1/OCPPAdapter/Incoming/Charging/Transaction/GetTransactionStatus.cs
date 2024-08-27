@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -61,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetTransactionStatusResponseReceivedDelegate(DateTime                       Timestamp,
                                                                         IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
+                                                                        IWebSocketConnection?          Connection,
                                                                         GetTransactionStatusRequest?   Request,
                                                                         GetTransactionStatusResponse   Response,
                                                                         TimeSpan?                      Runtime,
@@ -150,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_GetTransactionStatus(DateTime              RequestTimestamp,
                                          IWebSocketConnection  WebSocketConnection,
-                                         SourceRouting     Destination,
+                                         SourceRouting         Destination,
                                          NetworkPath           NetworkPath,
                                          EventTracking_Id      EventTrackingId,
                                          Request_Id            RequestId,
@@ -309,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_GetTransactionStatusResponse(GetTransactionStatusRequest  Request,
                                                  JObject                      ResponseJSON,
                                                  IWebSocketConnection         WebSocketConnection,
-                                                 SourceRouting            Destination,
+                                                 SourceRouting                Destination,
                                                  NetworkPath                  NetworkPath,
                                                  EventTracking_Id             EventTrackingId,
                                                  Request_Id                   RequestId,
@@ -409,15 +411,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<GetTransactionStatusResponse>
 
-            Receive_GetTransactionStatusRequestError(GetTransactionStatusRequest                  Request,
-                                      OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                      IWebSocketConnection          Connection,
-                                      SourceRouting                 Destination,
-                                      NetworkPath                   NetworkPath,
-                                      EventTracking_Id              EventTrackingId,
-                                      Request_Id                    RequestId,
-                                      DateTime?                     ResponseTimestamp   = null,
-                                      CancellationToken             CancellationToken   = default)
+            Receive_GetTransactionStatusRequestError(GetTransactionStatusRequest   Request,
+                                                     OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                     IWebSocketConnection          Connection,
+                                                     SourceRouting                 Destination,
+                                                     NetworkPath                   NetworkPath,
+                                                     EventTracking_Id              EventTrackingId,
+                                                     Request_Id                    RequestId,
+                                                     DateTime?                     ResponseTimestamp   = null,
+                                                     CancellationToken             CancellationToken   = default)
         {
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
@@ -497,16 +499,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task
 
-            Receive_GetTransactionStatusResponseError(GetTransactionStatusRequest?                  Request,
-                                       GetTransactionStatusResponse?                 Response,
-                                       OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                       IWebSocketConnection           Connection,
-                                       SourceRouting                  Destination,
-                                       NetworkPath                    NetworkPath,
-                                       EventTracking_Id               EventTrackingId,
-                                       Request_Id                     RequestId,
-                                       DateTime?                      ResponseTimestamp   = null,
-                                       CancellationToken              CancellationToken   = default)
+            Receive_GetTransactionStatusResponseError(GetTransactionStatusRequest?   Request,
+                                                      GetTransactionStatusResponse?  Response,
+                                                      OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                      IWebSocketConnection           Connection,
+                                                      SourceRouting                  Destination,
+                                                      NetworkPath                    NetworkPath,
+                                                      EventTracking_Id               EventTrackingId,
+                                                      Request_Id                     RequestId,
+                                                      DateTime?                      ResponseTimestamp   = null,
+                                                      CancellationToken              CancellationToken   = default)
 
         {
 

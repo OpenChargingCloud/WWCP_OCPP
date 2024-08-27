@@ -24,6 +24,9 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -34,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     public class GetFileResponse : AResponse<GetFileRequest,
                                              GetFileResponse>,
-                                             IResponse
+                                   IResponse<Result>
 
     {
 
@@ -557,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    null,
                    null,
                    null,
-                   Result.FromErrorResponse(
+                  OCPPv2_1.Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -587,7 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     GetFileStatus.Rejected,
-                    Result:  Result.FormationViolation(
+                    Result:  OCPPv2_1.Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -603,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     GetFileStatus.Rejected,
-                    Result:  Result.SignatureError(
+                    Result:  OCPPv2_1.Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -619,7 +622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     GetFileStatus.Rejected,
-                    Result:  Result.Server(Description));
+                    Result:  OCPPv2_1.Result.Server(Description));
 
 
         /// <summary>
@@ -633,7 +636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => new (Request,
                     Request.FileName,
                     GetFileStatus.Rejected,
-                    Result:  Result.FromException(Exception));
+                    Result:  OCPPv2_1.Result.FromException(Exception));
 
         #endregion
 

@@ -19,8 +19,11 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -111,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<SentMessageResult>
 
-            NotifyNetworkTopology(this INetworkingNode        NetworkingNode,
+            NotifyNetworkTopology(this NetworkingNode.INetworkingNode        NetworkingNode,
 
                                   NetworkTopologyInformation  NetworkTopologyInformation,
 

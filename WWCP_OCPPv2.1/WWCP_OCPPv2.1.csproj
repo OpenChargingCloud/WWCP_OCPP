@@ -16,11 +16,16 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+    <ProjectReference Include="..\..\WWCP_Core\WWCP_CoreData\WWCP_CoreData.csproj" />
+    <ProjectReference Include="..\..\WWCP_Core\WWCP_Core\WWCP_Core.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DataStructures\ISO15118-20\CommonTypes\Complex\" />
+    <Folder Include="Messages\Common\OverlayNetworkingExtensions\DataStructures\Complex\" />
+    <Folder Include="Messages\Common\OverlayNetworkingExtensions\DataStructures\Enums\" />
+    <Folder Include="Messages\Common\OverlayNetworkingExtensions\DataStructures\Ids\" />
   </ItemGroup>
 
 </Project>

@@ -24,6 +24,8 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -59,13 +61,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnDataTransferResponseReceivedDelegate(DateTime               Timestamp,
-                                                                IEventSender           Sender,
-                                                                IWebSocketConnection   Connection,
-                                                                DataTransferRequest?   Request,
-                                                                DataTransferResponse   Response,
-                                                                TimeSpan?              Runtime,
-                                                                CancellationToken      CancellationToken);
+    public delegate Task OnDataTransferResponseReceivedDelegate(DateTime                Timestamp,
+                                                                IEventSender            Sender,
+                                                                IWebSocketConnection?   Connection,
+                                                                DataTransferRequest?    Request,
+                                                                DataTransferResponse    Response,
+                                                                TimeSpan?               Runtime,
+                                                                CancellationToken       CancellationToken);
 
 
     /// <summary>

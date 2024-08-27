@@ -25,7 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using Newtonsoft.Json;
 
 #endregion
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
 
-        protected readonly ANetworkingNode networkingNode;
+        protected readonly AOCPPNetworkingNode networkingNode;
 
         #endregion
 
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ANetworkingNode                             NetworkingNode,
+        public HTTPAPI(AOCPPNetworkingNode                             NetworkingNode,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName         = null,
                        HTTPPath?                                   URLPathPrefix          = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region AttachNetworkingNode(NetworkingNode)
 
-        public void AttachNetworkingNode(ANetworkingNode NetworkingNode)
+        public void AttachNetworkingNode(AOCPPNetworkingNode NetworkingNode)
         {
 
             #region Generic JSON Messages
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    var ocppWebSocketServers  = networkingNode.OCPPWebSocketClients.
+                    var ocppWebSocketServers  = networkingNode.WWCPWebSocketClients.
                                                     Select(ocppWebSocketClient => JSONObject.Create(
 
                                                                                       new JProperty("description",                  ocppWebSocketClient.Description.     ToJSON()),
@@ -722,8 +722,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                       new JProperty("requestTimeout",               ocppWebSocketClient.RequestTimeout.TotalSeconds),
                                                                                       //new JProperty("requestTimeout",               ocppWebSocketClient.RequestTimeout.TotalSeconds),
                                                                                       new JProperty("networkingMode",               ocppWebSocketClient.NetworkingMode.ToString()),
-
-                                                                                 //     new JProperty("requireAuthentication",        ocppWebSocketClient.RequireAuthentication),
 
                                                                                       new JProperty("secWebSocketProtocols",        new JArray(ocppWebSocketClient.SecWebSocketProtocols)),
                                                                                       new JProperty("disableWebSocketPings",        ocppWebSocketClient.DisableWebSocketPings),
@@ -806,7 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    var ocppWebSocketServers  = networkingNode.OCPPWebSocketServers.
+                    var ocppWebSocketServers  = networkingNode.WWCPWebSocketServers.
                                                     Select(ocppWebSocketServer => JSONObject.Create(
 
                                                                                       new JProperty("httpServiceName",              ocppWebSocketServer.HTTPServiceName),

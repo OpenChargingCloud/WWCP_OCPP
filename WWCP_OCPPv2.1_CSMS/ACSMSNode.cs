@@ -33,9 +33,10 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using System.Net.Sockets;
+
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -181,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// An abstract Charging Station Management System node.
     /// </summary>
-    public abstract class ACSMSNode : ANetworkingNode
+    public abstract class ACSMSNode : AOCPPNetworkingNode
     {
 
         #region Data
@@ -249,60 +250,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public WebAPI?                     WebAPI                            { get; }
         public HTTPPath?                   WebAPI_Path                       { get; }
-
-        #endregion
-
-        #region Events
-
-        #region Generic JSON Messages
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a JSON message request was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
-
-        #endregion
-
-        #region Generic Binary Messages
-
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        #endregion
 
         #endregion
 
@@ -513,7 +460,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
         #endregion
-
 
 
         #region ChargingStations

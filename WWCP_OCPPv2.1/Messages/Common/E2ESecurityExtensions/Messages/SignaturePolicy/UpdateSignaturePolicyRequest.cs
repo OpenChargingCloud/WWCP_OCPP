@@ -23,6 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
@@ -298,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom UpdateSignaturePolicy requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       SourceRouting                                           Destination,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out UpdateSignaturePolicyRequest?      UpdateSignaturePolicyRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
@@ -332,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {
