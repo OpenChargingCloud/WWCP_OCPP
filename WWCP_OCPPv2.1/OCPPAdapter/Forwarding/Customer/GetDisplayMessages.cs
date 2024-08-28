@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>>
+    public delegate Task<RequestForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>>
 
         OnGetDisplayMessagesRequestFilterDelegate(DateTime                    Timestamp,
                                                   IEventSender                Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IEventSender                                                                Sender,
                                                     IWebSocketConnection                                                        Connection,
                                                     GetDisplayMessagesRequest                                                   Request,
-                                                    ForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>   ForwardingDecision,
+                                                    RequestForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>   ForwardingDecision,
                                                     CancellationToken                                                           CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_GetDisplayMessages(OCPP_JSONRequestMessage    JSONRequestMessage,
                                        OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     JSONRequestMessage.EventTrackingId,
                                                     parentNetworkingNode.OCPP.CustomGetDisplayMessagesRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>(
+                forwardingDecision = new RequestForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new GetDisplayMessagesResponse(
                                        request,
                                        GetDisplayMessagesStatus.Unknown,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>(
+                forwardingDecision = new RequestForwardingDecision<GetDisplayMessagesRequest, GetDisplayMessagesResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

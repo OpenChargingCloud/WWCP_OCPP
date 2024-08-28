@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>>
+    public delegate Task<RequestForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>>
 
         OnUnlockConnectorRequestFilterDelegate(DateTime                 Timestamp,
                                                IEventSender             Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  IEventSender                                                          Sender,
                                                  IWebSocketConnection                                                  Connection,
                                                  UnlockConnectorRequest                                                Request,
-                                                 ForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>   ForwardingDecision,
+                                                 RequestForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>   ForwardingDecision,
                                                  CancellationToken                                                     CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_UnlockConnector(OCPP_JSONRequestMessage    JSONRequestMessage,
                                     OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  JSONRequestMessage.EventTrackingId,
                                                  parentNetworkingNode.OCPP.CustomUnlockConnectorRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>(
+                forwardingDecision = new RequestForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new UnlockConnectorResponse(
                                        request,
                                        UnlockStatus.UnlockFailed,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>(
+                forwardingDecision = new RequestForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<TransactionEventRequest, TransactionEventResponse>>
+    public delegate Task<RequestForwardingDecision<TransactionEventRequest, TransactionEventResponse>>
 
         OnTransactionEventRequestFilterDelegate(DateTime                  Timestamp,
                                                 IEventSender              Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   IEventSender                                                            Sender,
                                                   IWebSocketConnection                                                    Connection,
                                                   TransactionEventRequest                                                 Request,
-                                                  ForwardingDecision<TransactionEventRequest, TransactionEventResponse>   ForwardingDecision,
+                                                  RequestForwardingDecision<TransactionEventRequest, TransactionEventResponse>   ForwardingDecision,
                                                   CancellationToken                                                       CancellationToken);
 
     #endregion
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_TransactionEvent(OCPP_JSONRequestMessage    JSONRequestMessage,
                                      OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   JSONRequestMessage.EventTrackingId,
                                                   parentNetworkingNode.OCPP.CustomTransactionEventRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<TransactionEventRequest, TransactionEventResponse>(
+                forwardingDecision = new RequestForwardingDecision<TransactionEventRequest, TransactionEventResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -161,10 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new TransactionEventResponse(
                                        request,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = ForwardingDecision<TransactionEventRequest, TransactionEventResponse>.REJECT(
+                forwardingDecision = RequestForwardingDecision<TransactionEventRequest, TransactionEventResponse>.REJECT(
                                          request,
                                          response,
                                          response.ToJSON(

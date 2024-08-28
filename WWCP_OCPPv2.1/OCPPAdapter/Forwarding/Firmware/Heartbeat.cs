@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<HeartbeatRequest, HeartbeatResponse>>
+    public delegate Task<RequestForwardingDecision<HeartbeatRequest, HeartbeatResponse>>
 
         OnHeartbeatRequestFilterDelegate(DateTime               Timestamp,
                                          IEventSender           Sender,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            IEventSender                                              Sender,
                                            IWebSocketConnection                                      Connection,
                                            HeartbeatRequest                                          Request,
-                                           ForwardingDecision<HeartbeatRequest, HeartbeatResponse>   ForwardingDecision,
+                                           RequestForwardingDecision<HeartbeatRequest, HeartbeatResponse>   ForwardingDecision,
                                            CancellationToken                                         CancellationToken);
 
     #endregion
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_Heartbeat(OCPP_JSONRequestMessage    JSONRequestMessage,
                               OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            JSONRequestMessage.EventTrackingId,
                                            parentNetworkingNode.OCPP.CustomHeartbeatRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<HeartbeatRequest, HeartbeatResponse>(
+                forwardingDecision = new RequestForwardingDecision<HeartbeatRequest, HeartbeatResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -160,10 +160,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new HeartbeatResponse(
                                        request,
                                        Timestamp.Now,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<HeartbeatRequest, HeartbeatResponse>(
+                forwardingDecision = new RequestForwardingDecision<HeartbeatRequest, HeartbeatResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

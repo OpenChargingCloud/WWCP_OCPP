@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
+    public delegate Task<RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
 
         OnBootNotificationRequestFilterDelegate(DateTime                  Timestamp,
                                                 IEventSender              Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   IEventSender                                                            Sender,
                                                   IWebSocketConnection                                                    Connection,
                                                   BootNotificationRequest                                                 Request,
-                                                  ForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision,
+                                                  RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision,
                                                   CancellationToken                                                       CancellationToken);
 
     #endregion
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_BootNotification(OCPP_JSONRequestMessage    JSONRequestMessage,
                                      OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
                                                       parentNetworkingNode.OCPP.CustomCustomDataParser))
                 {
-                    return ForwardingDecision.REJECT(errorResponse);
+                    return RequestForwardingDecision.REJECT(errorResponse);
                 }
             }
 
@@ -135,12 +135,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
                                                       parentNetworkingNode.OCPP.CustomCustomDataParser))
                 {
-                    return ForwardingDecision.REJECT(errorResponse);
+                    return RequestForwardingDecision.REJECT(errorResponse);
                 }
             }
 
             else
-                return ForwardingDecision.REJECT("The given message could not be parsed!");
+                return RequestForwardingDecision.REJECT("The given message could not be parsed!");
 
             #endregion
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
+                forwardingDecision = new RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                         // NewRequest: request.Clone()//.SerializationFormat = SerializationFormats.JSON
@@ -194,10 +194,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    RegistrationStatus.Rejected,
                                                    Timestamp.Now,
                                                    BootNotificationResponse.DefaultInterval,
-                                                   Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                                   Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                                );
 
-                forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
+                forwardingDecision = new RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          dataTransferResponse,

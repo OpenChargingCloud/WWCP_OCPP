@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             {
 
                 var csBootNotificationRequestsSent       = new ConcurrentList<BootNotificationRequest>();
-                var nnBootNotificationRequestsForwarded  = new ConcurrentList<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>();
+                var nnBootNotificationRequestsForwarded  = new ConcurrentList<RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>>();
                 var nnJSONRequestMessagesSent            = new ConcurrentList<Tuple<OCPP_JSONRequestMessage,  SentMessageResults>>();
                 var csmsBootNotificationRequests         = new ConcurrentList<BootNotificationRequest>();
                 var nnJSONResponseMessagesSent           = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             {
 
                 var csDataTransferRequestsSent       = new ConcurrentList<DataTransferRequest>();
-                var nnDataTransferRequestsForwarded  = new ConcurrentList<ForwardingDecision<DataTransferRequest, DataTransferResponse>>();
+                var nnDataTransferRequestsForwarded  = new ConcurrentList<RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>();
                 var nnJSONRequestMessagesSent        = new ConcurrentList<Tuple<OCPP_JSONRequestMessage,  SentMessageResults>>();
                 var csmsDataTransferRequests         = new ConcurrentList<DataTransferRequest>();
                 var nnJSONResponseMessagesSent       = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             {
 
                 var csDataTransferRequestsSent       = new ConcurrentList<DataTransferRequest>();
-                var nnDataTransferRequestsForwarded  = new ConcurrentList<ForwardingDecision<DataTransferRequest, DataTransferResponse>>();
+                var nnDataTransferRequestsForwarded  = new ConcurrentList<RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>();
                 var nnJSONRequestMessagesSent        = new ConcurrentList<Tuple<OCPP_JSONRequestMessage,  SentMessageResults>>();
                 var csmsDataTransferRequests         = new ConcurrentList<DataTransferRequest>();
                 var nnJSONResponseMessagesSent       = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();

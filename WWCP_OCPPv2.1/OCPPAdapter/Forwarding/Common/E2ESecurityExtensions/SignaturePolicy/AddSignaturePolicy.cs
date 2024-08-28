@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>>
+    public delegate Task<RequestForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>>
 
         OnAddSignaturePolicyRequestFilterDelegate(DateTime                    Timestamp,
                                                   IEventSender                Sender,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IEventSender                                                                Sender,
                                                     IWebSocketConnection                                                        Connection,
                                                     AddSignaturePolicyRequest                                                   Request,
-                                                    ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>   ForwardingDecision,
+                                                    RequestForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>   ForwardingDecision,
                                                     CancellationToken                                                           CancellationToken);
 
     #endregion
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_AddSignaturePolicy(OCPP_JSONRequestMessage    JSONRequestMessage,
                                        OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     JSONRequestMessage.EventTrackingId,
                                                     parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
+                forwardingDecision = new RequestForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -156,10 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new AddSignaturePolicyResponse(
                                        request,
                                        GenericStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
+                forwardingDecision = new RequestForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

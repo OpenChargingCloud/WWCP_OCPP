@@ -1119,7 +1119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -1282,7 +1282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                cancellationToken) =>
 
                 Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                    new RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                         request,
                         ForwardingDecisions.FORWARD
                     )
@@ -1617,7 +1617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    );
 
                     return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
+                               new RequestForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    response,
@@ -1635,7 +1635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 else
                     return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
+                               new RequestForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
                                    ForwardingDecisions.FORWARD
                                )
@@ -1715,7 +1715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     //               );
 
                     return Task.FromResult(
-                               new ForwardingDecision<MessageTransferMessage>(
+                               new MessageForwardingDecision<MessageTransferMessage>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    //response,
@@ -1733,7 +1733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 else
                     return Task.FromResult(
-                               ForwardingDecision<MessageTransferMessage>.FORWARD(request)
+                               MessageForwardingDecision<MessageTransferMessage>.FORWARD(request)
                            );
 
             };

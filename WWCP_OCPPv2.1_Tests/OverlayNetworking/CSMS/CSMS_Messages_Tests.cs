@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
 
                 var csmsResetRequests   = new ConcurrentList<ResetRequest>();
                 var nnResetRequestsIN   = new ConcurrentList<ResetRequest>();
-                var nnResetRequestsFWD  = new ConcurrentList<Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>>();
+                var nnResetRequestsFWD  = new ConcurrentList<Tuple<ResetRequest, RequestForwardingDecision<ResetRequest, ResetResponse>>>();
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                 //};
 
                 localController1.OCPP.FORWARD.OnResetRequestFiltered  += (timestamp, sender, connection, resetRequest, forwardingDecision, ct) => {
-                    nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
+                    nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, RequestForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
 
                 var csmsDataTransferRequestsOUT     = new ConcurrentList<DataTransferRequest>();
                 var nnDataTransferRequestsIN        = new ConcurrentList<DataTransferRequest>();
-                var nnDataTransferRequestsFWD       = new ConcurrentList<Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>>();
+                var nnDataTransferRequestsFWD       = new ConcurrentList<Tuple<DataTransferRequest, RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>>();
                 var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
                 var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
 
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                 //};
 
                 localController1.OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision, ct) => {
-                    nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
+                    nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
 
                 var csmsBinaryDataTransferRequestsOUT     = new ConcurrentList<BinaryDataTransferRequest>();
                 var nnBinaryDataTransferRequestsIN        = new ConcurrentList<BinaryDataTransferRequest>();
-                var nnBinaryDataTransferRequestsFWD       = new ConcurrentList<Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>>();
+                var nnBinaryDataTransferRequestsFWD       = new ConcurrentList<Tuple<BinaryDataTransferRequest, RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>>();
                 var nnBinaryDataTransferRequestsOUT       = new ConcurrentList<BinaryDataTransferRequest>();
                 var csIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                 //};
 
                 localController1.OCPP.FORWARD.OnBinaryDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision, ct) => {
-                    nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
+                    nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 

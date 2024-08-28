@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>>
+    public delegate Task<RequestForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>>
 
         OnFirmwareStatusNotificationRequestFilterDelegate(DateTime                            Timestamp,
                                                           IEventSender                        Sender,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                             IEventSender                                                                                Sender,
                                                             IWebSocketConnection                                                                        Connection,
                                                             FirmwareStatusNotificationRequest                                                           Request,
-                                                            ForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>   ForwardingDecision,
+                                                            RequestForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>   ForwardingDecision,
                                                             CancellationToken                                                                           CancellationToken);
 
     #endregion
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_FirmwareStatusNotification(OCPP_JSONRequestMessage    JSONRequestMessage,
                                                OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                             JSONRequestMessage.EventTrackingId,
                                                             parentNetworkingNode.OCPP.CustomFirmwareStatusNotificationRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>(
+                forwardingDecision = new RequestForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -159,10 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new FirmwareStatusNotificationResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>(
+                forwardingDecision = new RequestForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

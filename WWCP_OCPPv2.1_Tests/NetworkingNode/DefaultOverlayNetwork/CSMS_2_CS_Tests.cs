@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
             {
 
                 var csmsResetRequestsSent           = new ConcurrentList<ResetRequest>();
-                var nnResetRequestsForwarded        = new ConcurrentList<ForwardingDecision<ResetRequest, ResetResponse>>();
+                var nnResetRequestsForwarded        = new ConcurrentList<RequestForwardingDecision<ResetRequest, ResetResponse>>();
                 var nnJSONRequestMessagesSent       = new ConcurrentList<Tuple<OCPP_JSONRequestMessage,  SentMessageResults>>();
                 var csResetRequests                 = new ConcurrentList<ResetRequest>();
                 var nnJSONResponseMessagesSent      = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
             {
 
                 var csmsDataTransferRequestsSent           = new ConcurrentList<DataTransferRequest>();
-                var nnDataTransferRequestsForwarded        = new ConcurrentList<ForwardingDecision<DataTransferRequest, DataTransferResponse>>();
+                var nnDataTransferRequestsForwarded        = new ConcurrentList<RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>();
                 var nnJSONRequestMessagesSent              = new ConcurrentList<Tuple<OCPP_JSONRequestMessage,  SentMessageResults>>();
                 var csDataTransferRequests                 = new ConcurrentList<DataTransferRequest>();
                 var nnJSONResponseMessagesSent             = new ConcurrentList<Tuple<OCPP_JSONResponseMessage, SentMessageResults>>();

@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                        cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                     cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                           cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
+                    RequestForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
+                    RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
+                    RequestForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -510,7 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                    );
 
                     return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
+                               new RequestForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    response,
@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                 else
                     return Task.FromResult(
-                               ForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request)
+                               RequestForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request)
                            );
 
             };
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     //               );
 
                     return Task.FromResult(
-                               new ForwardingDecision<MessageTransferMessage>(
+                               new MessageForwardingDecision<MessageTransferMessage>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    //response,
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                 else
                     return Task.FromResult(
-                               ForwardingDecision<MessageTransferMessage>.FORWARD(request)
+                               MessageForwardingDecision<MessageTransferMessage>.FORWARD(request)
                            );
 
             };
@@ -668,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                   cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(request)
+                    RequestForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -682,7 +682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                     cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<RequestStartTransactionRequest, CS.RequestStartTransactionResponse>.FORWARD(
+                    RequestForwardingDecision<RequestStartTransactionRequest, CS.RequestStartTransactionResponse>.FORWARD(
                         request
                     )
                 );
@@ -698,7 +698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                    cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<RequestStopTransactionRequest, CS.RequestStopTransactionResponse>.FORWARD(
+                    RequestForwardingDecision<RequestStopTransactionRequest, CS.RequestStopTransactionResponse>.FORWARD(
                         request
                     )
                 );
@@ -716,7 +716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<GetBaseReportRequest, CS.GetBaseReportResponse>.FORWARD(
+                    RequestForwardingDecision<GetBaseReportRequest, CS.GetBaseReportResponse>.FORWARD(
                         request
                     )
                 );
@@ -729,7 +729,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<GetReportRequest, CS.GetReportResponse>.FORWARD(
+                    RequestForwardingDecision<GetReportRequest, CS.GetReportResponse>.FORWARD(
                         request
                     )
                 );
@@ -742,7 +742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<GetVariablesRequest, CS.GetVariablesResponse>.FORWARD(
+                    RequestForwardingDecision<GetVariablesRequest, CS.GetVariablesResponse>.FORWARD(
                         request
                     )
                 );
@@ -755,7 +755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<CS.NotifyReportRequest, NotifyReportResponse>.FORWARD(
+                    RequestForwardingDecision<CS.NotifyReportRequest, NotifyReportResponse>.FORWARD(
                         request
                     )
                 );
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<SetVariablesRequest, CS.SetVariablesResponse>.FORWARD(
+                    RequestForwardingDecision<SetVariablesRequest, CS.SetVariablesResponse>.FORWARD(
                         request
                     )
                 );
@@ -790,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ChangeTransactionTariffRequest, CS.ChangeTransactionTariffResponse>.FORWARD(
+                    RequestForwardingDecision<ChangeTransactionTariffRequest, CS.ChangeTransactionTariffResponse>.FORWARD(
                         request
                     )
                 );
@@ -803,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ClearTariffsRequest, CS.ClearTariffsResponse>.FORWARD(
+                    RequestForwardingDecision<ClearTariffsRequest, CS.ClearTariffsResponse>.FORWARD(
                         request
                     )
                 );
@@ -816,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<GetTariffsRequest, CS.GetTariffsResponse>.FORWARD(
+                    RequestForwardingDecision<GetTariffsRequest, CS.GetTariffsResponse>.FORWARD(
                         request
                     )
                 );
@@ -829,7 +829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                 (timestamp, sender, connection, request, ct) =>
 
                 Task.FromResult(
-                    ForwardingDecision<SetDefaultTariffRequest, CS.SetDefaultTariffResponse>.FORWARD(
+                    RequestForwardingDecision<SetDefaultTariffRequest, CS.SetDefaultTariffResponse>.FORWARD(
                         request
                     )
                 );
@@ -852,7 +852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.FORWARD(request)
+                    RequestForwardingDecision<CS.BootNotificationRequest, BootNotificationResponse>.FORWARD(request)
                 );
 
             //Task.FromResult(
@@ -890,8 +890,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                 Task.FromResult(
                     AllowedChargingStations.Contains(request.NetworkPath.Source)
-                        ? ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
-                        : ForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REJECT (request, "Unauthorized!")
+                        ? RequestForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
+                        : RequestForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REJECT (request, "Unauthorized!")
                 );
 
             #endregion
@@ -905,7 +905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                              cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<CS.TransactionEventRequest, TransactionEventResponse>.FORWARD(request)
+                    RequestForwardingDecision<CS.TransactionEventRequest, TransactionEventResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -919,7 +919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                         cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<CS.MeterValuesRequest, MeterValuesResponse>.FORWARD(request)
+                    RequestForwardingDecision<CS.MeterValuesRequest, MeterValuesResponse>.FORWARD(request)
                 );
 
             #endregion

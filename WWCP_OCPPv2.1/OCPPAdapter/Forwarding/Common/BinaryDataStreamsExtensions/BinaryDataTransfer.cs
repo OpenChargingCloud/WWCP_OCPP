@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>
+    public delegate Task<RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>
 
         OnBinaryDataTransferRequestFilterDelegate(DateTime                    Timestamp,
                                                   IEventSender                Sender,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IEventSender                                                                Sender,
                                                     IWebSocketConnection                                                        Connection,
                                                     BinaryDataTransferRequest                                                   Request,
-                                                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision,
+                                                    RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision,
                                                     CancellationToken                                                           CancellationToken);
 
     #endregion
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_BinaryDataTransfer(OCPP_JSONRequestMessage    JSONRequestMessage,
                                        OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     BinaryRequestMessage.EventTrackingId,
                                                     parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                forwardingDecision = new RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -156,10 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new BinaryDataTransferResponse(
                                        request,
                                        BinaryDataTransferStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                forwardingDecision = new RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

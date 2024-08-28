@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>>
+    public delegate Task<RequestForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>>
 
         OnListDirectoryRequestFilterDelegate(DateTime               Timestamp,
                                              IEventSender           Sender,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                IEventSender                                                      Sender,
                                                IWebSocketConnection                                              Connection,
                                                ListDirectoryRequest                                              Request,
-                                               ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>   ForwardingDecision,
+                                               RequestForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>   ForwardingDecision,
                                                CancellationToken                                                 CancellationToken);
 
     #endregion
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_ListDirectory(OCPP_JSONRequestMessage    JSONRequestMessage,
                                   OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                JSONRequestMessage.EventTrackingId,
                                                parentNetworkingNode.OCPP.CustomListDirectoryRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request);
+                forwardingDecision = RequestForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request);
 
             if (forwardingDecision is null ||
                (forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
@@ -154,10 +154,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        request,
                                        request.DirectoryPath,
                                        ListDirectoryStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.REJECT(
+                forwardingDecision = RequestForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.REJECT(
                                          request,
                                          response,
                                          response.ToJSON(

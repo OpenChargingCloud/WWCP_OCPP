@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>>
+    public delegate Task<RequestForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>>
 
         OnGet15118EVCertificateRequestFilterDelegate(DateTime                       Timestamp,
                                                      IEventSender                   Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        IEventSender                                                                      Sender,
                                                        IWebSocketConnection                                                              Connection,
                                                        Get15118EVCertificateRequest                                                      Request,
-                                                       ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>   ForwardingDecision,
+                                                       RequestForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>   ForwardingDecision,
                                                        CancellationToken                                                                 CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_Get15118EVCertificate(OCPP_JSONRequestMessage    JSONRequestMessage,
                                           OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        JSONRequestMessage.EventTrackingId,
                                                        parentNetworkingNode.OCPP.CustomGet15118EVCertificateRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
+                forwardingDecision = new RequestForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -159,10 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        request,
                                        ISO15118EVCertificateStatus.Failed,
                                        EXIData.Empty,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
+                forwardingDecision = new RequestForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

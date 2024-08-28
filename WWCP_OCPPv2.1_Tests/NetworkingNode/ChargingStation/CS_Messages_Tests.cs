@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
                 var csBootNotificationRequests     = new ConcurrentList<BootNotificationRequest>();
                 var nnBootNotificationRequestsIN   = new ConcurrentList<BootNotificationRequest>();
-                var nnBootNotificationRequestsFWD  = new ConcurrentList<Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>>();
+                var nnBootNotificationRequestsFWD  = new ConcurrentList<Tuple<BootNotificationRequest, RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>>>();
                 var nnBootNotificationRequestsOUT  = new ConcurrentList<BootNotificationRequest>();
                 var csmsBootNotificationRequests   = new ConcurrentList<BootNotificationRequest>();
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //};
 
                 localController1.OCPP.FORWARD.OnBootNotificationRequestFiltered += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision, ct) => {
-                    nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
+                    nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
                 var csBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var nnBinaryDataTransferRequestsIN          = new ConcurrentList<BinaryDataTransferRequest>();
-                var nnBinaryDataTransferRequestsFWD         = new ConcurrentList<Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>>();
+                var nnBinaryDataTransferRequestsFWD         = new ConcurrentList<Tuple<BinaryDataTransferRequest, RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>>();
                 var nnBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //};
 
                 localController1.OCPP.FORWARD.OnBinaryDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision, ct) => {
-                    nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
+                    nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 

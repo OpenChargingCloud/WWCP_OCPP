@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<ClearCacheRequest, ClearCacheResponse>>
+    public delegate Task<RequestForwardingDecision<ClearCacheRequest, ClearCacheResponse>>
 
         OnClearCacheRequestFilterDelegate(DateTime               Timestamp,
                                           IEventSender           Sender,
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             IEventSender                                                Sender,
                                             IWebSocketConnection                                        Connection,
                                             ClearCacheRequest                                           Request,
-                                            ForwardingDecision<ClearCacheRequest, ClearCacheResponse>   ForwardingDecision,
+                                            RequestForwardingDecision<ClearCacheRequest, ClearCacheResponse>   ForwardingDecision,
                                             CancellationToken                                           CancellationToken);
 
     #endregion
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_ClearCache(OCPP_JSONRequestMessage    JSONRequestMessage,
                                OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             JSONRequestMessage.EventTrackingId,
                                             parentNetworkingNode.OCPP.CustomClearCacheRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<ClearCacheRequest, ClearCacheResponse>(
+                forwardingDecision = new RequestForwardingDecision<ClearCacheRequest, ClearCacheResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -157,10 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new ClearCacheResponse(
                                        request,
                                        ClearCacheStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<ClearCacheRequest, ClearCacheResponse>(
+                forwardingDecision = new RequestForwardingDecision<ClearCacheRequest, ClearCacheResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

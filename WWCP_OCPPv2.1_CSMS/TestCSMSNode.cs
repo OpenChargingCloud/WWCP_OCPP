@@ -1422,7 +1422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     //               );
 
                     return Task.FromResult(
-                               new ForwardingDecision<MessageTransferMessage>(
+                               new MessageForwardingDecision<MessageTransferMessage>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    //response,
@@ -1440,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 else
                     return Task.FromResult(
-                               ForwardingDecision<MessageTransferMessage>.FORWARD(request)
+                               MessageForwardingDecision<MessageTransferMessage>.FORWARD(request)
                            );
 
             };

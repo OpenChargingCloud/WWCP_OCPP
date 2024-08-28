@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>>
+    public delegate Task<RequestForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>>
 
         OnUsePriorityChargingRequestFilterDelegate(DateTime                     Timestamp,
                                                    IEventSender                 Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      IEventSender                                                                  Sender,
                                                      IWebSocketConnection                                                          Connection,
                                                      UsePriorityChargingRequest                                                    Request,
-                                                     ForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>   ForwardingDecision,
+                                                     RequestForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>   ForwardingDecision,
                                                      CancellationToken                                                             CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_UsePriorityCharging(OCPP_JSONRequestMessage    JSONRequestMessage,
                                         OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      JSONRequestMessage.EventTrackingId,
                                                      parentNetworkingNode.OCPP.CustomUsePriorityChargingRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>(
+                forwardingDecision = new RequestForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new UsePriorityChargingResponse(
                                        request,
                                        GenericStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>(
+                forwardingDecision = new RequestForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

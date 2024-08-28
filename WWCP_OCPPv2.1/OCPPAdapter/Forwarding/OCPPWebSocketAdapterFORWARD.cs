@@ -18,8 +18,8 @@
 #region Usings
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 using Newtonsoft.Json.Linq;
 
@@ -27,9 +27,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
 
@@ -37,6 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     #region Delegates
+
+    #region OnAnyJSONRequestFilter(ed)Delegate
 
     /// <summary>
     /// A delegate called whenever any JSON request should be forwarded or filtered.
@@ -46,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The JSON request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task<ForwardingDecision>
+    public delegate Task<RequestForwardingDecision>
 
         OnAnyJSONRequestFilterDelegate(DateTime                  Timestamp,
                                        IEventSender              Sender,
@@ -70,9 +72,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          IEventSender              Sender,
                                          IWebSocketConnection      Connection,
                                          OCPP_JSONRequestMessage   Request,
-                                         ForwardingDecision        ForwardingDecision,
+                                         RequestForwardingDecision        ForwardingDecision,
                                          CancellationToken         CancellationToken);
 
+    #endregion
+
+    #region OnAnyBinaryRequestFilter(ed)Delegate
 
     /// <summary>
     /// A delegate called whenever any binary request should be forwarded or filtered.
@@ -82,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The binary request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task<ForwardingDecision>
+    public delegate Task<RequestForwardingDecision>
 
         OnAnyBinaryRequestFilterDelegate(DateTime                    Timestamp,
                                          IEventSender                Sender,
@@ -106,10 +111,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            IEventSender                Sender,
                                            IWebSocketConnection        Connection,
                                            OCPP_BinaryRequestMessage   Request,
-                                           ForwardingDecision          ForwardingDecision,
+                                           RequestForwardingDecision          ForwardingDecision,
                                            CancellationToken           CancellationToken);
 
+    #endregion
 
+
+    #region OnAnyJSONResponseFilter(ed)Delegate
+
+    /// <summary>
+    /// A delegate called whenever any JSON response should be forwarded or filtered.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Response">The JSON response.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task<RequestForwardingDecision>
+
+        OnAnyJSONResponseFilterDelegate(DateTime                   Timestamp,
+                                        IEventSender               Sender,
+                                        IWebSocketConnection       Connection,
+                                        OCPP_JSONResponseMessage   Response,
+                                        CancellationToken          CancellationToken);
+
+
+    /// <summary>
+    /// A delegate called whenever any JSON response was forwarded or filtered.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Response">The JSON response.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnAnyJSONResponseFilteredDelegate(DateTime                  Timestamp,
+                                         IEventSender              Sender,
+                                         IWebSocketConnection      Connection,
+                                         OCPP_JSONResponseMessage   Response,
+                                         RequestForwardingDecision        ForwardingDecision,
+                                         CancellationToken         CancellationToken);
+
+    #endregion
+
+    #region OnAnyBinaryResponseFilter(ed)Delegate
+
+    /// <summary>
+    /// A delegate called whenever any binary response should be forwarded or filtered.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Response">The binary response.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task<RequestForwardingDecision>
+
+        OnAnyBinaryResponseFilterDelegate(DateTime                    Timestamp,
+                                         IEventSender                Sender,
+                                         IWebSocketConnection        Connection,
+                                         OCPP_BinaryResponseMessage   Response,
+                                         CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A delegate called whenever any binary response was forwarded or filtered.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The connection of the response.</param>
+    /// <param name="Response">The binary response.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="CancellationToken">An optional cancellation token.</param>
+    public delegate Task
+
+        OnAnyBinaryResponseFilteredDelegate(DateTime                    Timestamp,
+                                           IEventSender                Sender,
+                                           IWebSocketConnection        Connection,
+                                           OCPP_BinaryResponseMessage   Response,
+                                           RequestForwardingDecision          ForwardingDecision,
+                                           CancellationToken           CancellationToken);
+
+    #endregion
+
+
+
+    #region OnAnyJSONSendMessageFilter(ed)Delegate
 
     /// <summary>
     /// A delegate called whenever any JSON SendMessage should be forwarded or filtered.
@@ -119,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="SendMessage">The JSON SendMessage.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task<ForwardingDecision>
+    public delegate Task<RequestForwardingDecision>
 
         OnAnyJSONSendMessageFilterDelegate(DateTime               Timestamp,
                                            IEventSender           Sender,
@@ -143,9 +231,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              IEventSender           Sender,
                                              IWebSocketConnection   Connection,
                                              OCPP_JSONSendMessage   SendMessage,
-                                             ForwardingDecision     ForwardingDecision,
+                                             RequestForwardingDecision     ForwardingDecision,
                                              CancellationToken      CancellationToken);
 
+    #endregion
+
+    #region OnAnyBinarySendMessageFilter(ed)Delegate
 
     /// <summary>
     /// A delegate called whenever any binary SendMessage should be forwarded or filtered.
@@ -155,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="SendMessage">The binary SendMessage.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task<ForwardingDecision>
+    public delegate Task<RequestForwardingDecision>
 
         OnAnyBinarySendMessageFilterDelegate(DateTime                 Timestamp,
                                              IEventSender             Sender,
@@ -179,8 +270,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                IEventSender             Sender,
                                                IWebSocketConnection     Connection,
                                                OCPP_BinarySendMessage   SendMessage,
-                                               ForwardingDecision       ForwardingDecision,
+                                               RequestForwardingDecision       ForwardingDecision,
                                                CancellationToken        CancellationToken);
+
+    #endregion
 
     #endregion
 
@@ -211,6 +304,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public HashSet<NetworkingNode_Id>  AnycastIdsDenied             { get; }      = [];
 
+        /// <summary>
+        /// Whether to forward responses, that have no 'known requests ids' entry.
+        /// This might occur in high-available systems, when the request was not forwarded by this node.
+        /// </summary>
+        public Boolean                     ForwardUnknownResponses      { get; set; }
+
 
         #region ForwardingSignaturePolicy/-ies
 
@@ -239,6 +338,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAnyBinaryRequestFilteredDelegate?      OnAnyBinaryRequestFiltered;
 
 
+        public event OnAnyJSONResponseFilterDelegate?         OnAnyJSONResponseFilter;
+        public event OnAnyJSONResponseFilteredDelegate?       OnAnyJSONResponseFiltered;
+
+        public event OnAnyBinaryResponseFilterDelegate?       OnAnyBinaryResponseFilter;
+        public event OnAnyBinaryResponseFilteredDelegate?     OnAnyBinaryResponseFiltered;
+
+
         public event OnAnyJSONSendMessageFilterDelegate?      OnAnyJSONSendMessageFilter;
         public event OnAnyJSONSendMessageFilteredDelegate?    OnAnyJSONSendMessageFiltered;
 
@@ -255,13 +361,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="NetworkingNode">The parent networking node.</param>
         /// <param name="ForwardingSignaturePolicy">An optional signature policy when forwarding OCPP messages.</param>
         /// <param name="DefaultForwardingDecision">The default forwarding decision.</param>
+        /// <param name="ForwardUnknownResponses">Whether to forward responses, that have no 'known requests ids' entry.</param>
         public OCPPWebSocketAdapterFORWARD(INetworkingNode       NetworkingNode,
                                            SignaturePolicy?      ForwardingSignaturePolicy   = null,
-                                           ForwardingDecisions?  DefaultForwardingDecision   = ForwardingDecisions.DROP)
+                                           ForwardingDecisions?  DefaultForwardingDecision   = ForwardingDecisions.DROP,
+                                           Boolean               ForwardUnknownResponses     = false)
         {
 
             this.parentNetworkingNode       = NetworkingNode;
             this.DefaultForwardingDecision  = DefaultForwardingDecision    ?? ForwardingDecisions.DROP;
+            this.ForwardUnknownResponses    = ForwardUnknownResponses;
 
             this.forwardingSignaturePolicies.Add(ForwardingSignaturePolicy ?? new SignaturePolicy());
 
@@ -320,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Do we have a general filter rule for any JSON request?
 
-            ForwardingDecision? forwardingDecision = null;
+            RequestForwardingDecision? forwardingDecision = null;
 
             var requestFilter = OnAnyJSONRequestFilter;
             if (requestFilter is not null)
@@ -374,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ]
                                      );
 
-                    if (resultTask is Task<ForwardingDecision> forwardingDecisionTask)
+                    if (resultTask is Task<RequestForwardingDecision> forwardingDecisionTask)
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
@@ -414,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new ForwardingDecision(DefaultForwardingDecision);
+            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONRequestFiltered event
@@ -547,28 +656,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      IWebSocketConnection      WebSocketConnection)
         {
 
-            if (expectedResponses.TryRemove(JSONResponseMessage.RequestId, out var responseInfo))
+            #region Do we have a general filter rule for any JSON response?
+
+            RequestForwardingDecision? forwardingDecision = null;
+
+            var responseFilter = OnAnyJSONResponseFilter;
+            if (responseFilter is not null)
+            {
+                try
+                {
+
+                    var results = await Task.WhenAll(
+                                            responseFilter.GetInvocationList().
+                                                OfType<OnAnyJSONResponseFilterDelegate>().
+                                                Select(filterDelegate => filterDelegate.Invoke(
+                                                                             Timestamp.Now,
+                                                                             parentNetworkingNode,
+                                                                             WebSocketConnection,
+                                                                             JSONResponseMessage,
+                                                                             JSONResponseMessage.CancellationToken
+                                                                         ))
+                                        );
+
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OnAnyJSONResponseFilter),
+                              e
+                          );
+                }
+            }
+
+            #endregion
+
+
+            if (forwardingDecision is null)
             {
 
-                if (responseInfo.Timeout >= Timestamp.Now)
+                if (expectedResponses.TryRemove(JSONResponseMessage.RequestId, out var responseInfo))
+                {
+
+                    if (responseInfo.Timeout >= Timestamp.Now)
+                    {
+
+                        await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
+                                  JSONResponseMessage.ChangeNetworking(
+                                      JSONResponseMessage.Destination.Next == NetworkingNode_Id.Zero
+                                          ? SourceRouting.To(responseInfo.SourceNodeId)
+                                          : JSONResponseMessage.Destination,
+                                      JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
+                                  )
+                              );
+
+                    }
+                    else
+                        await HandleErrors(
+                            nameof(ProcessJSONResponseMessage),
+                            $"Received a too late JSON response message for request id '{JSONResponseMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!"
+                        );
+
+                }
+                else if (ForwardUnknownResponses)
                 {
 
                     await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
-                              JSONResponseMessage.ChangeNetworking(
-                                  JSONResponseMessage.Destination.Next == NetworkingNode_Id.Zero
-                                      ? SourceRouting.To(responseInfo.SourceNodeId)
-                                      : JSONResponseMessage.Destination,
-                                  JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              JSONResponseMessage.AppendToNetworkPath(parentNetworkingNode.Id)
                           );
 
                 }
                 else
-                    DebugX.Log($"Received a too late JSON response message for request id '{JSONResponseMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!");
+                    await HandleErrors(
+                        nameof(ProcessJSONResponseMessage),
+                        $"Received a JSON response message for an unknown request id '{JSONResponseMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!"
+                    );
 
             }
-            else
-                DebugX.Log($"Received a JSON response message for an unknown request id '{JSONResponseMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!");
+
+            #region FORWARD
+
+            if (forwardingDecision?.Result == ForwardingDecisions.FORWARD)
+            {
+
+
+
+            }
+
+            #endregion
 
         }
 
@@ -641,7 +818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Do we have a general filter rule for any JSON request?
 
-            ForwardingDecision? forwardingDecision = null;
+            RequestForwardingDecision? forwardingDecision = null;
 
             var requestFilter = OnAnyJSONSendMessageFilter;
             if (requestFilter is not null)
@@ -695,7 +872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ]
                                      );
 
-                    if (resultTask is Task<ForwardingDecision> forwardingDecisionTask)
+                    if (resultTask is Task<RequestForwardingDecision> forwardingDecisionTask)
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
@@ -735,7 +912,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new ForwardingDecision(DefaultForwardingDecision);
+            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONSendMessageFiltered event
@@ -858,7 +1035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Do we have a general filter rule for any Binary request?
 
-            ForwardingDecision? forwardingDecision = null;
+            RequestForwardingDecision? forwardingDecision = null;
 
             var requestFilter = OnAnyBinaryRequestFilter;
             if (requestFilter is not null)
@@ -912,7 +1089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ]
                                      );
 
-                    if (resultTask is Task<ForwardingDecision> forwardingDecisionTask)
+                    if (resultTask is Task<RequestForwardingDecision> forwardingDecisionTask)
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
@@ -952,7 +1129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new ForwardingDecision(DefaultForwardingDecision);
+            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinaryRequestFiltered event
@@ -1178,7 +1355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Do we have a general filter rule for any Binary request?
 
-            ForwardingDecision? forwardingDecision = null;
+            RequestForwardingDecision? forwardingDecision = null;
 
             var requestFilter = OnAnyBinarySendMessageFilter;
             if (requestFilter is not null)
@@ -1232,7 +1409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ]
                                      );
 
-                    if (resultTask is Task<ForwardingDecision> forwardingDecisionTask)
+                    if (resultTask is Task<RequestForwardingDecision> forwardingDecisionTask)
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
@@ -1272,7 +1449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new ForwardingDecision(DefaultForwardingDecision);
+            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinarySendMessageFiltered event
@@ -1447,8 +1624,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors (Caller, ExceptionOccured)
+        #region (private) HandleErrors (Caller, ErrorOccured)
 
+        private Task HandleErrors(String  Caller,
+                                  String  ErrorOccured)
+
+            => parentNetworkingNode.HandleErrors(
+                   nameof(OCPPWebSocketAdapterFORWARD),
+                   Caller,
+                   ErrorOccured
+               );
+
+        #endregion
+
+        #region (private) HandleErrors (Caller, ExceptionOccured)
         private Task HandleErrors(String     Caller,
                                   Exception  ExceptionOccured)
 

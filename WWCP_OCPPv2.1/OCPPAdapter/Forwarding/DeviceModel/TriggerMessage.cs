@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>>
+    public delegate Task<RequestForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>>
 
         OnTriggerMessageRequestFilterDelegate(DateTime                Timestamp,
                                               IEventSender            Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 IEventSender                                                        Sender,
                                                 IWebSocketConnection                                                Connection,
                                                 TriggerMessageRequest                                               Request,
-                                                ForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>   ForwardingDecision,
+                                                RequestForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>   ForwardingDecision,
                                                 CancellationToken                                                   CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_TriggerMessage(OCPP_JSONRequestMessage    JSONRequestMessage,
                                    OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 JSONRequestMessage.EventTrackingId,
                                                 parentNetworkingNode.OCPP.CustomTriggerMessageRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>(
+                forwardingDecision = new RequestForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new TriggerMessageResponse(
                                        request,
                                        TriggerMessageStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>(
+                forwardingDecision = new RequestForwardingDecision<TriggerMessageRequest, TriggerMessageResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

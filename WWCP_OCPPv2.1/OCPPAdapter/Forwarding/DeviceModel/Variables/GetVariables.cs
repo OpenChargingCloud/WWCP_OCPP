@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<GetVariablesRequest, GetVariablesResponse>>
+    public delegate Task<RequestForwardingDecision<GetVariablesRequest, GetVariablesResponse>>
 
         OnGetVariablesRequestFilterDelegate(DateTime               Timestamp,
                                             IEventSender           Sender,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               IEventSender                                                    Sender,
                                               IWebSocketConnection                                            Connection,
                                               GetVariablesRequest                                             Request,
-                                              ForwardingDecision<GetVariablesRequest, GetVariablesResponse>   ForwardingDecision,
+                                              RequestForwardingDecision<GetVariablesRequest, GetVariablesResponse>   ForwardingDecision,
                                               CancellationToken                                               CancellationToken);
 
     #endregion
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_GetVariables(OCPP_JSONRequestMessage    JSONRequestMessage,
                                  OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               JSONRequestMessage.EventTrackingId,
                                               parentNetworkingNode.OCPP.CustomGetVariablesRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<GetVariablesRequest, GetVariablesResponse>(
+                forwardingDecision = new RequestForwardingDecision<GetVariablesRequest, GetVariablesResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -159,10 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new GetVariablesResponse(
                                        request,
                                        [],
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<GetVariablesRequest, GetVariablesResponse>(
+                forwardingDecision = new RequestForwardingDecision<GetVariablesRequest, GetVariablesResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>>
+    public delegate Task<RequestForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>>
 
         OnSecurityEventNotificationRequestFilterDelegate(DateTime                           Timestamp,
                                                          IEventSender                       Sender,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            IEventSender                                                                              Sender,
                                                            IWebSocketConnection                                                                      Connection,
                                                            SecurityEventNotificationRequest                                                          Request,
-                                                           ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>   ForwardingDecision,
+                                                           RequestForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>   ForwardingDecision,
                                                            CancellationToken                                                                         CancellationToken);
 
     #endregion
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_SecurityEventNotification(OCPP_JSONRequestMessage    JSONRequestMessage,
                                               OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            JSONRequestMessage.EventTrackingId,
                                                            parentNetworkingNode.OCPP.CustomSecurityEventNotificationRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
+                forwardingDecision = new RequestForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new SecurityEventNotificationResponse(
                                        request,
-                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
+                forwardingDecision = new RequestForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

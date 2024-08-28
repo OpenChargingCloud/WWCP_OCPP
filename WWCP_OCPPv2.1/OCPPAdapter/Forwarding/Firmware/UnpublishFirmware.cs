@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>>
+    public delegate Task<RequestForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>>
 
         OnUnpublishFirmwareRequestFilterDelegate(DateTime                   Timestamp,
                                                  IEventSender               Sender,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    IEventSender                                                              Sender,
                                                    IWebSocketConnection                                                      Connection,
                                                    UnpublishFirmwareRequest                                                  Request,
-                                                   ForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>   ForwardingDecision,
+                                                   RequestForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>   ForwardingDecision,
                                                    CancellationToken                                                         CancellationToken);
 
     #endregion
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_UnpublishFirmware(OCPP_JSONRequestMessage    JSONRequestMessage,
                                       OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    JSONRequestMessage.EventTrackingId,
                                                    parentNetworkingNode.OCPP.CustomUnpublishFirmwareRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>(
+                forwardingDecision = new RequestForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -159,10 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new UnpublishFirmwareResponse(
                                        request,
                                        UnpublishFirmwareStatus.Error,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>(
+                forwardingDecision = new RequestForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

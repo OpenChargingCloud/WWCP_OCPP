@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>>
+    public delegate Task<RequestForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>>
 
         OnRequestStopTransactionRequestFilterDelegate(DateTime                        Timestamp,
                                                       IEventSender                    Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         IEventSender                                                                        Sender,
                                                         IWebSocketConnection                                                                Connection,
                                                         RequestStopTransactionRequest                                                       Request,
-                                                        ForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>   ForwardingDecision,
+                                                        RequestForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>   ForwardingDecision,
                                                         CancellationToken                                                                   CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_RequestStopTransaction(OCPP_JSONRequestMessage    JSONRequestMessage,
                                            OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         JSONRequestMessage.EventTrackingId,
                                                         parentNetworkingNode.OCPP.CustomRequestStopTransactionRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>(
+                forwardingDecision = new RequestForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new RequestStopTransactionResponse(
                                        request,
                                        RequestStartStopStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>(
+                forwardingDecision = new RequestForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

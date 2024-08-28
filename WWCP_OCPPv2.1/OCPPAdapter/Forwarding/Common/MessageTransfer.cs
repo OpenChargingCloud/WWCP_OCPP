@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Message">The message.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<MessageTransferMessage>>
+    public delegate Task<MessageForwardingDecision<MessageTransferMessage>>
 
         OnMessageTransferMessageFilterDelegate(DateTime                 Timestamp,
                                                IEventSender             Sender,
@@ -58,12 +58,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnMessageTransferMessageFilteredDelegate(DateTime                                     Timestamp,
-                                                 IEventSender                                 Sender,
-                                                 IWebSocketConnection                         Connection,
-                                                 MessageTransferMessage                       Message,
-                                                 ForwardingDecision<MessageTransferMessage>   ForwardingDecision,
-                                                 CancellationToken                            CancellationToken);
+        OnMessageTransferMessageFilteredDelegate(DateTime                                            Timestamp,
+                                                 IEventSender                                        Sender,
+                                                 IWebSocketConnection                                Connection,
+                                                 MessageTransferMessage                              Message,
+                                                 MessageForwardingDecision<MessageTransferMessage>   ForwardingDecision,
+                                                 CancellationToken                                   CancellationToken);
 
     #endregion
 
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<MessageForwardingDecision>
 
             Forward_MessageTransfer(OCPP_JSONSendMessage    JSONSendMessage,
                                     OCPP_BinarySendMessage  BinarySendMessage,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
                                                      parentNetworkingNode.OCPP.CustomCustomDataParser))
                 {
-                    return ForwardingDecision.REJECT(errorResponse);
+                    return MessageForwardingDecision.REJECT(errorResponse);
                 }
             }
 
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //}
 
             else
-                return ForwardingDecision.REJECT("The given message could not be parsed!");
+                return MessageForwardingDecision.REJECT("The given message could not be parsed!");
 
             #endregion
 
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = ForwardingDecision<MessageTransferMessage>.FORWARD(message);
+                forwardingDecision = MessageForwardingDecision<MessageTransferMessage>.FORWARD(message);
 
             if (forwardingDecision is null) // ||
                //(forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 //                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
                 //                   );
 
-                forwardingDecision = ForwardingDecision<MessageTransferMessage>.REJECT(
+                forwardingDecision = MessageForwardingDecision<MessageTransferMessage>.REJECT(
                                          message
                                          //response,
                                          //response.ToJSON(

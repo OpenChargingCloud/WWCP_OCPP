@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                        cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<DeleteFileRequest, DeleteFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                     cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<GetFileRequest, GetFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                           cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
+                    RequestForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                      cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
+                    RequestForwardingDecision<SendFileRequest, SendFileResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                                cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
+                    RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                                cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
+                    RequestForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>.FORWARD(request)
                 );
 
             #endregion
@@ -487,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                    );
 
                     return Task.FromResult(
-                               new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
+                               new RequestForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    response,
@@ -505,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                 else
                     return Task.FromResult(
-                               ForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request)
+                               RequestForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request)
                            );
 
             };
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                     //               );
 
                     return Task.FromResult(
-                               new ForwardingDecision<MessageTransferMessage>(
+                               new MessageForwardingDecision<MessageTransferMessage>(
                                    request,
                                    ForwardingDecisions.REJECT,
                                    //response,
@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                 else
                     return Task.FromResult(
-                               ForwardingDecision<MessageTransferMessage>.FORWARD(request)
+                               MessageForwardingDecision<MessageTransferMessage>.FORWARD(request)
                            );
 
             };
@@ -645,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                                   cancellationToken) =>
 
                 Task.FromResult(
-                    ForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(
+                    RequestForwardingDecision<ResetRequest, CS.ResetResponse>.FORWARD(
                         request
                     )
                 );

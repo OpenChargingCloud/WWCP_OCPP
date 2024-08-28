@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>>
+    public delegate Task<RequestForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>>
 
         OnGetLocalListVersionRequestFilterDelegate(DateTime                     Timestamp,
                                                    IEventSender                 Sender,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      IEventSender                                                                  Sender,
                                                      IWebSocketConnection                                                          Connection,
                                                      GetLocalListVersionRequest                                                    Request,
-                                                     ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>   ForwardingDecision,
+                                                     RequestForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>   ForwardingDecision,
                                                      CancellationToken                                                             CancellationToken);
 
     #endregion
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_GetLocalListVersion(OCPP_JSONRequestMessage    JSONRequestMessage,
                                         OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      JSONRequestMessage.EventTrackingId,
                                                      parentNetworkingNode.OCPP.CustomGetLocalListVersionRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
+                forwardingDecision = new RequestForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -158,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new GetLocalListVersionResponse(
                                        request,
                                        VersionNumber:  0,
-                                       Result:         Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result:         Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
+                forwardingDecision = new RequestForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
                                          request,
                                          ForwardingDecisions.REJECT,
                                          response,

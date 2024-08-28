@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<DataTransferRequest, DataTransferResponse>>
+    public delegate Task<RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>
 
         OnDataTransferRequestFilterDelegate(DateTime               Timestamp,
                                             IEventSender           Sender,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               IEventSender                                                    Sender,
                                               IWebSocketConnection                                            Connection,
                                               DataTransferRequest                                             Request,
-                                              ForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision,
+                                              RequestForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision,
                                               CancellationToken                                               CancellationToken);
 
     #endregion
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision>
+        public async Task<RequestForwardingDecision>
 
             Forward_DataTransfer(OCPP_JSONRequestMessage    JSONRequestMessage,
                                  OCPP_BinaryRequestMessage  BinaryRequestMessage,
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               JSONRequestMessage.EventTrackingId,
                                               parentNetworkingNode.OCPP.CustomDataTransferRequestParser))
             {
-                return ForwardingDecision.REJECT(errorResponse);
+                return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = ForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request);
+                forwardingDecision = RequestForwardingDecision<DataTransferRequest, DataTransferResponse>.FORWARD(request);
 
             if (forwardingDecision is null ||
                (forwardingDecision.Result == ForwardingDecisions.REJECT && forwardingDecision.RejectResponse is null))
@@ -153,10 +153,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    new DataTransferResponse(
                                        request,
                                        DataTransferStatus.Rejected,
-                                       Result: Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                       Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
-                forwardingDecision = ForwardingDecision<DataTransferRequest, DataTransferResponse>.REJECT(
+                forwardingDecision = RequestForwardingDecision<DataTransferRequest, DataTransferResponse>.REJECT(
                                          request,
                                          response,
                                          response.ToJSON(
