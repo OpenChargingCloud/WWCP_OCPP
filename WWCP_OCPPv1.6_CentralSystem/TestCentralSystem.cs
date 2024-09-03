@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
+
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics.CodeAnalysis;
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private          readonly  HashSet<SignaturePolicy>                                                                      signaturePolicies        = [];
+        private          readonly  HashSet<WWCP.SignaturePolicy>                                                                 signaturePolicies        = [];
 
         private          readonly  HashSet<OCPPv1_6.CS.ICentralSystemChannel>                                                    centralSystemServers     = [];
 
@@ -119,15 +119,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The enumeration of all signature policies.
         /// </summary>
-        public IEnumerable<SignaturePolicy>  SignaturePolicies
+        public IEnumerable<WWCP.SignaturePolicy>  SignaturePolicies
             => signaturePolicies;
 
         /// <summary>
         /// The currently active signature policy.
         /// </summary>
-        public SignaturePolicy               SignaturePolicy
+        public WWCP.SignaturePolicy               SignaturePolicy
             => SignaturePolicies.First();
-
 
         #endregion
 
@@ -874,177 +873,177 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Binary Data Streams Extensions
 
-        #region OnBinaryDataTransfer          (Request/-Response)
+        //#region OnBinaryDataTransfer          (Request/-Response)
+
+        /////// <summary>
+        /////// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
+        /////// </summary>
+        ////public event OnBinaryDataTransferRequestSentDelegate?       OnBinaryDataTransferRequest;
+
+        /////// <summary>
+        /////// An event sent whenever a response to a BinaryDataTransfer request was received.
+        /////// </summary>
+        ////public event OnBinaryDataTransferResponseReceivedDelegate?  OnBinaryDataTransferResponse;
+
+        //#endregion
+
+        //#region OnGetFile                     (Request/-Response)
 
         ///// <summary>
-        ///// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
+        ///// An event sent whenever a GetFile request will be sent to the charging station.
         ///// </summary>
-        //public event OnBinaryDataTransferRequestSentDelegate?       OnBinaryDataTransferRequest;
+        //public event OnGetFileRequestDelegate?   OnGetFileRequest;
 
         ///// <summary>
-        ///// An event sent whenever a response to a BinaryDataTransfer request was received.
+        ///// An event sent whenever a response to a GetFile request was received.
         ///// </summary>
-        //public event OnBinaryDataTransferResponseReceivedDelegate?  OnBinaryDataTransferResponse;
+        //public event OnGetFileResponseDelegate?  OnGetFileResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetFile                     (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a GetFile request will be sent to the charging station.
-        /// </summary>
-        public event OnGetFileRequestDelegate?   OnGetFileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a GetFile request was received.
-        /// </summary>
-        public event OnGetFileResponseDelegate?  OnGetFileResponse;
-
-        #endregion
-
-        #region OnSendFile                    (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a SendFile request will be sent to the charging station.
-        /// </summary>
-        public event OnSendFileRequestDelegate?   OnSendFileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a SendFile request was received.
-        /// </summary>
-        public event OnSendFileResponseDelegate?  OnSendFileResponse;
-
-        #endregion
-
-        #region OnDeleteFile                  (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request will be sent to the charging station.
-        /// </summary>
-        public event OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a DeleteFile request was received.
-        /// </summary>
-        public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
-
-        #endregion
-
-        #region OnListDirectory               (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a ListDirectory request will be sent to the charging station.
-        /// </summary>
-        public event OnListDirectoryRequestDelegate?   OnListDirectoryRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a ListDirectory request was received.
-        /// </summary>
-        public event OnListDirectoryResponseDelegate?  OnListDirectoryResponse;
-
-        #endregion
-
-
-        // E2E Security Extensions
-
-        #region AddSignaturePolicy            (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
-        /// </summary>
-        public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a AddSignaturePolicy request was received.
-        /// </summary>
-        public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
-
-        #endregion
-
-        #region UpdateSignaturePolicy         (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
-        /// </summary>
-        public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
-        /// </summary>
-        public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
-
-        #endregion
-
-        #region DeleteSignaturePolicy         (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
-        /// </summary>
-        public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
-        /// </summary>
-        public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
-
-        #endregion
-
-        #region AddUserRole                   (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a AddUserRole request will be sent to the charging station.
-        /// </summary>
-        public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a AddUserRole request was received.
-        /// </summary>
-        public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
-
-        #endregion
-
-        #region UpdateUserRole                (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
-        /// </summary>
-        public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a UpdateUserRole request was received.
-        /// </summary>
-        public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
-
-        #endregion
-
-        #region DeleteUserRole                (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
-        /// </summary>
-        public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DeleteUserRole request was received.
-        /// </summary>
-        public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
-
-        #endregion
-
-
-        #region OnSecureDataTransfer          (Request/-Response)
+        //#region OnSendFile                    (Request/-Response)
 
         ///// <summary>
-        ///// An event sent whenever a SecureDataTransfer request will be sent to the charging station.
+        ///// An event sent whenever a SendFile request will be sent to the charging station.
         ///// </summary>
-        //public event OnSecureDataTransferRequestSentDelegate?       OnSecureDataTransferRequest;
+        //public event OnSendFileRequestDelegate?   OnSendFileRequest;
 
         ///// <summary>
-        ///// An event sent whenever a response to a SecureDataTransfer request was received.
+        ///// An event sent whenever a response to a SendFile request was received.
         ///// </summary>
-        //public event OnSecureDataTransferResponseReceivedDelegate?  OnSecureDataTransferResponse;
+        //public event OnSendFileResponseDelegate?  OnSendFileResponse;
 
-        #endregion
+        //#endregion
+
+        //#region OnDeleteFile                  (Request/-Response)
+
+        ///// <summary>
+        ///// An event sent whenever a DeleteFile request will be sent to the charging station.
+        ///// </summary>
+        //public event OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a DeleteFile request was received.
+        ///// </summary>
+        //public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+        //#endregion
+
+        //#region OnListDirectory               (Request/-Response)
+
+        ///// <summary>
+        ///// An event sent whenever a ListDirectory request will be sent to the charging station.
+        ///// </summary>
+        //public event OnListDirectoryRequestDelegate?   OnListDirectoryRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a ListDirectory request was received.
+        ///// </summary>
+        //public event OnListDirectoryResponseDelegate?  OnListDirectoryResponse;
+
+        //#endregion
+
+
+        //// E2E Security Extensions
+
+        //#region AddSignaturePolicy            (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
+        ///// </summary>
+        //public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a AddSignaturePolicy request was received.
+        ///// </summary>
+        //public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+
+        //#endregion
+
+        //#region UpdateSignaturePolicy         (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
+        ///// </summary>
+        //public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a UpdateSignaturePolicy request was received.
+        ///// </summary>
+        //public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+
+        //#endregion
+
+        //#region DeleteSignaturePolicy         (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
+        ///// </summary>
+        //public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+        ///// </summary>
+        //public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+
+        //#endregion
+
+        //#region AddUserRole                   (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a AddUserRole request will be sent to the charging station.
+        ///// </summary>
+        //public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a AddUserRole request was received.
+        ///// </summary>
+        //public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+
+        //#endregion
+
+        //#region UpdateUserRole                (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a UpdateUserRole request will be sent to the charging station.
+        ///// </summary>
+        //public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a UpdateUserRole request was received.
+        ///// </summary>
+        //public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+
+        //#endregion
+
+        //#region DeleteUserRole                (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a DeleteUserRole request will be sent to the charging station.
+        ///// </summary>
+        //public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a DeleteUserRole request was received.
+        ///// </summary>
+        //public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+        //#endregion
+
+
+        //#region OnSecureDataTransfer          (Request/-Response)
+
+        /////// <summary>
+        /////// An event sent whenever a SecureDataTransfer request will be sent to the charging station.
+        /////// </summary>
+        ////public event OnSecureDataTransferRequestSentDelegate?       OnSecureDataTransferRequest;
+
+        /////// <summary>
+        /////// An event sent whenever a response to a SecureDataTransfer request was received.
+        /////// </summary>
+        ////public event OnSecureDataTransferResponseReceivedDelegate?  OnSecureDataTransferResponse;
+
+        //#endregion
 
         #endregion
 
@@ -1116,41 +1115,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<CP.SignedUpdateFirmwareResponse>?        CustomSignedUpdateFirmwareResponseSerializer            { get; set; }
 
 
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?             CustomIncomingBinaryDataTransferResponseSerializer      { get; set; }
+        //// Binary Data Streams Extensions
+        //public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?             CustomIncomingBinaryDataTransferResponseSerializer      { get; set; }
 
 
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?              CustomBinaryDataTransferRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<GetFileRequest>?                         CustomGetFileRequestSerializer                          { get; set; }
-        public CustomBinarySerializerDelegate <SendFileRequest>?                        CustomSendFileRequestSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteFileRequest>?                      CustomDeleteFileRequestSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<ListDirectoryRequest>?                   CustomListDirectoryRequestSerializer                    { get; set; }
+        //// Binary Data Streams Extensions
+        //public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?              CustomBinaryDataTransferRequestSerializer               { get; set; }
+        //public CustomJObjectSerializerDelegate<GetFileRequest>?                         CustomGetFileRequestSerializer                          { get; set; }
+        //public CustomBinarySerializerDelegate <SendFileRequest>?                        CustomSendFileRequestSerializer                         { get; set; }
+        //public CustomJObjectSerializerDelegate<DeleteFileRequest>?                      CustomDeleteFileRequestSerializer                       { get; set; }
+        //public CustomJObjectSerializerDelegate<ListDirectoryRequest>?                   CustomListDirectoryRequestSerializer                    { get; set; }
 
 
-        // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?              CustomAddSignaturePolicyRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?           CustomUpdateSignaturePolicyRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?           CustomDeleteSignaturePolicyRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                     CustomAddUserRoleRequestSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                  CustomUpdateUserRoleRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                  CustomDeleteUserRoleRequestSerializer                   { get; set; }
+        //// E2E Security Extensions
+        //public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?              CustomAddSignaturePolicyRequestSerializer               { get; set; }
+        //public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?           CustomUpdateSignaturePolicyRequestSerializer            { get; set; }
+        //public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?           CustomDeleteSignaturePolicyRequestSerializer            { get; set; }
+        //public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                     CustomAddUserRoleRequestSerializer                      { get; set; }
+        //public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                  CustomUpdateUserRoleRequestSerializer                   { get; set; }
+        //public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                  CustomDeleteUserRoleRequestSerializer                   { get; set; }
 
-        public CustomBinarySerializerDelegate <SecureDataTransferRequest>?              CustomSecureDataTransferRequestSerializer               { get; set; }
+        //public CustomBinarySerializerDelegate <SecureDataTransferRequest>?              CustomSecureDataTransferRequestSerializer               { get; set; }
 
         #endregion
 
 
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?             CustomBinaryDataTransferResponseSerializer              { get; set; }
-        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                CustomGetFileResponseSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?               CustomSendFileResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?             CustomDeleteFileResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?          CustomListDirectoryResponseSerializer                   { get; set; }
+        //// Binary Data Streams Extensions
+        //public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?             CustomBinaryDataTransferResponseSerializer              { get; set; }
+        //public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                CustomGetFileResponseSerializer                         { get; set; }
+        //public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?               CustomSendFileResponseSerializer                        { get; set; }
+        //public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?             CustomDeleteFileResponseSerializer                      { get; set; }
+        //public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?          CustomListDirectoryResponseSerializer                   { get; set; }
 
 
-        // E2E Security Extensions
-        public CustomBinarySerializerDelegate <SecureDataTransferResponse>?             CustomSecureDataTransferResponseSerializer              { get; set; }
+        //// E2E Security Extensions
+        //public CustomBinarySerializerDelegate <SecureDataTransferResponse>?             CustomSecureDataTransferResponseSerializer              { get; set; }
 
 
 
@@ -1178,7 +1177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        //public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
 
         #endregion
 
@@ -1195,12 +1194,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<FirmwareImage>?                          CustomFirmwareImageSerializer                           { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<OCPP.Signature>?                         CustomSignatureSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                             CustomCustomDataSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<WWCP.Signature>?                         CustomSignatureSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<WWCP.CustomData>?                        CustomCustomDataSerializer                              { get; set; }
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.Signature>?                          CustomBinarySignatureSerializer                         { get; set; }
+        public CustomBinarySerializerDelegate<WWCP.Signature>?                          CustomBinarySignatureSerializer                         { get; set; }
 
 
         #endregion
@@ -1212,13 +1211,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="CentralSystemId">The unique identification of this central system.</param>
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public TestCentralSystem(CentralSystem_Id  CentralSystemId,
-                                 Boolean           RequireAuthentication   = true,
-                                 TimeSpan?         DefaultRequestTimeout   = null,
-                                 IPPort?           HTTPUploadPort          = null,
-                                 DNSClient?        DNSClient               = null,
+        public TestCentralSystem(CentralSystem_Id       CentralSystemId,
+                                 Boolean                RequireAuthentication   = true,
+                                 TimeSpan?              DefaultRequestTimeout   = null,
+                                 IPPort?                HTTPUploadPort          = null,
+                                 DNSClient?             DNSClient               = null,
 
-                                 SignaturePolicy?  SignaturePolicy         = null)
+                                 WWCP.SignaturePolicy?  SignaturePolicy         = null)
         {
 
             if (CentralSystemId.IsNullOrEmpty)
@@ -1273,7 +1272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
-            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
+            this.signaturePolicies.Add(SignaturePolicy ?? new WWCP.SignaturePolicy());
 
         }
 

@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -39,12 +41,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// A predefined case-insensitive code for the reason why the status is returned in this response. [max 20]
         /// </summary>
-        public String?  ReasonCode        { get; }
+        public String?      ReasonCode        { get; }
 
         /// <summary>
         /// Additional text to provide detailed information. [max 512]
         /// </summary>
-        public String?  AdditionalInfo    { get; }
+        public String?      AdditionalInfo    { get; }
+
+
+        public CustomData?  CustomData        { get; }
 
         #endregion
 
@@ -56,11 +61,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ReasonCode">A predefined case-insensitive code for the reason why the status is returned in this response.</param>
         /// <param name="AdditionalInfo">Additional text to provide detailed information.</param>
         public StatusInfo(String       ReasonCode,
-                          String?      AdditionalInfo   = null)
+                          String?      AdditionalInfo   = null,
+                          CustomData?  CustomData       = null)
         {
 
             this.ReasonCode      = ReasonCode.Trim();
             this.AdditionalInfo  = AdditionalInfo;
+            this.CustomData      = CustomData;
 
             if (ReasonCode.IsNullOrEmpty())
                  throw new ArgumentNullException(nameof(ReasonCode), "The given reason code must not be null or empty!");
@@ -230,11 +237,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                            AdditionalInfo is not null
                                ? new JProperty("additionalInfo",  AdditionalInfo)
-                               : null,
-
-                           CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
+
+                           //CustomData is not null
+                           //    ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
+                           //    : null
 
                        );
 
@@ -525,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
+                                           WWCP.CustomData.TryParse,
                                            out CustomData  CustomData,
                                            out             ErrorResponse))
                 {
@@ -582,11 +589,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                            AdditionalInfo is not null
                                ? new JProperty("additionalInfo",   AdditionalInfo)
-                               : null,
-
-                           CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
+
+                           //CustomData is not null
+                           //    ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                           //    : null
 
                        );
 

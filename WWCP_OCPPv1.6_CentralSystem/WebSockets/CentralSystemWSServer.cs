@@ -28,8 +28,8 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
-using cloud.charging.open.protocols.OCPP.CSMS;
+
+
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using System.Security.Cryptography.X509Certificates;
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public CustomJObjectSerializerDelegate<LogParameters>?              CustomLogParametersSerializer                           { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<SignaturePolicy>?            CustomSignaturePolicySerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<WWCP.SignaturePolicy>?       CustomSignaturePolicySerializer                         { get; set; }
 
         public NetworkingNode_Id ChargeBoxIdentity => throw new NotImplementedException();
 

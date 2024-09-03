@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -87,9 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<RequestForwardingDecision>
 
             Forward_SetDefaultE2EChargingTariff(OCPP_JSONRequestMessage    JSONRequestMessage,
-                                             OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                             IWebSocketConnection       WebSocketConnection,
-                                             CancellationToken          CancellationToken   = default)
+                                                OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                                                IWebSocketConnection       WebSocketConnection,
+                                                CancellationToken          CancellationToken   = default)
 
         {
 

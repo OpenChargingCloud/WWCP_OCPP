@@ -22,7 +22,7 @@ using System.Xml.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 

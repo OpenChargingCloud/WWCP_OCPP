@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of a central system server.
     /// </summary>
-    public interface ICSIncomingMessages : OCPP.CSMS.ICSMSIncomingMessages
+    public interface ICSIncomingMessages //: OCPP.CSMS.ICSMSIncomingMessages
     {
 
         #region WebSocket connection

@@ -18,7 +18,7 @@
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-    public interface ICPIncomingMessagesEvents : OCPP.CS.ICSIncomingMessagesEvents
+    public interface ICPIncomingMessagesEvents //: OCPP.CS.ICSIncomingMessagesEvents
     {
 
         event OnResetRequestDelegate                     OnResetRequest;

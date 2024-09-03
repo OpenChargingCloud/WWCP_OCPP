@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -99,9 +99,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     StatusInfo?                   StatusInfo          = null,
                                     DateTime?                     ResponseTimestamp   = null,
 
-                                    IEnumerable<KeyPair>?         SignKeys            = null,
-                                    IEnumerable<SignInfo>?        SignInfos           = null,
-                                    IEnumerable<Signature>?       Signatures          = null,
+                                    IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                    IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                    IEnumerable<Signature>?  Signatures          = null,
 
                                     CustomData?                   CustomData          = null)
 
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
-                                           OCPP.StatusInfo.TryParse,
+                                           OCPPv1_6.StatusInfo.TryParse,
                                            out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
@@ -411,8 +411,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
-                                              out HashSet<OCPP.Signature> Signatures,
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -425,8 +425,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -497,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoSerializer             = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?        CustomSignatureSerializer              = null,
+                              CustomJObjectSerializerDelegate<Signature>?        CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 

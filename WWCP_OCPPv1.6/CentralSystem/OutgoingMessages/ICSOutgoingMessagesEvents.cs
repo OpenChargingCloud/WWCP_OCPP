@@ -17,7 +17,7 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPPv1_6.CSMS;
 
 #endregion
 
@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of all OCPP v1.6 central system clients.
     /// </summary>
-    public interface ICSOutgoingMessagesEvents : OCPP.ICSMSOutgoingMessagesEvents
+    public interface ICSOutgoingMessagesEvents //: OCPP.ICSMSOutgoingMessagesEvents
     {
 
         #region Reset                          (Request/-Response)

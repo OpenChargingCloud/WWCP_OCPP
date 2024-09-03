@@ -17,7 +17,7 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 

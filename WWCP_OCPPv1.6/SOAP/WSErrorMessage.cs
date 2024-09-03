@@ -19,7 +19,7 @@
 
 using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 

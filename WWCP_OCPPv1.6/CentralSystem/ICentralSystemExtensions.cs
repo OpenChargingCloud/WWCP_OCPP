@@ -22,7 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
@@ -53,9 +53,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 NetworkingNode_Id             NetworkingNodeId,
                                                 ResetTypes                    ResetType,
 
-                                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                                IEnumerable<Signature>?       Signatures          = null,
+                                                IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                IEnumerable<Signature>?  Signatures          = null,
 
                                                 CustomData?                   CustomData          = null,
 
@@ -107,9 +107,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                           Connector_Id                  ConnectorId,
                                                                           Availabilities                Availability,
 
-                                                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                          IEnumerable<Signature>?       Signatures          = null,
+                                                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                          IEnumerable<Signature>?  Signatures          = null,
 
                                                                           CustomData?                   CustomData          = null,
 
@@ -160,9 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                       NetworkingNode_Id             NetworkingNodeId,
                                                                       IEnumerable<String>?          Keys                = null,
 
-                                                                      IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                      IEnumerable<Signature>?       Signatures          = null,
+                                                                      IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                      IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                      IEnumerable<Signature>?  Signatures          = null,
 
                                                                       CustomData?                   CustomData          = null,
 
@@ -214,9 +214,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                             String                        Key,
                                                                             String                        Value,
 
-                                                                            IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                            IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                            IEnumerable<Signature>?       Signatures          = null,
+                                                                            IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                            IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                            IEnumerable<Signature>?  Signatures          = null,
 
                                                                             CustomData?                   CustomData          = null,
 
@@ -271,9 +271,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                  Message_Id                    MessageId,
                                                                  JToken                        Data,
 
-                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                 IEnumerable<Signature>?       Signatures          = null,
+                                                                 IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                 IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                 IEnumerable<Signature>?  Signatures          = null,
 
                                                                  CustomData?                   CustomData          = null,
 
@@ -333,9 +333,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   Byte?                         Retries             = null,
                                                                   TimeSpan?                     RetryInterval       = null,
 
-                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                  IEnumerable<Signature>?       Signatures          = null,
+                                                                  IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                  IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                  IEnumerable<Signature>?  Signatures          = null,
 
                                                                   CustomData?                   CustomData          = null,
 
@@ -391,9 +391,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   MessageTrigger                RequestedMessage,
                                                                   Connector_Id?                 ConnectorId         = null,
 
-                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                  IEnumerable<Signature>?       Signatures          = null,
+                                                                  IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                  IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                  IEnumerable<Signature>?  Signatures          = null,
 
                                                                   CustomData?                   CustomData          = null,
 
@@ -449,9 +449,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   Byte?                         Retries             = null,
                                                                   TimeSpan?                     RetryInterval       = null,
 
-                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                  IEnumerable<Signature>?       Signatures          = null,
+                                                                  IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                  IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                  IEnumerable<Signature>?  Signatures          = null,
 
                                                                   CustomData?                   CustomData          = null,
 
@@ -512,9 +512,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                           IdToken                       IdTag,
                                                           IdToken?                      ParentIdTag         = null,
 
-                                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                                          IEnumerable<Signature>?       Signatures          = null,
+                                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                          IEnumerable<Signature>?  Signatures          = null,
 
                                                           CustomData?                   CustomData          = null,
 
@@ -567,9 +567,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                         NetworkingNode_Id             NetworkingNodeId,
                                                                         Reservation_Id                ReservationId,
 
-                                                                        IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                        IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                        IEnumerable<Signature>?       Signatures          = null,
+                                                                        IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                        IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                        IEnumerable<Signature>?  Signatures          = null,
 
                                                                         CustomData?                   CustomData          = null,
 
@@ -622,9 +622,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                   Connector_Id?                 ConnectorId         = null,
                                                                                   ChargingProfile?              ChargingProfile     = null,
 
-                                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                                  IEnumerable<Signature>?       Signatures          = null,
+                                                                                  IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                                  IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                                  IEnumerable<Signature>?  Signatures          = null,
 
                                                                                   CustomData?                   CustomData          = null,
 
@@ -675,9 +675,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                 NetworkingNode_Id             NetworkingNodeId,
                                                                                 Transaction_Id                TransactionId,
 
-                                                                                IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                                IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                                IEnumerable<Signature>?       Signatures          = null,
+                                                                                IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                                IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                                IEnumerable<Signature>?  Signatures          = null,
 
                                                                                 CustomData?                   CustomData          = null,
 
@@ -728,9 +728,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                           Connector_Id                  ConnectorId,
                                                                           ChargingProfile               ChargingProfile,
 
-                                                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                          IEnumerable<Signature>?       Signatures          = null,
+                                                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                          IEnumerable<Signature>?  Signatures          = null,
 
                                                                           CustomData?                   CustomData          = null,
 
@@ -787,9 +787,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                               ChargingProfilePurposes?      ChargingProfilePurpose   = null,
                                                                               UInt32?                       StackLevel               = null,
 
-                                                                              IEnumerable<KeyPair>?         SignKeys                 = null,
-                                                                              IEnumerable<SignInfo>?        SignInfos                = null,
-                                                                              IEnumerable<Signature>?       Signatures               = null,
+                                                                              IEnumerable<WWCP.KeyPair>?    SignKeys                 = null,
+                                                                              IEnumerable<WWCP.SignInfo>?   SignInfos                = null,
+                                                                              IEnumerable<Signature>?  Signatures               = null,
 
                                                                               CustomData?                   CustomData               = null,
 
@@ -846,9 +846,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                               TimeSpan                      Duration,
                                                                               ChargingRateUnits?            ChargingRateUnit    = null,
 
-                                                                              IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                              IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                              IEnumerable<Signature>?       Signatures          = null,
+                                                                              IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                              IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                              IEnumerable<Signature>?  Signatures          = null,
 
                                                                               CustomData?                   CustomData          = null,
 
@@ -900,9 +900,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     NetworkingNode_Id             NetworkingNodeId,
                                                                     Connector_Id                  ConnectorId,
 
-                                                                    IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                    IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                    IEnumerable<Signature>?       Signatures          = null,
+                                                                    IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                    IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                    IEnumerable<Signature>?  Signatures          = null,
 
                                                                     CustomData?                   CustomData          = null,
 
@@ -951,9 +951,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                                             NetworkingNode_Id             NetworkingNodeId,
 
-                                                                            IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                            IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                            IEnumerable<Signature>?       Signatures          = null,
+                                                                            IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                                            IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                                            IEnumerable<Signature>?  Signatures          = null,
 
                                                                             CustomData?                   CustomData          = null,
 
@@ -1005,9 +1005,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 UpdateTypes                      UpdateType,
                                                                 IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
 
-                                                                IEnumerable<KeyPair>?            SignKeys                 = null,
-                                                                IEnumerable<SignInfo>?           SignInfos                = null,
-                                                                IEnumerable<OCPP.Signature>?     Signatures               = null,
+                                                                IEnumerable<WWCP.KeyPair>?       SignKeys                 = null,
+                                                                IEnumerable<WWCP.SignInfo>?      SignInfos                = null,
+                                                                IEnumerable<Signature>?     Signatures               = null,
 
                                                                 CustomData?                      CustomData               = null,
 
@@ -1057,9 +1057,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                           NetworkingNode_Id             NetworkingNodeId,
 
-                                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                                          IEnumerable<Signature>?       Signatures          = null,
+                                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+                                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+                                                          IEnumerable<Signature>?  Signatures          = null,
 
                                                           CustomData?                   CustomData          = null,
 
@@ -1121,9 +1121,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //                       Byte[]?                       Data                = null,
         //                       BinaryFormats?                Format              = null,
 
-        //                       IEnumerable<KeyPair>?         SignKeys            = null,
-        //                       IEnumerable<SignInfo>?        SignInfos           = null,
-        //                       IEnumerable<Signature>?       Signatures          = null,
+        //                       IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+        //                       IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+        //                       IEnumerable<Signature>?  Signatures          = null,
 
         //                       Request_Id?                   RequestId           = null,
         //                       DateTime?                     RequestTimestamp    = null,
@@ -1179,9 +1179,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //            FilePath                      Filename,
         //            Byte?                         Priority            = null,
 
-        //            IEnumerable<KeyPair>?         SignKeys            = null,
-        //            IEnumerable<SignInfo>?        SignInfos           = null,
-        //            IEnumerable<Signature>?       Signatures          = null,
+        //            IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+        //            IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+        //            IEnumerable<Signature>?  Signatures          = null,
 
         //            CustomData?                   CustomData          = null,
 
@@ -1246,12 +1246,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //             ContentType?                  FileContentType     = null,
         //             Byte[]?                       FileSHA256          = null,
         //             Byte[]?                       FileSHA512          = null,
-        //             IEnumerable<OCPP.Signature>?  FileSignatures      = null,
+        //             IEnumerable<Signature>?  FileSignatures      = null,
         //             Byte?                         Priority            = null,
 
-        //             IEnumerable<KeyPair>?         SignKeys            = null,
-        //             IEnumerable<SignInfo>?        SignInfos           = null,
-        //             IEnumerable<Signature>?       Signatures          = null,
+        //             IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+        //             IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+        //             IEnumerable<Signature>?  Signatures          = null,
 
         //             CustomData?                   CustomData          = null,
 
@@ -1317,9 +1317,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //               Byte[]?                       FileSHA256          = null,
         //               Byte[]?                       FileSHA512          = null,
 
-        //               IEnumerable<KeyPair>?         SignKeys            = null,
-        //               IEnumerable<SignInfo>?        SignInfos           = null,
-        //               IEnumerable<Signature>?       Signatures          = null,
+        //               IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
+        //               IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
+        //               IEnumerable<Signature>?  Signatures          = null,
 
         //               CustomData?                   CustomData          = null,
 

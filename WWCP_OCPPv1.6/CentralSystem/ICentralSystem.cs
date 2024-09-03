@@ -17,7 +17,7 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                       ICSIncomingMessagesEvents
     {
 
-        CentralSystem_Id           Id                       { get; }
+        new CentralSystem_Id       Id                       { get; }
 
         TimeSpan                   DefaultRequestTimeout    { get; }
 
@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         SignaturePolicy?           SignaturePolicy          { get; }
 
 
-        IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
+   //     IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
 
 
     }

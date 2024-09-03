@@ -21,7 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -91,15 +91,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public static Result FromSendRequestState(SendRequestState SendRequestState)
+        //public static Result FromSendRequestState(SendRequestState SendRequestState)
 
-            => new (
-                   SendRequestState.JSONRequestErrorMessage?.ErrorCode ?? ResultCode.GenericError,
-                   SendRequestState.JSONRequestErrorMessage?.ErrorDescription,
-                   SendRequestState.JSONRequestErrorMessage?.ErrorDetails,
-                   SendRequestState.JSONResponse?.           Payload,
-                   SendRequestState.BinaryResponse?.         Payload
-               );
+        //    => new (
+        //           SendRequestState.JSONRequestErrorMessage?.ErrorCode ?? ResultCode.GenericError,
+        //           SendRequestState.JSONRequestErrorMessage?.ErrorDescription,
+        //           SendRequestState.JSONRequestErrorMessage?.ErrorDetails,
+        //           SendRequestState.JSONResponse?.           Payload,
+        //           SendRequestState.BinaryResponse?.         Payload
+        //       );
 
 
         #region Static Definitions

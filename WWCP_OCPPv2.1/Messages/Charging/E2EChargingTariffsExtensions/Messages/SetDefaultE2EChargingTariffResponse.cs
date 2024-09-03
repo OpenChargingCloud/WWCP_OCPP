@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -422,20 +423,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetDefaultE2EChargingTariff request.</param>
         public static SetDefaultE2EChargingTariffResponse RequestError(SetDefaultE2EChargingTariffRequest  Request,
-                                                                    EventTracking_Id                 EventTrackingId,
-                                                                    ResultCode                       ErrorCode,
-                                                                    String?                          ErrorDescription    = null,
-                                                                    JObject?                         ErrorDetails        = null,
-                                                                    DateTime?                        ResponseTimestamp   = null,
+                                                                       EventTracking_Id                    EventTrackingId,
+                                                                       ResultCode                          ErrorCode,
+                                                                       String?                             ErrorDescription    = null,
+                                                                       JObject?                            ErrorDetails        = null,
+                                                                       DateTime?                           ResponseTimestamp   = null,
 
-                                                                    SourceRouting?                   Destination         = null,
-                                                                    NetworkPath?                     NetworkPath         = null,
+                                                                       SourceRouting?                      Destination         = null,
+                                                                       NetworkPath?                        NetworkPath         = null,
 
-                                                                    IEnumerable<KeyPair>?            SignKeys            = null,
-                                                                    IEnumerable<SignInfo>?           SignInfos           = null,
-                                                                    IEnumerable<Signature>?          Signatures          = null,
+                                                                       IEnumerable<KeyPair>?               SignKeys            = null,
+                                                                       IEnumerable<SignInfo>?              SignInfos           = null,
+                                                                       IEnumerable<Signature>?             Signatures          = null,
 
-                                                                    CustomData?                      CustomData          = null)
+                                                                       CustomData?                         CustomData          = null)
 
             => new (
 

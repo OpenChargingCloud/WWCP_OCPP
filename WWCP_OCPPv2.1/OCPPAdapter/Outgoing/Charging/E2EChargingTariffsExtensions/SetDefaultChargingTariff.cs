@@ -25,6 +25,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -42,12 +43,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDefaultE2EChargingTariffRequestSentDelegate(DateTime                          Timestamp,
-                                                                       IEventSender                      Sender,
-                                                                       IWebSocketConnection?             Connection,
-                                                                       SetDefaultE2EChargingTariffRequest   Request,
-                                                                       SentMessageResults                SentMessageResult,
-                                                                       CancellationToken                 CancellationToken);
+    public delegate Task OnSetDefaultE2EChargingTariffRequestSentDelegate(DateTime                             Timestamp,
+                                                                          IEventSender                         Sender,
+                                                                          IWebSocketConnection?                Connection,
+                                                                          SetDefaultE2EChargingTariffRequest   Request,
+                                                                          SentMessageResults                   SentMessageResult,
+                                                                          CancellationToken                    CancellationToken);
 
 
     /// <summary>
@@ -63,14 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultE2EChargingTariffResponseSentDelegate(DateTime                           Timestamp,
-                                                       IEventSender                       Sender,
-                                                       IWebSocketConnection?              Connection,
-                                                       SetDefaultE2EChargingTariffRequest?   Request,
-                                                       SetDefaultE2EChargingTariffResponse   Response,
-                                                       TimeSpan                           Runtime,
-                                                       SentMessageResults                 SentMessageResult,
-                                                       CancellationToken                  CancellationToken);
+        OnSetDefaultE2EChargingTariffResponseSentDelegate(DateTime                              Timestamp,
+                                                          IEventSender                          Sender,
+                                                          IWebSocketConnection?                 Connection,
+                                                          SetDefaultE2EChargingTariffRequest?   Request,
+                                                          SetDefaultE2EChargingTariffResponse   Response,
+                                                          TimeSpan                              Runtime,
+                                                          SentMessageResults                    SentMessageResult,
+                                                          CancellationToken                     CancellationToken);
 
 
     /// <summary>
@@ -86,14 +87,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultE2EChargingTariffRequestErrorSentDelegate(DateTime                           Timestamp,
-                                                           IEventSender                       Sender,
-                                                           IWebSocketConnection?              Connection,
-                                                           SetDefaultE2EChargingTariffRequest?   Request,
-                                                           OCPP_JSONRequestErrorMessage       RequestErrorMessage,
-                                                           TimeSpan?                          Runtime,
-                                                           SentMessageResults                 SentMessageResult,
-                                                           CancellationToken                  CancellationToken);
+        OnSetDefaultE2EChargingTariffRequestErrorSentDelegate(DateTime                              Timestamp,
+                                                              IEventSender                          Sender,
+                                                              IWebSocketConnection?                 Connection,
+                                                              SetDefaultE2EChargingTariffRequest?   Request,
+                                                              OCPP_JSONRequestErrorMessage          RequestErrorMessage,
+                                                              TimeSpan?                             Runtime,
+                                                              SentMessageResults                    SentMessageResult,
+                                                              CancellationToken                     CancellationToken);
 
 
     /// <summary>
@@ -110,15 +111,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultE2EChargingTariffResponseErrorSentDelegate(DateTime                            Timestamp,
-                                                            IEventSender                        Sender,
-                                                            IWebSocketConnection?               Connection,
-                                                            SetDefaultE2EChargingTariffRequest?    Request,
-                                                            SetDefaultE2EChargingTariffResponse?   Response,
-                                                            OCPP_JSONResponseErrorMessage       ResponseErrorMessage,
-                                                            TimeSpan?                           Runtime,
-                                                            SentMessageResults                  SentMessageResult,
-                                                            CancellationToken                   CancellationToken);
+        OnSetDefaultE2EChargingTariffResponseErrorSentDelegate(DateTime                               Timestamp,
+                                                               IEventSender                           Sender,
+                                                               IWebSocketConnection?                  Connection,
+                                                               SetDefaultE2EChargingTariffRequest?    Request,
+                                                               SetDefaultE2EChargingTariffResponse?   Response,
+                                                               OCPP_JSONResponseErrorMessage          ResponseErrorMessage,
+                                                               TimeSpan?                              Runtime,
+                                                               SentMessageResults                     SentMessageResult,
+                                                               CancellationToken                      CancellationToken);
 
     #endregion
 
@@ -283,14 +284,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDefaultE2EChargingTariffResponseSentDelegate?  OnSetDefaultE2EChargingTariffResponseSent;
 
 
-        public Task SendOnSetDefaultE2EChargingTariffResponseSent(DateTime                          Timestamp,
-                                                               IEventSender                      Sender,
-                                                               IWebSocketConnection?             Connection,
-                                                               SetDefaultE2EChargingTariffRequest   Request,
-                                                               SetDefaultE2EChargingTariffResponse  Response,
-                                                               TimeSpan                          Runtime,
-                                                               SentMessageResults                SentMessageResult,
-                                                               CancellationToken                 CancellationToken = default)
+        public Task SendOnSetDefaultE2EChargingTariffResponseSent(DateTime                             Timestamp,
+                                                                  IEventSender                         Sender,
+                                                                  IWebSocketConnection?                Connection,
+                                                                  SetDefaultE2EChargingTariffRequest   Request,
+                                                                  SetDefaultE2EChargingTariffResponse  Response,
+                                                                  TimeSpan                             Runtime,
+                                                                  SentMessageResults                   SentMessageResult,
+                                                                  CancellationToken                    CancellationToken = default)
 
             => LogEvent(
                    OnSetDefaultE2EChargingTariffResponseSent,
@@ -316,14 +317,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDefaultE2EChargingTariffRequestErrorSentDelegate? OnSetDefaultE2EChargingTariffRequestErrorSent;
 
 
-        public Task SendOnSetDefaultE2EChargingTariffRequestErrorSent(DateTime                          Timestamp,
-                                                                   IEventSender                      Sender,
-                                                                   IWebSocketConnection?             Connection,
-                                                                   SetDefaultE2EChargingTariffRequest?  Request,
-                                                                   OCPP_JSONRequestErrorMessage      RequestErrorMessage,
-                                                                   TimeSpan                          Runtime,
-                                                                   SentMessageResults                SentMessageResult,
-                                                                   CancellationToken                 CancellationToken = default)
+        public Task SendOnSetDefaultE2EChargingTariffRequestErrorSent(DateTime                             Timestamp,
+                                                                      IEventSender                         Sender,
+                                                                      IWebSocketConnection?                Connection,
+                                                                      SetDefaultE2EChargingTariffRequest?  Request,
+                                                                      OCPP_JSONRequestErrorMessage         RequestErrorMessage,
+                                                                      TimeSpan                             Runtime,
+                                                                      SentMessageResults                   SentMessageResult,
+                                                                      CancellationToken                    CancellationToken = default)
 
             => LogEvent(
                    OnSetDefaultE2EChargingTariffRequestErrorSent,
@@ -349,15 +350,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDefaultE2EChargingTariffResponseErrorSentDelegate? OnSetDefaultE2EChargingTariffResponseErrorSent;
 
 
-        public Task SendOnSetDefaultE2EChargingTariffResponseErrorSent(DateTime                           Timestamp,
-                                                                    IEventSender                       Sender,
-                                                                    IWebSocketConnection?              Connection,
-                                                                    SetDefaultE2EChargingTariffRequest?   Request,
-                                                                    SetDefaultE2EChargingTariffResponse?  Response,
-                                                                    OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
-                                                                    TimeSpan                           Runtime,
-                                                                    SentMessageResults                 SentMessageResult,
-                                                                    CancellationToken                  CancellationToken = default)
+        public Task SendOnSetDefaultE2EChargingTariffResponseErrorSent(DateTime                              Timestamp,
+                                                                       IEventSender                          Sender,
+                                                                       IWebSocketConnection?                 Connection,
+                                                                       SetDefaultE2EChargingTariffRequest?   Request,
+                                                                       SetDefaultE2EChargingTariffResponse?  Response,
+                                                                       OCPP_JSONResponseErrorMessage         ResponseErrorMessage,
+                                                                       TimeSpan                              Runtime,
+                                                                       SentMessageResults                    SentMessageResult,
+                                                                       CancellationToken                     CancellationToken = default)
 
             => LogEvent(
                    OnSetDefaultE2EChargingTariffResponseErrorSent,

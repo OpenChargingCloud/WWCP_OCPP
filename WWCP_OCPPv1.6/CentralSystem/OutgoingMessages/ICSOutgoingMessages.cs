@@ -21,10 +21,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of all central system clients.
     /// </summary>
-    public interface ICSOutgoingMessages : OCPP.ICSMSOutgoingMessages
+    public interface ICSOutgoingMessages //: OCPP.ICSMSOutgoingMessages
     {
 
-        OCPP.NetworkingNode_Id                  ChargeBoxIdentity    { get; }
+        NetworkingNode_Id                       ChargeBoxIdentity    { get; }
         String                                  From                 { get; }
         String                                  To                   { get; }
 

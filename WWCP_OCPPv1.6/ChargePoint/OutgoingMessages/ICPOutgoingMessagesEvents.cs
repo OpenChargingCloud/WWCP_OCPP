@@ -18,7 +18,7 @@
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-    public interface ICPOutgoingMessagesEvents : OCPP.CS.ICSOutgoingMessagesEvents
+    public interface ICPOutgoingMessagesEvents //: OCPP.CS.ICSOutgoingMessagesEvents
     {
 
         #region OnBootNotification                 (Request/-Response)

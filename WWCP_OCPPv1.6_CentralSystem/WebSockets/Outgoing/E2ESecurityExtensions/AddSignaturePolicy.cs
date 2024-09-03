@@ -1,174 +1,174 @@
-﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿///*
+// * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
 
-#region Usings
+//#region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
+//using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
+//using cloud.charging.open.protocols.OCPP;
+//using cloud.charging.open.protocols.OCPP.CS;
+//
 
-#endregion
+//#endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
-{
+//namespace cloud.charging.open.protocols.OCPPv1_6.CS
+//{
 
-    /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>
-    public partial class CentralSystemWSServer : AOCPPWebSocketServer,
-                                                 ICSMSChannel,
-                                                 ICentralSystemChannel
-    {
+//    /// <summary>
+//    /// The CSMS HTTP/WebSocket/JSON server.
+//    /// </summary>
+//    public partial class CentralSystemWSServer : AOCPPWebSocketServer,
+//                                                 ICSMSChannel,
+//                                                 ICentralSystemChannel
+//    {
 
-        #region Custom JSON serializer delegates
+//        #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestSerializer    { get; set; }
+//        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<AddSignaturePolicyResponse>?     CustomAddSignaturePolicyResponseParser       { get; set; }
+//        public CustomJObjectParserDelegate<AddSignaturePolicyResponse>?     CustomAddSignaturePolicyResponseParser       { get; set; }
 
-        #endregion
+//        #endregion
 
-        #region Events
+//        #region Events
 
-        /// <summary>
-        /// An event sent whenever an AddSignaturePolicy request was sent.
-        /// </summary>
-        public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
+//        /// <summary>
+//        /// An event sent whenever an AddSignaturePolicy request was sent.
+//        /// </summary>
+//        public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an AddSignaturePolicy request was sent.
-        /// </summary>
-        public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to an AddSignaturePolicy request was sent.
+//        /// </summary>
+//        public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
 
-        #endregion
-
-
-        #region AddSignaturePolicy(Request)
-
-        public async Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
-        {
-
-            #region Send OnAddSignaturePolicyRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnAddSignaturePolicyRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAddSignaturePolicyRequest));
-            }
-
-            #endregion
+//        #endregion
 
 
-            AddSignaturePolicyResponse? response = null;
+//        #region AddSignaturePolicy(Request)
 
-            try
-            {
+//        public async Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
+//        {
 
-                var sendRequestState = await SendJSONAndWait(
-                                                 Request.EventTrackingId,
-                                                 Request.DestinationId,
-                                                 Request.NetworkPath,
-                                                 Request.RequestId,
-                                                 Request.Action,
-                                                 Request.ToJSON(
-                                                     CustomAddSignaturePolicyRequestSerializer,
-                                                     CustomSignaturePolicySerializer,
-                                                     CustomSignatureSerializer,
-                                                     CustomCustomDataSerializer
-                                                 ),
-                                                 Request.RequestTimeout
-                                             );
+//            #region Send OnAddSignaturePolicyRequest event
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.JSONResponse is not null)
-                {
+//            var startTime = Timestamp.Now;
 
-                    if (AddSignaturePolicyResponse.TryParse(Request,
-                                                            sendRequestState.JSONResponse.Payload,
-                                                            out var setDisplayMessageResponse,
-                                                            out var errorResponse,
-                                                            CustomAddSignaturePolicyResponseParser) &&
-                        setDisplayMessageResponse is not null)
-                    {
-                        response = setDisplayMessageResponse;
-                    }
+//            try
+//            {
 
-                    response ??= new AddSignaturePolicyResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
+//                OnAddSignaturePolicyRequest?.Invoke(startTime,
+//                                                    this,
+//                                                    Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAddSignaturePolicyRequest));
+//            }
 
-                }
-
-                response ??= new AddSignaturePolicyResponse(
-                                 Request,
-                                 Result.FromSendRequestState(sendRequestState)
-                             );
-
-            }
-            catch (Exception e)
-            {
-
-                response = new AddSignaturePolicyResponse(
-                               Request,
-                               Result.FromException(e)
-                           );
-
-            }
+//            #endregion
 
 
-            #region Send OnAddSignaturePolicyResponse event
+//            AddSignaturePolicyResponse? response = null;
 
-            var endTime = Timestamp.Now;
+//            try
+//            {
 
-            try
-            {
+//                var sendRequestState = await SendJSONAndWait(
+//                                                 Request.EventTrackingId,
+//                                                 Request.DestinationId,
+//                                                 Request.NetworkPath,
+//                                                 Request.RequestId,
+//                                                 Request.Action,
+//                                                 Request.ToJSON(
+//                                                     CustomAddSignaturePolicyRequestSerializer,
+//                                                     CustomSignaturePolicySerializer,
+//                                                     CustomSignatureSerializer,
+//                                                     CustomCustomDataSerializer
+//                                                 ),
+//                                                 Request.RequestTimeout
+//                                             );
 
-                OnAddSignaturePolicyResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+//                if (sendRequestState.NoErrors &&
+//                    sendRequestState.JSONResponse is not null)
+//                {
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAddSignaturePolicyResponse));
-            }
+//                    if (AddSignaturePolicyResponse.TryParse(Request,
+//                                                            sendRequestState.JSONResponse.Payload,
+//                                                            out var setDisplayMessageResponse,
+//                                                            out var errorResponse,
+//                                                            CustomAddSignaturePolicyResponseParser) &&
+//                        setDisplayMessageResponse is not null)
+//                    {
+//                        response = setDisplayMessageResponse;
+//                    }
 
-            #endregion
+//                    response ??= new AddSignaturePolicyResponse(
+//                                     Request,
+//                                     Result.Format(errorResponse)
+//                                 );
 
-            return response;
+//                }
 
-        }
+//                response ??= new AddSignaturePolicyResponse(
+//                                 Request,
+//                                 Result.FromSendRequestState(sendRequestState)
+//                             );
 
-        #endregion
+//            }
+//            catch (Exception e)
+//            {
+
+//                response = new AddSignaturePolicyResponse(
+//                               Request,
+//                               Result.FromException(e)
+//                           );
+
+//            }
 
 
-    }
+//            #region Send OnAddSignaturePolicyResponse event
 
-}
+//            var endTime = Timestamp.Now;
+
+//            try
+//            {
+
+//                OnAddSignaturePolicyResponse?.Invoke(endTime,
+//                                                     this,
+//                                                     Request,
+//                                                     response,
+//                                                     endTime - startTime);
+
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAddSignaturePolicyResponse));
+//            }
+
+//            #endregion
+
+//            return response;
+
+//        }
+
+//        #endregion
+
+
+//    }
+
+//}

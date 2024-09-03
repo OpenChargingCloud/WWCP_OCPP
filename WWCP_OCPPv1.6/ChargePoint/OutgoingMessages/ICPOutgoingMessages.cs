@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The common interface of all charge point clients.
     /// </summary>
-    public interface ICPOutgoingMessages : OCPP.CS.ICSOutgoingMessages
+    public interface ICPOutgoingMessages //: OCPP.CS.ICSOutgoingMessages
     {
 
         String?  ClientCloseMessage    { get; }

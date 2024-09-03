@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The common interface of all OCPP Networking Nodes.
     /// </summary>
-    public interface INetworkingNode : WWCP.NetworkingNode.INetworkingNode
+    public interface INetworkingNode : OCPP.NetworkingNode.INetworkingNode
     {
 
         OCPPAdapter  OCPP    { get; }

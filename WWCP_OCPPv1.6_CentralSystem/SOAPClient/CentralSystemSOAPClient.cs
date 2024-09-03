@@ -563,27 +563,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         //public event OCPP.OnBinaryDataTransferRequestSentDelegate?                OnBinaryDataTransferRequestSent;
         //public event OCPP.OnBinaryDataTransferResponseReceivedDelegate?               OnBinaryDataTransferResponseReceived;
-        public event OCPP.CSMS.OnGetFileRequestDelegate?                      OnGetFileRequest;
-        public event OCPP.CSMS.OnGetFileResponseDelegate?                     OnGetFileResponse;
-        public event OCPP.CSMS.OnSendFileRequestDelegate?                     OnSendFileRequest;
-        public event OCPP.CSMS.OnSendFileResponseDelegate?                    OnSendFileResponse;
-        public event OCPP.CSMS.OnDeleteFileRequestDelegate?                   OnDeleteFileRequest;
-        public event OCPP.CSMS.OnDeleteFileResponseDelegate?                  OnDeleteFileResponse;
-        public event OCPP.CSMS.OnListDirectoryRequestDelegate?                OnListDirectoryRequest;
-        public event OCPP.CSMS.OnListDirectoryResponseDelegate?               OnListDirectoryResponse;
+        //public event OCPP.CSMS.OnGetFileRequestDelegate?                      OnGetFileRequest;
+        //public event OCPP.CSMS.OnGetFileResponseDelegate?                     OnGetFileResponse;
+        //public event OCPP.CSMS.OnSendFileRequestDelegate?                     OnSendFileRequest;
+        //public event OCPP.CSMS.OnSendFileResponseDelegate?                    OnSendFileResponse;
+        //public event OCPP.CSMS.OnDeleteFileRequestDelegate?                   OnDeleteFileRequest;
+        //public event OCPP.CSMS.OnDeleteFileResponseDelegate?                  OnDeleteFileResponse;
+        //public event OCPP.CSMS.OnListDirectoryRequestDelegate?                OnListDirectoryRequest;
+        //public event OCPP.CSMS.OnListDirectoryResponseDelegate?               OnListDirectoryResponse;
 
-        public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?           OnAddSignaturePolicyRequest;
-        public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?          OnAddSignaturePolicyResponse;
-        public event OCPP.CSMS.OnUpdateSignaturePolicyRequestDelegate?        OnUpdateSignaturePolicyRequest;
-        public event OCPP.CSMS.OnUpdateSignaturePolicyResponseDelegate?       OnUpdateSignaturePolicyResponse;
-        public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?        OnDeleteSignaturePolicyRequest;
-        public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?       OnDeleteSignaturePolicyResponse;
-        public event OCPP.CSMS.OnAddUserRoleRequestDelegate?                  OnAddUserRoleRequest;
-        public event OCPP.CSMS.OnAddUserRoleResponseDelegate?                 OnAddUserRoleResponse;
-        public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?               OnUpdateUserRoleRequest;
-        public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?              OnUpdateUserRoleResponse;
-        public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?               OnDeleteUserRoleRequest;
-        public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?              OnDeleteUserRoleResponse;
+        //public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?           OnAddSignaturePolicyRequest;
+        //public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?          OnAddSignaturePolicyResponse;
+        //public event OCPP.CSMS.OnUpdateSignaturePolicyRequestDelegate?        OnUpdateSignaturePolicyRequest;
+        //public event OCPP.CSMS.OnUpdateSignaturePolicyResponseDelegate?       OnUpdateSignaturePolicyResponse;
+        //public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?        OnDeleteSignaturePolicyRequest;
+        //public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?       OnDeleteSignaturePolicyResponse;
+        //public event OCPP.CSMS.OnAddUserRoleRequestDelegate?                  OnAddUserRoleRequest;
+        //public event OCPP.CSMS.OnAddUserRoleResponseDelegate?                 OnAddUserRoleResponse;
+        //public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?               OnUpdateUserRoleRequest;
+        //public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?              OnUpdateUserRoleResponse;
+        //public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?               OnDeleteUserRoleRequest;
+        //public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?              OnDeleteUserRoleResponse;
 
         #endregion
 
@@ -869,7 +869,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ResetResponse>.IsFault(httpresponse,
                                                                    new ResetResponse(
                                                                        Request,
-                                                                       OCPP.Result.Format(
+                                                                       Result.Format(
                                                                            "Invalid SOAP => " +
                                                                            httpresponse.HTTPBody.ToUTF8String()
                                                                        )
@@ -888,7 +888,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ResetResponse>.IsFault(httpresponse,
                                                                    new ResetResponse(
                                                                        Request,
-                                                                       OCPP.Result.Server(
+                                                                       Result.Server(
                                                                             httpresponse.HTTPStatusCode.ToString() +
                                                                             " => " +
                                                                             httpresponse.HTTPBody.ToUTF8String()
@@ -908,7 +908,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<ResetResponse>.ExceptionThrown(new ResetResponse(
                                                                                Request,
-                                                                               OCPP.Result.Format(exception.Message +
+                                                                               Result.Format(exception.Message +
                                                                                              " => " +
                                                                                              exception.StackTrace)),
                                                                            exception);
@@ -928,7 +928,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<ResetResponse>.OK(new ResetResponse(Request,
-                                                                        OCPP.Result.OK("Nothing to upload!")));
+                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnResetResponse event
@@ -1048,7 +1048,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ChangeAvailabilityResponse>.IsFault(httpresponse,
                                                                                 new ChangeAvailabilityResponse(
                                                                                     Request,
-                                                                                    OCPP.Result.Format(
+                                                                                    Result.Format(
                                                                                         "Invalid SOAP => " +
                                                                                         httpresponse.HTTPBody.ToUTF8String()
                                                                                     )
@@ -1067,7 +1067,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ChangeAvailabilityResponse>.IsFault(httpresponse,
                                                                                 new ChangeAvailabilityResponse(
                                                                                     Request,
-                                                                                    OCPP.Result.Server(
+                                                                                    Result.Server(
                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                          " => " +
                                                                                          httpresponse.HTTPBody.ToUTF8String()
@@ -1086,7 +1086,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<ChangeAvailabilityResponse>.ExceptionThrown(new ChangeAvailabilityResponse(
                                                                                             Request,
-                                                                                            OCPP.Result.Format(exception.Message +
+                                                                                            Result.Format(exception.Message +
                                                                                                           " => " +
                                                                                                           exception.StackTrace)),
                                                                                         exception);
@@ -1106,7 +1106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<ChangeAvailabilityResponse>.OK(new ChangeAvailabilityResponse(Request,
-                                                                                                  OCPP.Result.OK("Nothing to upload!")));
+                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -1226,7 +1226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetConfigurationResponse>.IsFault(httpresponse,
                                                                               new GetConfigurationResponse(
                                                                                   Request,
-                                                                                  OCPP.Result.Format(
+                                                                                  Result.Format(
                                                                                       "Invalid SOAP => " +
                                                                                       httpresponse.HTTPBody.ToUTF8String()
                                                                                   )
@@ -1245,7 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetConfigurationResponse>.IsFault(httpresponse,
                                                                               new GetConfigurationResponse(
                                                                                   Request,
-                                                                                  OCPP.Result.Server(
+                                                                                  Result.Server(
                                                                                        httpresponse.HTTPStatusCode.ToString() +
                                                                                        " => " +
                                                                                        httpresponse.HTTPBody.ToUTF8String()
@@ -1264,7 +1264,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<GetConfigurationResponse>.ExceptionThrown(new GetConfigurationResponse(
                                                                                           Request,
-                                                                                          OCPP.Result.Format(exception.Message +
+                                                                                          Result.Format(exception.Message +
                                                                                                         " => " +
                                                                                                         exception.StackTrace)),
                                                                                       exception);
@@ -1284,7 +1284,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<GetConfigurationResponse>.OK(new GetConfigurationResponse(Request,
-                                                                                              OCPP.Result.OK("Nothing to upload!")));
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetConfigurationResponse event
@@ -1404,7 +1404,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ChangeConfigurationResponse>.IsFault(httpresponse,
                                                                                  new ChangeConfigurationResponse(
                                                                                      Request,
-                                                                                     OCPP.Result.Format(
+                                                                                     Result.Format(
                                                                                          "Invalid SOAP => " +
                                                                                          httpresponse.HTTPBody.ToUTF8String()
                                                                                      )
@@ -1423,7 +1423,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ChangeConfigurationResponse>.IsFault(httpresponse,
                                                                                  new ChangeConfigurationResponse(
                                                                                      Request,
-                                                                                     OCPP.Result.Server(
+                                                                                     Result.Server(
                                                                                           httpresponse.HTTPStatusCode.ToString() +
                                                                                           " => " +
                                                                                           httpresponse.HTTPBody.ToUTF8String()
@@ -1442,7 +1442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<ChangeConfigurationResponse>.ExceptionThrown(new ChangeConfigurationResponse(
                                                                                              Request,
-                                                                                             OCPP.Result.Format(exception.Message +
+                                                                                             Result.Format(exception.Message +
                                                                                                            " => " +
                                                                                                            exception.StackTrace)),
                                                                                          exception);
@@ -1462,7 +1462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<ChangeConfigurationResponse>.OK(new ChangeConfigurationResponse(Request,
-                                                                                                    OCPP.Result.OK("Nothing to upload!")));
+                                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnChangeConfigurationResponse event
@@ -1582,7 +1582,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<CP.DataTransferResponse>.IsFault(httpresponse,
                                                                              new CP.DataTransferResponse(
                                                                                  Request,
-                                                                                 OCPP.Result.Format(
+                                                                                 Result.Format(
                                                                                      "Invalid SOAP => " +
                                                                                      httpresponse.HTTPBody.ToUTF8String()
                                                                                  )
@@ -1601,7 +1601,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<CP.DataTransferResponse>.IsFault(httpresponse,
                                                                              new CP.DataTransferResponse(
                                                                                  Request,
-                                                                                 OCPP.Result.Server(
+                                                                                 Result.Server(
                                                                                       httpresponse.HTTPStatusCode.ToString() +
                                                                                       " => " +
                                                                                       httpresponse.HTTPBody.ToUTF8String()
@@ -1620,7 +1620,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
                                                                                          Request,
-                                                                                         OCPP.Result.Format(exception.Message +
+                                                                                         Result.Format(exception.Message +
                                                                                                        " => " +
                                                                                                        exception.StackTrace)),
                                                                                      exception);
@@ -1640,7 +1640,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(Request,
-                                                                                            OCPP.Result.OK("Nothing to upload!")));
+                                                                                            Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event
@@ -1760,7 +1760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetDiagnosticsResponse>.IsFault(httpresponse,
                                                                             new GetDiagnosticsResponse(
                                                                                 Request,
-                                                                                OCPP.Result.Format(
+                                                                                Result.Format(
                                                                                     "Invalid SOAP => " +
                                                                                     httpresponse.HTTPBody.ToUTF8String()
                                                                                 )
@@ -1779,7 +1779,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetDiagnosticsResponse>.IsFault(httpresponse,
                                                                             new GetDiagnosticsResponse(
                                                                                 Request,
-                                                                                OCPP.Result.Server(
+                                                                                Result.Server(
                                                                                      httpresponse.HTTPStatusCode.ToString() +
                                                                                      " => " +
                                                                                      httpresponse.HTTPBody.ToUTF8String()
@@ -1798,7 +1798,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<GetDiagnosticsResponse>.ExceptionThrown(new GetDiagnosticsResponse(
                                                                                         Request,
-                                                                                        OCPP.Result.Format(exception.Message +
+                                                                                        Result.Format(exception.Message +
                                                                                                       " => " +
                                                                                                       exception.StackTrace)),
                                                                                     exception);
@@ -1818,7 +1818,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<GetDiagnosticsResponse>.OK(new GetDiagnosticsResponse(Request,
-                                                                                          OCPP.Result.OK("Nothing to upload!")));
+                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetDiagnosticsResponse event
@@ -1938,7 +1938,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<TriggerMessageResponse>.IsFault(httpresponse,
                                                                             new TriggerMessageResponse(
                                                                                 Request,
-                                                                                OCPP.Result.Format(
+                                                                                Result.Format(
                                                                                     "Invalid SOAP => " +
                                                                                     httpresponse.HTTPBody.ToUTF8String()
                                                                                 )
@@ -1957,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<TriggerMessageResponse>.IsFault(httpresponse,
                                                                             new TriggerMessageResponse(
                                                                                 Request,
-                                                                                OCPP.Result.Server(
+                                                                                Result.Server(
                                                                                      httpresponse.HTTPStatusCode.ToString() +
                                                                                      " => " +
                                                                                      httpresponse.HTTPBody.ToUTF8String()
@@ -1976,7 +1976,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<TriggerMessageResponse>.ExceptionThrown(new TriggerMessageResponse(
                                                                                         Request,
-                                                                                        OCPP.Result.Format(exception.Message +
+                                                                                        Result.Format(exception.Message +
                                                                                                       " => " +
                                                                                                       exception.StackTrace)),
                                                                                     exception);
@@ -1996,7 +1996,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<TriggerMessageResponse>.OK(new TriggerMessageResponse(Request,
-                                                                                          OCPP.Result.OK("Nothing to upload!")));
+                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnTriggerMessageResponse event
@@ -2116,7 +2116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<UpdateFirmwareResponse>.IsFault(httpresponse,
                                                                             new UpdateFirmwareResponse(
                                                                                 Request,
-                                                                                OCPP.Result.Format(
+                                                                                Result.Format(
                                                                                     "Invalid SOAP => " +
                                                                                     httpresponse.HTTPBody.ToUTF8String()
                                                                                 )
@@ -2135,7 +2135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<UpdateFirmwareResponse>.IsFault(httpresponse,
                                                                             new UpdateFirmwareResponse(
                                                                                 Request,
-                                                                                OCPP.Result.Server(
+                                                                                Result.Server(
                                                                                      httpresponse.HTTPStatusCode.ToString() +
                                                                                      " => " +
                                                                                      httpresponse.HTTPBody.ToUTF8String()
@@ -2154,7 +2154,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<UpdateFirmwareResponse>.ExceptionThrown(new UpdateFirmwareResponse(
                                                                                         Request,
-                                                                                        OCPP.Result.Format(exception.Message +
+                                                                                        Result.Format(exception.Message +
                                                                                                       " => " +
                                                                                                       exception.StackTrace)),
                                                                                     exception);
@@ -2174,7 +2174,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<UpdateFirmwareResponse>.OK(new UpdateFirmwareResponse(Request,
-                                                                                          OCPP.Result.OK("Nothing to upload!")));
+                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -2295,7 +2295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ReserveNowResponse>.IsFault(httpresponse,
                                                                         new ReserveNowResponse(
                                                                             Request,
-                                                                            OCPP.Result.Format(
+                                                                            Result.Format(
                                                                                 "Invalid SOAP => " +
                                                                                 httpresponse.HTTPBody.ToUTF8String()
                                                                             )
@@ -2314,7 +2314,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ReserveNowResponse>.IsFault(httpresponse,
                                                                         new ReserveNowResponse(
                                                                             Request,
-                                                                            OCPP.Result.Server(
+                                                                            Result.Server(
                                                                                  httpresponse.HTTPStatusCode.ToString() +
                                                                                  " => " +
                                                                                  httpresponse.HTTPBody.ToUTF8String()
@@ -2333,7 +2333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<ReserveNowResponse>.ExceptionThrown(new ReserveNowResponse(
                                                                                     Request,
-                                                                                    OCPP.Result.Format(exception.Message +
+                                                                                    Result.Format(exception.Message +
                                                                                                   " => " +
                                                                                                   exception.StackTrace)),
                                                                                 exception);
@@ -2353,7 +2353,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Request,
-                                                                                  OCPP.Result.OK("Nothing to upload!")));
+                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnReserveNowResponse event
@@ -2473,7 +2473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<CancelReservationResponse>.IsFault(httpresponse,
                                                                                new CancelReservationResponse(
                                                                                    Request,
-                                                                                   OCPP.Result.Format(
+                                                                                   Result.Format(
                                                                                        "Invalid SOAP => " +
                                                                                        httpresponse.HTTPBody.ToUTF8String()
                                                                                    )
@@ -2492,7 +2492,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<CancelReservationResponse>.IsFault(httpresponse,
                                                                                new CancelReservationResponse(
                                                                                    Request,
-                                                                                   OCPP.Result.Server(
+                                                                                   Result.Server(
                                                                                         httpresponse.HTTPStatusCode.ToString() +
                                                                                         " => " +
                                                                                         httpresponse.HTTPBody.ToUTF8String()
@@ -2511,7 +2511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<CancelReservationResponse>.ExceptionThrown(new CancelReservationResponse(
                                                                                            Request,
-                                                                                           OCPP.Result.Format(exception.Message +
+                                                                                           Result.Format(exception.Message +
                                                                                                          " => " +
                                                                                                          exception.StackTrace)),
                                                                                        exception);
@@ -2531,7 +2531,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(Request,
-                                                                                                OCPP.Result.OK("Nothing to upload!")));
+                                                                                                Result.OK("Nothing to upload!")));
 
 
             #region Send OnCancelReservationResponse event
@@ -2651,7 +2651,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<RemoteStartTransactionResponse>.IsFault(httpresponse,
                                                                                     new RemoteStartTransactionResponse(
                                                                                         Request,
-                                                                                        OCPP.Result.Format(
+                                                                                        Result.Format(
                                                                                             "Invalid SOAP => " +
                                                                                             httpresponse.HTTPBody.ToUTF8String()
                                                                                         )
@@ -2670,7 +2670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<RemoteStartTransactionResponse>.IsFault(httpresponse,
                                                                                     new RemoteStartTransactionResponse(
                                                                                         Request,
-                                                                                        OCPP.Result.Server(
+                                                                                        Result.Server(
                                                                                              httpresponse.HTTPStatusCode.ToString() +
                                                                                              " => " +
                                                                                              httpresponse.HTTPBody.ToUTF8String()
@@ -2689,7 +2689,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<RemoteStartTransactionResponse>.ExceptionThrown(new RemoteStartTransactionResponse(
                                                                                                 Request,
-                                                                                                OCPP.Result.Format(exception.Message +
+                                                                                                Result.Format(exception.Message +
                                                                                                               " => " +
                                                                                                               exception.StackTrace)),
                                                                                             exception);
@@ -2709,7 +2709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(Request,
-                                                                                                          OCPP.Result.OK("Nothing to upload!")));
+                                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnRemoteStartTransactionResponse event
@@ -2829,7 +2829,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<RemoteStopTransactionResponse>.IsFault(httpresponse,
                                                                                    new RemoteStopTransactionResponse(
                                                                                        Request,
-                                                                                       OCPP.Result.Format(
+                                                                                       Result.Format(
                                                                                            "Invalid SOAP => " +
                                                                                            httpresponse.HTTPBody.ToUTF8String()
                                                                                        )
@@ -2848,7 +2848,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<RemoteStopTransactionResponse>.IsFault(httpresponse,
                                                                                    new RemoteStopTransactionResponse(
                                                                                        Request,
-                                                                                       OCPP.Result.Server(
+                                                                                       Result.Server(
                                                                                             httpresponse.HTTPStatusCode.ToString() +
                                                                                             " => " +
                                                                                             httpresponse.HTTPBody.ToUTF8String()
@@ -2867,7 +2867,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<RemoteStopTransactionResponse>.ExceptionThrown(new RemoteStopTransactionResponse(
                                                                                                Request,
-                                                                                               OCPP.Result.Format(exception.Message +
+                                                                                               Result.Format(exception.Message +
                                                                                                              " => " +
                                                                                                              exception.StackTrace)),
                                                                                            exception);
@@ -2887,7 +2887,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(Request,
-                                                                                                        OCPP.Result.OK("Nothing to upload!")));
+                                                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnRemoteStopTransactionResponse event
@@ -3007,7 +3007,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<SetChargingProfileResponse>.IsFault(httpresponse,
                                                                                 new SetChargingProfileResponse(
                                                                                     Request,
-                                                                                    OCPP.Result.Format(
+                                                                                    Result.Format(
                                                                                         "Invalid SOAP => " +
                                                                                         httpresponse.HTTPBody.ToUTF8String()
                                                                                     )
@@ -3026,7 +3026,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<SetChargingProfileResponse>.IsFault(httpresponse,
                                                                                 new SetChargingProfileResponse(
                                                                                     Request,
-                                                                                    OCPP.Result.Server(
+                                                                                    Result.Server(
                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                          " => " +
                                                                                          httpresponse.HTTPBody.ToUTF8String()
@@ -3045,7 +3045,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<SetChargingProfileResponse>.ExceptionThrown(new SetChargingProfileResponse(
                                                                                             Request,
-                                                                                            OCPP.Result.Format(exception.Message +
+                                                                                            Result.Format(exception.Message +
                                                                                                           " => " +
                                                                                                           exception.StackTrace)),
                                                                                         exception);
@@ -3065,7 +3065,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<SetChargingProfileResponse>.OK(new SetChargingProfileResponse(Request,
-                                                                                                  OCPP.Result.OK("Nothing to upload!")));
+                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnSetChargingProfileResponse event
@@ -3185,7 +3185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ClearChargingProfileResponse>.IsFault(httpresponse,
                                                                                   new ClearChargingProfileResponse(
                                                                                       Request,
-                                                                                      OCPP.Result.Format(
+                                                                                      Result.Format(
                                                                                           "Invalid SOAP => " +
                                                                                           httpresponse.HTTPBody.ToUTF8String()
                                                                                       )
@@ -3204,7 +3204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ClearChargingProfileResponse>.IsFault(httpresponse,
                                                                                   new ClearChargingProfileResponse(
                                                                                       Request,
-                                                                                      OCPP.Result.Server(
+                                                                                      Result.Server(
                                                                                            httpresponse.HTTPStatusCode.ToString() +
                                                                                            " => " +
                                                                                            httpresponse.HTTPBody.ToUTF8String()
@@ -3223,7 +3223,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<ClearChargingProfileResponse>.ExceptionThrown(new ClearChargingProfileResponse(
                                                                                               Request,
-                                                                                              OCPP.Result.Format(exception.Message +
+                                                                                              Result.Format(exception.Message +
                                                                                                             " => " +
                                                                                                             exception.StackTrace)),
                                                                                           exception);
@@ -3243,7 +3243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<ClearChargingProfileResponse>.OK(new ClearChargingProfileResponse(Request,
-                                                                                                      OCPP.Result.OK("Nothing to upload!")));
+                                                                                                      Result.OK("Nothing to upload!")));
 
 
             #region Send OnClearChargingProfileResponse event
@@ -3363,7 +3363,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetCompositeScheduleResponse>.IsFault(httpresponse,
                                                                                   new GetCompositeScheduleResponse(
                                                                                       Request,
-                                                                                      OCPP.Result.Format(
+                                                                                      Result.Format(
                                                                                           "Invalid SOAP => " +
                                                                                           httpresponse.HTTPBody.ToUTF8String()
                                                                                       )
@@ -3382,7 +3382,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetCompositeScheduleResponse>.IsFault(httpresponse,
                                                                                   new GetCompositeScheduleResponse(
                                                                                       Request,
-                                                                                      OCPP.Result.Server(
+                                                                                      Result.Server(
                                                                                            httpresponse.HTTPStatusCode.ToString() +
                                                                                            " => " +
                                                                                            httpresponse.HTTPBody.ToUTF8String()
@@ -3401,7 +3401,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<GetCompositeScheduleResponse>.ExceptionThrown(new GetCompositeScheduleResponse(
                                                                                               Request,
-                                                                                              OCPP.Result.Format(exception.Message +
+                                                                                              Result.Format(exception.Message +
                                                                                                             " => " +
                                                                                                             exception.StackTrace)),
                                                                                           exception);
@@ -3421,7 +3421,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<GetCompositeScheduleResponse>.OK(new GetCompositeScheduleResponse(Request,
-                                                                                                      OCPP.Result.OK("Nothing to upload!")));
+                                                                                                      Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -3541,7 +3541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<UnlockConnectorResponse>.IsFault(httpresponse,
                                                                              new UnlockConnectorResponse(
                                                                                  Request,
-                                                                                 OCPP.Result.Format(
+                                                                                 Result.Format(
                                                                                      "Invalid SOAP => " +
                                                                                      httpresponse.HTTPBody.ToUTF8String()
                                                                                  )
@@ -3560,7 +3560,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<UnlockConnectorResponse>.IsFault(httpresponse,
                                                                              new UnlockConnectorResponse(
                                                                                  Request,
-                                                                                 OCPP.Result.Server(
+                                                                                 Result.Server(
                                                                                       httpresponse.HTTPStatusCode.ToString() +
                                                                                       " => " +
                                                                                       httpresponse.HTTPBody.ToUTF8String()
@@ -3579,7 +3579,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<UnlockConnectorResponse>.ExceptionThrown(new UnlockConnectorResponse(
                                                                                          Request,
-                                                                                         OCPP.Result.Format(exception.Message +
+                                                                                         Result.Format(exception.Message +
                                                                                                        " => " +
                                                                                                        exception.StackTrace)),
                                                                                      exception);
@@ -3599,7 +3599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<UnlockConnectorResponse>.OK(new UnlockConnectorResponse(Request,
-                                                                                            OCPP.Result.OK("Nothing to upload!")));
+                                                                                            Result.OK("Nothing to upload!")));
 
 
             #region Send OnUnlockConnectorResponse event
@@ -3720,7 +3720,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetLocalListVersionResponse>.IsFault(httpresponse,
                                                                                  new GetLocalListVersionResponse(
                                                                                      Request,
-                                                                                     OCPP.Result.Format(
+                                                                                     Result.Format(
                                                                                          "Invalid SOAP => " +
                                                                                          httpresponse.HTTPBody.ToUTF8String()
                                                                                      )
@@ -3739,7 +3739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<GetLocalListVersionResponse>.IsFault(httpresponse,
                                                                                  new GetLocalListVersionResponse(
                                                                                      Request,
-                                                                                     OCPP.Result.Server(
+                                                                                     Result.Server(
                                                                                           httpresponse.HTTPStatusCode.ToString() +
                                                                                           " => " +
                                                                                           httpresponse.HTTPBody.ToUTF8String()
@@ -3758,7 +3758,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<GetLocalListVersionResponse>.ExceptionThrown(new GetLocalListVersionResponse(
                                                                                              Request,
-                                                                                             OCPP.Result.Format(exception.Message +
+                                                                                             Result.Format(exception.Message +
                                                                                                            " => " +
                                                                                                            exception.StackTrace)),
                                                                                          exception);
@@ -3778,7 +3778,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<GetLocalListVersionResponse>.OK(new GetLocalListVersionResponse(Request,
-                                                                                                    OCPP.Result.OK("Nothing to upload!")));
+                                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -3898,7 +3898,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<SendLocalListResponse>.IsFault(httpresponse,
                                                                            new SendLocalListResponse(
                                                                                Request,
-                                                                               OCPP.Result.Format(
+                                                                               Result.Format(
                                                                                    "Invalid SOAP => " +
                                                                                    httpresponse.HTTPBody.ToUTF8String()
                                                                                )
@@ -3917,7 +3917,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<SendLocalListResponse>.IsFault(httpresponse,
                                                                            new SendLocalListResponse(
                                                                                Request,
-                                                                               OCPP.Result.Server(
+                                                                               Result.Server(
                                                                                     httpresponse.HTTPStatusCode.ToString() +
                                                                                     " => " +
                                                                                     httpresponse.HTTPBody.ToUTF8String()
@@ -3936,7 +3936,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<SendLocalListResponse>.ExceptionThrown(new SendLocalListResponse(
                                                                                        Request,
-                                                                                       OCPP.Result.Format(exception.Message +
+                                                                                       Result.Format(exception.Message +
                                                                                                      " => " +
                                                                                                      exception.StackTrace)),
                                                                                    exception);
@@ -3956,7 +3956,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<SendLocalListResponse>.OK(new SendLocalListResponse(Request,
-                                                                                        OCPP.Result.OK("Nothing to upload!")));
+                                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnSendLocalListResponse event
@@ -4076,7 +4076,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ClearCacheResponse>.IsFault(httpresponse,
                                                                         new ClearCacheResponse(
                                                                             Request,
-                                                                            OCPP.Result.Format(
+                                                                            Result.Format(
                                                                                 "Invalid SOAP => " +
                                                                                 httpresponse.HTTPBody.ToUTF8String()
                                                                             )
@@ -4095,7 +4095,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         return HTTPResponse<ClearCacheResponse>.IsFault(httpresponse,
                                                                         new ClearCacheResponse(
                                                                             Request,
-                                                                            OCPP.Result.Server(
+                                                                            Result.Server(
                                                                                  httpresponse.HTTPStatusCode.ToString() +
                                                                                  " => " +
                                                                                  httpresponse.HTTPBody.ToUTF8String()
@@ -4114,7 +4114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return HTTPResponse<ClearCacheResponse>.ExceptionThrown(new ClearCacheResponse(
                                                                                     Request,
-                                                                                    OCPP.Result.Format(exception.Message +
+                                                                                    Result.Format(exception.Message +
                                                                                                   " => " +
                                                                                                   exception.StackTrace)),
                                                                                 exception);
@@ -4134,7 +4134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             result ??= HTTPResponse<ClearCacheResponse>.OK(new ClearCacheResponse(Request,
-                                                                                  OCPP.Result.OK("Nothing to upload!")));
+                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnClearCacheResponse event
@@ -4207,64 +4207,64 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        public Task<OCPP.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.BinaryDataTransferRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.BinaryDataTransferRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.GetFileResponse> GetFile(OCPP.CSMS.GetFileRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.GetFileResponse> GetFile(OCPP.CSMS.GetFileRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.SendFileResponse> SendFile(OCPP.CSMS.SendFileRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.SendFileResponse> SendFile(OCPP.CSMS.SendFileRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.DeleteFileResponse> DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<OCPP.CS.ListDirectoryResponse> ListDirectory(OCPP.CSMS.ListDirectoryRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.DeleteFileResponse> DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        //public Task<OCPP.CS.ListDirectoryResponse> ListDirectory(OCPP.CSMS.ListDirectoryRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.AddUserRoleResponse> AddUserRole(OCPP.CSMS.AddUserRoleRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.AddUserRoleResponse> AddUserRole(OCPP.CSMS.AddUserRoleRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(OCPP.CSMS.UpdateSignaturePolicyRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(OCPP.CSMS.UpdateSignaturePolicyRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(OCPP.CSMS.UpdateUserRoleRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(OCPP.CSMS.UpdateUserRoleRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(OCPP.CSMS.DeleteSignaturePolicyRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(OCPP.CSMS.DeleteSignaturePolicyRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(OCPP.CSMS.DeleteUserRoleRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(OCPP.CSMS.DeleteUserRoleRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task<OCPP.SecureDataTransferResponse> SecureDataTransfer(OCPP.SecureDataTransferRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<OCPP.SecureDataTransferResponse> SecureDataTransfer(OCPP.SecureDataTransferRequest Request)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
     }

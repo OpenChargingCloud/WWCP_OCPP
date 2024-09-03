@@ -21,7 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -49,19 +49,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.BootNotificationResponse>
 
-            SendBootNotification(this IChargePoint             ChargePoint,
+            SendBootNotification(this IChargePoint        ChargePoint,
 
-                                 IEnumerable<KeyPair>?         SignKeys            = null,
-                                 IEnumerable<SignInfo>?        SignInfos           = null,
-                                 IEnumerable<Signature>?       Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
 
-                                 CustomData?                   CustomData          = null,
+                                 CustomData?              CustomData          = null,
 
-                                 Request_Id?                   RequestId           = null,
-                                 DateTime?                     RequestTimestamp    = null,
-                                 TimeSpan?                     RequestTimeout      = null,
-                                 EventTracking_Id?             EventTrackingId     = null,
-                                 CancellationToken             CancellationToken   = default)
+                                 Request_Id?              RequestId           = null,
+                                 DateTime?                RequestTimestamp    = null,
+                                 TimeSpan?                RequestTimeout      = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
+                                 CancellationToken        CancellationToken   = default)
 
 
                 => ChargePoint.BootNotification(
@@ -117,19 +117,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.HeartbeatResponse>
 
-            SendHeartbeat(this IChargePoint             ChargePoint,
+            SendHeartbeat(this IChargePoint        ChargePoint,
 
-                          IEnumerable<KeyPair>?         SignKeys            = null,
-                          IEnumerable<SignInfo>?        SignInfos           = null,
-                          IEnumerable<Signature>?       Signatures          = null,
+                          IEnumerable<KeyPair>?    SignKeys            = null,
+                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          IEnumerable<Signature>?  Signatures          = null,
 
-                          CustomData?                   CustomData          = null,
+                          CustomData?              CustomData          = null,
 
-                          Request_Id?                   RequestId           = null,
-                          DateTime?                     RequestTimestamp    = null,
-                          TimeSpan?                     RequestTimeout      = null,
-                          EventTracking_Id?             EventTrackingId     = null,
-                          CancellationToken             CancellationToken   = default)
+                          Request_Id?              RequestId           = null,
+                          DateTime?                RequestTimestamp    = null,
+                          TimeSpan?                RequestTimeout      = null,
+                          EventTracking_Id?        EventTrackingId     = null,
+                          CancellationToken        CancellationToken   = default)
 
 
                 => ChargePoint.Heartbeat(
@@ -176,21 +176,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.DiagnosticsStatusNotificationResponse>
 
-            SendDiagnosticsStatusNotification(this IChargePoint             ChargePoint,
+            SendDiagnosticsStatusNotification(this IChargePoint        ChargePoint,
 
-                                              DiagnosticsStatus             Status,
+                                              DiagnosticsStatus        Status,
 
-                                              IEnumerable<KeyPair>?         SignKeys            = null,
-                                              IEnumerable<SignInfo>?        SignInfos           = null,
-                                              IEnumerable<Signature>?       Signatures          = null,
+                                              IEnumerable<KeyPair>?    SignKeys            = null,
+                                              IEnumerable<SignInfo>?   SignInfos           = null,
+                                              IEnumerable<Signature>?  Signatures          = null,
 
-                                              CustomData?                   CustomData          = null,
+                                              CustomData?              CustomData          = null,
 
-                                              Request_Id?                   RequestId           = null,
-                                              DateTime?                     RequestTimestamp    = null,
-                                              TimeSpan?                     RequestTimeout      = null,
-                                              EventTracking_Id?             EventTrackingId     = null,
-                                              CancellationToken             CancellationToken   = default)
+                                              Request_Id?              RequestId           = null,
+                                              DateTime?                RequestTimestamp    = null,
+                                              TimeSpan?                RequestTimeout      = null,
+                                              EventTracking_Id?        EventTrackingId     = null,
+                                              CancellationToken        CancellationToken   = default)
 
 
                 => ChargePoint.DiagnosticsStatusNotification(
@@ -239,21 +239,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this IChargePoint             ChargePoint,
+            SendFirmwareStatusNotification(this IChargePoint        ChargePoint,
 
-                                           FirmwareStatus                Status,
+                                           FirmwareStatus           Status,
 
-                                           IEnumerable<KeyPair>?         SignKeys            = null,
-                                           IEnumerable<SignInfo>?        SignInfos           = null,
-                                           IEnumerable<Signature>?       Signatures          = null,
+                                           IEnumerable<KeyPair>?    SignKeys            = null,
+                                           IEnumerable<SignInfo>?   SignInfos           = null,
+                                           IEnumerable<Signature>?  Signatures          = null,
 
-                                           CustomData?                   CustomData          = null,
+                                           CustomData?              CustomData          = null,
 
-                                           Request_Id?                   RequestId           = null,
-                                           DateTime?                     RequestTimestamp    = null,
-                                           TimeSpan?                     RequestTimeout      = null,
-                                           EventTracking_Id?             EventTrackingId     = null,
-                                           CancellationToken             CancellationToken   = default)
+                                           Request_Id?              RequestId           = null,
+                                           DateTime?                RequestTimestamp    = null,
+                                           TimeSpan?                RequestTimeout      = null,
+                                           EventTracking_Id?        EventTrackingId     = null,
+                                           CancellationToken        CancellationToken   = default)
 
 
                 => ChargePoint.FirmwareStatusNotification(
@@ -303,21 +303,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.AuthorizeResponse>
 
-            Authorize(this IChargePoint             ChargePoint,
+            Authorize(this IChargePoint        ChargePoint,
 
-                      IdToken                       IdTag,
+                      IdToken                  IdTag,
 
-                      IEnumerable<KeyPair>?         SignKeys            = null,
-                      IEnumerable<SignInfo>?        SignInfos           = null,
-                      IEnumerable<Signature>?       Signatures          = null,
+                      IEnumerable<KeyPair>?    SignKeys            = null,
+                      IEnumerable<SignInfo>?   SignInfos           = null,
+                      IEnumerable<Signature>?  Signatures          = null,
 
-                      CustomData?                   CustomData          = null,
+                      CustomData?              CustomData          = null,
 
-                      Request_Id?                   RequestId           = null,
-                      DateTime?                     RequestTimestamp    = null,
-                      TimeSpan?                     RequestTimeout      = null,
-                      EventTracking_Id?             EventTrackingId     = null,
-                      CancellationToken             CancellationToken   = default)
+                      Request_Id?              RequestId           = null,
+                      DateTime?                RequestTimestamp    = null,
+                      TimeSpan?                RequestTimeout      = null,
+                      EventTracking_Id?        EventTrackingId     = null,
+                      CancellationToken        CancellationToken   = default)
 
 
                 => ChargePoint.Authorize(
@@ -378,9 +378,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              UInt64                        MeterStart,
                                              Reservation_Id?               ReservationId       = null,
 
-                                             IEnumerable<KeyPair>?         SignKeys            = null,
-                                             IEnumerable<SignInfo>?        SignInfos           = null,
-                                             IEnumerable<Signature>?       Signatures          = null,
+                                             IEnumerable<KeyPair>?    SignKeys            = null,
+                                             IEnumerable<SignInfo>?   SignInfos           = null,
+                                             IEnumerable<Signature>?  Signatures          = null,
 
                                              CustomData?                   CustomData          = null,
 
@@ -457,9 +457,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    String?                       VendorId            = null,
                                    String?                       VendorErrorCode     = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<Signature>?       Signatures          = null,
+                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   IEnumerable<Signature>?  Signatures          = null,
 
                                    CustomData?                   CustomData          = null,
 
@@ -530,9 +530,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             IEnumerable<MeterValue>       MeterValues,
                             Transaction_Id?               TransactionId       = null,
 
-                            IEnumerable<KeyPair>?         SignKeys            = null,
-                            IEnumerable<SignInfo>?        SignInfos           = null,
-                            IEnumerable<Signature>?       Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            IEnumerable<Signature>?  Signatures          = null,
 
                             CustomData?                   CustomData          = null,
 
@@ -605,9 +605,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             Reasons?                      Reason              = null,
                                             IEnumerable<MeterValue>?      TransactionData     = null,
 
-                                            IEnumerable<KeyPair>?         SignKeys            = null,
-                                            IEnumerable<SignInfo>?        SignInfos           = null,
-                                            IEnumerable<Signature>?       Signatures          = null,
+                                            IEnumerable<KeyPair>?    SignKeys            = null,
+                                            IEnumerable<SignInfo>?   SignInfos           = null,
+                                            IEnumerable<Signature>?  Signatures          = null,
 
                                             CustomData?                   CustomData          = null,
 
@@ -678,9 +678,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          Message_Id?                   MessageId           = null,
                          JToken?                       Data                = null,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<KeyPair>?    SignKeys            = null,
+                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<Signature>?  Signatures          = null,
 
                          CustomData?                   CustomData          = null,
 
@@ -749,9 +749,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //                       Byte[]?                       Data                = null,
         //                       BinaryFormats?                Format              = null,
 
-        //                       IEnumerable<KeyPair>?         SignKeys            = null,
-        //                       IEnumerable<SignInfo>?        SignInfos           = null,
-        //                       IEnumerable<Signature>?       Signatures          = null,
+        //                       IEnumerable<KeyPair>?    SignKeys            = null,
+        //                       IEnumerable<SignInfo>?   SignInfos           = null,
+        //                       IEnumerable<Signature>?  Signatures          = null,
 
         //                       Request_Id?                   RequestId           = null,
         //                       DateTime?                     RequestTimestamp    = null,

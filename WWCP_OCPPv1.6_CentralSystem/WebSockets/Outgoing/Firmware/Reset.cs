@@ -20,7 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
+
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
