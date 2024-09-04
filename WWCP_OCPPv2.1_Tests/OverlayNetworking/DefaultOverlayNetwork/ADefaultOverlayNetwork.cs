@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -151,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             #endregion
 
-            #region Attach HTTP Web Socket Server
+            #region Attach HTTP WebSocket Server
 
             csmsWSServer = CSMS.AttachWebSocketServer(
                                TCPPort:                 IPPort.Parse(9101),
@@ -223,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             #endregion
 
-            #region Attach HTTP Web Socket Server
+            #region Attach HTTP WebSocket Server
 
             lcOCPPWebSocketServer = localController.AttachWebSocketServer(
                                         TCPPort:                 IPPort.Parse(9103),

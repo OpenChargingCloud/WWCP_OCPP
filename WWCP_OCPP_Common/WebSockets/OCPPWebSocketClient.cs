@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP Web Socket Client";
+        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP WebSocket Client";
 
         private    const String  LogfileName            = "NetworkingNodeWSClient.log";
 

@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="SendMessage">The JSON SendMessage.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task<RequestForwardingDecision>
+    public delegate Task<MessageForwardingDecision>
 
         OnAnyJSONSendMessageFilterDelegate(DateTime               Timestamp,
                                            IEventSender           Sender,
@@ -229,12 +229,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyJSONSendMessageFilteredDelegate(DateTime               Timestamp,
-                                             IEventSender           Sender,
-                                             IWebSocketConnection   Connection,
-                                             OCPP_JSONSendMessage   SendMessage,
-                                             RequestForwardingDecision     ForwardingDecision,
-                                             CancellationToken      CancellationToken);
+        OnAnyJSONSendMessageFilteredDelegate(DateTime                    Timestamp,
+                                             IEventSender                Sender,
+                                             IWebSocketConnection        Connection,
+                                             OCPP_JSONSendMessage        SendMessage,
+                                             MessageForwardingDecision   ForwardingDecision,
+                                             CancellationToken           CancellationToken);
 
     #endregion
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="SendMessage">The binary SendMessage.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task<RequestForwardingDecision>
+    public delegate Task<MessageForwardingDecision>
 
         OnAnyBinarySendMessageFilterDelegate(DateTime                 Timestamp,
                                              IEventSender             Sender,
@@ -268,12 +268,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyBinarySendMessageFilteredDelegate(DateTime                 Timestamp,
-                                               IEventSender             Sender,
-                                               IWebSocketConnection     Connection,
-                                               OCPP_BinarySendMessage   SendMessage,
-                                               RequestForwardingDecision       ForwardingDecision,
-                                               CancellationToken        CancellationToken);
+        OnAnyBinarySendMessageFilteredDelegate(DateTime                    Timestamp,
+                                               IEventSender                Sender,
+                                               IWebSocketConnection        Connection,
+                                               OCPP_BinarySendMessage      SendMessage,
+                                               MessageForwardingDecision   ForwardingDecision,
+                                               CancellationToken           CancellationToken);
 
     #endregion
 
@@ -820,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Do we have a general filter rule for any JSON request?
 
-            RequestForwardingDecision? forwardingDecision = null;
+            MessageForwardingDecision? forwardingDecision = null;
 
             var requestFilter = OnAnyJSONSendMessageFilter;
             if (requestFilter is not null)
@@ -874,7 +874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ]
                                      );
 
-                    if (resultTask is Task<RequestForwardingDecision> forwardingDecisionTask)
+                    if (resultTask is Task<MessageForwardingDecision> forwardingDecisionTask)
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
@@ -914,7 +914,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
+            forwardingDecision ??= new MessageForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONSendMessageFiltered event
@@ -1357,7 +1357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Do we have a general filter rule for any Binary request?
 
-            RequestForwardingDecision? forwardingDecision = null;
+            MessageForwardingDecision? forwardingDecision = null;
 
             var requestFilter = OnAnyBinarySendMessageFilter;
             if (requestFilter is not null)
@@ -1411,7 +1411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ]
                                      );
 
-                    if (resultTask is Task<RequestForwardingDecision> forwardingDecisionTask)
+                    if (resultTask is Task<MessageForwardingDecision> forwardingDecisionTask)
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
@@ -1451,7 +1451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
+            forwardingDecision ??= new MessageForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinarySendMessageFiltered event

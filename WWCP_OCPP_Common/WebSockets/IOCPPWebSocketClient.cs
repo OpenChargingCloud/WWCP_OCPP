@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// The common interface of all OCPP HTTP Web Socket clients.
+    /// The common interface of all OCPP HTTP WebSocket clients.
     /// </summary>
     public interface IOCPPWebSocketClient : IWWCPWebSocketClient
     {

@@ -116,64 +116,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-
-
-        #region (protected) WireWebSocketServer(WebSocketServer)
-
-        protected void WireWebSocketServer(OCPPWebSocketServer WebSocketServer)
-        {
-
-            base.WireWebSocketServer(WebSocketServer);
-
-            // (Generic) Error Handling
-
-        }
-
-        #endregion
-
-
         #region ConnectWebSocketClient(...)
 
-        public override async Task<HTTPResponse> ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
-                                                                           HTTPHostname?                                                   VirtualHostname              = null,
-                                                                           I18NString?                                                     Description                  = null,
-                                                                           Boolean?                                                        PreferIPv4                   = null,
-                                                                           RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
-                                                                           LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                                                           X509Certificate?                                                ClientCert                   = null,
-                                                                           SslProtocols?                                                   TLSProtocol                  = null,
-                                                                           String?                                                         HTTPUserAgent                = null,
-                                                                           IHTTPAuthentication?                                            HTTPAuthentication           = null,
-                                                                           TimeSpan?                                                       RequestTimeout               = null,
-                                                                           TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
-                                                                           UInt16?                                                         MaxNumberOfRetries           = 3,
-                                                                           UInt32?                                                         InternalBufferSize           = null,
+        public override async Task<HTTPResponse>
 
-                                                                           IEnumerable<String>?                                            SecWebSocketProtocols        = null,
-                                                                           NetworkingMode?                                                 NetworkingMode               = null,
-                                                                           NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
-                                                                           IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
+            ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
+                                       HTTPHostname?                                                   VirtualHostname              = null,
+                                       I18NString?                                                     Description                  = null,
+                                       Boolean?                                                        PreferIPv4                   = null,
+                                       RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
+                                       X509Certificate?                                                ClientCert                   = null,
+                                       SslProtocols?                                                   TLSProtocol                  = null,
+                                       String?                                                         HTTPUserAgent                = null,
+                                       IHTTPAuthentication?                                            HTTPAuthentication           = null,
+                                       TimeSpan?                                                       RequestTimeout               = null,
+                                       TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
+                                       UInt16?                                                         MaxNumberOfRetries           = 3,
+                                       UInt32?                                                         InternalBufferSize           = null,
 
-                                                                           Boolean                                                         DisableWebSocketPings        = false,
-                                                                           TimeSpan?                                                       WebSocketPingEvery           = null,
-                                                                           TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+                                       IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                       NetworkingMode?                                                 NetworkingMode               = null,
+                                       NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
+                                       IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
 
-                                                                           Boolean                                                         DisableMaintenanceTasks      = false,
-                                                                           TimeSpan?                                                       MaintenanceEvery             = null,
+                                       Boolean                                                         DisableWebSocketPings        = false,
+                                       TimeSpan?                                                       WebSocketPingEvery           = null,
+                                       TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                                           String?                                                         LoggingPath                  = null,
-                                                                           String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                                                           LogfileCreatorDelegate?                                         LogfileCreator               = null,
-                                                                           HTTPClientLogger?                                               HTTPLogger                   = null,
-                                                                           DNSClient?                                                      DNSClient                    = null,
+                                       Boolean                                                         DisableMaintenanceTasks      = false,
+                                       TimeSpan?                                                       MaintenanceEvery             = null,
 
-                                                                           EventTracking_Id?                                               EventTrackingId              = null,
-                                                                           CancellationToken                                               CancellationToken            = default)
+                                       String?                                                         LoggingPath                  = null,
+                                       String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?                                         LogfileCreator               = null,
+                                       HTTPClientLogger?                                               HTTPLogger                   = null,
+                                       DNSClient?                                                      DNSClient                    = null,
+
+                                       EventTracking_Id?                                               EventTrackingId              = null,
+                                       CancellationToken                                               CancellationToken            = default)
+
         {
 
             NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS;
 
-            var ocppWebSocketClient = new OCPPWebSocketClient(
+            #region Create new OCPP WebSocket client
+
+            var ocppWebSocketClient = new OCPP.WebSockets.OCPPWebSocketClient(
 
                                           this,
 
@@ -212,6 +201,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           DNSClient
 
                                       );
+
+            #endregion
+
+            #region Wire On(JSON/Binary)MessageReceived
+
+            ocppWebSocketClient.OnJSONMessageReceived += (requestTimestamp,
+                                                          wwcpWebSocketClient,
+                                                          webSocketClientConnection,
+                                                          eventTrackingId,
+                                                          messageTimestamp,
+                                                          sourceNodeId,
+                                                          jsonMessage,
+                                                          cancellationToken) =>
+
+                OCPP.IN.ProcessJSONMessage(
+                    messageTimestamp,
+                    webSocketClientConnection,
+                    sourceNodeId,
+                    jsonMessage,
+                    eventTrackingId,
+                    cancellationToken
+                );
+
+
+            ocppWebSocketClient.OnBinaryMessageReceived += (requestTimestamp,
+                                                            wwcpWebSocketClient,
+                                                            webSocketClientConnection,
+                                                            eventTrackingId,
+                                                            messageTimestamp,
+                                                            sourceNodeId,
+                                                            binaryMessage,
+                                                            cancellationToken) =>
+
+                OCPP.IN.ProcessBinaryMessage(
+                    messageTimestamp,
+                    webSocketClientConnection,
+                    sourceNodeId,
+                    binaryMessage,
+                    eventTrackingId,
+                    cancellationToken
+                );
+
+            #endregion
 
             return await ConnectWebSocketClient(
 
@@ -284,38 +316,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="AutoStart">Start the server immediately.</param>
-        public override OCPPWebSocketServer AttachWebSocketServer(String?                                                         HTTPServiceName              = null,
-                                                                 IIPAddress?                                                     IPAddress                    = null,
-                                                                 IPPort?                                                         TCPPort                      = null,
-                                                                 I18NString?                                                     Description                  = null,
+        public override OCPP.WebSockets.OCPPWebSocketServer
 
-                                                                 Boolean                                                         RequireAuthentication        = true,
-                                                                 IEnumerable<String>?                                            SecWebSocketProtocols        = null,
-                                                                 Boolean                                                         DisableWebSocketPings        = false,
-                                                                 TimeSpan?                                                       WebSocketPingEvery           = null,
-                                                                 TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+            AttachWebSocketServer(String?                                                         HTTPServiceName              = null,
+                                  IIPAddress?                                                     IPAddress                    = null,
+                                  IPPort?                                                         TCPPort                      = null,
+                                  I18NString?                                                     Description                  = null,
 
-                                                                 Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                                                 RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
-                                                                 LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                                                 SslProtocols?                                                   AllowedTLSProtocols          = null,
-                                                                 Boolean?                                                        ClientCertificateRequired    = null,
-                                                                 Boolean?                                                        CheckCertificateRevocation   = null,
+                                  Boolean                                                         RequireAuthentication        = true,
+                                  IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                  Boolean                                                         DisableWebSocketPings        = false,
+                                  TimeSpan?                                                       WebSocketPingEvery           = null,
+                                  TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                                 ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                                                 ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
-                                                                 Boolean?                                                        ServerThreadIsBackground     = null,
-                                                                 ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
-                                                                 TimeSpan?                                                       ConnectionTimeout            = null,
-                                                                 UInt32?                                                         MaxClientConnections         = null,
+                                  Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
+                                  RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                  LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
+                                  SslProtocols?                                                   AllowedTLSProtocols          = null,
+                                  Boolean?                                                        ClientCertificateRequired    = null,
+                                  Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                                                 Boolean                                                         AutoStart                    = true)
+                                  ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                  ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                  Boolean?                                                        ServerThreadIsBackground     = null,
+                                  ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                  TimeSpan?                                                       ConnectionTimeout            = null,
+                                  UInt32?                                                         MaxClientConnections         = null,
+
+                                  Boolean                                                         AutoStart                    = true)
+
         {
 
-            var ocppWebSocketServer = new OCPPWebSocketServer(
+            #region Create new OCPP WebSocket server
+
+            var ocppWebSocketServer = new OCPP.WebSockets.OCPPWebSocketServer(
 
                                           this,
 
@@ -325,7 +362,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           Description,
 
                                           RequireAuthentication,
-                                          SecWebSocketProtocols,
+                                          SecWebSocketProtocols ?? [
+                                                                      "ocpp2.0.1",
+                                                                       Version.WebSocketSubProtocolId
+                                                                   ],
                                           DisableWebSocketPings,
                                           WebSocketPingEvery,
                                           SlowNetworkSimulationDelay,
@@ -349,6 +389,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       );
 
+            #endregion
+
+            #region Wire On(JSON/Binary)MessageReceived
+
+            ocppWebSocketServer.OnJSONMessageReceived += (requestTimestamp,
+                                                          wwcpWebSocketServer,
+                                                          webSocketServerConnection,
+                                                          eventTrackingId,
+                                                          messageTimestamp,
+                                                          sourceNodeId,
+                                                          jsonMessage,
+                                                          cancellationToken) =>
+
+                OCPP.IN.ProcessJSONMessage(
+                    messageTimestamp,
+                    webSocketServerConnection,
+                    sourceNodeId,
+                    jsonMessage,
+                    eventTrackingId,
+                    cancellationToken
+                );
+
+
+            ocppWebSocketServer.OnBinaryMessageReceived += (requestTimestamp,
+                                                            wwcpWebSocketServer,
+                                                            webSocketServerConnection,
+                                                            eventTrackingId,
+                                                            messageTimestamp,
+                                                            sourceNodeId,
+                                                            binaryMessage,
+                                                            cancellationToken) =>
+
+                OCPP.IN.ProcessBinaryMessage(
+                    messageTimestamp,
+                    webSocketServerConnection,
+                    sourceNodeId,
+                    binaryMessage,
+                    eventTrackingId,
+                    cancellationToken
+                );
+
+            #endregion
+
+
             WireWebSocketServer(ocppWebSocketServer);
 
             if (AutoStart)
@@ -357,6 +441,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return ocppWebSocketServer;
 
         }
+
+        #endregion
+
+        #region (protected) WireWebSocketServer(WebSocketServer)
+
+        //protected void WireWebSocketServer(OCPP.WebSockets.OCPPWebSocketServer WebSocketServer)
+        //{
+
+        //    base.WireWebSocketServer(WebSocketServer);
+
+        //    // (Generic) Error Handling
+
+        //}
 
         #endregion
 
@@ -400,66 +497,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-
         #region LogEvent(OCPPIO, Logger, LogHandler, ...)
 
-        public async Task LogEvent<TDelegate>(String                                             OCPPIO,
-                                              TDelegate?                                         Logger,
-                                              Func<TDelegate, Task>                              LogHandler,
-                                              [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
-                                              [CallerMemberName()]                       String  OCPPCommand   = "")
+        //public async Task LogEvent<TDelegate>(String                                             OCPPIO,
+        //                                      TDelegate?                                         Logger,
+        //                                      Func<TDelegate, Task>                              LogHandler,
+        //                                      [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+        //                                      [CallerMemberName()]                       String  OCPPCommand   = "")
 
-            where TDelegate : Delegate
+        //    where TDelegate : Delegate
 
-        {
-            if (Logger is not null)
-            {
-                try
-                {
+        //{
+        //    if (Logger is not null)
+        //    {
+        //        try
+        //        {
 
-                    await Task.WhenAll(
-                              Logger.GetInvocationList().
-                                     OfType<TDelegate>().
-                                     Select(LogHandler)
-                          );
+        //            await Task.WhenAll(
+        //                      Logger.GetInvocationList().
+        //                             OfType<TDelegate>().
+        //                             Select(LogHandler)
+        //                  );
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(OCPPIO, $"{OCPPCommand}.{EventName}", e);
-                }
-            }
-        }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            await HandleErrors(OCPPIO, $"{OCPPCommand}.{EventName}", e);
+        //        }
+        //    }
+        //}
 
         #endregion
 
         #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
 
-        public virtual Task HandleErrors(String  Module,
-                                         String  Caller,
-                                         String  ErrorResponse)
-        {
+        //public virtual Task HandleErrors(String  Module,
+        //                                 String  Caller,
+        //                                 String  ErrorResponse)
+        //{
 
-            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
+        //    DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
 
-            return Task.CompletedTask;
+        //    return Task.CompletedTask;
 
-        }
+        //}
 
         #endregion
 
         #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
 
-        public virtual Task HandleErrors(String     Module,
-                                         String     Caller,
-                                         Exception  ExceptionOccured)
-        {
+        //public virtual Task HandleErrors(String     Module,
+        //                                 String     Caller,
+        //                                 Exception  ExceptionOccured)
+        //{
 
-            DebugX.LogException(ExceptionOccured, Caller);
+        //    DebugX.LogException(ExceptionOccured, Caller);
 
-            return Task.CompletedTask;
+        //    return Task.CompletedTask;
 
-        }
+        //}
 
         #endregion
 

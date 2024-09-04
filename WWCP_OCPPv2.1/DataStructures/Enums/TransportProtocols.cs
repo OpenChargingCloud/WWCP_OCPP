@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Unknown,
 
         /// <summary>
-        /// JSON via HTTP Web Sockets.
+        /// JSON via HTTP WebSockets.
         /// </summary>
         JSON,
 

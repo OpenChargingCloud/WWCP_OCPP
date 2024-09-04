@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     if (lcOCPPWebSocketServer01 is not null)
                         ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API",   response.Server);
                     else
-                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} Web Socket Server",                         response.Server);
+                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} WebSocket Server",                         response.Server);
 
                     ClassicAssert.AreEqual("Upgrade",                                                                           response.Connection);
                     ClassicAssert.AreEqual("websocket",                                                                         response.Upgrade);
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     // Sec-WebSocket-Version:   13
 
                     ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response.HTTPStatusCode);
-                    ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} Web Socket Server",              response.Server);
+                    ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} WebSocket Server",              response.Server);
                     ClassicAssert.AreEqual("Upgrade",                                                            response.Connection);
                     ClassicAssert.AreEqual("websocket",                                                          response.Upgrade);
                     ClassicAssert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));

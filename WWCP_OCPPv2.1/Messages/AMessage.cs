@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public EventTracking_Id      EventTrackingId        { get; }
 
         /// <summary>
-        /// The OCPP HTTP Web Socket action.
+        /// The OCPP HTTP WebSocket action.
         /// </summary>
         [Mandatory]
         public String                Action                 { get; }

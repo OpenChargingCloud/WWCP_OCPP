@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// The OCPP HTTP Web Socket server.
+    /// The OCPP HTTP WebSocket server.
     /// </summary>
     public partial class OCPPWebSocketServer : WWCPWebSocketServer,
                                                IOCPPWebSocketServer
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const   String                                              DefaultHTTPServiceName  = $"GraphDefined OCPP Web Socket Server";
+        public new const   String                                              DefaultHTTPServiceName  = $"GraphDefined OCPP WebSocket Server";
 
         protected readonly ConcurrentDictionary<Request_Id, SendRequestState>  requests                = [];
 
@@ -63,26 +63,17 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// The parent OCPP adapter.
-        /// </summary>
-  //      public OCPPAdapter  OCPPAdapter    { get; }
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP HTTP Web Socket server.
+        /// Create a new OCPP HTTP WebSocket server.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
         /// 
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// 
@@ -125,10 +116,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    Description,
 
                    RequireAuthentication,
-                   SecWebSocketProtocols,// ?? [
-                                         //       "ocpp2.0.1",
-                                         //        Version.WebSocketSubProtocolId
-                                         //    ],
+                   SecWebSocketProtocols ?? throw new ArgumentNullException(nameof(SecWebSocketProtocols), "The given enumeration of accepted OCPP versions must not be null!"),
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -151,49 +139,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    false)
 
         {
-
-      //      this.OCPPAdapter  = NetworkingNode.OCPP;
-
-            #region Wire On(JSON/Binary)MessageReceived
-
-            //OnJSONMessageReceived += (requestTimestamp,
-            //                          wwcpWebSocketServer,
-            //                          webSocketServerConnection,
-            //                          eventTrackingId,
-            //                          messageTimestamp,
-            //                          sourceNodeId,
-            //                          jsonMessage,
-            //                          cancellationToken) =>
-
-            //    OCPPAdapter.IN.ProcessJSONMessage(
-            //        messageTimestamp,
-            //        webSocketServerConnection,
-            //        sourceNodeId,
-            //        jsonMessage,
-            //        eventTrackingId,
-            //        cancellationToken
-            //    );
-
-
-            //OnBinaryMessageReceived += (requestTimestamp,
-            //                            wwcpWebSocketServer,
-            //                            webSocketServerConnection,
-            //                            eventTrackingId,
-            //                            messageTimestamp,
-            //                            sourceNodeId,
-            //                            binaryMessage,
-            //                            cancellationToken) =>
-
-            //    OCPPAdapter.IN.ProcessBinaryMessage(
-            //        messageTimestamp,
-            //        webSocketServerConnection,
-            //        sourceNodeId,
-            //        binaryMessage,
-            //        eventTrackingId,
-            //        cancellationToken
-            //    );
-
-            #endregion
 
             //this.Logger       = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                             LoggingPath,
@@ -222,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(JSONRequestMessage.Destination.Next))
                 {
 
                     JSONRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -232,36 +177,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       JSONRequestMessage.ToJSON(),
                                                       JSONRequestMessage.RequestTimestamp,
-                                                      JSONRequestMessage.Destination.Next,
                                                       JSONRequestMessage.EventTrackingId,
                                                       JSONRequestMessage.CancellationToken
                                                   );
-
-                    //var jsonMessage  = JSONRequestMessage.ToJSON();
-
-                    //var sentStatus   = await SendTextMessage(
-                    //                             webSocketConnection,
-                    //                             jsonMessage.ToString(Formatting.None),
-                    //                             JSONRequestMessage.EventTrackingId,
-                    //                             JSONRequestMessage.CancellationToken
-                    //                         );
-
-                    //await LogEvent(
-                    //          OnJSONMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              JSONRequestMessage.EventTrackingId,
-                    //              JSONRequestMessage.RequestTimestamp,
-                    //              jsonMessage,
-                    //              sentStatus,
-                    //              JSONRequestMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -294,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(JSONResponseMessage.Destination.Next))
                 {
 
                     JSONResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -304,36 +222,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       JSONResponseMessage.ToJSON(),
                                                       JSONResponseMessage.ResponseTimestamp,
-                                                      JSONResponseMessage.Destination.Next,
                                                       JSONResponseMessage.EventTrackingId,
                                                       JSONResponseMessage.CancellationToken
                                                   );
-
-                    //var jsonMessage  = JSONResponseMessage.ToJSON();
-
-                    //var sentStatus   = await SendTextMessage(
-                    //                             webSocketConnection,
-                    //                             jsonMessage.ToString(Formatting.None),
-                    //                             JSONResponseMessage.EventTrackingId,
-                    //                             JSONResponseMessage.CancellationToken
-                    //                         );
-
-                    //await LogEvent(
-                    //          OnJSONMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              JSONResponseMessage.EventTrackingId,
-                    //              JSONResponseMessage.ResponseTimestamp,
-                    //              jsonMessage,
-                    //              sentStatus,
-                    //              JSONResponseMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -366,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(JSONRequestErrorMessage.Destination.Next))
                 {
 
                     JSONRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -376,36 +267,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       JSONRequestErrorMessage.ToJSON(),
                                                       JSONRequestErrorMessage.ResponseTimestamp,
-                                                      JSONRequestErrorMessage.Destination.Next,
                                                       JSONRequestErrorMessage.EventTrackingId,
                                                       JSONRequestErrorMessage.CancellationToken
                                                   );
-
-                    //var jsonMessage  = JSONRequestErrorMessage.ToJSON();
-
-                    //var sentStatus   = await SendTextMessage(
-                    //                             webSocketConnection,
-                    //                             jsonMessage.ToString(Formatting.None),
-                    //                             JSONRequestErrorMessage.EventTrackingId,
-                    //                             JSONRequestErrorMessage.CancellationToken
-                    //                         );
-
-                    //await LogEvent(
-                    //          OnJSONMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              JSONRequestErrorMessage.EventTrackingId,
-                    //              JSONRequestErrorMessage.ResponseTimestamp,
-                    //              jsonMessage,
-                    //              sentStatus,
-                    //              JSONRequestErrorMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -438,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(JSONResponseErrorMessage.Destination.Next))
                 {
 
                     JSONResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -448,36 +312,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       JSONResponseErrorMessage.ToJSON(),
                                                       JSONResponseErrorMessage.ResponseTimestamp,
-                                                      JSONResponseErrorMessage.Destination.Next,
                                                       JSONResponseErrorMessage.EventTrackingId,
                                                       JSONResponseErrorMessage.CancellationToken
                                                   );
-
-                    //var jsonMessage  = JSONResponseErrorMessage.ToJSON();
-
-                    //var sentStatus   = await SendTextMessage(
-                    //                             webSocketConnection,
-                    //                             jsonMessage.ToString(Formatting.None),
-                    //                             JSONResponseErrorMessage.EventTrackingId,
-                    //                             JSONResponseErrorMessage.CancellationToken
-                    //                         );
-
-                    //await LogEvent(
-                    //          OnJSONMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              JSONResponseErrorMessage.EventTrackingId,
-                    //              JSONResponseErrorMessage.ResponseTimestamp,
-                    //              jsonMessage,
-                    //              sentStatus,
-                    //              JSONResponseErrorMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -510,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(JSONSendMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(JSONSendMessage.Destination.Next))
                 {
 
                     JSONSendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -520,36 +357,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       JSONSendMessage.ToJSON(),
                                                       JSONSendMessage.MessageTimestamp,
-                                                      JSONSendMessage.Destination.Next,
                                                       JSONSendMessage.EventTrackingId,
                                                       JSONSendMessage.CancellationToken
                                                   );
-
-                    //var jsonMessage  = JSONSendMessage.ToJSON();
-
-                    //var sentStatus   = await SendTextMessage(
-                    //                             webSocketConnection,
-                    //                             jsonMessage.ToString(Formatting.None),
-                    //                             JSONSendMessage.EventTrackingId,
-                    //                             JSONSendMessage.CancellationToken
-                    //                         );
-
-                    //await LogEvent(
-                    //          OnJSONMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              JSONSendMessage.EventTrackingId,
-                    //              JSONSendMessage.MessageTimestamp,
-                    //              jsonMessage,
-                    //              sentStatus,
-                    //              JSONSendMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -583,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(BinaryRequestMessage.Destination.Next))
                 {
 
                     BinaryRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -593,36 +403,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       BinaryRequestMessage.ToByteArray(),
                                                       BinaryRequestMessage.RequestTimestamp,
-                                                      BinaryRequestMessage.Destination.Next,
                                                       BinaryRequestMessage.EventTrackingId,
                                                       BinaryRequestMessage.CancellationToken
                                                   );
-
-                    //var binaryMessage  = BinaryRequestMessage.ToByteArray();
-
-                    //var sentStatus     = await SendBinaryMessage(
-                    //                               webSocketConnection,
-                    //                               binaryMessage,
-                    //                               BinaryRequestMessage.EventTrackingId,
-                    //                               BinaryRequestMessage.CancellationToken
-                    //                           );
-
-                    //await LogEvent(
-                    //          OnBinaryMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              BinaryRequestMessage.EventTrackingId,
-                    //              BinaryRequestMessage.RequestTimestamp,
-                    //              binaryMessage,
-                    //              sentStatus,
-                    //              BinaryRequestMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -655,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(BinaryResponseMessage.Destination.Next))
                 {
 
                     BinaryResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -665,36 +448,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       BinaryResponseMessage.ToByteArray(),
                                                       BinaryResponseMessage.ResponseTimestamp,
-                                                      BinaryResponseMessage.Destination.Next,
                                                       BinaryResponseMessage.EventTrackingId,
                                                       BinaryResponseMessage.CancellationToken
                                                   );
-
-                    //var binaryMessage  = BinaryResponseMessage.ToByteArray();
-
-                    //var sentStatus     = await SendBinaryMessage(
-                    //                               webSocketConnection,
-                    //                               binaryMessage,
-                    //                               BinaryResponseMessage.EventTrackingId,
-                    //                               BinaryResponseMessage.CancellationToken
-                    //                           );
-
-                    //await LogEvent(
-                    //          OnBinaryMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              BinaryResponseMessage.EventTrackingId,
-                    //              BinaryResponseMessage.ResponseTimestamp,
-                    //              binaryMessage,
-                    //              sentStatus,
-                    //              BinaryResponseMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -727,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(BinaryRequestErrorMessage.Destination.Next))
                 {
 
                     BinaryRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -737,36 +493,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       BinaryRequestErrorMessage.ToByteArray(),
                                                       BinaryRequestErrorMessage.ResponseTimestamp,
-                                                      BinaryRequestErrorMessage.Destination.Next,
                                                       BinaryRequestErrorMessage.EventTrackingId,
                                                       BinaryRequestErrorMessage.CancellationToken
                                                   );
-
-                    //var binaryMessage  = BinaryRequestErrorMessage.ToByteArray();
-
-                    //var sentStatus     = await SendBinaryMessage(
-                    //                               webSocketConnection,
-                    //                               binaryMessage,
-                    //                               BinaryRequestErrorMessage.EventTrackingId,
-                    //                               BinaryRequestErrorMessage.CancellationToken
-                    //                           );
-
-                    //await LogEvent(
-                    //          OnBinaryMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              BinaryRequestErrorMessage.EventTrackingId,
-                    //              BinaryRequestErrorMessage.ResponseTimestamp,
-                    //              binaryMessage,
-                    //              sentStatus,
-                    //              BinaryRequestErrorMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -799,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(BinaryResponseErrorMessage.Destination.Next))
                 {
 
                     BinaryResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -809,36 +538,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       BinaryResponseErrorMessage.ToByteArray(),
                                                       BinaryResponseErrorMessage.ResponseTimestamp,
-                                                      BinaryResponseErrorMessage.Destination.Next,
                                                       BinaryResponseErrorMessage.EventTrackingId,
                                                       BinaryResponseErrorMessage.CancellationToken
                                                   );
-
-                    //var binaryMessage  = BinaryResponseErrorMessage.ToByteArray();
-
-                    //var sentStatus     = await SendBinaryMessage(
-                    //                               webSocketConnection,
-                    //                               binaryMessage,
-                    //                               BinaryResponseErrorMessage.EventTrackingId,
-                    //                               BinaryResponseErrorMessage.CancellationToken
-                    //                           );
-
-                    //await LogEvent(
-                    //          OnBinaryMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              BinaryResponseErrorMessage.EventTrackingId,
-                    //              BinaryResponseErrorMessage.ResponseTimestamp,
-                    //              binaryMessage,
-                    //              sentStatus,
-                    //              BinaryResponseErrorMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -871,7 +573,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                foreach (var webSocketConnection in LookupNetworkingNode(BinarySendMessage.Destination.Next))
+                foreach (var webSocketConnection in GetConnectionsFor(BinarySendMessage.Destination.Next))
                 {
 
                     BinarySendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
@@ -881,36 +583,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                       webSocketConnection,
                                                       BinarySendMessage.ToByteArray(),
                                                       BinarySendMessage.MessageTimestamp,
-                                                      BinarySendMessage.Destination.Next,
                                                       BinarySendMessage.EventTrackingId,
                                                       BinarySendMessage.CancellationToken
                                                   );
-
-                    //var binaryMessage  = BinarySendMessage.ToByteArray();
-
-                    //var sentStatus     = await SendBinaryMessage(
-                    //                               webSocketConnection,
-                    //                               binaryMessage,
-                    //                               BinarySendMessage.EventTrackingId,
-                    //                               BinarySendMessage.CancellationToken
-                    //                           );
-
-                    //await LogEvent(
-                    //          OnBinaryMessageSent,
-                    //          loggingDelegate => loggingDelegate.Invoke(
-                    //              Timestamp.Now,
-                    //              this,
-                    //              webSocketConnection,
-                    //              BinarySendMessage.EventTrackingId,
-                    //              BinarySendMessage.MessageTimestamp,
-                    //              binaryMessage,
-                    //              sentStatus,
-                    //              BinarySendMessage.CancellationToken
-                    //          )
-                    //      );
-
-                    //if (sentStatus == SentStatus.Success)
-                    //    return SentMessageResult.Success(webSocketConnection);
 
                     if (sentMessageResult.Result == SentMessageResults.Success)
                         return sentMessageResult;
@@ -933,32 +608,32 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
 
 
-        protected virtual IEnumerable<WebSocketServerConnection> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
-        {
+        //protected virtual IEnumerable<WebSocketServerConnection> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
+        //{
 
-            if (NetworkingNodeId == NetworkingNode_Id.Zero)
-                return [];
+        //    if (NetworkingNodeId == NetworkingNode_Id.Zero)
+        //        return [];
 
-            if (NetworkingNodeId == NetworkingNode_Id.Broadcast)
-                return WebSocketConnections;
+        //    if (NetworkingNodeId == NetworkingNode_Id.Broadcast)
+        //        return WebSocketConnections;
 
-            var lookUpNetworkingNodeId = NetworkingNodeId;
+        //    var lookUpNetworkingNodeId = NetworkingNodeId;
 
-            //if (OCPPAdapter.NetworkingNode.Routing.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
-            //    reachability is not null)
-            //{
-            //    lookUpNetworkingNodeId = reachability.DestinationId;
-            //}
+        //    //if (OCPPAdapter.NetworkingNode.Routing.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
+        //    //    reachability is not null)
+        //    //{
+        //    //    lookUpNetworkingNodeId = reachability.DestinationId;
+        //    //}
 
-            if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
-            {
-                lookUpNetworkingNodeId = networkingHubId;
-                return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId);
-            }
+        //    if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+        //    {
+        //        lookUpNetworkingNodeId = networkingHubId;
+        //        return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId);
+        //    }
 
-            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId).ToArray();
+        //    return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId).ToArray();
 
-        }
+        //}
 
 
         #region (private) LogEvent(Logger, LogHandler, ...)

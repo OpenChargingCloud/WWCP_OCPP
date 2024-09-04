@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// A OCPP Web Socket JSON response error message (OCPP v2.1 draft!)
+    /// A OCPP WebSocket JSON response error message (OCPP v2.1 draft!)
     /// </summary>
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
-        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
         public static Boolean TryParse(JArray                                                  JSONArray,
                                        [NotNullWhen(true)] out OCPP_JSONResponseErrorMessage?  ErrorMessage,
                                        NetworkingNode_Id?                                      ImplicitSourceNodeId   = null)

@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Explicitly send this request/response as OCPP-defined JSON, but within a binary HTTP Web Socket frame.
+        /// Explicitly send this request/response as OCPP-defined JSON, but within a binary HTTP WebSocket frame.
         /// </summary>
         JSON_UTF8_Binary    = 50,
 

@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// <param name="Description">An optional description of this HTTP WebSocket service.</param>
         /// 
         /// <param name="AutoStart">Start the server immediately.</param>
         public virtual OCPPWebSocketServer AttachWebSocketServer(String?                                                         HTTPServiceName              = null,

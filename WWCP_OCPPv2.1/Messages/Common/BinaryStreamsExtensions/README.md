@@ -1,7 +1,7 @@
 # OCPP Binary Streams Extensions
 
 The *Binary Streams Extensions* are enhancements that enable the use of binary data transfers
-over the normal OCPP HTTP Web Sockets connection. This technology is particularly beneficial
+over the normal OCPP HTTP WebSockets connection. This technology is particularly beneficial
 in scenarios where there is a need to send continuous or periodic data streams. These streams
 can include various types of data, such as periodic event notifications, firmware updates, or
 logs and real-time debugging information.

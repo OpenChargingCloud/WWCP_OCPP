@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// An OCPP HTTP Web Socket JSON response message.
+    /// An OCPP HTTP WebSocket JSON response message.
     /// </summary>
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
         public static Boolean TryParse(JArray                                              JSONArray,
                                        [NotNullWhen(true)]  out OCPP_JSONResponseMessage?  ResponseMessage,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
@@ -177,10 +177,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 #region OCPP Overlay Network mode
 
                 // [
-                //    3,                          // MessageType: CALLRESULT
-                //    DestinationId,
-                //    [ NetworkPath ],
-                //    "19223201",                 // RequestId copied from request
+                //    3,                           // MessageType: CALLRESULT
+                //    "CSMS" or [ "NN", "CSMS" ],  // Destination/Anycast/Multicast or Source Routing
+                //    "CS"   or [ "CS", "NN" ],    // Source or Network Path
+                //    "19223201",                  // RequestId copied from request
                 //    {
                 //        "status":            "Accepted",
                 //        "currentTime":       "2013-02-01T20:53:32.486Z",
@@ -191,39 +191,136 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 if (JSONArray.Count            == 5                   &&
                     JSONArray[0].Type          == JTokenType.Integer  &&
                     JSONArray[0].Value<Byte>() == 3                   &&
-                    JSONArray[1].Type          == JTokenType.String   &&
-                    JSONArray[2].Type          == JTokenType.Array    &&
+                   (JSONArray[1].Type          == JTokenType.String || JSONArray[1].Type == JTokenType.Array) &&
+                   (JSONArray[2].Type          == JTokenType.String || JSONArray[2].Type == JTokenType.Array) &&
                     JSONArray[3].Type          == JTokenType.String   &&
                     JSONArray[4].Type          == JTokenType.Object)
                 {
 
-                    if (!NetworkingNode_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var destinationId))
+                    #region Parse Source Routing
+
+                    SourceRouting? sourceRouting = null;
+
+                    if (JSONArray[1].Type == JTokenType.String)
                     {
-                        ErrorResponse = $"Could not parse the given destination networking (node) identification: {JSONArray[1]}";
+
+                        if (NetworkingNode_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var destinationNode))
+                            sourceRouting = SourceRouting.To(destinationNode);
+
+                        else
+                        {
+                            ErrorResponse = $"Could not parse the given destination node: '{JSONArray[1]?.Value<String>() ?? ""}'!";
+                            return false;
+                        }
+
+                    }
+
+                    else if (JSONArray[1] is JArray hops)
+                    {
+
+                        if (hops.Count == 0)
+                        {
+                            ErrorResponse = $"The source routing must not be empty!";
+                            return false;
+                        }
+
+                        var networkingNodeIds = new List<NetworkingNode_Id>();
+
+                        foreach (var hop in hops)
+                        {
+
+                            if (NetworkingNode_Id.TryParse(hop?.Value<String>() ?? "", out var networkingNodeId))
+                                networkingNodeIds.Add(networkingNodeId);
+
+                            else
+                            {
+                                ErrorResponse = $"Could not parse the given networking node: '{hop?.Value<String>()}'!";
+                                return false;
+                            }
+
+                        }
+
+                        sourceRouting = SourceRouting.To(networkingNodeIds);
+
+                    }
+
+                    else
+                    {
+                        ErrorResponse = $"The source routing is invalid: '{JSONArray[1]?.Value<String>() ?? ""}'!";
                         return false;
                     }
 
-                    if (JSONArray[2] is not JArray networkPathJSONArray ||
-                        !NetworkPath.TryParse(networkPathJSONArray, out var networkPath, out _) || networkPath is null)
+                    #endregion
+
+                    #region Parse Network Path
+
+                    NetworkPath? networkPath = null;
+
+                    if (JSONArray[2].Type == JTokenType.String)
                     {
-                        ErrorResponse = $"Could not parse the given network path: {JSONArray[2]}";
+
+                        if (NetworkingNode_Id.TryParse(JSONArray[2]?.Value<String>() ?? "", out var sourceNode))
+                            networkPath = NetworkPath.From(sourceNode);
+
+                        else
+                        {
+                            ErrorResponse = $"Could not parse the given source node: '{JSONArray[2]?.Value<String>() ?? ""}'!";
+                            return false;
+                        }
+
+                    }
+
+                    else if (JSONArray[2] is JArray hops)
+                    {
+
+                        if (hops.Count == 0)
+                        {
+                            ErrorResponse = $"The network path must not be empty!";
+                            return false;
+                        }
+
+                        var networkingNodeIds = new List<NetworkingNode_Id>();
+
+                        foreach (var hop in hops)
+                        {
+
+                            if (NetworkingNode_Id.TryParse(hop?.Value<String>() ?? "", out var networkingNodeId))
+                                networkingNodeIds.Add(networkingNodeId);
+
+                            else
+                            {
+                                ErrorResponse = $"Could not parse the given networking node identification: '{hop?.Value<String>()}'!";
+                                return false;
+                            }
+
+                        }
+
+                        networkPath = NetworkPath.From(networkingNodeIds);
+
+                    }
+
+                    else
+                    {
+                        ErrorResponse = $"The network path is invalid: '{JSONArray[2]?.Value<String>() ?? ""}'!";
                         return false;
                     }
 
-                    if (ImplicitSourceNodeId.HasValue &&
-                        ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
-                    {
+                    #endregion
 
-                        //if (networkPath.Length > 0 &&
-                        //    networkPath.Last() != ImplicitSourceNodeId)
-                        //{
-                        //    networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
-                        //}
+                    //if (ImplicitSourceNodeId.HasValue &&
+                    //    ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
+                    //{
 
-                        if (networkPath.Length == 0)
-                            networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                    //    //if (networkPath.Length > 0 &&
+                    //    //    networkPath.Last() != ImplicitSourceNodeId)
+                    //    //{
+                    //    //    networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                    //    //}
 
-                    }
+                    //    if (networkPath.Length == 0)
+                    //        networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+
+                    //}
 
                     if (!Request_Id.TryParse(JSONArray[3]?.Value<String>() ?? "", out var requestId))
                     {
@@ -241,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                           Timestamp.Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.OverlayNetwork,
-                                          SourceRouting.To(destinationId),
+                                          sourceRouting,
                                           networkPath,
                                           requestId,
                                           payload
@@ -298,10 +395,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    #region OCPP Overlay Network Mode
 
                    // [
-                   //     3,                    // MessageType: CALLRESULT
-                   //     "CSMS",               // Destination Identification/Any-/Multicast
-                   //     [ "CS01", "NN01" ],   // Network Source Path
-                   //    "19223201",            // RequestId copied from request
+                   //     3,                           // MessageType: CALLRESULT
+                   //     "CSMS" or [ "NN", "CSMS" ],  // Destination/Anycast/Multicast or Source Routing
+                   //     "CS"   or [ "CS", "NN" ],    // Source or Network Path
+                   //    "19223201",                   // RequestId copied from request
                    //    {
                    //        "status":            "Accepted",
                    //        "currentTime":       "2013-02-01T20:53:32.486Z",
@@ -310,9 +407,13 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    // ]
 
                    _ => new (3,
-                             Destination.Next.ToString(),
-                             NetworkPath.     ToJSON(),
-                             RequestId.       ToString(),
+                             Destination.Length == 1
+                                 ? Destination.First().ToString()
+                                 : new JArray(Destination.Select(hop => hop.ToString())),
+                             NetworkPath.Length == 1
+                                 ? NetworkPath.First().ToString()
+                                 : new JArray(NetworkPath.Select(hop => hop.ToString())),
+                             RequestId.ToString(),
                              Payload)
 
                    #endregion

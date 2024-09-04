@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 

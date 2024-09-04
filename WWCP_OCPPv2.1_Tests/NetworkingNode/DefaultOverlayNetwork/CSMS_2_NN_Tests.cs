@@ -39,8 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
     /// <summary>
     /// Unit tests for a charging station, a networking nodes and a CSMS connected via a (default) overlay network.
-    /// This means the charging station communicates with the networking node via classical HTTP Web Socket JSON messages,
-    /// and the networking node communicates with the CSMS via extended HTTP Web Socket JSON messages.
+    /// This means the charging station communicates with the networking node via classical HTTP WebSocket JSON messages,
+    /// and the networking node communicates with the CSMS via extended HTTP WebSocket JSON messages.
     /// 
     /// CS  --[classic JSON]->  NN  --[Overlay Network JSON]->  CSMS
     /// 

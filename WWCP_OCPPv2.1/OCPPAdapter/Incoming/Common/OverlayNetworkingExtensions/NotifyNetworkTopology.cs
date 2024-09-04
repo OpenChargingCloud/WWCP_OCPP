@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyNetworkTopologyMessageReceivedDelegate(DateTime                       Timestamp,

@@ -911,10 +911,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendJSONRequest(JSONRequestMessage);
 
-                else if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendJSONRequest(JSONRequestMessage);
 
             }
@@ -1052,10 +1052,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendJSONResponse(JSONResponseMessage);
 
-                if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendJSONResponse(JSONResponseMessage);
 
             }
@@ -1076,10 +1076,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
 
-                if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
 
             }
@@ -1100,10 +1100,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
 
-                if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
 
             }
@@ -1128,11 +1128,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 foreach (var webSocketClient in NetworkingNode.Routing.AllWebSocketClients)
-                    if (webSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                    if (webSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                         sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
 
                 foreach (var webSocketServer in NetworkingNode.Routing.AllWebSocketServers)
-                    if (webSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                    if (webSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                         sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
 
                 sentMessageResult = SentMessageResult.Broadcast();
@@ -1144,10 +1144,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else if (NetworkingNode.Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
 
-                else if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
 
             }
@@ -1176,10 +1176,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
 
-                else if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
 
             }
@@ -1317,10 +1317,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
 
-                if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
 
             }
@@ -1341,10 +1341,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
 
-                if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             }
@@ -1365,10 +1365,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
 
-                if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             }
@@ -1390,10 +1390,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is WebSockets.OCPPWebSocketClient ocppWebSocketClient)
+                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
                     sentMessageResult = await ocppWebSocketClient.SendBinarySendMessage(BinarySendMessage);
 
-                else if (reachability.WWCPWebSocketServer is WebSockets.OCPPWebSocketServer ocppWebSocketServer)
+                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
                     sentMessageResult = await ocppWebSocketServer.SendBinarySendMessage(BinarySendMessage);
 
             }

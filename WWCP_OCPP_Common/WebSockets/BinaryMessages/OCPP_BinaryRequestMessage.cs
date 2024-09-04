@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// An OCPP HTTP Web Socket binary request message.
+    /// An OCPP HTTP WebSocket binary request message.
     /// </summary>
     /// <param name="RequestTimestamp">The request time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryRequestMessage">The parsed OCPP WebSocket request message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
         public static Boolean TryParse(Byte[]                          Binary,
                                        out OCPP_BinaryRequestMessage?  BinaryRequestMessage,
                                        out String?                     ErrorResponse,
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                        ? NetworkingMode.Standard
                                                        : NetworkingMode.OverlayNetwork,
                                                    SourceRouting.To(destinationNodeId),
-                                                   new NetworkPath(networkPath),
+                                                   NetworkPath.From(networkPath),
                                                    requestId,
                                                    action,
                                                    payload,

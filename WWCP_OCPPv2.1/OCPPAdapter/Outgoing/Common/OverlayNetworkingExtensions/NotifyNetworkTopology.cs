@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     ///// </summary>
     ///// <param name="Timestamp">The log timestamp of the response.</param>
     ///// <param name="Sender">The sender of the response.</param>
-    ///// <param name="Connection">The HTTP Web Socket client connection.</param>
+    ///// <param name="Connection">The HTTP WebSocket client connection.</param>
     ///// <param name="Request">The reserve now request.</param>
     ///// <param name="Response">The reserve now response.</param>
     ///// <param name="Runtime">The runtime of this request.</param>

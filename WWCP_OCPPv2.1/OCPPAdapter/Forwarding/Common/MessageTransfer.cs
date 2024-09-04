@@ -21,7 +21,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -36,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Connection">The HTTP WebSocket connection.</param>
     /// <param name="Message">The message.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<MessageForwardingDecision<MessageTransferMessage>>
@@ -53,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Connection">The HTTP WebSocket connection.</param>
     /// <param name="Message">The message.</param>
     /// <param name="ForwardingDecision">The forwarding decision.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>

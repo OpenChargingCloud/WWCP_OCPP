@@ -889,8 +889,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             //await base.DoMaintenanceAsync(State);
 
-            //foreach (var evse in EVSEs)
-            //    await evse.DoMaintenanceAsync(this, State);
+            foreach (var evse in EVSEs)
+                await evse.DoMaintenanceAsync(this, State);
 
         }
 

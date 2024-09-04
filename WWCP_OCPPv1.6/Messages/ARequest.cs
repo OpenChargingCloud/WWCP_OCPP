@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
-        /// The OCPP HTTP Web Socket action.
+        /// The OCPP HTTP WebSocket action.
         /// </summary>
         [Mandatory]
         public String             Action               { get; }
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new generic OCPP request message.
         /// </summary>
         /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
-        /// <param name="Action">The OCPP HTTP Web Socket action.</param>
+        /// <param name="Action">The OCPP HTTP WebSocket action.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this request.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this request.</param>
