@@ -321,7 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    Vary                       = "Accept"
                                }.AsImmutable);
 
-                }
+                },
+                AllowReplacement: URLReplacement.Allow
             );
 
             #endregion
@@ -380,7 +381,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    Vary                       = "Accept"
                                }.AsImmutable);
 
-                }
+                },
+                AllowReplacement: URLReplacement.Allow
             );
 
             #endregion

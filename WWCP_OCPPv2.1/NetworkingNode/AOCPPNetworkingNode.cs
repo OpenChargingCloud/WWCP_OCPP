@@ -192,10 +192,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           MaxNumberOfRetries,
                                           InternalBufferSize,
 
-                                          SecWebSocketProtocols,//?? [
-                                                                //      "ocpp2.0.1",
-                                                                //       Version.WebSocketSubProtocolId
-                                                                //   ],
+                                          SecWebSocketProtocols ?? [
+                                                                      "ocpp2.0.1",
+                                                                       Version.WebSocketSubProtocolId
+                                                                   ],
                                           NetworkingMode,
 
                                           DisableWebSocketPings,
@@ -364,38 +364,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region (Timer) DoMaintenance(State)
 
-        protected override async Task DoMaintenanceAsync(Object State)
-        {
+        //protected override async Task DoMaintenanceAsync(Object State)
+        //{
 
-            await Task.Delay(1);
+        //    await Task.Delay(1);
 
-            if (Timestamp.Now > lastRoutesBroadcast + TimeSpan.FromSeconds(10))
-            {
+        //    if (Timestamp.Now > lastRoutesBroadcast + TimeSpan.FromSeconds(10))
+        //    {
 
-                lastRoutesBroadcast = Timestamp.Now;
+        //        lastRoutesBroadcast = Timestamp.Now;
 
-                var routes = Routing.GetNetworkRoutingInformation();
-                if (routes.Any())
-                {
+        //        var routes = Routing.GetNetworkRoutingInformation();
+        //        if (routes.Any())
+        //        {
 
-                //    var notifyNetworkTopologyMessage = new NotifyNetworkTopologyMessage(
-                //                                           Destination:                  SourceRouting.Broadcast,
-                //                                           NetworkTopologyInformation:   new NetworkTopologyInformation(
-                //                                                                             RoutingNode:  Id,
-                //                                                                             Routes:       routes,
-                //                                                                             NotBefore:    null,
-                //                                                                             NotAfter:     null,
-                //                                                                             Priority:     null
-                //                                                                         )
-                //                                       );
+        //        //    var notifyNetworkTopologyMessage = new NotifyNetworkTopologyMessage(
+        //        //                                           Destination:                  SourceRouting.Broadcast,
+        //        //                                           NetworkTopologyInformation:   new NetworkTopologyInformation(
+        //        //                                                                             RoutingNode:  Id,
+        //        //                                                                             Routes:       routes,
+        //        //                                                                             NotBefore:    null,
+        //        //                                                                             NotAfter:     null,
+        //        //                                                                             Priority:     null
+        //        //                                                                         )
+        //        //                                       );
 
-                //    var rr = OCPP.OUT.NotifyNetworkTopology(notifyNetworkTopologyMessage);
+        //        //    var rr = OCPP.OUT.NotifyNetworkTopology(notifyNetworkTopologyMessage);
 
-                }
+        //        }
 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 

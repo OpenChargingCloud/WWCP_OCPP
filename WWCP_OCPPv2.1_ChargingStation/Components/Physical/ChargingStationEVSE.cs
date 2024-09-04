@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (Timer) DoMaintenance(State)
 
         public async Task DoMaintenanceAsync(AChargingStationNode  ChargingStation,
-                                             Object                State)
+                                             Object?               State)
         {
 
             await Task.Delay(1);

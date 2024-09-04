@@ -415,24 +415,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("model",            Model),
-                                 new JProperty("vendorName",       VendorName),
+                                 new JProperty("model",             Model),
+                                 new JProperty("vendorName",        VendorName),
 
                            SerialNumber    is not null
-                               ? new JProperty("serialNumber",     SerialNumber)
+                               ? new JProperty("serialNumber",      SerialNumber)
                                : null,
 
                            Modem           is not null
-                               ? new JProperty("modem",            Modem.     ToJSON(CustomModemSerializer,
-                                                                                     CustomCustomDataSerializer))
+                               ? new JProperty("modem",             Modem.     ToJSON(CustomModemSerializer,
+                                                                                      CustomCustomDataSerializer))
                                : null,
 
                            FirmwareVersion is not null
-                               ? new JProperty("firmwareVersion",  FirmwareVersion)
+                               ? new JProperty("firmwareVersion",   FirmwareVersion)
                                : null,
 
                            CustomData      is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
