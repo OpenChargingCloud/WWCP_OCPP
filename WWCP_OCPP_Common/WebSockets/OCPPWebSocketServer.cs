@@ -608,34 +608,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
 
 
-        //protected virtual IEnumerable<WebSocketServerConnection> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
-        //{
-
-        //    if (NetworkingNodeId == NetworkingNode_Id.Zero)
-        //        return [];
-
-        //    if (NetworkingNodeId == NetworkingNode_Id.Broadcast)
-        //        return WebSocketConnections;
-
-        //    var lookUpNetworkingNodeId = NetworkingNodeId;
-
-        //    //if (OCPPAdapter.NetworkingNode.Routing.LookupNetworkingNode(lookUpNetworkingNodeId, out var reachability) &&
-        //    //    reachability is not null)
-        //    //{
-        //    //    lookUpNetworkingNodeId = reachability.DestinationId;
-        //    //}
-
-        //    if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
-        //    {
-        //        lookUpNetworkingNodeId = networkingHubId;
-        //        return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId);
-        //    }
-
-        //    return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(WebSocketKeys.NetworkingNodeId) == lookUpNetworkingNodeId).ToArray();
-
-        //}
-
-
         #region (private) LogEvent(Logger, LogHandler, ...)
 
         private async Task LogEvent<TDelegate>(TDelegate?                                         Logger,

@@ -56,12 +56,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region Properties
-
-    //    public OCPPAdapter  OCPPAdapter    { get; }
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -153,49 +147,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    DNSClient)
 
         {
-
-         //   this.OCPPAdapter  = NetworkingNode.OCPP;
-
-            #region Wire On(JSON/Binary)MessageReceived
-
-            //OnJSONMessageReceived += (requestTimestamp,
-            //                          wwcpWebSocketClient,
-            //                          webSocketClientConnection,
-            //                          eventTrackingId,
-            //                          messageTimestamp,
-            //                          sourceNodeId,
-            //                          jsonMessage,
-            //                          cancellationToken) =>
-
-            //    OCPPAdapter.IN.ProcessJSONMessage(
-            //        messageTimestamp,
-            //        webSocketClientConnection,
-            //        sourceNodeId,
-            //        jsonMessage,
-            //        eventTrackingId,
-            //        cancellationToken
-            //    );
-
-
-            //OnBinaryMessageReceived += (requestTimestamp,
-            //                            wwcpWebSocketClient,
-            //                            webSocketClientConnection,
-            //                            eventTrackingId,
-            //                            messageTimestamp,
-            //                            sourceNodeId,
-            //                            binaryMessage,
-            //                            cancellationToken) =>
-
-            //    OCPPAdapter.IN.ProcessBinaryMessage(
-            //        messageTimestamp,
-            //        webSocketClientConnection,
-            //        sourceNodeId,
-            //        binaryMessage,
-            //        eventTrackingId,
-            //        cancellationToken
-            //    );
-
-            #endregion
 
             //this.Logger       = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                  LoggingPath,

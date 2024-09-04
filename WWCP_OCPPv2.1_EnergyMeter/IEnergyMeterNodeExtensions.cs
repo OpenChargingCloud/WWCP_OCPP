@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -565,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
@@ -759,7 +759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty,
+                           NetworkPath.From(EnergyMeter.Id),
                            SerializationFormat,
                            CancellationToken
 
