@@ -156,7 +156,7 @@
 
 //                if (!JSON.ParseMandatoryJSON("component",
 //                                             "device model component",
-//                                             OCPPv2_1.Component.TryParse,
+//                                             OCPPv1_6.Component.TryParse,
 //                                             out Component? Component,
 //                                             out ErrorResponse))
 //                {

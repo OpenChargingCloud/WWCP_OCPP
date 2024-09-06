@@ -404,7 +404,7 @@
 
 //                if (JSON.ParseOptionalHashSet("encoding",
 //                                              "encoding method",
-//                                              OCPPv2_1.ComponentAccessRights.TryParse,
+//                                              OCPPv1_6.ComponentAccessRights.TryParse,
 //                                              out HashSet<ComponentAccessRights> ComponentAccessRights,
 //                                              out ErrorResponse))
 //                {

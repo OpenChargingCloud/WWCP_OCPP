@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -280,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    SourceRouting                                      Destination,
+                                                    SourceRouting                                          Destination,
                                                     NetworkPath                                            NetworkPath,
                                                     DateTime?                                              RequestTimestamp                      = null,
                                                     TimeSpan?                                              RequestTimeout                        = null,
@@ -294,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(JSON,
                          RequestId,
-                     Destination,
+                         Destination,
                          NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse,

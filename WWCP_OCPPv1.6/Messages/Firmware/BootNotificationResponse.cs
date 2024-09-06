@@ -18,12 +18,16 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -33,8 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A boot notification response.
     /// </summary>
-    public class BootNotificationResponse : AResponse<CP.BootNotificationRequest,
-                                                         BootNotificationResponse>,
+    public class BootNotificationResponse : AResponse<BootNotificationRequest,
+                                                      BootNotificationResponse>,
                                             IResponse
     {
 
@@ -44,6 +48,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The JSON-LD context of this object.
         /// </summary>
         public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/bootNotificationResponse");
+
+        /// <summary>
+        /// The default heartbeat interval in seconds.
+        /// </summary>
+        public static TimeSpan DefaultInterval = TimeSpan.FromMinutes(5);
 
         #endregion
 
@@ -79,8 +88,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region BootNotificationResponse(Request, Status, CurrentTime, HeartbeatInterval)
-
         /// <summary>
         /// Create a new boot notification response.
         /// </summary>
@@ -94,31 +101,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public BootNotificationResponse(CP.BootNotificationRequest    Request,
-                                        RegistrationStatus            Status,
-                                        DateTime                      CurrentTime,
-                                        TimeSpan                      HeartbeatInterval,
+        public BootNotificationResponse(BootNotificationRequest  Request,
+                                        RegistrationStatus       Status,
+                                        DateTime                 CurrentTime,
+                                        TimeSpan                 HeartbeatInterval,
 
-                                        DateTime?                     ResponseTimestamp   = null,
+                                        Result?                  Result                = null,
+                                        DateTime?                ResponseTimestamp     = null,
 
-                                        IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                        IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?  Signatures          = null,
+                                        SourceRouting?           Destination           = null,
+                                        NetworkPath?             NetworkPath           = null,
 
-                                        CustomData?                   CustomData          = null)
+                                        IEnumerable<KeyPair>?    SignKeys              = null,
+                                        IEnumerable<SignInfo>?   SignInfos             = null,
+                                        IEnumerable<Signature>?  Signatures            = null,
+
+                                        CustomData?              CustomData            = null,
+
+                                        SerializationFormats?    SerializationFormat   = null,
+                                        CancellationToken        CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -126,32 +143,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.CurrentTime        = CurrentTime;
             this.HeartbeatInterval  = HeartbeatInterval;
 
-        }
+            unchecked
+            {
 
-        #endregion
+                hashCode = this.Status.           GetHashCode() * 7 ^
+                           this.CurrentTime.      GetHashCode() * 5 ^
+                           this.HeartbeatInterval.GetHashCode() * 3 ^
+                           base.GetHashCode();
 
-        #region BootNotificationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new boot notification response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public BootNotificationResponse(CP.BootNotificationRequest  Request,
-                                        Result                      Result)
-
-            : base(Request,
-                   Result)
-
-        {
-
-            this.Status             = RegistrationStatus.Rejected;
-            this.CurrentTime        = Timestamp.Now;
-            this.HeartbeatInterval  = TimeSpan.Zero;
+            }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -241,23 +243,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
-        public static BootNotificationResponse Parse(CP.BootNotificationRequest                              Request,
+        public static BootNotificationResponse Parse(BootNotificationRequest                                 Request,
                                                      JObject                                                 JSON,
-                                                     CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null)
+                                                     SourceRouting                                           Destination,
+                                                     NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
+                                                     CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
+                                                     CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                                     CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var bootNotificationResponse,
                          out var errorResponse,
-                         CustomBootNotificationResponseParser) &&
-                bootNotificationResponse is not null)
+                         ResponseTimestamp,
+                         CustomBootNotificationResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return bootNotificationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a BootNotification response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -273,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.BootNotificationRequest     Request,
+        public static Boolean TryParse(BootNotificationRequest        Request,
                                        XElement                       XML,
                                        out BootNotificationResponse?  BootNotificationResponse,
                                        out String?                    ErrorResponse)
@@ -320,11 +333,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
-        public static Boolean TryParse(CP.BootNotificationRequest                              Request,
+        public static Boolean TryParse(BootNotificationRequest                                 Request,
                                        JObject                                                 JSON,
-                                       out BootNotificationResponse?                           BootNotificationResponse,
-                                       out String?                                             ErrorResponse,
-                                       CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null)
+                                       SourceRouting                                           Destination,
+                                       NetworkPath                                             NetworkPath,
+                                       [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
+                                       CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                       CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
 
             try
@@ -410,7 +429,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                RegistrationStatus,
                                                CurrentTime,
                                                Interval,
+
                                                null,
+                                               ResponseTimestamp,
+
+                                               Destination,
+                                               NetworkPath,
 
                                                null,
                                                null,
@@ -470,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",        Status.AsText()),
+                                 new JProperty("status",        Status.     AsText()),
                                  new JProperty("currentTime",   CurrentTime.ToIso8601()),
                                  new JProperty("interval",      (UInt32) HeartbeatInterval.TotalSeconds),
 
@@ -480,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -497,12 +521,116 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The boot notification failed.
+        /// The BootNotification failed because of a request error.
         /// </summary>
-        public static BootNotificationResponse Failed(CP.BootNotificationRequest Request)
+        /// <param name="Request">The BootNotification request leading to this response.</param>
+        public static BootNotificationResponse RequestError(BootNotificationRequest  Request,
+                                                            EventTracking_Id         EventTrackingId,
+                                                            ResultCode               ErrorCode,
+                                                            String?                  ErrorDescription    = null,
+                                                            JObject?                 ErrorDetails        = null,
+                                                            DateTime?                ResponseTimestamp   = null,
+
+                                                            SourceRouting?           Destination         = null,
+                                                            NetworkPath?             NetworkPath         = null,
+
+                                                            IEnumerable<KeyPair>?    SignKeys            = null,
+                                                            IEnumerable<SignInfo>?   SignInfos           = null,
+                                                            IEnumerable<Signature>?  Signatures          = null,
+
+                                                            CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   RegistrationStatus.Rejected,
+                   Timestamp.Now,
+                   DefaultInterval,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The BootNotification failed.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static BootNotificationResponse FormationViolation(BootNotificationRequest  Request,
+                                                                  String                   ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    RegistrationStatus.Rejected,
+                    Timestamp.Now,
+                    DefaultInterval,
+                    Result:               Result.FormationViolation(
+                                              $"Invalid data format: {ErrorDescription}"
+                                          ),
+                    SerializationFormat:  Request.SerializationFormat);
+
+
+        /// <summary>
+        /// The BootNotification failed.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static BootNotificationResponse SignatureError(BootNotificationRequest  Request,
+                                                              String                   ErrorDescription)
+
+            => new (Request,
+                    RegistrationStatus.SignatureError,
+                    Timestamp.Now,
+                    DefaultInterval,
+                    Result:               Result.SignatureError(
+                                              $"Invalid signature(s): {ErrorDescription}"
+                                          ),
+                    SerializationFormat:  Request.SerializationFormat);
+
+
+        /// <summary>
+        /// The BootNotification failed.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static BootNotificationResponse Failed(BootNotificationRequest  Request,
+                                                      String?                  Description   = null)
+
+            => new (Request,
+                    RegistrationStatus.Error,
+                    Timestamp.Now,
+                    DefaultInterval,
+                    Result:               Result.Server(Description),
+                    SerializationFormat:  Request.SerializationFormat);
+
+
+        /// <summary>
+        /// The BootNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static BootNotificationResponse ExceptionOccured(BootNotificationRequest  Request,
+                                                                Exception                Exception)
+
+            => new (Request,
+                    RegistrationStatus.Error,
+                    Timestamp.Now,
+                    DefaultInterval,
+                    Result:               Result.FromException(Exception),
+                    SerializationFormat:  Request.SerializationFormat);
 
         #endregion
 
@@ -587,21 +715,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode() * 17 ^
-                       CurrentTime.GetHashCode() * 11 ^
-                       HeartbeatInterval.   GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -612,9 +732,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             " (", CurrentTime.ToIso8601(), ", ",
-                                   HeartbeatInterval.TotalSeconds, " sec(s))");
+            => $"{Status} ({CurrentTime.ToIso8601()}, {HeartbeatInterval.TotalSeconds} sec(s))";
 
         #endregion
 

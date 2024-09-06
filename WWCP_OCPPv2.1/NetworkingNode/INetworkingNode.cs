@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The common interface of all OCPP Networking Nodes.
+    /// The common interface of all OCPP v2.1 Networking Nodes.
     /// </summary>
     public interface INetworkingNode : OCPP.NetworkingNode.INetworkingNode
     {

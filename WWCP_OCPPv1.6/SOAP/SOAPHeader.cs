@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 

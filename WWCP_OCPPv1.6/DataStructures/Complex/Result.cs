@@ -22,6 +22,9 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -91,15 +94,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        //public static Result FromSendRequestState(SendRequestState SendRequestState)
+        public static Result FromSendRequestState(SendRequestState SendRequestState)
 
-        //    => new (
-        //           SendRequestState.JSONRequestErrorMessage?.ErrorCode ?? ResultCode.GenericError,
-        //           SendRequestState.JSONRequestErrorMessage?.ErrorDescription,
-        //           SendRequestState.JSONRequestErrorMessage?.ErrorDetails,
-        //           SendRequestState.JSONResponse?.           Payload,
-        //           SendRequestState.BinaryResponse?.         Payload
-        //       );
+            => new (
+                   SendRequestState.JSONRequestErrorMessage?.ErrorCode ?? ResultCode.GenericError,
+                   SendRequestState.JSONRequestErrorMessage?.ErrorDescription,
+                   SendRequestState.JSONRequestErrorMessage?.ErrorDetails,
+                   SendRequestState.JSONResponse?.           Payload,
+                   SendRequestState.BinaryResponse?.         Payload
+               );
+
+        public static Result FromErrorResponse(ResultCode  ResultCode,
+                                               String?     Description      = null,
+                                               JObject?    Details          = null,
+                                               JObject?    Response         = null,
+                                               Byte[]?     BinaryResponse   = null)
+
+            => new (
+                   ResultCode,
+                   Description,
+                   Details,
+                   Response,
+                   BinaryResponse
+               );
 
 
         #region Static Definitions
@@ -184,18 +201,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Unknown or unreachable networking node.
         /// </summary>
-        /// <param name="DestinationNodeId">Th eunique identification of the unknown or unreachable networking node.</param>
-        public static Result UnknownOrUnreachable(NetworkingNode_Id DestinationNodeId)
+        /// <param name="DestinationId">The unique identification of the unknown or unreachable networking node.</param>
+        public static Result UnknownOrUnreachable(NetworkingNode_Id DestinationId)
 
             => new (ResultCode.NetworkError,
-                    $"Unknown or unreachable networking node '{DestinationNodeId}'!");
+                    $"Unknown or unreachable networking node '{DestinationId}'!");
 
 
         /// <summary>
         /// Data has technical errors.
         /// </summary>
         /// <param name="Description">A human-readable error description.</param>
-        public static Result Format(String? Description = null)
+        public static Result FormationViolation(String? Description = null)
 
             => new (ResultCode.FormationViolation,
                     Description);
@@ -220,6 +237,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     Description);
 
         #endregion
+
+
+        ///// <summary>
+        ///// Data has technical errors.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result Format(String? Description = null)
+
+        //    => new (ResultCode.FormationViolation,
+        //            Description);
+
 
 
         #region Operator overloading

@@ -23,6 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -52,77 +54,87 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Properties
 
         /// <summary>
-        /// The networking node identification of the message destination.
+        /// The networking node identification of the final message destination.
+        /// </summary>
+        public NetworkingNode_Id     DestinationId
+            => Destination.Last();
+
+        /// <summary>
+        /// The alternative source routing path through the overlay network
+        /// towards the message destination.
         /// </summary>
         [Mandatory]
-        public NetworkingNode_Id  DestinationId        { get; }
+        public SourceRouting         Destination            { get; }
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
         /// </summary>
         [Mandatory]
-        public NetworkPath        NetworkPath          { get; }
+        public NetworkPath           NetworkPath            { get; }
 
         /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id         RequestId            { get; set; }
+        public Request_Id            RequestId              { get; set; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime           RequestTimestamp     { get; }
+        public DateTime              RequestTimestamp       { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Mandatory]
-        public TimeSpan           RequestTimeout       { get; }
+        public TimeSpan              RequestTimeout         { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
         [Mandatory]
-        public EventTracking_Id   EventTrackingId      { get; }
+        public EventTracking_Id      EventTrackingId        { get; }
 
         /// <summary>
         /// The OCPP HTTP WebSocket action.
         /// </summary>
         [Mandatory]
-        public String             Action               { get; }
+        public String                Action                 { get; }
+
+        /// <summary>
+        /// The serialization format of the request.
+        /// </summary>
+        public SerializationFormats  SerializationFormat    { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        public CancellationToken  CancellationToken    { get; }
+        public CancellationToken     CancellationToken      { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        public ARequest(NetworkingNode_Id        DestinationNodeId,
+        public ARequest(NetworkingNode_Id        DestinationId,
                         String                   Action,
 
-                        IEnumerable<KeyPair>?    SignKeys            = null,
-                        IEnumerable<SignInfo>?   SignInfos           = null,
-                        IEnumerable<Signature>?  Signatures          = null,
+                        IEnumerable<KeyPair>?    SignKeys              = null,
+                        IEnumerable<SignInfo>?   SignInfos             = null,
+                        IEnumerable<Signature>?  Signatures            = null,
 
-                        CustomData?              CustomData          = null,
+                        CustomData?              CustomData            = null,
 
-                        Request_Id?              RequestId           = null,
-                        DateTime?                RequestTimestamp    = null,
-                        TimeSpan?                RequestTimeout      = null,
-                        EventTracking_Id?        EventTrackingId     = null,
-                        NetworkPath?             NetworkPath         = null,
-                        CancellationToken        CancellationToken   = default)
+                        Request_Id?              RequestId             = null,
+                        DateTime?                RequestTimestamp      = null,
+                        TimeSpan?                RequestTimeout        = null,
+                        EventTracking_Id?        EventTrackingId       = null,
+                        NetworkPath?             NetworkPath           = null,
+                      //  SerializationFormats?    SerializationFormat   = null,
+                        CancellationToken        CancellationToken     = default)
 
-            : this(DestinationNodeId,
+            : this(SourceRouting.To(DestinationId),
                    Action,
-
-                   null,
-                   null,
                    SignKeys,
                    SignInfos,
                    Signatures,
@@ -134,46 +146,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormats.Unkown,
                    CancellationToken)
 
         { }
 
 
-        /// <summary>
-        /// Create a new generic OCPP request message.
-        /// </summary>
-        /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
-        /// <param name="Action">The OCPP HTTP WebSocket action.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this request.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">The timeout of this request.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="NetworkPath">An optional (recorded) path of the request through the overlay network.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(NetworkingNode_Id        DestinationNodeId,
+
+        public ARequest(SourceRouting            Destination,
                         String                   Action,
 
-                        String?                  EncryptionKey       = null,
-                        String?                  EncryptionNonce     = null,
-                        IEnumerable<KeyPair>?    SignKeys            = null,
-                        IEnumerable<SignInfo>?   SignInfos           = null,
-                        IEnumerable<Signature>?  Signatures          = null,
+                        IEnumerable<KeyPair>?    SignKeys              = null,
+                        IEnumerable<SignInfo>?   SignInfos             = null,
+                        IEnumerable<Signature>?  Signatures            = null,
 
-                        CustomData?              CustomData          = null,
+                        CustomData?              CustomData            = null,
 
-                        Request_Id?              RequestId           = null,
-                        DateTime?                RequestTimestamp    = null,
-                        TimeSpan?                RequestTimeout      = null,
-                        EventTracking_Id?        EventTrackingId     = null,
-                        NetworkPath?             NetworkPath         = null,
-                        CancellationToken        CancellationToken   = default)
+                        Request_Id?              RequestId             = null,
+                        DateTime?                RequestTimestamp      = null,
+                        TimeSpan?                RequestTimeout        = null,
+                        EventTracking_Id?        EventTrackingId       = null,
+                        NetworkPath?             NetworkPath           = null,
+                        SerializationFormats?    SerializationFormat   = null,
+                        CancellationToken        CancellationToken     = default)
 
             : base(SignKeys,
                    SignInfos,
@@ -182,26 +177,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            this.DestinationId  = DestinationNodeId;
-            this.Action             = Action;
+            this.Destination          = Destination;
+            this.Action               = Action;
 
-            this.RequestId          = RequestId        ?? Request_Id.NewRandom();
-            this.RequestTimestamp   = RequestTimestamp ?? Timestamp.Now;
-            this.RequestTimeout     = RequestTimeout   ?? DefaultRequestTimeout;
-            this.EventTrackingId    = EventTrackingId  ?? EventTracking_Id.New;
-            this.NetworkPath        = NetworkPath      ?? NetworkPath.Empty;
-            this.CancellationToken  = CancellationToken;
+            this.RequestId            = RequestId           ?? Request_Id.NewRandom();
+            this.RequestTimestamp     = RequestTimestamp    ?? Timestamp.Now;
+            this.RequestTimeout       = RequestTimeout      ?? DefaultRequestTimeout;
+            this.EventTrackingId      = EventTrackingId     ?? EventTracking_Id.New;
+            this.NetworkPath          = NetworkPath         ?? NetworkPath.Empty;
+            this.SerializationFormat  = SerializationFormat ?? SerializationFormats.Default;
+            this.CancellationToken    = CancellationToken;
 
             unchecked
             {
 
-                hashCode = this.DestinationId.   GetHashCode() * 17 ^
-                           this.NetworkPath.     GetHashCode() * 13 ^
-                           this.Action.          GetHashCode() * 11 ^
-                           this.RequestId.       GetHashCode() *  7 ^
-                           this.RequestTimestamp.GetHashCode() *  5 ^
-                           this.RequestTimeout.  GetHashCode() *  3 ^
-                           this.EventTrackingId. GetHashCode();
+                hashCode = this.Destination.      GetHashCode() * 17 ^
+                           this.NetworkPath.      GetHashCode() * 13 ^
+                           this.Action.           GetHashCode() * 11 ^
+                           this.RequestId.        GetHashCode() *  7 ^
+                           this.RequestTimestamp. GetHashCode() *  5 ^
+                           this.RequestTimeout.   GetHashCode() *  3 ^
+                           this.EventTrackingId.  GetHashCode();
 
             }
 

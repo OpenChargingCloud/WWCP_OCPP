@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP.WebSockets;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -31,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// Extension methods for all networking nodes.
+    /// Extension methods for all OCPP v2.1 Networking Nodes.
     /// </summary>
     public static class INetworkingNodeExtensions
     {

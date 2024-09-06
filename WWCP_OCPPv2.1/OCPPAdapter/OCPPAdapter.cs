@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.WWCP.WebSockets;
 using System.Diagnostics.CodeAnalysis;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.NetworkingNode;
 
 #endregion
 

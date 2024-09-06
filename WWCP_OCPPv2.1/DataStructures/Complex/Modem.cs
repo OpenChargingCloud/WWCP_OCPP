@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -121,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="BinaryFormat">The binary format to be used for parsing.</param>
         /// <param name="CustomModemParser">An optional delegate to parse custom modem values.</param>
         public static Modem Parse(MemoryStream                        BinaryStream,
-                                  SerializationFormats                       BinaryFormat,
+                                  SerializationFormats                BinaryFormat,
                                   CustomBinaryParserDelegate<Modem>?  CustomModemParser   = null)
         {
 

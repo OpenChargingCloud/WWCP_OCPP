@@ -90,7 +90,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// This may happen when the charge point identification
         /// is not (yet) known by the central system.
         /// </summary>
-        Rejected
+        Rejected,
+
+
+        Error,
+        SignatureError
 
     }
 

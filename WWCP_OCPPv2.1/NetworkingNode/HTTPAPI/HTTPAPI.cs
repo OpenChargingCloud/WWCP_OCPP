@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The OCPP Networking Node HTTP API.
+    /// The OCPP v2.1 Networking Node HTTP API.
     /// </summary>
     public class HTTPAPI : OCPP.NetworkingNode.HTTPAPI
     {

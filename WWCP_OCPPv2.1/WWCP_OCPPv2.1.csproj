@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Messages\Common\OverlayNetworkingExtensions\DataStructures\**" />
+    <EmbeddedResource Remove="Messages\Common\OverlayNetworkingExtensions\DataStructures\**" />
+    <None Remove="Messages\Common\OverlayNetworkingExtensions\DataStructures\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
@@ -23,9 +29,6 @@
 
   <ItemGroup>
     <Folder Include="DataStructures\ISO15118-20\CommonTypes\Complex\" />
-    <Folder Include="Messages\Common\OverlayNetworkingExtensions\DataStructures\Complex\" />
-    <Folder Include="Messages\Common\OverlayNetworkingExtensions\DataStructures\Enums\" />
-    <Folder Include="Messages\Common\OverlayNetworkingExtensions\DataStructures\Ids\" />
   </ItemGroup>
 
 </Project>

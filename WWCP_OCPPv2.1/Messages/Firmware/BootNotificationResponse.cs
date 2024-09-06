@@ -23,10 +23,10 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static BootNotificationResponse Parse(BootNotificationRequest                                 Request,
                                                      JObject                                                 JSON,
-                                                     SourceRouting                                       Destination,
+                                                     SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(BootNotificationRequest                                 Request,
                                        JObject                                                 JSON,
-                                       SourceRouting                                       Destination,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                null,
                                                ResponseTimestamp,
 
-                                           Destination,
+                                               Destination,
                                                NetworkPath,
 
                                                null,
@@ -803,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Timestamp.Now,
                    DefaultInterval,
                    null,
-                   OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Rejected,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:              OCPPv2_1.Result.FormationViolation(
+                    Result:              Result.FormationViolation(
                                               $"Invalid data format: {ErrorDescription}"
                                           ),
                     SerializationFormat:  Request.SerializationFormat);
@@ -852,7 +852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.SignatureError,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:              OCPPv2_1.Result.SignatureError(
+                    Result:              Result.SignatureError(
                                               $"Invalid signature(s): {ErrorDescription}"
                                           ),
                     SerializationFormat:  Request.SerializationFormat);
@@ -870,7 +870,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Error,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:               OCPPv2_1.Result.Server(Description),
+                    Result:               Result.Server(Description),
                     SerializationFormat:  Request.SerializationFormat);
 
 
@@ -886,7 +886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Error,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:               OCPPv2_1.Result.FromException(Exception),
+                    Result:               Result.FromException(Exception),
                     SerializationFormat:  Request.SerializationFormat);
 
         #endregion
@@ -994,9 +994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             " (", CurrentTime.ToIso8601(), ", ",
-                                   Interval.TotalSeconds, " sec(s))");
+            => $"{Status} ({CurrentTime.ToIso8601()}, {Interval.TotalSeconds} sec(s))";
 
         #endregion
 

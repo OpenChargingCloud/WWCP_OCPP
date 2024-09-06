@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new networking node for testing.
+        /// Create a new OCPP v2.1 Networking Node.
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
         public AOCPPNetworkingNode(NetworkingNode_Id  Id,

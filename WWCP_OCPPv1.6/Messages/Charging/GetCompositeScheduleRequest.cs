@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -99,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                            IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
                                            IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                           IEnumerable<Signature>?  Signatures          = null,
+                                           IEnumerable<Signature>?       Signatures          = null,
 
                                            CustomData?                   CustomData          = null,
 

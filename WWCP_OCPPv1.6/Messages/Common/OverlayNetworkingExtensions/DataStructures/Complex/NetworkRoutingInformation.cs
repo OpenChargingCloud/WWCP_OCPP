@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -50,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public JSONLDContext      Context
             => DefaultJSONLDContext;
 
-        public NetworkingNode_Id  NetworkingNodeId    { get; }
-        public UInt16?            Priority            { get; }
+        public NetworkingNode_Id         NetworkingNodeId    { get; }
+        public UInt16?                   Priority            { get; }
         public NetworkLinkInformation?   Uplink              { get; }
         public NetworkLinkInformation?   Downlink            { get; }
 
