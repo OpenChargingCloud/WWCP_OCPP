@@ -30,45 +30,51 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    /// <summary>
+    /// Networking node extension methods of the OCPP Overlay Network Extensions.
+    /// </summary>
     public static class OverlayNetworkExtensions_OutgoingMessageExtensions
     {
 
-        #region NotifyNetworkTopology                 (NetworkingNode, ...)
+        #region NotifyNetworkTopology (this NetworkingNode, NetworkTopologyInformation, ...)
 
         /// <summary>
-        /// Transfer the given binary data to the CSMS.
+        /// Send network topology information.
         /// </summary>
-        /// <param name="NetworkTopologyInformation">A network topology information.</param>
-        /// 
+        /// <param name="NetworkingNode">A networking node.</param>
+        /// <param name="NetworkTopologyInformation">Network topology information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="Destination"></param>
+        /// <param name="NetworkPath"></param>
+        /// 
+        /// <param name="SignKeys"></param>
+        /// <param name="SignInfos"></param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat"></param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<SentMessageResult>
 
-            NotifyNetworkTopology(this INetworkingNodeButNotCSMS  NetworkingNode,
+            NotifyNetworkTopology(this NetworkingNode.INetworkingNode  NetworkingNode,
+                                  NetworkTopologyInformation           NetworkTopologyInformation,
+                                  CustomData?                          CustomData            = null,
 
-                                  NetworkTopologyInformation      NetworkTopologyInformation,
+                                  SourceRouting?                       Destination           = null,
+                                  NetworkPath?                         NetworkPath           = null,
 
-                                  CustomData?                     CustomData            = null,
+                                  IEnumerable<KeyPair>?                SignKeys              = null,
+                                  IEnumerable<SignInfo>?               SignInfos             = null,
+                                  IEnumerable<Signature>?              Signatures            = null,
 
-                                  SourceRouting?                  Destination           = null,
-                                  NetworkPath?                    NetworkPath           = null,
-
-                                  IEnumerable<KeyPair>?           SignKeys              = null,
-                                  IEnumerable<SignInfo>?          SignInfos             = null,
-                                  IEnumerable<Signature>?         Signatures            = null,
-
-                                  Request_Id?                     RequestId             = null,
-                                  DateTime?                       RequestTimestamp      = null,
-                                  EventTracking_Id?               EventTrackingId       = null,
-                                  SerializationFormats?           SerializationFormat   = null,
-                                  CancellationToken               CancellationToken     = default)
+                                  Request_Id?                          RequestId             = null,
+                                  DateTime?                            RequestTimestamp      = null,
+                                  EventTracking_Id?                    EventTrackingId       = null,
+                                  SerializationFormats?                SerializationFormat   = null,
+                                  CancellationToken                    CancellationToken     = default)
 
 
                 => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
@@ -95,130 +101,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    );
 
         #endregion
-
-        #region NotifyNetworkTopology                 (NetworkingNode, ...)
-
-        /// <summary>
-        /// Transfer the given binary data to the CSMS.
-        /// </summary>
-        /// <param name="NetworkTopologyInformation">A network topology information.</param>
-        /// 
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<SentMessageResult>
-
-            NotifyNetworkTopology(this NetworkingNode.INetworkingNode        NetworkingNode,
-
-                                  NetworkTopologyInformation  NetworkTopologyInformation,
-
-                                  CustomData?                 CustomData            = null,
-
-                                  SourceRouting?              Destination           = null,
-                                  NetworkPath?                NetworkPath           = null,
-
-                                  IEnumerable<KeyPair>?       SignKeys              = null,
-                                  IEnumerable<SignInfo>?      SignInfos             = null,
-                                  IEnumerable<Signature>?     Signatures            = null,
-
-                                  Request_Id?                 RequestId             = null,
-                                  DateTime?                   RequestTimestamp      = null,
-                                  EventTracking_Id?           EventTrackingId       = null,
-                                  SerializationFormats?       SerializationFormat   = null,
-                                  CancellationToken           CancellationToken     = default)
-
-
-                => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
-                       new NotifyNetworkTopologyMessage(
-
-                           Destination ?? SourceRouting.CSMS,
-
-                           NetworkTopologyInformation,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? NetworkingNode.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
-                           SerializationFormat,
-                           CancellationToken
-
-                       )
-                   );
-
-        #endregion
-
-        #region NotifyNetworkTopology                 (NetworkingNode, ...)
-
-        ///// <summary>
-        ///// Transfer the given binary data to the CSMS.
-        ///// </summary>
-        ///// <param name="NetworkTopologyInformation">A network topology information.</param>
-        ///// 
-        ///// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        ///// 
-        ///// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        ///// 
-        ///// <param name="RequestId">An optional request identification.</param>
-        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        //public static Task<OCPP.NN.NotifyNetworkTopologyResponse>
-
-        //    NotifyNetworkTopology(this INetworkingNode2         NetworkingNode,
-
-        //                          SourceRouting                 Destination,
-        //                          NetworkTopologyInformation    NetworkTopologyInformation,
-
-        //                          CustomData?                   CustomData          = null,
-
-        //                          IEnumerable<KeyPair>?         SignKeys            = null,
-        //                          IEnumerable<SignInfo>?        SignInfos           = null,
-        //                          IEnumerable<Signature>?  Signatures          = null,
-
-        //                          Request_Id?                   RequestId           = null,
-        //                          DateTime?                     RequestTimestamp    = null,
-        //                          TimeSpan?                     RequestTimeout      = null,
-        //                          EventTracking_Id?             EventTrackingId     = null,
-        //                          CancellationToken             CancellationToken   = default)
-
-
-        //        => NetworkingNode.ocppOUT.NotifyNetworkTopology(
-        //               new OCPP.NN.NotifyNetworkTopologyMessage(
-
-        //                   Destination,
-        //                   NetworkTopologyInformation,
-
-        //                   SignKeys,
-        //                   SignInfos,
-        //                   Signatures,
-
-        //                   CustomData,
-
-        //                   RequestId        ?? NetworkingNode.OCPPAdapter.NextRequestId,
-        //                   RequestTimestamp ?? Timestamp.Now,
-        //                   RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
-        //                   EventTrackingId  ?? EventTracking_Id.New,
-        //                   NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
-        //                   CancellationToken
-
-        //               )
-        //           );
-
-        #endregion
-
 
     }
 

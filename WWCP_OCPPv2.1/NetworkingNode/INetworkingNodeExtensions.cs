@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region SendMessage  (DestinationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
-        /// Send the given vendor-specific message.
+        /// Send the given vendor-specific message (without the expectation of any response).
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
@@ -143,67 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            SignKeys,
                            SignInfos,
                            Signatures,
-
-                           RequestId        ?? NetworkingNode.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(NetworkingNode.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-
-
-
-        #region NotifyNetworkTopology  (DestinationId, VendorId, MessageId = null, Data = null, ...)
-
-        /// <summary>
-        /// Send the given vendor-specific message.
-        /// </summary>
-        /// <param name="Destination">The networking node identification.</param>
-        /// <param name="NetworkTopologyInformation">Network topology information.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// 
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<SentMessageResult>
-
-            NotifyNetworkkhjhhTopology(this INetworkingNode        NetworkingNode,
-                                  SourceRouting               Destination,
-                                  NetworkTopologyInformation  NetworkTopologyInformation,
-
-                                  IEnumerable<KeyPair>?       SignKeys              = null,
-                                  IEnumerable<SignInfo>?      SignInfos             = null,
-                                  IEnumerable<Signature>?     Signatures            = null,
-
-                                  CustomData?                 CustomData            = null,
-
-                                  Request_Id?                 RequestId             = null,
-                                  DateTime?                   RequestTimestamp      = null,
-                                  EventTracking_Id?           EventTrackingId       = null,
-                                  SerializationFormats?       SerializationFormat   = null,
-                                  CancellationToken           CancellationToken     = default)
-
-
-                => NetworkingNode.OCPP.OUT.NotifyNetworkTopology(
-                       new NotifyNetworkTopologyMessage(
-                           Destination,
-                           NetworkTopologyInformation,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
 
                            RequestId        ?? NetworkingNode.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
