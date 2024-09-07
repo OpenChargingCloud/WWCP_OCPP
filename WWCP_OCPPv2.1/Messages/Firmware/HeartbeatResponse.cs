@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 hashCode = this.CurrentTime.GetHashCode() * 3 ^
-                           base.GetHashCode();
+                           base.            GetHashCode();
 
             }
 
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom Heartbeat responses.</param>
         public static HeartbeatResponse Parse(HeartbeatRequest                                 Request,
                                               JObject                                          JSON,
-                                              SourceRouting                                Destination,
+                                              SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        ResponseTimestamp               = null,
                                               CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
@@ -198,14 +198,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          Destination,
                          NetworkPath,
-                         out var HeartbeatResponse,
+                         out var heartbeatResponse,
                          out var errorResponse,
                          ResponseTimestamp,
                          CustomHeartbeatResponseParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
-                return HeartbeatResponse;
+                return heartbeatResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a Heartbeat response is invalid: " + errorResponse,
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom Heartbeat responses.</param>
         public static Boolean TryParse(HeartbeatRequest                                 Request,
                                        JObject                                          JSON,
-                                       SourceRouting                                Destination,
+                                       SourceRouting                                    Destination,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatResponse?      HeartbeatResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    Request,
                    Timestamp.Now,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     Timestamp.Now,
-                   OCPPv2_1.Result.FormationViolation(
+                    Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     Timestamp.Now,
-                   OCPPv2_1.Result.SignatureError(
+                    Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     Timestamp.Now,
-                    OCPPv2_1.Result.Server(Description));
+                    Result.Server(Description));
 
 
         /// <summary>
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     Timestamp.Now,
-                    OCPPv2_1.Result.FromException(Exception));
+                    Result.FromException(Exception));
 
         #endregion
 

@@ -18,12 +18,16 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -64,67 +68,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region ResetResponse(Request, Status)
-
         /// <summary>
-        /// Create a new reset response.
+        /// Create a new Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Status">The success or failure of the reset command.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
+        /// <param name="Status">The success or failure of the Reset command.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ResetResponse(CS.ResetRequest               Request,
-                             ResetStatus                   Status,
+        public ResetResponse(ResetRequest             Request,
+                             ResetStatus              Status,
 
-                             DateTime?                     ResponseTimestamp   = null,
+                             Result?                  Result                = null,
+                             DateTime?                ResponseTimestamp     = null,
 
-                             IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                             IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                             IEnumerable<Signature>?  Signatures          = null,
+                             SourceRouting?           Destination           = null,
+                             NetworkPath?             NetworkPath           = null,
 
-                             CustomData?                   CustomData          = null)
+                             IEnumerable<KeyPair>?    SignKeys              = null,
+                             IEnumerable<SignInfo>?   SignInfos             = null,
+                             IEnumerable<Signature>?  Signatures            = null,
+
+                             CustomData?              CustomData            = null,
+
+                             SerializationFormats?    SerializationFormat   = null,
+                             CancellationToken        CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.       GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region ResetResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new reset response.
-        /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public ResetResponse(CS.ResetRequest  Request,
-                             Result           Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -173,15 +180,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static ResetResponse Parse(CS.ResetRequest  Request,
-                                          XElement         XML)
+        public static ResetResponse Parse(ResetRequest  Request,
+                                          XElement      XML)
         {
 
             if (TryParse(Request,
                          XML,
                          out var resetResponse,
-                         out var errorResponse) &&
-                resetResponse is not null)
+                         out var errorResponse))
             {
                 return resetResponse;
             }
@@ -196,27 +202,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, JSON, CustomResetResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reset response.
+        /// Parse the given JSON representation of a Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
-        public static ResetResponse Parse(CS.ResetRequest                              Request,
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
+        public static ResetResponse Parse(ResetRequest                                 Request,
                                           JObject                                      JSON,
-                                          CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
+                                          SourceRouting                                Destination,
+                                          NetworkPath                                  NetworkPath,
+                                          DateTime?                                    ResponseTimestamp           = null,
+                                          CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null,
+                                          CustomJObjectParserDelegate<Signature>?      CustomSignatureParser       = null,
+                                          CustomJObjectParserDelegate<CustomData>?     CustomCustomDataParser      = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var resetResponse,
                          out var errorResponse,
-                         CustomResetResponseParser) &&
-                resetResponse is not null)
+                         ResponseTimestamp,
+                         CustomResetResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return resetResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a reset response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a Reset response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -232,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.ResetRequest     Request,
-                                       XElement            XML,
-                                       out ResetResponse?  ResetResponse,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(ResetRequest                             Request,
+                                       XElement                                 XML,
+                                       [NotNullWhen(true)]  out ResetResponse?  ResetResponse,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
         {
 
             try
@@ -268,18 +283,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, JSON, out ResetResponse, out ErrorResponse, CustomResetResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reset response.
+        /// Try to parse the given JSON representation of a Reset response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ResetResponse">The parsed reset response.</param>
+        /// <param name="ResetResponse">The parsed Reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
-        public static Boolean TryParse(CS.ResetRequest                              Request,
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
+        public static Boolean TryParse(ResetRequest                                 Request,
                                        JObject                                      JSON,
-                                       out ResetResponse?                           ResetResponse,
-                                       out String?                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
+                                       SourceRouting                                Destination,
+                                       NetworkPath                                  NetworkPath,
+                                       [NotNullWhen(true)]  out ResetResponse?      ResetResponse,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
+                                       DateTime?                                    ResponseTimestamp           = null,
+                                       CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?      CustomSignatureParser       = null,
+                                       CustomJObjectParserDelegate<CustomData>?     CustomCustomDataParser      = null)
         {
 
             try
@@ -333,7 +353,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     Request,
                                     Status,
+
                                     null,
+                                    ResponseTimestamp,
+
+                                    Destination,
+                                    NetworkPath,
 
                                     null,
                                     null,
@@ -416,13 +441,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The reset command failed.
+        /// The Reset failed because of a request error.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        public static ResetResponse Failed(CS.ResetRequest Request)
+        /// <param name="Request">The Reset request.</param>
+        public static ResetResponse RequestError(ResetRequest             Request,
+                                                 EventTracking_Id         EventTrackingId,
+                                                 ResultCode               ErrorCode,
+                                                 String?                  ErrorDescription    = null,
+                                                 JObject?                 ErrorDetails        = null,
+                                                 DateTime?                ResponseTimestamp   = null,
+
+                                                 SourceRouting?           Destination         = null,
+                                                 NetworkPath?             NetworkPath         = null,
+
+                                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                                 IEnumerable<Signature>?  Signatures          = null,
+
+                                                 CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   ResetStatus.Rejected,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The Reset failed.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ResetResponse FormationViolation(ResetRequest  Request,
+                                                       String        ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    ResetStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The Reset failed.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ResetResponse SignatureError(ResetRequest  Request,
+                                                   String        ErrorDescription)
+
+            => new (Request,
+                    ResetStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The Reset failed.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static ResetResponse Failed(ResetRequest  Request,
+                                           String?       Description   = null)
+
+            => new (Request,
+                    ResetStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The Reset failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The Reset request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ResetResponse ExceptionOccured(ResetRequest  Request,
+                                                     Exception     Exception)
+
+            => new (Request,
+                    ResetStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -504,13 +618,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => Status.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

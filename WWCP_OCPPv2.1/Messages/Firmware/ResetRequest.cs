@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new Reset request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ResetType">The type of Reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
-                                         SourceRouting                           Destination,
+                                         SourceRouting                               Destination,
                                          NetworkPath                                 NetworkPath,
                                          DateTime?                                   RequestTimestamp           = null,
                                          TimeSpan?                                   RequestTimeout             = null,
@@ -220,14 +220,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          RequestId,
                          Destination,
                          NetworkPath,
-                         out var ResetRequest,
+                         out var resetRequest,
                          out var errorResponse,
                          RequestTimestamp,
                          RequestTimeout,
                          EventTrackingId,
                          CustomResetRequestParser))
             {
-                return ResetRequest;
+                return resetRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a Reset request is invalid: " + errorResponse,
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResetRequest">The parsed Reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
-                                       SourceRouting                           Destination,
+                                       SourceRouting                               Destination,
                                        NetworkPath                                 NetworkPath,
                                        [NotNullWhen(true)]  out ResetRequest?      ResetRequest,
                                        [NotNullWhen(false)] out String?            ErrorResponse,

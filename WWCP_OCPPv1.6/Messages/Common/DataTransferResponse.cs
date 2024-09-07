@@ -67,12 +67,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         [Optional]
         public JToken?             Data          { get; }
 
-        /// <summary>
-        /// Optional detailed status information.
-        /// </summary>
-        [Optional]
-        public StatusInfo?         StatusInfo    { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -96,7 +90,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public DataTransferResponse(CS.DataTransferRequest        Request,
                                     DataTransferStatus            Status,
                                     JToken?                       Data                = null,
-                                    StatusInfo?                   StatusInfo          = null,
                                     DateTime?                     ResponseTimestamp   = null,
 
                                     IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
@@ -122,7 +115,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             this.Status      = Status;
             this.Data        = Data;
-            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -168,83 +160,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //       </ns:dataTransferResponse>
         //    </soap:Body>
         // </soap:Envelope>
-
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:DataTransferResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
-        //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     },
-        //     "DataTransferStatusEnumType": {
-        //       "description": "This indicates the success or failure of the data transfer.\r\n",
-        //       "javaType": "DataTransferStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected",
-        //         "UnknownMessageId",
-        //         "UnknownVendorId"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.\r\n",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.\r\n",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/DataTransferStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     },
-        //     "data": {
-        //       "description": "Data without specified length or format, in response to request.\r\n"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
-        // }
 
         #endregion
 
@@ -393,20 +308,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region StatusInfo            [optional]
-
-                if (JSON.ParseOptionalJSON("statusInfo",
-                                           "detailed status info",
-                                           OCPPv1_6.StatusInfo.TryParse,
-                                           out StatusInfo? StatusInfo,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
                 #region Signatures            [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -440,7 +341,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                            Request,
                                            DataTransferStatus,
                                            Data,
-                                           StatusInfo,
                                            null,
                                            null,
                                            null,
@@ -496,8 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoSerializer             = null,
-                              CustomJObjectSerializerDelegate<Signature>?        CustomSignatureSerializer              = null,
+                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
@@ -507,11 +406,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                            Data is not null
                                ? new JProperty("data",         Data)
-                               : null,
-
-                           StatusInfo is not null
-                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -623,9 +517,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
              ((Data       is     null && DataTransferResponse.Data       is     null) ||
               (Data       is not null && DataTransferResponse.Data       is not null && Data.      Equals(DataTransferResponse.Data)))      &&
 
-             ((StatusInfo is     null && DataTransferResponse.StatusInfo is     null) ||
-               StatusInfo is not null && DataTransferResponse.StatusInfo is not null && StatusInfo.Equals(DataTransferResponse.StatusInfo)) &&
-
                base.GenericEquals(DataTransferResponse);
 
         #endregion
@@ -643,10 +534,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return Status.     GetHashCode()       * 7 ^
-                      (Data?.      GetHashCode() ?? 0) * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                       base.       GetHashCode();
+                return Status.GetHashCode()       * 5 ^
+                      (Data?. GetHashCode() ?? 0) * 3 ^
+                       base.  GetHashCode();
 
             }
         }

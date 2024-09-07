@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
         /// 
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

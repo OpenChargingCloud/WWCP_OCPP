@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new UnlockConnector request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="EVSEId">The identifier of the EVSE to be unlocked.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
         public static UnlockConnectorRequest Parse(JObject                                               JSON,
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

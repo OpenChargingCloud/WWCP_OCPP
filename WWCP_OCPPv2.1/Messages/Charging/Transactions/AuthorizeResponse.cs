@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new automatic frequency restoration reserve (AFRR) signal request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">The value of the AFRRSignal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AFRRSignalRequest">The parsed AFRRSignal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

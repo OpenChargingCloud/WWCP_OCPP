@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new CustomerInformation request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="CustomerInformationRequestId">An unique identification of the CustomerInformation request.</param>
         /// <param name="Report">Whether the charging station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.</param>
         /// <param name="Clear">Whether the charging station should clear all information about the customer referred to.</param>
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomerInformationRequest">The parsed CustomerInformation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

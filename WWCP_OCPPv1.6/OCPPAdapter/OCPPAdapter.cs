@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region Data Structures
 
-        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
+        //public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
         //public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultE2EChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer                               { get; set; }
         //public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
         public CustomJObjectSerializerDelegate<SignaturePolicy>?                                     CustomSignaturePolicySerializer                              { get; set; }
@@ -789,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public CustomJObjectParserDelegate<Signature>?                                                 CustomSignatureParser                                    { get; set; }
         public CustomBinaryParserDelegate<Signature>?                                                  CustomBinarySignatureParser                              { get; set; }
         public CustomJObjectParserDelegate<CustomData>?                                                CustomCustomDataParser                                   { get; set; }
-        public CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
+        //public CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
         //public CustomJObjectParserDelegate<CompositeSchedule>?                                         CustomCompositeScheduleParser                            { get; set; }
         public CustomJObjectParserDelegate<ChargingSchedulePeriod>?                                    CustomChargingSchedulePeriodParser                       { get; set; }
         //public CustomJObjectParserDelegate<ClearMonitoringResult>?                                     CustomClearMonitoringResultParser                        { get; set; }

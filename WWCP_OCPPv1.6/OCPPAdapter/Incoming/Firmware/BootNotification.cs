@@ -495,7 +495,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                       out var errorResponse,
                                                       ResponseTimestamp,
                                                       parentNetworkingNode.OCPP.CustomBootNotificationResponseParser,
-                                                      parentNetworkingNode.OCPP.CustomStatusInfoParser,
                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
                                                       parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 

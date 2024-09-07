@@ -214,16 +214,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
-                                                     XElement                    XML)
+        public static BootNotificationResponse Parse(BootNotificationRequest  Request,
+                                                     XElement                 XML)
         {
 
 
             if (TryParse(Request,
                          XML,
                          out var bootNotificationResponse,
-                         out var errorResponse) &&
-                bootNotificationResponse is not null)
+                         out var errorResponse))
             {
                 return bootNotificationResponse;
             }
@@ -249,7 +248,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
-                                                     CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                                      CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
                                                      CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
@@ -263,7 +261,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          out var errorResponse,
                          ResponseTimestamp,
                          CustomBootNotificationResponseParser,
-                         CustomStatusInfoParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
@@ -286,10 +283,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(BootNotificationRequest        Request,
-                                       XElement                       XML,
-                                       out BootNotificationResponse?  BootNotificationResponse,
-                                       out String?                    ErrorResponse)
+        public static Boolean TryParse(BootNotificationRequest                             Request,
+                                       XElement                                            XML,
+                                       [NotNullWhen(true)]  out BootNotificationResponse?  BootNotificationResponse,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse)
         {
 
             try
@@ -341,7 +338,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
                                        DateTime?                                               ResponseTimestamp                      = null,
                                        CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
-                                       CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                        CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
                                        CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {

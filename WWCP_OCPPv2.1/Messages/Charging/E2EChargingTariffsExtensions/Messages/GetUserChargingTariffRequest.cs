@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new get user charging tariff request.
         /// </summary>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="IdToken">An identification token for which the applicable charging tariff is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetUserChargingTariffRequestParser">A delegate to parse custom GetUserChargingTariff requests.</param>
         public static GetUserChargingTariffRequest Parse(JObject                                                     JSON,
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="getUserChargingTariffRequest">The parsed GetUserChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetUserChargingTariffRequest">The parsed GetUserChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

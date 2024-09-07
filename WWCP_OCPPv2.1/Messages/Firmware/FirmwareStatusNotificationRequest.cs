@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The firmware status notification request.
+    /// The FirmwareStatusNotification request.
     /// </summary>
     public class FirmwareStatusNotificationRequest : ARequest<FirmwareStatusNotificationRequest>,
                                                      IRequest
@@ -74,9 +74,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new firmware status notification request.
+        /// Create a new FirmwareStatusNotification request.
         /// </summary>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Status">The status of the firmware installation.</param>
         /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
         /// 
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                  IEnumerable<KeyPair>?    SignKeys                  = null,
                                                  IEnumerable<SignInfo>?   SignInfos                 = null,
-                                                 IEnumerable<Signature>?       Signatures                = null,
+                                                 IEnumerable<Signature>?  Signatures                = null,
 
                                                  CustomData?              CustomData                = null,
 
@@ -209,19 +209,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomFirmwareStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a firmware status notification request.
+        /// Parse the given JSON representation of a FirmwareStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom firmware status notification requests.</param>
+        /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom FirmwareStatusNotification requests.</param>
         public static FirmwareStatusNotificationRequest Parse(JObject                                                          JSON,
                                                               Request_Id                                                       RequestId,
-                                                              SourceRouting                                                Destination,
+                                                              SourceRouting                                                    Destination,
                                                               NetworkPath                                                      NetworkPath,
                                                               DateTime?                                                        RequestTimestamp                                = null,
                                                               TimeSpan?                                                        RequestTimeout                                  = null,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return firmwareStatusNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a firmware status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a FirmwareStatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -253,13 +253,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out FirmwareStatusNotificationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a firmware status notification request.
+        /// Try to parse the given JSON representation of a FirmwareStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
+        /// <param name="FirmwareStatusNotificationRequest">The parsed FirmwareStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom FirmwareStatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                          JSON,
                                        Request_Id                                                       RequestId,
-                                       SourceRouting                                                Destination,
+                                       SourceRouting                                                    Destination,
                                        NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out FirmwareStatusNotificationRequest?      FirmwareStatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 FirmwareStatusNotificationRequest  = null;
-                ErrorResponse                      = "The given JSON representation of a firmware status notification request is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of a FirmwareStatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom firmware status notification requests.</param>
+        /// <param name="CustomFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom FirmwareStatusNotification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestSerializer   = null,
@@ -421,10 +421,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (FirmwareStatusNotificationRequest1, FirmwareStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two firmware status notification requests for equality.
+        /// Compares two FirmwareStatusNotification requests for equality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequest1">A firmware status notification request.</param>
-        /// <param name="FirmwareStatusNotificationRequest2">Another firmware status notification request.</param>
+        /// <param name="FirmwareStatusNotificationRequest1">A FirmwareStatusNotification request.</param>
+        /// <param name="FirmwareStatusNotificationRequest2">Another FirmwareStatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest1,
                                            FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest2)
@@ -447,10 +447,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (FirmwareStatusNotificationRequest1, FirmwareStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two firmware status notification requests for inequality.
+        /// Compares two FirmwareStatusNotification requests for inequality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequest1">A firmware status notification request.</param>
-        /// <param name="FirmwareStatusNotificationRequest2">Another firmware status notification request.</param>
+        /// <param name="FirmwareStatusNotificationRequest1">A FirmwareStatusNotification request.</param>
+        /// <param name="FirmwareStatusNotificationRequest2">Another FirmwareStatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest1,
                                            FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest2)
@@ -466,9 +466,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two firmware status notification requests for equality.
+        /// Compares two FirmwareStatusNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A firmware status notification request to compare with.</param>
+        /// <param name="Object">A FirmwareStatusNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is FirmwareStatusNotificationRequest firmwareStatusNotificationRequest &&
@@ -480,9 +480,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(FirmwareStatusNotificationRequest)
 
         /// <summary>
-        /// Compares two firmware status notification requests for equality.
+        /// Compares two FirmwareStatusNotification requests for equality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request to compare with.</param>
+        /// <param name="FirmwareStatusNotificationRequest">A FirmwareStatusNotification request to compare with.</param>
         public override Boolean Equals(FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest)
 
             => FirmwareStatusNotificationRequest is not null &&
@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => $"{Status}{(UpdateFirmwareRequestId.HasValue ? $" ({UpdateFirmwareRequestId.Value})" : "")}";
 
         #endregion
 

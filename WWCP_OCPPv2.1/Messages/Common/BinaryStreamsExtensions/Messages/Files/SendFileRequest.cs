@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Create a new SendFile request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

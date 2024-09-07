@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomBinaryDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>

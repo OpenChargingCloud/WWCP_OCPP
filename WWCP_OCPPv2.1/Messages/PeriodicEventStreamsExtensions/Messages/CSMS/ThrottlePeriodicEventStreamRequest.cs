@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get periodic event stream request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="StreamId">The unique identification of the data stream to throttle.</param>
         /// <param name="Parameters">The updated rate of sending data.</param>
         /// 
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
         public static ThrottlePeriodicEventStreamRequest Parse(JObject                                                           JSON,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

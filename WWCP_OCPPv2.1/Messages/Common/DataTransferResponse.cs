@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The DataTransfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferResponse">The parsed DataTransfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

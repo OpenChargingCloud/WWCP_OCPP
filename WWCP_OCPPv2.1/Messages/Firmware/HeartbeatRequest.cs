@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a Heartbeat request.
+        /// Create a new Heartbeat request.
         /// </summary>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom Heartbeat requests.</param>
         public static HeartbeatRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             SourceRouting                               Destination,
+                                             SourceRouting                                   Destination,
                                              NetworkPath                                     NetworkPath,
                                              DateTime?                                       RequestTimestamp               = null,
                                              TimeSpan?                                       RequestTimeout                 = null,
@@ -179,14 +179,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          RequestId,
                          Destination,
                          NetworkPath,
-                         out var HeartbeatRequest,
+                         out var heartbeatRequest,
                          out var errorResponse,
                          RequestTimestamp,
                          RequestTimeout,
                          EventTrackingId,
                          CustomHeartbeatRequestParser))
             {
-                return HeartbeatRequest;
+                return heartbeatRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a Heartbeat request is invalid: " + errorResponse,
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="HeartbeatRequest">The parsed Heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom Heartbeat requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       SourceRouting                               Destination,
+                                       SourceRouting                                   Destination,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatRequest?      HeartbeatRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,

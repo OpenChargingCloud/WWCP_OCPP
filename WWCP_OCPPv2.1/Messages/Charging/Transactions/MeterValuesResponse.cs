@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom MeterValues responses.</param>
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="MeterValuesResponse">The parsed MeterValues response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

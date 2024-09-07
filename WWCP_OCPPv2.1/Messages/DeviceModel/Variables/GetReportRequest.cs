@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetReport request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="GetReportRequestId">The charging station identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static GetReportRequest Parse(JObject                                         JSON,
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetReportRequest">The parsed GetReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

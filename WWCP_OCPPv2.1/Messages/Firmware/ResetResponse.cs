@@ -132,6 +132,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.            GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -224,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
         public static ResetResponse Parse(ResetRequest                                 Request,
                                           JObject                                      JSON,
-                                          SourceRouting                            Destination,
+                                          SourceRouting                                Destination,
                                           NetworkPath                                  NetworkPath,
                                           DateTime?                                    ResponseTimestamp           = null,
                                           CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null,
@@ -267,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
         public static Boolean TryParse(ResetRequest                                 Request,
                                        JObject                                      JSON,
-                                       SourceRouting                            Destination,
+                                       SourceRouting                                Destination,
                                        NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out ResetResponse?      ResetResponse,
                                        [NotNullWhen(false)] out String?             ErrorResponse,
@@ -451,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Request,
                    ResetStatus.Rejected,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -480,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     ResetStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -495,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     ResetStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -510,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     ResetStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -523,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     ResetStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -611,22 +620,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

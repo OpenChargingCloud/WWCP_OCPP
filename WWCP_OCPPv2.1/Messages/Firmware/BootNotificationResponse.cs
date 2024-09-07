@@ -268,12 +268,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Parse the given JSON representation of a BootNotification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom BootNotification responses.</param>
         /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
@@ -316,12 +316,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Parse the given JSON representation of a BootNotification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom BootNotification responses.</param>
         /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
@@ -364,14 +364,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Try to parse the given JSON representation of a BootNotification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
+        /// <param name="BootNotificationResponse">The parsed BootNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom BootNotification responses.</param>
         /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
@@ -527,14 +527,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Try to parse the given JSON representation of a BootNotification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
+        /// <param name="BootNotificationResponse">The parsed BootNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom BootNotification responses.</param>
         /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status info objects.</param>
         /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
@@ -692,7 +692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseSerializer">A delegate to serialize custom BootNotification responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomBinaryBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
+        /// <param name="CustomBinaryBootNotificationResponseSerializer">A delegate to serialize custom BootNotification responses.</param>
         /// <param name="CustomBinaryStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomBinaryCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -897,10 +897,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (BootNotificationResponse1, BootNotificationResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two BootNotification responses for equality.
         /// </summary>
-        /// <param name="BootNotificationResponse1">A boot notification response.</param>
-        /// <param name="BootNotificationResponse2">Another boot notification response.</param>
+        /// <param name="BootNotificationResponse1">A BootNotification response.</param>
+        /// <param name="BootNotificationResponse2">Another BootNotification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (BootNotificationResponse? BootNotificationResponse1,
                                            BootNotificationResponse? BootNotificationResponse2)
@@ -923,10 +923,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (BootNotificationResponse1, BootNotificationResponse2)
 
         /// <summary>
-        /// Compares two boot notification responses for inequality.
+        /// Compares two BootNotification responses for inequality.
         /// </summary>
-        /// <param name="BootNotificationResponse1">A boot notification response.</param>
-        /// <param name="BootNotificationResponse2">Another boot notification response.</param>
+        /// <param name="BootNotificationResponse1">A BootNotification response.</param>
+        /// <param name="BootNotificationResponse2">Another BootNotification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (BootNotificationResponse? BootNotificationResponse1,
                                            BootNotificationResponse? BootNotificationResponse2)
@@ -942,9 +942,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two BootNotification responses for equality.
         /// </summary>
-        /// <param name="Object">A boot notification response to compare with.</param>
+        /// <param name="Object">A BootNotification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is BootNotificationResponse bootNotificationResponse &&
@@ -955,9 +955,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(BootNotificationResponse)
 
         /// <summary>
-        /// Compares two boot notification responses for equality.
+        /// Compares two BootNotification responses for equality.
         /// </summary>
-        /// <param name="BootNotificationResponse">A boot notification response to compare with.</param>
+        /// <param name="BootNotificationResponse">A BootNotification response to compare with.</param>
         public override Boolean Equals(BootNotificationResponse? BootNotificationResponse)
 
             => BootNotificationResponse is not null &&

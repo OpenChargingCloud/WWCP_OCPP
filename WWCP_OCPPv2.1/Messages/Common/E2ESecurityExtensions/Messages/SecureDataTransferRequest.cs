@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new SecureDataTransfer request.
         /// </summary>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Parameter">Encryption parameters.</param>
         /// <param name="KeyId">The unique identification of the encryption key.</param>
         /// <param name="Nonce">The first half of the cryptographic nonce.</param>
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Secure">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
         /// <param name="CustomBinarySignatureParser">An optional delegate to parse custom binary signatures.</param>
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Secure">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SecureDataTransferRequest">The parsed SecureDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

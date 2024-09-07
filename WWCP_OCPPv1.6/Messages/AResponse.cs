@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Result">A generic result.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Destination">The alternative source routing path through the overlay network towards the message destination.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>

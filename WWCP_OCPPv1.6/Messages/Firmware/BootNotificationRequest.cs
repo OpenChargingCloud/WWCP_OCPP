@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new BootNotification request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
@@ -248,6 +248,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 throw new ArgumentException    ("The given meter serial number is too long!",
                                                 nameof(MeterSerialNumber));
 
+            unchecked
+            {
+
+                hashCode = this.ChargePointVendor.       GetHashCode()       * 29 ^
+                           this.ChargePointModel.        GetHashCode()       * 23 ^
+                          (this.ChargePointSerialNumber?.GetHashCode() ?? 0) * 19 ^
+                          (this.ChargeBoxSerialNumber?.  GetHashCode() ?? 0) * 17 ^
+                          (this.FirmwareVersion?.        GetHashCode() ?? 0) * 13 ^
+                          (this.Iccid?.                  GetHashCode() ?? 0) * 11 ^
+                          (this.IMSI?.                   GetHashCode() ?? 0) *  7 ^
+                          (this.MeterType?.              GetHashCode() ?? 0) *  5 ^
+                          (this.MeterSerialNumber?.      GetHashCode() ?? 0) *  3 ^
+                           base.                         GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -364,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         public static BootNotificationRequest Parse(XElement       XML,
                                                     Request_Id     RequestId,
                                                     SourceRouting  Destination)
@@ -387,16 +403,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a BootNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
                                                     SourceRouting                                          Destination,
@@ -433,14 +454,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out BootNotificationRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, out BootNotificationRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a BootNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                                           XML,
@@ -482,14 +503,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out BootNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out BootNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a BootNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -850,30 +871,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ChargePointVendor.       GetHashCode()       * 29 ^
-                       ChargePointModel.        GetHashCode()       * 23 ^
-
-                      (ChargePointSerialNumber?.GetHashCode() ?? 0) * 19 ^
-                      (ChargeBoxSerialNumber?.  GetHashCode() ?? 0) * 17 ^
-                      (FirmwareVersion?.        GetHashCode() ?? 0) * 13 ^
-                      (Iccid?.                  GetHashCode() ?? 0) * 11 ^
-                      (IMSI?.                   GetHashCode() ?? 0) *  7 ^
-                      (MeterType?.              GetHashCode() ?? 0) *  5 ^
-                      (MeterSerialNumber?.      GetHashCode() ?? 0) *  3 ^
-
-                       base.                    GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

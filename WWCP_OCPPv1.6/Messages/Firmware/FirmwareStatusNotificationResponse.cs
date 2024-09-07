@@ -18,12 +18,16 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -33,8 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A firmware status notification response.
     /// </summary>
-    public class FirmwareStatusNotificationResponse : AResponse<CP.FirmwareStatusNotificationRequest,
-                                                                   FirmwareStatusNotificationResponse>,
+    public class FirmwareStatusNotificationResponse : AResponse<FirmwareStatusNotificationRequest,
+                                                                FirmwareStatusNotificationResponse>,
                                                       IResponse
     {
 
@@ -59,8 +63,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region FirmwareStatusNotificationResponse(Request)
-
         /// <summary>
         /// Create a new firmware status notification response.
         /// </summary>
@@ -71,49 +73,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest  Request,
+        public FirmwareStatusNotificationResponse(FirmwareStatusNotificationRequest  Request,
 
-                                                  DateTime?                             ResponseTimestamp   = null,
+                                                  Result?                            Result                = null,
+                                                  DateTime?                          ResponseTimestamp     = null,
 
-                                                  IEnumerable<WWCP.KeyPair>?            SignKeys            = null,
-                                                  IEnumerable<WWCP.SignInfo>?           SignInfos           = null,
-                                                  IEnumerable<Signature>?          Signatures          = null,
+                                                  SourceRouting?                     Destination           = null,
+                                                  NetworkPath?                       NetworkPath           = null,
 
-                                                  CustomData?                           CustomData          = null)
+                                                  IEnumerable<KeyPair>?              SignKeys              = null,
+                                                  IEnumerable<SignInfo>?             SignInfos             = null,
+                                                  IEnumerable<Signature>?            Signatures            = null,
+
+                                                  CustomData?                        CustomData            = null,
+
+                                                  SerializationFormats?              SerializationFormat   = null,
+                                                  CancellationToken                  CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         { }
-
-        #endregion
-
-        #region FirmwareStatusNotificationResponse(Result)
-
-        /// <summary>
-        /// Create a new firmware status notification response.
-        /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest  Request,
-                                                  Result                                Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -146,15 +139,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The firmware status notification request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static FirmwareStatusNotificationResponse Parse(CP.FirmwareStatusNotificationRequest  Request,
-                                                               XElement                              XML)
+        public static FirmwareStatusNotificationResponse Parse(FirmwareStatusNotificationRequest  Request,
+                                                               XElement                           XML)
         {
 
             if (TryParse(Request,
                          XML,
                          out var firmwareStatusNotificationResponse,
-                         out var errorResponse) &&
-                firmwareStatusNotificationResponse is not null)
+                         out var errorResponse))
             {
                 return firmwareStatusNotificationResponse;
             }
@@ -174,17 +166,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The firmware status notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom firmware status notification responses.</param>
-        public static FirmwareStatusNotificationResponse Parse(CP.FirmwareStatusNotificationRequest                              Request,
+        public static FirmwareStatusNotificationResponse Parse(FirmwareStatusNotificationRequest                                 Request,
                                                                JObject                                                           JSON,
-                                                               CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null)
+                                                               SourceRouting                                                     Destination,
+                                                               NetworkPath                                                       NetworkPath,
+                                                               DateTime?                                                         ResponseTimestamp                                        = null,
+                                                               CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null,
+                                                               CustomJObjectParserDelegate<Signature>?                           CustomSignatureParser                                    = null,
+                                                               CustomJObjectParserDelegate<CustomData>?                          CustomCustomDataParser                                   = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var firmwareStatusNotificationResponse,
                          out var errorResponse,
-                         CustomFirmwareStatusNotificationResponseResponseParser) &&
-                firmwareStatusNotificationResponse is not null)
+                         ResponseTimestamp,
+                         CustomFirmwareStatusNotificationResponseResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return firmwareStatusNotificationResponse;
             }
@@ -205,10 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.FirmwareStatusNotificationRequest     Request,
-                                       XElement                                 XML,
-                                       out FirmwareStatusNotificationResponse?  FirmwareStatusNotificationResponse,
-                                       out String?                              ErrorResponse)
+        public static Boolean TryParse(FirmwareStatusNotificationRequest                             Request,
+                                       XElement                                                      XML,
+                                       [NotNullWhen(true)]  out FirmwareStatusNotificationResponse?  FirmwareStatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse)
         {
 
             try
@@ -234,18 +235,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(Request, JSON, out FirmwareStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a firmware status notification response.
+        /// Try to parse the given JSON representation of a FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="FirmwareStatusNotificationResponse">The parsed FirmwareStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom firmware status notification responses.</param>
-        public static Boolean TryParse(CP.FirmwareStatusNotificationRequest                              Request,
+        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom FirmwareStatusNotification responses.</param>
+        public static Boolean TryParse(FirmwareStatusNotificationRequest                                 Request,
                                        JObject                                                           JSON,
-                                       out FirmwareStatusNotificationResponse?                           FirmwareStatusNotificationResponse,
-                                       out String?                                                       ErrorResponse,
-                                       CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null)
+                                       SourceRouting                                                     Destination,
+                                       NetworkPath                                                       NetworkPath,
+                                       [NotNullWhen(true)]  out FirmwareStatusNotificationResponse?      FirmwareStatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                                  ErrorResponse,
+                                       DateTime?                                                         ResponseTimestamp                                        = null,
+                                       CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                           CustomSignatureParser                                    = null,
+                                       CustomJObjectParserDelegate<CustomData>?                          CustomCustomDataParser                                   = null)
         {
 
             try
@@ -285,7 +295,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(
 
                                                          Request,
+
                                                          null,
+                                                         ResponseTimestamp,
+
+                                                         Destination,
+                                                         NetworkPath,
 
                                                          null,
                                                          null,
@@ -333,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                      CustomSignatureSerializer                            = null,
+                              CustomJObjectSerializerDelegate<Signature>?                           CustomSignatureSerializer                            = null,
                               CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                           = null)
         {
 
@@ -345,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.                 ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -362,13 +377,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The firmware status notification request failed.
+        /// The FirmwareStatusNotification failed because of a request error.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
-        public static FirmwareStatusNotificationResponse Failed(CP.FirmwareStatusNotificationRequest Request)
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        public static FirmwareStatusNotificationResponse RequestError(FirmwareStatusNotificationRequest  Request,
+                                                                      EventTracking_Id                   EventTrackingId,
+                                                                      ResultCode                         ErrorCode,
+                                                                      String?                            ErrorDescription    = null,
+                                                                      JObject?                           ErrorDetails        = null,
+                                                                      DateTime?                          ResponseTimestamp   = null,
+
+                                                                      SourceRouting?                     Destination         = null,
+                                                                      NetworkPath?                       NetworkPath         = null,
+
+                                                                      IEnumerable<KeyPair>?              SignKeys            = null,
+                                                                      IEnumerable<SignInfo>?             SignInfos           = null,
+                                                                      IEnumerable<Signature>?            Signatures          = null,
+
+                                                                      CustomData?                        CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static FirmwareStatusNotificationResponse FormationViolation(FirmwareStatusNotificationRequest  Request,
+                                                                            String                             ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result.FormationViolation(
+                        $"Invalid data format: {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static FirmwareStatusNotificationResponse SignatureError(FirmwareStatusNotificationRequest  Request,
+                                                                        String                             ErrorDescription)
+
+            => new (Request,
+                    Result.SignatureError(
+                        $"Invalid signature(s): {ErrorDescription}"
+                    ));
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static FirmwareStatusNotificationResponse Failed(FirmwareStatusNotificationRequest  Request,
+                                                                String?                            Description   = null)
+
+            => new (Request,
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The FirmwareStatusNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static FirmwareStatusNotificationResponse ExceptionOccured(FirmwareStatusNotificationRequest  Request,
+                                                                          Exception                          Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

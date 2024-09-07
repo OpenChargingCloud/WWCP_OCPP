@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -58,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The type of reset that the charge point should perform.
         /// </summary>
-        public ResetTypes     ResetType    { get; }
+        public ResetType      ResetType    { get; }
 
         #endregion
 
@@ -67,8 +69,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a new reset request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
-        /// <param name="ResetType">The type of reset that the charge point should perform.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="ResetType">The type of Reset that the charging station should perform.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -79,23 +81,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ResetRequest(NetworkingNode_Id        NetworkingNodeId,
-                            ResetTypes               ResetType,
+        public ResetRequest(SourceRouting            Destination,
+                            ResetType                ResetType,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?              CustomData            = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            NetworkPath?             NetworkPath         = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            NetworkPath?             NetworkPath           = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(ResetRequest)[..^7],
 
                    SignKeys,
@@ -109,11 +112,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
-            this.ResetType = ResetType;
+            this.ResetType  = ResetType;
+
+            unchecked
+            {
+                hashCode = this.ResetType.GetHashCode() * 3 ^
+                           base.          GetHashCode();
+            }
 
         }
 
@@ -170,21 +180,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static ResetRequest Parse(XElement           XML,
-                                         Request_Id         RequestId,
-                                         NetworkingNode_Id  NetworkingNodeId,
-                                         NetworkPath        NetworkPath)
+        public static ResetRequest Parse(XElement       XML,
+                                         Request_Id     RequestId,
+                                         SourceRouting  Destination,
+                                         NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var resetRequest,
-                         out var errorResponse) &&
-                resetRequest is not null)
+                         out var errorResponse))
             {
                 return resetRequest;
             }
@@ -199,28 +208,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomResetRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reset request.
+        /// Parse the given JSON representation of a Reset request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomResetRequestParser">An optional delegate to parse custom Reset requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
-                                         NetworkingNode_Id                           NetworkingNodeId,
+                                         SourceRouting                               Destination,
                                          NetworkPath                                 NetworkPath,
+                                         DateTime?                                   RequestTimestamp           = null,
+                                         TimeSpan?                                   RequestTimeout             = null,
+                                         EventTracking_Id?                           EventTrackingId            = null,
                                          CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var resetRequest,
                          out var errorResponse,
-                         CustomResetRequestParser) &&
-                resetRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomResetRequestParser))
             {
                 return resetRequest;
             }
@@ -239,16 +256,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement           XML,
-                                       Request_Id         RequestId,
-                                       NetworkingNode_Id  NetworkingNodeId,
-                                       NetworkPath        NetworkPath,
-                                       out ResetRequest?  ResetRequest,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(XElement                                XML,
+                                       Request_Id                              RequestId,
+                                       SourceRouting                           Destination,
+                                       NetworkPath                             NetworkPath,
+                                       [NotNullWhen(true)]  out ResetRequest?  ResetRequest,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
         {
 
             try
@@ -256,10 +273,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ResetRequest = new ResetRequest(
 
-                                   NetworkingNodeId,
+                                   Destination,
 
                                    XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
-                                                           ResetTypesExtensions.Parse),
+                                                           OCPPv1_6.ResetType.Parse),
 
                                    RequestId:    RequestId,
                                    NetworkPath:  NetworkPath
@@ -281,52 +298,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reset request.
-        /// </summary>
-        /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ResetRequest">The parsed reset request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            ResetRequestJSON,
-                                       Request_Id         RequestId,
-                                       NetworkingNode_Id  NetworkingNodeId,
-                                       NetworkPath        NetworkPath,
-                                       out ResetRequest?  ResetRequest,
-                                       out String?        ErrorResponse)
-
-            => TryParse(ResetRequestJSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out ResetRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a reset request.
+        /// Try to parse the given JSON representation of a Reset request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ResetRequest">The parsed reset request.</param>
+        /// <param name="ResetRequest">The parsed Reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomResetRequestParser">An optional delegate to parse custom Reset requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
-                                       NetworkingNode_Id                           NetworkingNodeId,
+                                       SourceRouting                               Destination,
                                        NetworkPath                                 NetworkPath,
-                                       out ResetRequest?                           ResetRequest,
-                                       out String?                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser)
+                                       [NotNullWhen(true)]  out ResetRequest?      ResetRequest,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       DateTime?                                   RequestTimestamp           = null,
+                                       TimeSpan?                                   RequestTimeout             = null,
+                                       EventTracking_Id?                           EventTrackingId            = null,
+                                       CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
         {
 
             try
@@ -336,11 +332,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ResetType      [mandatory]
 
-                if (!JSON.MapMandatory("type",
-                                       "reset type",
-                                       ResetTypesExtensions.Parse,
-                                       out ResetTypes ResetType,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("type",
+                                         "reset type",
+                                         OCPPv1_6.ResetType.TryParse,
+                                         out ResetType ResetType,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -378,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ResetRequest = new ResetRequest(
 
-                                   NetworkingNodeId,
+                                   Destination,
                                    ResetType,
 
                                    null,
@@ -422,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => new (OCPPNS.OCPPv1_6_CP + "resetRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "type",  ResetType.AsText())
+                   new XElement(OCPPNS.OCPPv1_6_CP + "type",  ResetType.ToString())
 
                );
 
@@ -443,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("type",         ResetType. AsText()),
+                                 new JProperty("type",         ResetType. ToString()),
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -545,20 +541,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ResetType.GetHashCode() * 3 ^
-                       base.     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
