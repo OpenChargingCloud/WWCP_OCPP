@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a new remote start transaction request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="IdTag">The identification tag to start the charging transaction.</param>
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
@@ -339,14 +339,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId, NetworkPath)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a remote start transaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         public static RemoteStartTransactionRequest Parse(XElement           XML,
                                                           Request_Id         RequestId,
@@ -372,14 +372,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a remote start transaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomRemoteStartTransactionRequestParser">An optional delegate to parse custom remote start transaction requests.</param>
         public static RemoteStartTransactionRequest Parse(JObject                                                      JSON,
@@ -408,14 +408,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, NetworkPath, out RemoteStartTransactionRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out RemoteStartTransactionRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a remote start transaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out RemoteStartTransactionRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RemoteStartTransactionRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -472,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -497,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

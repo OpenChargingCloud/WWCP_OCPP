@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var SOAPHeader,
                          OnException))
             {
-                return SOAPHeader!;
+                return SOAPHeader;
             }
 
             throw new ArgumentException("The given SOAP header is invalid!",
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var SOAPHeader,
                          OnException))
             {
-                return SOAPHeader!;
+                return SOAPHeader;
             }
 
             throw new ArgumentException("The given SOAP header is invalid!",

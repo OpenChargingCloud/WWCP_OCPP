@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The data transfer request.
+    /// The DataTransfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>,
                                        IRequest
@@ -78,9 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new data transfer request.
+        /// Create a new DataTransfer request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
@@ -94,25 +96,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DataTransferRequest(NetworkingNode_Id             NetworkingNodeId,
-                                   Vendor_Id                     VendorId,
-                                   Message_Id?                   MessageId           = null,
-                                   JToken?                       Data                = null,
+        public DataTransferRequest(SourceRouting            Destination,
+                                   Vendor_Id                VendorId,
+                                   Message_Id?              MessageId             = null,
+                                   JToken?                  Data                  = null,
 
-                                   IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                   IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                   IEnumerable<Signature>?  Signatures          = null,
+                                   IEnumerable<KeyPair>?    SignKeys              = null,
+                                   IEnumerable<SignInfo>?   SignInfos             = null,
+                                   IEnumerable<Signature>?  Signatures            = null,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?              CustomData            = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   NetworkPath?                  NetworkPath         = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?              RequestId             = null,
+                                   DateTime?                RequestTimestamp      = null,
+                                   TimeSpan?                RequestTimeout        = null,
+                                   EventTracking_Id?        EventTrackingId       = null,
+                                   NetworkPath?             NetworkPath           = null,
+                                   SerializationFormats?    SerializationFormat   = null,
+                                   CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(DataTransferRequest)[..^7],
 
                    SignKeys,
@@ -126,6 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat,
                    CancellationToken)
 
         {
@@ -222,105 +226,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId, NetworkPath, OnException = null)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a data transfer request.
+        /// Parse the given XML representation of a DataTransfer request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationNodeId">The destination networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static DataTransferRequest Parse(XElement              XML,
                                                 XNamespace            XMLNamespace,
                                                 Request_Id            RequestId,
+                                                SourceRouting         Destination,
                                                 NetworkPath           NetworkPath,
                                                 NetworkingNode_Id     NetworkingNodeId,
-                                                OnExceptionDelegate?  OnException   = null)
+                                                DateTime?             RequestTimestamp   = null,
+                                                TimeSpan?             RequestTimeout     = null,
+                                                EventTracking_Id?     EventTrackingId    = null)
         {
 
             if (TryParse(XML,
                          XMLNamespace,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var dataTransferRequest,
-                         OnException) &&
-                dataTransferRequest is not null)
+                         out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId))
             {
                 return dataTransferRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a data transfer request is invalid: ", // + errorResponse,
+            throw new ArgumentException("The given XML representation of a DataTransfer request is invalid: ", // + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a data transfer request.
+        /// Parse the given JSON representation of a DataTransfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom data transfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom DataTransfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                NetworkingNode_Id                                  NetworkingNodeId,
+                                                SourceRouting                                      Destination,
                                                 NetworkPath                                        NetworkPath,
-                                                CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
+                                                DateTime?                                          RequestTimestamp                  = null,
+                                                TimeSpan?                                          RequestTimeout                    = null,
+                                                EventTracking_Id?                                  EventTrackingId                   = null,
+                                                CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null,
+                                                CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                                CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var dataTransferRequest,
                          out var errorResponse,
-                         CustomDataTransferRequestParser) &&
-                dataTransferRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomDataTransferRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return dataTransferRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a data transfer request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DataTransfer request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a data transfer request.
+        /// Try to parse the given XML representation of a DataTransfer request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="XMLNamespace">The XML namespace to use.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="DestinationNodeId">The destination networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                  XML,
-                                       XNamespace                XMLNamespace,
-                                       Request_Id                RequestId,
-                                       NetworkingNode_Id         NetworkingNodeId,
-                                       NetworkPath               NetworkPath,
-                                       out DataTransferRequest?  DataTransferRequest,
-                                       OnExceptionDelegate?      OnException   = null)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="DataTransferRequest">The parsed BootNotification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                                       XML,
+                                       XNamespace                                     XMLNamespace,
+                                       Request_Id                                     RequestId,
+                                       SourceRouting                                  Destination,
+                                       NetworkPath                                    NetworkPath,
+                                       [NotNullWhen(true)]  out DataTransferRequest?  DataTransferRequest,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
+                                       DateTime?                                      RequestTimestamp   = null,
+                                       TimeSpan?                                      RequestTimeout     = null,
+                                       EventTracking_Id?                              EventTrackingId    = null)
         {
 
             try
             {
 
                 DataTransferRequest = new DataTransferRequest(
-                                          NetworkingNodeId,
+                                          Destination,
                                           Vendor_Id. Parse(XML.ElementValueOrFail   (XMLNamespace + "vendorId")),
                                           Message_Id.Parse(XML.ElementValueOrDefault(XMLNamespace + "messageId")),
                                           XML.ElementValueOrDefault(XMLNamespace + "data"),
@@ -328,69 +347,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           NetworkPath:  NetworkPath
                                       );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                DataTransferRequest = null;
+                DataTransferRequest  = null;
+                ErrorResponse        = "The given XML representation of a DataTransfer request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a data transfer request.
+        /// Try to parse the given JSON representation of a DataTransfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                   JSON,
-                                       Request_Id                RequestId,
-                                       NetworkingNode_Id         NetworkingNodeId,
-                                       NetworkPath               NetworkPath,
-                                       out DataTransferRequest?  DataTransferRequest,
-                                       out String?               ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out DataTransferRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a data transfer request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom DataTransfer requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       NetworkingNode_Id                                  NetworkingNodeId,
+                                       SourceRouting                                      Destination,
                                        NetworkPath                                        NetworkPath,
-                                       out DataTransferRequest?                           DataTransferRequest,
-                                       out String?                                        ErrorResponse,
-                                       CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser)
+                                       [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
+                                       DateTime?                                          RequestTimestamp                  = null,
+                                       TimeSpan?                                          RequestTimeout                    = null,
+                                       EventTracking_Id?                                  EventTrackingId                   = null,
+                                       CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                       CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             try
@@ -462,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 DataTransferRequest = new DataTransferRequest(
 
-                                          NetworkingNodeId,
+                                          Destination,
                                           VendorId,
                                           MessageId,
                                           Data,
@@ -474,9 +469,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           CustomData,
 
                                           RequestId,
-                                          null,
-                                          null,
-                                          null,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
                                           NetworkPath
 
                                       );
@@ -491,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 DataTransferRequest  = null;
-                ErrorResponse        = "The given JSON representation of a data transfer request is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a DataTransfer request is invalid: " + e.Message;
                 return false;
             }
 
@@ -528,11 +523,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom data transfer requests.</param>
+        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?       CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
@@ -618,9 +613,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two data transfer requests for equality.
+        /// Compares two DataTransfer requests for equality.
         /// </summary>
-        /// <param name="Object">A data transfer request to compare with.</param>
+        /// <param name="Object">A DataTransfer request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DataTransferRequest dataTransferRequest &&
@@ -631,9 +626,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(DataTransferRequest)
 
         /// <summary>
-        /// Compares two data transfer requests for equality.
+        /// Compares two DataTransfer requests for equality.
         /// </summary>
-        /// <param name="DataTransferRequest">A data transfer request to compare with.</param>
+        /// <param name="DataTransferRequest">A DataTransfer request to compare with.</param>
         public override Boolean Equals(DataTransferRequest? DataTransferRequest)
 
             => DataTransferRequest is not null               &&

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new log status notification request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// 
         /// <param name="Status">The status of the log upload.</param>
         /// <param name="LogRquestId">The request id that was provided in the GetLog.req that started this log upload.</param>
@@ -168,14 +168,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomLogStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomLogStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a log status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomLogStatusNotificationRequestParser">An optional delegate to parse custom log status notification requests.</param>
         public static LogStatusNotificationRequest Parse(JObject                                                     JSON,
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

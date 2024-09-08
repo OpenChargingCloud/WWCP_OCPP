@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var meterValue,
                          OnException))
             {
-                return meterValue!;
+                return meterValue;
             }
 
             throw new ArgumentException("The given JSON representation of a MeterValue is invalid: ", // + errorResponse,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomMeterValueParser))
             {
-                return meterValue!;
+                return meterValue;
             }
 
             throw new ArgumentException("The given JSON representation of a MeterValue is invalid: " + errorResponse,

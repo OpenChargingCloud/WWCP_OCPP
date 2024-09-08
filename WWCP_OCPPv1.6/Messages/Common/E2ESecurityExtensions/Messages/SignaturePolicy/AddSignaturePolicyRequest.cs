@@ -65,7 +65,7 @@
 //        /// <summary>
 //        /// Create a new add signature policy request.
 //        /// </summary>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="SignaturePolicy">A signature policy.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -130,14 +130,14 @@
 
 //        #endregion
 
-//        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomAddSignaturePolicyRequestParser = null)
+//        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomAddSignaturePolicyRequestParser = null)
 
 //        /// <summary>
 //        /// Parse the given JSON representation of an AddSignaturePolicy request.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="CustomAddSignaturePolicyRequestParser">An optional delegate to parse custom AddSignaturePolicy requests.</param>
 //        public static AddSignaturePolicyRequest Parse(JObject                                                  JSON,
@@ -166,14 +166,14 @@
 
 //        #endregion
 
-//        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out AddSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+//        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out AddSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
 //        /// <summary>
 //        /// Try to parse the given JSON representation of a AddSignaturePolicy request.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="AddSignaturePolicyRequest">The parsed AddSignaturePolicy request.</param>
 //        /// <param name="ErrorResponse">An optional error response.</param>

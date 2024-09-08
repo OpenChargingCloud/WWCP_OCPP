@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -85,6 +87,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.Signature           = Signature;
             this.InstallTimestamp    = InstallTimestamp;
 
+            unchecked
+            {
+
+                hashCode = this.RemoteLocation.    GetHashCode() * 11 ^
+                           this.RetrieveTimestamp. GetHashCode() *  7 ^
+                           this.SigningCertificate.GetHashCode() *  5 ^
+                           this.Signature.         GetHashCode() *  3 ^
+                          (this.InstallTimestamp?. GetHashCode() ?? 0);
+
+            }
+
         }
 
         #endregion
@@ -112,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomFirmwareImageParser))
             {
-                return firmwareImage!;
+                return firmwareImage;
             }
 
             throw new ArgumentException("The given JSON representation of firmware image is invalid: " + errorResponse,
@@ -132,9 +145,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="FirmwareImage">The parsed firmware image.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out FirmwareImage?  FirmwareImage,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out FirmwareImage?  FirmwareImage,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
 
             => TryParse(JSON,
                         out FirmwareImage,
@@ -150,8 +163,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomFirmwareImageParser">An optional delegate to parse custom FirmwareImages.</param>
         public static Boolean TryParse(JObject                                      JSON,
-                                       out FirmwareImage?                           FirmwareImage,
-                                       out String?                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out FirmwareImage?      FirmwareImage,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
                                        CustomJObjectParserDelegate<FirmwareImage>?  CustomFirmwareImageParser)
         {
 
@@ -223,11 +236,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                FirmwareImage = new FirmwareImage(RemoteLocation,
-                                                  RetrieveTimestamp,
-                                                  SigningCertificate,
-                                                  Signature,
-                                                  InstallTimestamp);
+                FirmwareImage = new FirmwareImage(
+                                    RemoteLocation,
+                                    RetrieveTimestamp,
+                                    SigningCertificate,
+                                    Signature,
+                                    InstallTimestamp
+                                );
 
                 if (CustomFirmwareImageParser is not null)
                     FirmwareImage = CustomFirmwareImageParser(JSON,
@@ -258,13 +273,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("location",                RemoteLocation.   ToString()),
-                           new JProperty("retrieveTimestamp",       RetrieveTimestamp.ToIso8601()),
-                           new JProperty("signingCertificate",      SigningCertificate),
-                           new JProperty("signature",               Signature),
+                                 new JProperty("location",             RemoteLocation.        ToString()),
+                                 new JProperty("retrieveTimestamp",    RetrieveTimestamp.     ToIso8601()),
+                                 new JProperty("signingCertificate",   SigningCertificate),
+                                 new JProperty("signature",            Signature),
 
                            InstallTimestamp.HasValue
-                               ? new JProperty("installTimestamp",  InstallTimestamp.Value.ToIso8601())
+                               ? new JProperty("installTimestamp",     InstallTimestamp.Value.ToIso8601())
                                : null
 
                        );
@@ -362,24 +377,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return RemoteLocation.    GetHashCode() * 11 ^
-                       RetrieveTimestamp. GetHashCode() *  7 ^
-                       SigningCertificate.GetHashCode() *  5 ^
-                       Signature.         GetHashCode() *  3 ^
-
-                      (InstallTimestamp?. GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -390,13 +394,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RemoteLocation,
-                             ", ",
-                             RetrieveTimestamp.ToIso8601(),
+            => String.Concat(
 
-                             InstallTimestamp.HasValue
-                                 ? ", " + InstallTimestamp.Value.ToIso8601()
-                                 : "");
+                   $"{RemoteLocation}, {RetrieveTimestamp.ToIso8601()}",
+
+                   InstallTimestamp.HasValue
+                       ? $", {InstallTimestamp.Value.ToIso8601()}"
+                       : ""
+
+               );
 
         #endregion
 

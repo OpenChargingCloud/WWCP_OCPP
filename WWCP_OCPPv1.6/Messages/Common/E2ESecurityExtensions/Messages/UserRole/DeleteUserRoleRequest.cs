@@ -63,7 +63,7 @@
 //        /// <summary>
 //        /// Create a new boot notification request.
 //        /// </summary>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
 //        /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
 //        /// 
@@ -242,14 +242,14 @@
 
 //        #endregion
 
-//        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomDeleteUserRoleRequestParser = null)
+//        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDeleteUserRoleRequestParser = null)
 
 //        /// <summary>
 //        /// Parse the given JSON representation of a boot notification request.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="CustomDeleteUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
 //        public static DeleteUserRoleRequest Parse(JObject                                              JSON,
@@ -278,14 +278,14 @@
 
 //        #endregion
 
-//        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+//        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
 //        /// <summary>
 //        /// Try to parse the given JSON representation of a boot notification request.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="DeleteUserRoleRequest">The parsed boot notification request.</param>
 //        /// <param name="ErrorResponse">An optional error response.</param>

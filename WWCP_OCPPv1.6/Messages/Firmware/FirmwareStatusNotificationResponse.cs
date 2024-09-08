@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                    CustomData,
 
-                   SerializationFormat ?? SerializationFormats.JSON,
+                   SerializationFormat,
                    CancellationToken)
 
         { }
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given JSON representation of a FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// 
         /// <param name="Destination">The destination identification of the message within the overlay network.</param>
@@ -377,9 +377,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The FirmwareStatusNotification failed because of a request error.
+        /// The FirmwareStatusNotification request failed because of a request error.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Request">The FirmwareStatusNotification request request.</param>
         public static FirmwareStatusNotificationResponse RequestError(FirmwareStatusNotificationRequest  Request,
                                                                       EventTracking_Id                   EventTrackingId,
                                                                       ResultCode                         ErrorCode,
@@ -419,9 +419,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// The FirmwareStatusNotification failed.
+        /// The FirmwareStatusNotification request failed.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Request">The FirmwareStatusNotification request request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static FirmwareStatusNotificationResponse FormationViolation(FirmwareStatusNotificationRequest  Request,
                                                                             String                             ErrorDescription)
@@ -433,9 +433,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// The FirmwareStatusNotification failed.
+        /// The FirmwareStatusNotification request failed.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Request">The FirmwareStatusNotification request request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static FirmwareStatusNotificationResponse SignatureError(FirmwareStatusNotificationRequest  Request,
                                                                         String                             ErrorDescription)
@@ -447,9 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// The FirmwareStatusNotification failed.
+        /// The FirmwareStatusNotification request failed.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Request">The FirmwareStatusNotification request request.</param>
         /// <param name="Description">An optional error description.</param>
         public static FirmwareStatusNotificationResponse Failed(FirmwareStatusNotificationRequest  Request,
                                                                 String?                            Description   = null)
@@ -459,9 +459,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// The FirmwareStatusNotification failed because of an exception.
+        /// The FirmwareStatusNotification request failed because of an exception.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request.</param>
+        /// <param name="Request">The FirmwareStatusNotification request request.</param>
         /// <param name="Exception">The exception.</param>
         public static FirmwareStatusNotificationResponse ExceptionOccured(FirmwareStatusNotificationRequest  Request,
                                                                           Exception                          Exception)

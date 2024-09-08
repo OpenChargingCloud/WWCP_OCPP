@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat ?? SerializationFormats.JSON,
+                   SerializationFormat,
                    CancellationToken)
 
         {
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId, NetworkPath)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a reset request.
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomResetRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomResetRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a Reset request.
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, NetworkPath, out ResetRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out ResetRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a reset request.
@@ -384,9 +384,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                    CustomData,
 
                                    RequestId,
-                                   null,
-                                   null,
-                                   null,
+                                   RequestTimestamp,
+                                   RequestTimeout,
+                                   EventTrackingId,
                                    NetworkPath
 
                                );

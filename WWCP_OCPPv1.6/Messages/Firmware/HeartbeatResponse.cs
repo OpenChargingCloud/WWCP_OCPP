@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                    CustomData,
 
-                   SerializationFormat ?? SerializationFormats.JSON,
+                   SerializationFormat,
                    CancellationToken)
 
         {

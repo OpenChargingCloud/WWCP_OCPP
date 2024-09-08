@@ -607,9 +607,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                               CustomData,
 
                                               RequestId,
-                                              null,
-                                              null,
-                                              null,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
                                               NetworkPath
 
                                           );

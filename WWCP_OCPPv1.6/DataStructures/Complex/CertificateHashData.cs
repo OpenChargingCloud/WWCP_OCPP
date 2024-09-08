@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateHashDataParser))
             {
-                return certificateHashData!;
+                return certificateHashData;
             }
 
             throw new ArgumentException("The given JSON representation of certificate hash data is invalid: " + errorResponse,

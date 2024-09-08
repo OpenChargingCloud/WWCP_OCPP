@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.RequestTimeout       = RequestTimeout      ?? DefaultRequestTimeout;
             this.EventTrackingId      = EventTrackingId     ?? EventTracking_Id.New;
             this.NetworkPath          = NetworkPath         ?? NetworkPath.Empty;
-            this.SerializationFormat  = SerializationFormat ?? SerializationFormats.Default;
+            this.SerializationFormat  = SerializationFormat ?? SerializationFormats.JSON;
             this.CancellationToken    = CancellationToken;
 
             unchecked

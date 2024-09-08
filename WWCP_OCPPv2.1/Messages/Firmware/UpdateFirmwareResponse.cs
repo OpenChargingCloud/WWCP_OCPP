@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom UpdateFirmware responses.</param>
         public static UpdateFirmwareResponse Parse(UpdateFirmwareRequest                                 Request,
                                                    JObject                                               JSON,
-                                                   SourceRouting                                     Destination,
+                                                   SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
                                                    DateTime?                                             ResponseTimestamp                    = null,
                                                    CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null,
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom UpdateFirmware responses.</param>
         public static Boolean TryParse(UpdateFirmwareRequest                                 Request,
                                        JObject                                               JSON,
-                                       SourceRouting                                     Destination,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareResponse?      UpdateFirmwareResponse,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Request,
                    UpdateFirmwareStatus.Rejected,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -489,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UpdateFirmwareStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UpdateFirmwareStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -519,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UpdateFirmwareStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     UpdateFirmwareStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

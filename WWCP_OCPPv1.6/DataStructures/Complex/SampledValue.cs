@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var sampledValue,
                          OnException))
             {
-                return sampledValue!;
+                return sampledValue;
             }
 
             throw new ArgumentException("The given XML representation of a SampledValue is invalid: ", // + errorResponse,
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomSampledValueParser))
             {
-                return sampledValue!;
+                return sampledValue;
             }
 
             throw new ArgumentException("The given JSON representation of a SampledValue is invalid: " + errorResponse,

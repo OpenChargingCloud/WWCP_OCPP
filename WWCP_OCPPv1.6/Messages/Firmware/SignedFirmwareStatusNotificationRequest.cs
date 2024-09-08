@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The signed firmware status notification request.
+    /// The SignedFirmwareStatusNotification request.
     /// </summary>
     [SecurityExtensions]
     public class SignedFirmwareStatusNotificationRequest : ARequest<SignedFirmwareStatusNotificationRequest>,
@@ -64,9 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new signed firmware status notification request.
+        /// Create a new SignedFirmwareStatusNotification request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Status">The status of the firmware installation.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -78,23 +81,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SignedFirmwareStatusNotificationRequest(NetworkingNode_Id              NetworkingNodeId,
-                                                       FirmwareStatus                 Status,
+        public SignedFirmwareStatusNotificationRequest(SourceRouting            Destination,
+                                                       FirmwareStatus           Status,
 
-                                                       IEnumerable<WWCP.KeyPair>?     SignKeys            = null,
-                                                       IEnumerable<WWCP.SignInfo>?    SignInfos           = null,
-                                                       IEnumerable<Signature>?   Signatures          = null,
+                                                       IEnumerable<KeyPair>?    SignKeys              = null,
+                                                       IEnumerable<SignInfo>?   SignInfos             = null,
+                                                       IEnumerable<Signature>?  Signatures            = null,
 
-                                                       CustomData?                    CustomData          = null,
+                                                       CustomData?              CustomData            = null,
 
-                                                       Request_Id?                    RequestId           = null,
-                                                       DateTime?                      RequestTimestamp    = null,
-                                                       TimeSpan?                      RequestTimeout      = null,
-                                                       EventTracking_Id?              EventTrackingId     = null,
-                                                       NetworkPath?                   NetworkPath         = null,
-                                                       CancellationToken              CancellationToken   = default)
+                                                       Request_Id?              RequestId             = null,
+                                                       DateTime?                RequestTimestamp      = null,
+                                                       TimeSpan?                RequestTimeout        = null,
+                                                       EventTracking_Id?        EventTrackingId       = null,
+                                                       NetworkPath?             NetworkPath           = null,
+                                                       SerializationFormats?    SerializationFormat   = null,
+                                                       CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(SignedFirmwareStatusNotificationRequest)[..^7],
 
                    SignKeys,
@@ -108,11 +112,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat,
                    CancellationToken)
 
         {
 
             this.Status = Status;
+
+            unchecked
+            {
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.       GetHashCode();
+            }
 
         }
 
@@ -163,88 +174,72 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSignedFirmwareStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSignedFirmwareStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a signed firmware status notification request.
+        /// Parse the given JSON representation of a SignedFirmwareStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSignedFirmwareStatusNotificationRequestParser">An optional delegate to parse custom signed firmware status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSignedFirmwareStatusNotificationRequestParser">An optional delegate to parse custom SignedFirmwareStatusNotification requests.</param>
         public static SignedFirmwareStatusNotificationRequest Parse(JObject                                                                JSON,
                                                                     Request_Id                                                             RequestId,
-                                                                    NetworkingNode_Id                                                      NetworkingNodeId,
+                                                                    SourceRouting                                                          Destination,
                                                                     NetworkPath                                                            NetworkPath,
+                                                                    DateTime?                                                              RequestTimestamp                                      = null,
+                                                                    TimeSpan?                                                              RequestTimeout                                        = null,
+                                                                    EventTracking_Id?                                                      EventTrackingId                                       = null,
                                                                     CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var signedFirmwareStatusNotificationRequest,
                          out var errorResponse,
-                         CustomSignedFirmwareStatusNotificationRequestParser) &&
-                signedFirmwareStatusNotificationRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomSignedFirmwareStatusNotificationRequestParser))
             {
                 return signedFirmwareStatusNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a signed firmware status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SignedFirmwareStatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SignedFirmwareStatusNotificationRequest, out ErrorResponse)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SignedFirmwareStatusNotificationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a signed firmware status notification request.
+        /// Try to parse the given JSON representation of a SignedFirmwareStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SignedFirmwareStatusNotificationRequest">The parsed signed firmware status notification request.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest">The parsed SignedFirmwareStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                       JSON,
-                                       Request_Id                                    RequestId,
-                                       NetworkingNode_Id                             NetworkingNodeId,
-                                       NetworkPath                                   NetworkPath,
-                                       out SignedFirmwareStatusNotificationRequest?  SignedFirmwareStatusNotificationRequest,
-                                       out String?                                   ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SignedFirmwareStatusNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a signed firmware status notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SignedFirmwareStatusNotificationRequest">The parsed signed firmware status notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignedFirmwareStatusNotificationRequestParser">An optional delegate to parse custom signed firmware status notification requests.</param>
+        /// <param name="CustomSignedFirmwareStatusNotificationRequestParser">An optional delegate to parse custom SignedFirmwareStatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                                JSON,
                                        Request_Id                                                             RequestId,
-                                       NetworkingNode_Id                                                      NetworkingNodeId,
+                                       SourceRouting                                                          Destination,
                                        NetworkPath                                                            NetworkPath,
-                                       out SignedFirmwareStatusNotificationRequest?                           SignedFirmwareStatusNotificationRequest,
-                                       out String?                                                            ErrorResponse,
-                                       CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser)
+                                       [NotNullWhen(true)]  out SignedFirmwareStatusNotificationRequest?      SignedFirmwareStatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                                       ErrorResponse,
+                                       DateTime?                                                              RequestTimestamp                                      = null,
+                                       TimeSpan?                                                              RequestTimeout                                        = null,
+                                       EventTracking_Id?                                                      EventTrackingId                                       = null,
+                                       CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser   = null)
         {
 
             try
@@ -296,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 SignedFirmwareStatusNotificationRequest = new SignedFirmwareStatusNotificationRequest(
 
-                                                              NetworkingNodeId,
+                                                              Destination,
                                                               Status,
 
                                                               null,
@@ -306,9 +301,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                               CustomData,
 
                                                               RequestId,
-                                                              null,
-                                                              null,
-                                                              null,
+                                                              RequestTimestamp,
+                                                              RequestTimeout,
+                                                              EventTrackingId,
                                                               NetworkPath
 
                                                           );
@@ -323,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 SignedFirmwareStatusNotificationRequest  = null;
-                ErrorResponse                            = "The given JSON representation of a signed firmware status notification request is invalid: " + e.Message;
+                ErrorResponse                            = "The given JSON representation of a SignedFirmwareStatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -336,11 +331,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSignedFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom signed firmware status notification requests.</param>
+        /// <param name="CustomSignedFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom SignedFirmwareStatusNotification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                           CustomSignatureSerializer                                 = null,
+                              CustomJObjectSerializerDelegate<Signature>?                                CustomSignatureSerializer                                 = null,
                               CustomJObjectSerializerDelegate<CustomData>?                               CustomCustomDataSerializer                                = null)
         {
 
@@ -373,10 +368,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (SignedFirmwareStatusNotificationRequest1, SignedFirmwareStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two signed firmware status notification requests for equality.
+        /// Compares two SignedFirmwareStatusNotification requests for equality.
         /// </summary>
-        /// <param name="SignedFirmwareStatusNotificationRequest1">A signed firmware status notification request.</param>
-        /// <param name="SignedFirmwareStatusNotificationRequest2">Another signed firmware status notification request.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest1">A SignedFirmwareStatusNotification request.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest2">Another SignedFirmwareStatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SignedFirmwareStatusNotificationRequest? SignedFirmwareStatusNotificationRequest1,
                                            SignedFirmwareStatusNotificationRequest? SignedFirmwareStatusNotificationRequest2)
@@ -399,10 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (SignedFirmwareStatusNotificationRequest1, SignedFirmwareStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two signed firmware status notification requests for inequality.
+        /// Compares two SignedFirmwareStatusNotification requests for inequality.
         /// </summary>
-        /// <param name="SignedFirmwareStatusNotificationRequest1">A signed firmware status notification request.</param>
-        /// <param name="SignedFirmwareStatusNotificationRequest2">Another signed firmware status notification request.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest1">A SignedFirmwareStatusNotification request.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest2">Another SignedFirmwareStatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SignedFirmwareStatusNotificationRequest? SignedFirmwareStatusNotificationRequest1,
                                            SignedFirmwareStatusNotificationRequest? SignedFirmwareStatusNotificationRequest2)
@@ -418,9 +413,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two signed firmware status notification requests for equality.
+        /// Compares two SignedFirmwareStatusNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A signed firmware status notification request to compare with.</param>
+        /// <param name="Object">A SignedFirmwareStatusNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SignedFirmwareStatusNotificationRequest signedFirmwareStatusNotificationRequest &&
@@ -432,9 +427,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(SignedFirmwareStatusNotificationRequest)
 
         /// <summary>
-        /// Compares two signed firmware status notification requests for equality.
+        /// Compares two SignedFirmwareStatusNotification requests for equality.
         /// </summary>
-        /// <param name="SignedFirmwareStatusNotificationRequest">A signed firmware status notification request to compare with.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest">A SignedFirmwareStatusNotification request to compare with.</param>
         public override Boolean Equals(SignedFirmwareStatusNotificationRequest? SignedFirmwareStatusNotificationRequest)
 
             => SignedFirmwareStatusNotificationRequest is not null &&
@@ -449,20 +444,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.GetHashCode() * 3 ^
-                       base.  GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

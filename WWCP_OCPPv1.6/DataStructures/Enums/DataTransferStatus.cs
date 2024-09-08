@@ -148,7 +148,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Message could not be interpreted due to unknown VendorId string.
         /// </summary>
-        UnknownVendorId
+        UnknownVendorId,
+
+
+        Error,
+        SignatureError
+
 
     }
 

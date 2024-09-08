@@ -92,7 +92,7 @@
 //        /// <summary>
 //        /// Create a new SecureDataTransfer request.
 //        /// </summary>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="Parameter">Encryption parameters.</param>
 //        /// <param name="KeyId">The unique identification of the encryption key.</param>
 //        /// <param name="Nonce">The first half of the cryptographic nonce.</param>
@@ -291,14 +291,14 @@
 
 //        #endregion
 
-//        #region (static) Parse   (Secure, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
+//        #region (static) Parse   (Secure, RequestId, Destination, NetworkPath, CustomDataTransferRequestParser = null)
 
 //        /// <summary>
 //        /// Parse the given JSON representation of a SecureDataTransfer request.
 //        /// </summary>
 //        /// <param name="Secure">The binary to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
 //        public static SecureDataTransferRequest Parse(Byte[]                                                  Secure,
@@ -332,14 +332,14 @@
 
 //        #endregion
 
-//        #region (static) TryParse(Secure, RequestId, NetworkingNodeId, NetworkPath, out SecureDataTransferRequest, out ErrorResponse, CustomSecureDataTransferRequestParser = null)
+//        #region (static) TryParse(Secure, RequestId, Destination, NetworkPath, out SecureDataTransferRequest, out ErrorResponse, CustomSecureDataTransferRequestParser = null)
 
 //        /// <summary>
 //        /// Try to parse the given binary representation of a SecureDataTransfer request.
 //        /// </summary>
 //        /// <param name="Secure">The binary to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="SecureDataTransferRequest">The parsed SecureDataTransfer request.</param>
 //        /// <param name="ErrorResponse">An optional error response.</param>

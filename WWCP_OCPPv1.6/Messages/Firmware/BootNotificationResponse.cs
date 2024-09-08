@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                    CustomData,
 
-                   SerializationFormat ?? SerializationFormats.JSON,
+                   SerializationFormat,
                    CancellationToken)
 
         {
@@ -251,7 +251,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
                                                      CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
-
 
             if (TryParse(Request,
                          JSON,

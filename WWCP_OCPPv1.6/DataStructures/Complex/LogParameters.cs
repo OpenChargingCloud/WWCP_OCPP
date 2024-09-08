@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomLogParametersParser))
             {
-                return logParameters!;
+                return logParameters;
             }
 
             throw new ArgumentException("The given JSON representation of log parameters is invalid: " + errorResponse,

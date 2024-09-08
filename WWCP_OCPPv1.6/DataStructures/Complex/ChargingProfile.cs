@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var chargingProfile,
                          OnException))
             {
-                return chargingProfile!;
+                return chargingProfile;
             }
 
             throw new ArgumentException("The given XML representation of a charging profile is invalid: ",// + errorResponse,
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomChargingProfileParser))
             {
-                return chargingProfile!;
+                return chargingProfile;
             }
 
             throw new ArgumentException("The given JSON representation of a charging profile is invalid: " + errorResponse,

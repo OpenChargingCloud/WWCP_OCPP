@@ -157,10 +157,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 hashCode = this.Firmware.               GetHashCode()       * 11 ^
                            this.UpdateFirmwareRequestId.GetHashCode()       *  7 ^
-
                           (this.Retries?.               GetHashCode() ?? 0) *  5 ^
                           (this.RetryInterval?.         GetHashCode() ?? 0) *  3 ^
-
                            base.                        GetHashCode();
 
             }
@@ -277,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static UpdateFirmwareRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  SourceRouting                                    Destination,
+                                                  SourceRouting                                        Destination,
                                                   NetworkPath                                          NetworkPath,
                                                   DateTime?                                            RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
@@ -323,14 +321,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       SourceRouting                                    Destination,
+                                       SourceRouting                                        Destination,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareRequest?      UpdateFirmwareRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
                                        DateTime?                                            RequestTimestamp                    = null,
                                        TimeSpan?                                            RequestTimeout                      = null,
                                        EventTracking_Id?                                    EventTrackingId                     = null,
-                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null)
+                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try

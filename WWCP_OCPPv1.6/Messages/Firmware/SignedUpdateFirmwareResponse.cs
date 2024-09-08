@@ -17,11 +17,16 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -63,8 +68,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region SignedUpdateFirmwareResponse(Request, Status)
-
         /// <summary>
         /// Create a new signed update firmware response.
         /// </summary>
@@ -76,54 +79,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignedUpdateFirmwareResponse(CS.SignedUpdateFirmwareRequest  Request,
-                                            UpdateFirmwareStatus            Status,
+        public SignedUpdateFirmwareResponse(SignedUpdateFirmwareRequest  Request,
+                                            UpdateFirmwareStatus         Status,
 
-                                            DateTime?                       ResponseTimestamp   = null,
+                                            Result?                      Result                = null,
+                                            DateTime?                    ResponseTimestamp     = null,
 
-                                            IEnumerable<WWCP.KeyPair>?      SignKeys            = null,
-                                            IEnumerable<WWCP.SignInfo>?     SignInfos           = null,
-                                            IEnumerable<Signature>?    Signatures          = null,
+                                            SourceRouting?               Destination           = null,
+                                            NetworkPath?                 NetworkPath           = null,
 
-                                            CustomData?                     CustomData          = null)
+                                            IEnumerable<KeyPair>?        SignKeys              = null,
+                                            IEnumerable<SignInfo>?       SignInfos             = null,
+                                            IEnumerable<Signature>?      Signatures            = null,
+
+                                            CustomData?                  CustomData            = null,
+
+                                            SerializationFormats?        SerializationFormat   = null,
+                                            CancellationToken            CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
         }
-
-        #endregion
-
-        #region SignedUpdateFirmwareResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new signed update firmware response.
-        /// </summary>
-        /// <param name="Request">The signed update firmware request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public SignedUpdateFirmwareResponse(CS.SignedUpdateFirmwareRequest  Request,
-                                            Result                          Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -168,17 +162,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The signed update firmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSignedUpdateFirmwareResponseParser">An optional delegate to parse custom signed update firmware responses.</param>
-        public static SignedUpdateFirmwareResponse Parse(CS.SignedUpdateFirmwareRequest                              Request,
+        public static SignedUpdateFirmwareResponse Parse(SignedUpdateFirmwareRequest                                 Request,
                                                          JObject                                                     JSON,
-                                                         CustomJObjectParserDelegate<SignedUpdateFirmwareResponse>?  CustomSignedUpdateFirmwareResponseParser   = null)
+                                                         SourceRouting                                               Destination,
+                                                         NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   ResponseTimestamp                          = null,
+                                                         CustomJObjectParserDelegate<SignedUpdateFirmwareResponse>?  CustomSignedUpdateFirmwareResponseParser   = null,
+                                                         CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                                         CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var signedUpdateFirmwareResponse,
                          out var errorResponse,
-                         CustomSignedUpdateFirmwareResponseParser) &&
-                signedUpdateFirmwareResponse is not null)
+                         ResponseTimestamp,
+                         CustomSignedUpdateFirmwareResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return signedUpdateFirmwareResponse;
             }
@@ -200,11 +203,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SignedUpdateFirmwareResponse">The parsed signed update firmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSignedUpdateFirmwareResponseParser">An optional delegate to parse custom signed update firmware responses.</param>
-        public static Boolean TryParse(CS.SignedUpdateFirmwareRequest                              Request,
+        public static Boolean TryParse(SignedUpdateFirmwareRequest                                 Request,
                                        JObject                                                     JSON,
-                                       out SignedUpdateFirmwareResponse?                           SignedUpdateFirmwareResponse,
-                                       out String?                                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<SignedUpdateFirmwareResponse>?  CustomSignedUpdateFirmwareResponseParser   = null)
+                                       SourceRouting                                               Destination,
+                                       NetworkPath                                                 NetworkPath,
+                                       [NotNullWhen(true)]  out SignedUpdateFirmwareResponse?      SignedUpdateFirmwareResponse,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
+                                       DateTime?                                                   ResponseTimestamp                          = null,
+                                       CustomJObjectParserDelegate<SignedUpdateFirmwareResponse>?  CustomSignedUpdateFirmwareResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                       CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             try
@@ -258,7 +266,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                    Request,
                                                    Status,
+
                                                    null,
+                                                   ResponseTimestamp,
+
+                                                   Destination,
+                                                   NetworkPath,
 
                                                    null,
                                                    null,
@@ -326,13 +339,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The signed update firmware command failed.
+        /// The SignedUpdateFirmware failed because of a request error.
         /// </summary>
-        /// <param name="Request">The signed update firmware request leading to this response.</param>
-        public static SignedUpdateFirmwareResponse Failed(CS.SignedUpdateFirmwareRequest Request)
+        /// <param name="Request">The SignedUpdateFirmware request.</param>
+        public static SignedUpdateFirmwareResponse RequestError(SignedUpdateFirmwareRequest  Request,
+                                                                EventTracking_Id             EventTrackingId,
+                                                                ResultCode                   ErrorCode,
+                                                                String?                      ErrorDescription    = null,
+                                                                JObject?                     ErrorDetails        = null,
+                                                                DateTime?                    ResponseTimestamp   = null,
+
+                                                                SourceRouting?               Destination         = null,
+                                                                NetworkPath?                 NetworkPath         = null,
+
+                                                                IEnumerable<KeyPair>?        SignKeys            = null,
+                                                                IEnumerable<SignInfo>?       SignInfos           = null,
+                                                                IEnumerable<Signature>?      Signatures          = null,
+
+                                                                CustomData?                  CustomData          = null)
+
+            => new (
+
+                   Request,
+                   UpdateFirmwareStatus.Rejected,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The SignedUpdateFirmware failed.
+        /// </summary>
+        /// <param name="Request">The SignedUpdateFirmware request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SignedUpdateFirmwareResponse FormationViolation(SignedUpdateFirmwareRequest  Request,
+                                                                      String                       ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    UpdateFirmwareStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The SignedUpdateFirmware failed.
+        /// </summary>
+        /// <param name="Request">The SignedUpdateFirmware request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static SignedUpdateFirmwareResponse SignatureError(SignedUpdateFirmwareRequest  Request,
+                                                                  String                       ErrorDescription)
+
+            => new (Request,
+                    UpdateFirmwareStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The SignedUpdateFirmware failed.
+        /// </summary>
+        /// <param name="Request">The SignedUpdateFirmware request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static SignedUpdateFirmwareResponse Failed(SignedUpdateFirmwareRequest  Request,
+                                                          String?                      Description   = null)
+
+            => new (Request,
+                    UpdateFirmwareStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The SignedUpdateFirmware failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SignedUpdateFirmware request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static SignedUpdateFirmwareResponse ExceptionOccured(SignedUpdateFirmwareRequest  Request,
+                                                                    Exception                    Exception)
+
+            => new (Request,
+                    UpdateFirmwareStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

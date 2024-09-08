@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!;
+                return certificate;
             }
 
             throw new ArgumentException("Invalid text representation of a PEM encoded X.509 certificate: '" + Text.SubstringMax(40) + "'!",
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!;
+                return certificate;
             }
 
             throw new ArgumentException("Invalid text representation of a PEM encoded X.509 certificate: '" + Lines.AggregateWith("").SubstringMax(40) + "'!",
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!;
+                return certificate;
             }
 
             return null;
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!;
+                return certificate;
             }
 
             return null;

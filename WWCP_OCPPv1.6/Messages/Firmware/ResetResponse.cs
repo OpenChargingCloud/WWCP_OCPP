@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                    CustomData,
 
-                   SerializationFormat ?? SerializationFormats.JSON,
+                   SerializationFormat,
                    CancellationToken)
 
         {

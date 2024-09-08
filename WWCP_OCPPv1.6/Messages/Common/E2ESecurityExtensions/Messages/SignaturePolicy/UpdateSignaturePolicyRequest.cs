@@ -63,7 +63,7 @@
 //        /// <summary>
 //        /// Create a new boot notification request.
 //        /// </summary>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
 //        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -238,14 +238,14 @@
 
 //        #endregion
 
-//        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomUpdateSignaturePolicyRequestParser = null)
+//        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUpdateSignaturePolicyRequestParser = null)
 
 //        /// <summary>
 //        /// Parse the given JSON representation of a boot notification request.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="CustomUpdateSignaturePolicyRequestParser">An optional delegate to parse custom boot notification requests.</param>
 //        public static UpdateSignaturePolicyRequest Parse(JObject                                                     JSON,
@@ -274,14 +274,14 @@
 
 //        #endregion
 
-//        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+//        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
 //        /// <summary>
 //        /// Try to parse the given JSON representation of a boot notification request.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="RequestId">The request identification.</param>
-//        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+//        /// <param name="Destination">The destination networking node identification or source routing path.</param>
 //        /// <param name="NetworkPath">The network path of the request.</param>
 //        /// <param name="UpdateSignaturePolicyRequest">The parsed boot notification request.</param>
 //        /// <param name="ErrorResponse">An optional error response.</param>

@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var chargingSchedule,
                          OnException))
             {
-                return chargingSchedule!;
+                return chargingSchedule;
             }
 
             throw new ArgumentException("The given XML representation of an authorize request is invalid: ", // + errorResponse,
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomChargingScheduleParser))
             {
-                return chargingSchedule!;
+                return chargingSchedule;
             }
 
             throw new ArgumentException("The given JSON representation of a charging schedule is invalid: " + errorResponse,

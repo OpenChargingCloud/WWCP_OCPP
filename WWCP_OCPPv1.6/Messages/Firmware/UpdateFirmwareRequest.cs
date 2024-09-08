@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -26,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -33,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The update firmware request.
+    /// The UpdateFirmware request.
     /// </summary>
     public class UpdateFirmwareRequest : ARequest<UpdateFirmwareRequest>,
                                          IRequest
@@ -53,18 +55,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext Context
+        public JSONLDContext  Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The URL where to download the firmware.
         /// </summary>
-        public URL FirmwareURL { get; }
+        public URL            FirmwareURL          { get; }
 
         /// <summary>
         /// The timestamp when the charge point shall retrieve the firmware.
         /// </summary>
-        public DateTime RetrieveTimestamp { get; }
+        public DateTime       RetrieveTimestamp    { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -72,23 +74,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// present, it is left to the charge point to decide how many times
         /// it wants to retry.
         /// </summary>
-        public Byte? Retries { get; }
+        public Byte?          Retries              { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
         /// is not present, it is left to charge point to decide how long to
         /// wait between attempts.
         /// </summary>
-        public TimeSpan? RetryInterval { get; }
+        public TimeSpan?      RetryInterval        { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new update firmware request.
+        /// Create a new UpdateFirmware request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="FirmwareURL">The URL where to download the firmware.</param>
         /// <param name="RetrieveTimestamp">The timestamp when the charge point shall retrieve the firmware.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -103,26 +105,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateFirmwareRequest(NetworkingNode_Id NetworkingNodeId,
-                                     URL FirmwareURL,
-                                     DateTime RetrieveTimestamp,
-                                     Byte? Retries = null,
-                                     TimeSpan? RetryInterval = null,
+        public UpdateFirmwareRequest(SourceRouting            Destination,
+                                     URL                      FirmwareURL,
+                                     DateTime                 RetrieveTimestamp,
+                                     Byte?                    Retries               = null,
+                                     TimeSpan?                RetryInterval         = null,
 
-                                     IEnumerable<KeyPair>? SignKeys = null,
-                                     IEnumerable<SignInfo>? SignInfos = null,
-                                     IEnumerable<Signature>? Signatures = null,
+                                     IEnumerable<KeyPair>?    SignKeys              = null,
+                                     IEnumerable<SignInfo>?   SignInfos             = null,
+                                     IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData? CustomData = null,
+                                     CustomData?              CustomData            = null,
 
-                                     Request_Id? RequestId = null,
-                                     DateTime? RequestTimestamp = null,
-                                     TimeSpan? RequestTimeout = null,
-                                     EventTracking_Id? EventTrackingId = null,
-                                     NetworkPath? NetworkPath = null,
-                                     CancellationToken CancellationToken = default)
+                                     Request_Id?              RequestId             = null,
+                                     DateTime?                RequestTimestamp      = null,
+                                     TimeSpan?                RequestTimeout        = null,
+                                     EventTracking_Id?        EventTrackingId       = null,
+                                     NetworkPath?             NetworkPath           = null,
+                                     SerializationFormats?    SerializationFormat   = null,
+                                     CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(UpdateFirmwareRequest)[..^7],
 
                    SignKeys,
@@ -136,14 +139,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat,
                    CancellationToken)
 
         {
 
-            this.FirmwareURL = FirmwareURL;
-            this.RetrieveTimestamp = RetrieveTimestamp;
-            this.Retries = Retries;
-            this.RetryInterval = RetryInterval;
+            this.FirmwareURL        = FirmwareURL;
+            this.RetrieveTimestamp  = RetrieveTimestamp;
+            this.Retries            = Retries;
+            this.RetryInterval      = RetryInterval;
+
+            unchecked
+            {
+
+                hashCode = this.FirmwareURL.      GetHashCode()       * 11 ^
+                           this.RetrieveTimestamp.GetHashCode()       *  7 ^
+                          (this.Retries?.         GetHashCode() ?? 0) *  5 ^
+                          (this.RetryInterval?.   GetHashCode() ?? 0) *  3 ^
+                           base.                  GetHashCode();
+
+            }
 
         }
 
@@ -207,92 +222,100 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId, NetworkPath)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of an update firmware request.
+        /// Parse the given XML representation of an UpdateFirmware request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static UpdateFirmwareRequest Parse(XElement XML,
-                                                  Request_Id RequestId,
-                                                  NetworkingNode_Id NetworkingNodeId,
-                                                  NetworkPath NetworkPath)
+        public static UpdateFirmwareRequest Parse(XElement       XML,
+                                                  Request_Id     RequestId,
+                                                  SourceRouting  Destination,
+                                                  NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var updateFirmwareRequest,
-                         out var errorResponse) &&
-                updateFirmwareRequest is not null)
+                         out var errorResponse))
             {
                 return updateFirmwareRequest;
             }
 
-            throw new ArgumentException("The given XML representation of an update firmware request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of an UpdateFirmware request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomUpdateFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an update firmware request.
+        /// Parse the given JSON representation of an UpdateFirmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUpdateFirmwareRequestParser">An optional delegate to parse custom update firmware requests.</param>
-        public static UpdateFirmwareRequest Parse(JObject JSON,
-                                                  Request_Id RequestId,
-                                                  NetworkingNode_Id NetworkingNodeId,
-                                                  NetworkPath NetworkPath,
-                                                  CustomJObjectParserDelegate<UpdateFirmwareRequest>? CustomUpdateFirmwareRequestParser = null)
+        /// <param name="CustomUpdateFirmwareRequestParser">An optional delegate to parse custom UpdateFirmware requests.</param>
+        public static UpdateFirmwareRequest Parse(JObject                                              JSON,
+                                                  Request_Id                                           RequestId,
+                                                  SourceRouting                                        Destination,
+                                                  NetworkPath                                          NetworkPath,
+                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  TimeSpan?                                            RequestTimeout                      = null,
+                                                  EventTracking_Id?                                    EventTrackingId                     = null,
+                                                  CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null,
+                                                  CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                  CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var updateFirmwareRequest,
                          out var errorResponse,
-                         CustomUpdateFirmwareRequestParser) &&
-                updateFirmwareRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomUpdateFirmwareRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return updateFirmwareRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an update firmware request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UpdateFirmware request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of an update firmware request.
+        /// Try to parse the given XML representation of an UpdateFirmware request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed UpdateFirmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement XML,
-                                       Request_Id RequestId,
-                                       NetworkingNode_Id NetworkingNodeId,
-                                       NetworkPath NetworkPath,
-                                       out UpdateFirmwareRequest? UpdateFirmwareRequest,
-                                       out String? ErrorResponse)
+        public static Boolean TryParse(XElement                                         XML,
+                                       Request_Id                                       RequestId,
+                                       SourceRouting                                    Destination,
+                                       NetworkPath                                      NetworkPath,
+                                       [NotNullWhen(true)]  out UpdateFirmwareRequest?  UpdateFirmwareRequest,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
         {
 
             try
@@ -300,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UpdateFirmwareRequest = new UpdateFirmwareRequest(
 
-                                            NetworkingNodeId,
+                                            Destination,
 
                                             URL.Parse(XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "location")),
 
@@ -325,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 UpdateFirmwareRequest = null;
-                ErrorResponse = "The given XML representation of an update firmware request is invalid: " + e.Message;
+                ErrorResponse = "The given XML representation of an UpdateFirmware request is invalid: " + e.Message;
                 return false;
             }
 
@@ -333,51 +356,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an update firmware request.
+        /// Try to parse the given JSON representation of an UpdateFirmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed UpdateFirmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject JSON,
-                                       Request_Id RequestId,
-                                       NetworkingNode_Id NetworkingNodeId,
-                                       NetworkPath NetworkPath,
-                                       out UpdateFirmwareRequest? UpdateFirmwareRequest,
-                                       out String? ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out UpdateFirmwareRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an update firmware request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateFirmwareRequestParser">An optional delegate to parse custom update firmware requests.</param>
-        public static Boolean TryParse(JObject JSON,
-                                       Request_Id RequestId,
-                                       NetworkingNode_Id NetworkingNodeId,
-                                       NetworkPath NetworkPath,
-                                       out UpdateFirmwareRequest? UpdateFirmwareRequest,
-                                       out String? ErrorResponse,
-                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>? CustomUpdateFirmwareRequestParser)
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom UpdateFirmware requests.</param>
+        public static Boolean TryParse(JObject                                              JSON,
+                                       Request_Id                                           RequestId,
+                                       SourceRouting                                        Destination,
+                                       NetworkPath                                          NetworkPath,
+                                       [NotNullWhen(true)]  out UpdateFirmwareRequest?      UpdateFirmwareRequest,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
+                                       DateTime?                                            RequestTimestamp                    = null,
+                                       TimeSpan?                                            RequestTimeout                      = null,
+                                       EventTracking_Id?                                    EventTrackingId                     = null,
+                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -467,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UpdateFirmwareRequest = new UpdateFirmwareRequest(
 
-                                            NetworkingNodeId,
+                                            Destination,
                                             FirmwareURL,
                                             RetrieveDate,
                                             Retries,
@@ -480,9 +485,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             CustomData,
 
                                             RequestId,
-                                            null,
-                                            null,
-                                            null,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
                                             NetworkPath
 
                                         );
@@ -497,7 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 UpdateFirmwareRequest = null;
-                ErrorResponse = "The given JSON representation of an update firmware request is invalid: " + e.Message;
+                ErrorResponse = "The given JSON representation of an UpdateFirmware request is invalid: " + e.Message;
                 return false;
             }
 
@@ -537,31 +542,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomUpdateFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>? CustomUpdateFirmwareRequestSerializer = null,
-                              CustomJObjectSerializerDelegate<Signature>? CustomSignatureSerializer = null,
-                              CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer               = null,
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("retrieveDate", RetrieveTimestamp.ToIso8601()),
-                                 new JProperty("location", FirmwareURL.ToString()),
+                                 new JProperty("retrieveDate",    RetrieveTimestamp.ToIso8601()),
+                                 new JProperty("location",        FirmwareURL.      ToString()),
 
                            Retries.HasValue
-                               ? new JProperty("retries", Retries.Value)
+                               ? new JProperty("retries",         Retries.Value)
                                : null,
 
                            RetryInterval.HasValue
-                               ? new JProperty("retryInterval", (UInt64)RetryInterval.Value.TotalSeconds)
+                               ? new JProperty("retryInterval",   (UInt64) RetryInterval.Value.TotalSeconds)
                                : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures", new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                              CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.       ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -580,10 +585,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (UpdateFirmwareRequest1, UpdateFirmwareRequest2)
 
         /// <summary>
-        /// Compares two update firmware requests for equality.
+        /// Compares two UpdateFirmware requests for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest1">An update firmware request.</param>
-        /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest1">An UpdateFirmware request.</param>
+        /// <param name="UpdateFirmwareRequest2">Another UpdateFirmware request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator ==(UpdateFirmwareRequest? UpdateFirmwareRequest1,
                                            UpdateFirmwareRequest? UpdateFirmwareRequest2)
@@ -606,10 +611,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (UpdateFirmwareRequest1, UpdateFirmwareRequest2)
 
         /// <summary>
-        /// Compares two update firmware requests for inequality.
+        /// Compares two UpdateFirmware requests for inequality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest1">An update firmware request.</param>
-        /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest1">An UpdateFirmware request.</param>
+        /// <param name="UpdateFirmwareRequest2">Another UpdateFirmware request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator !=(UpdateFirmwareRequest? UpdateFirmwareRequest1,
                                            UpdateFirmwareRequest? UpdateFirmwareRequest2)
@@ -625,9 +630,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two update firmware requests for equality.
+        /// Compares two UpdateFirmware requests for equality.
         /// </summary>
-        /// <param name="Object">An update firmware request to compare with.</param>
+        /// <param name="Object">An UpdateFirmware request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateFirmwareRequest updateFirmwareRequest &&
@@ -638,9 +643,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(UpdateFirmwareRequest)
 
         /// <summary>
-        /// Compares two update firmware requests for equality.
+        /// Compares two UpdateFirmware requests for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest">An update firmware request to compare with.</param>
+        /// <param name="UpdateFirmwareRequest">An UpdateFirmware request to compare with.</param>
         public override Boolean Equals(UpdateFirmwareRequest? UpdateFirmwareRequest)
 
             => UpdateFirmwareRequest is not null &&
@@ -662,25 +667,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return FirmwareURL.GetHashCode() * 11 ^
-                       RetrieveTimestamp.GetHashCode() * 7 ^
-
-                      (Retries?.GetHashCode() ?? 0) * 5 ^
-                      (RetryInterval?.GetHashCode() ?? 0) * 3 ^
-
-                       base.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
