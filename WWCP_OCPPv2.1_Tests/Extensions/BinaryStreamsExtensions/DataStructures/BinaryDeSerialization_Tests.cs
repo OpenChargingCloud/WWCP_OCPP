@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public void SerializeDeserialize_BinaryDataTransferRequests_Test()
         {
 
-            var keyPair                    = KeyPair.GenerateKeys()!;
+            var keyPair                    = ECCKeyPair.GenerateKeys()!;
             var chargingStationId          = NetworkingNode_Id.Parse("DE*GEF*S12345678");
             var vendorId                   = Vendor_Id. GraphDefined;
             var messageId                  = Message_Id.GraphDefined_TestMessage;

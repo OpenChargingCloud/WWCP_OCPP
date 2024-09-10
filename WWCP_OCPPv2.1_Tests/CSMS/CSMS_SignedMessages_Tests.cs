@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                           VerificationRuleActions.VerifyAll);
 
 
-                var keyPair    = KeyPair.GenerateKeys()!;
+                var keyPair    = ECCKeyPair.GenerateKeys()!;
 
                 var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;

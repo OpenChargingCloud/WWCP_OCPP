@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 };
 
                 var now1                           = Timestamp.Now;
-                var keyPair                        = KeyPair.GenerateKeys()!;
+                var keyPair                        = ECCKeyPair.GenerateKeys()!;
                 chargingStation1.OCPP.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
                                                                           KeyPair:                 keyPair,
                                                                           UserIdGenerator:         (signableMessage) => "cs001",
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                           VerificationRuleActions.VerifyAll);
 
                 var now2                           = Timestamp.Now;
-                var keyPair2                       = KeyPair.GenerateKeys()!;
+                var keyPair2                       = ECCKeyPair.GenerateKeys()!;
                 testCSMS01.OCPP.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
                                                                           VerificationRuleActions.VerifyAll);
                 testCSMS01.OCPP.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,

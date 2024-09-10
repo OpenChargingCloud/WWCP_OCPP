@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 #region Set the CSMS             signature policy
 
                 var now1            = Timestamp.Now;
-                var requestKeyPair  = KeyPair.GenerateKeys()!;
+                var requestKeyPair  = ECCKeyPair.GenerateKeys()!;
                 testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultE2EChargingTariffRequest. DefaultJSONLDContext,
                                                                           requestKeyPair!,
                                                                           UserIdGenerator:         (signableMessage) => "csms001",
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 #region Define a signed charging tariff
 
-                var providerKeyPair    = KeyPair.GenerateKeys()!;
+                var providerKeyPair    = ECCKeyPair.GenerateKeys()!;
 
                 var chargingTariff     = new Tariff(
 

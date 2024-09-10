@@ -722,7 +722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Sign(KeyPair, out ErrorResponse, SignerName = null, Description = null, Timestamp = null, ...)
 
-        public Boolean Sign(KeyPair                                              KeyPair,
+        public Boolean Sign(ECCKeyPair                                           KeyPair,
                             out String?                                          ErrorResponse,
                             String?                                              SignerName                          = null,
                             I18NString?                                          Description                         = null,

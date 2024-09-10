@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             #region Define signature policy
 
-            csmsKeyPair = KeyPair.GenerateKeys()!;
+            csmsKeyPair = ECCKeyPair.GenerateKeys()!;
 
             CSMS.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
                                                           VerificationRuleActions. VerifyAll);
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             #region Define signature policy
 
-            localControllerKeyPair = KeyPair.GenerateKeys()!;
+            localControllerKeyPair = ECCKeyPair.GenerateKeys()!;
 
             localController.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
                                                                     KeyPair:                 localControllerKeyPair!,
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                                                 Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                 Model:          "Virtual Energy Meter",
                                                                 SerialNumber:   "SN-EN0001",
-                                                                PublicKeys:     [ PublicKey.Parse("0xcafebabe") ]
+                                                                PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
                                                             ),
                                    DisableSendHeartbeats:   true,
 
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             #region Define signature policy
 
-            chargingStationKeyPair = KeyPair.GenerateKeys()!;
+            chargingStationKeyPair = ECCKeyPair.GenerateKeys()!;
 
             chargingStation.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
                                                                      KeyPair:                 localControllerKeyPair!,

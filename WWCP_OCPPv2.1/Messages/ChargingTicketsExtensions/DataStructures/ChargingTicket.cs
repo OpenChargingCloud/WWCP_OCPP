@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The public key of the EV driver.
         /// </summary>
         [Mandatory]
-        public PublicKey                               DriverPublicKey             { get; }
+        public ECCPublicKey                            DriverPublicKey             { get; }
 
         /// <summary>
         /// The enumeration of tariffs that can be used with this charging ticket.
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingTicket(ChargingTicket_Id                        Id,
                               Provider_Id                              ProviderId,
                               DisplayTexts                             ProviderName,
-                              PublicKey                                DriverPublicKey,
+                              ECCPublicKey                             DriverPublicKey,
                               IEnumerable<Tariff>                      Tariffs,
 
                               URL?                                     ProviderURL                = null,
@@ -542,10 +542,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryJSON("driverPublicKey",
                                              "driver public key",
-                                             PublicKey.TryParse,
-                                             out PublicKey? DriverPublicKey,
-                                             out ErrorResponse) ||
-                     DriverPublicKey is null)
+                                             ECCPublicKey.TryParse,
+                                             out ECCPublicKey? DriverPublicKey,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -1034,7 +1033,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("providerURL",                ProviderURL.Value.       ToString())
                                : null,
 
-                                 new JProperty("driverPublicKey",            DriverPublicKey.         ToJSON(CustomPublicKeySerializer,
+                                 new JProperty("driverPublicKey",            DriverPublicKey.         ToJSON(CryptoSerialization.RAW,
+                                                                                                             true,
+                                                                                                             CustomPublicKeySerializer,
                                                                                                              CustomCustomDataSerializer)),
 
                                  new JProperty("tariffs",                    new JArray(Tariffs.                Select(tariff            => tariff.           ToJSON(CustomTariffSerializer,

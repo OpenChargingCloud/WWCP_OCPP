@@ -104,11 +104,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testCSMS01.OCPP.SignaturePolicy.AddVerificationRule(BootNotificationRequest.DefaultJSONLDContext,
                                                                     VerificationRuleActions.VerifyAll);
 
-                var responseKeyPair          = KeyPair.GenerateKeys()!;
+                var responseKeyPair          = ECCKeyPair.GenerateKeys()!;
                 testCSMS01.OCPP.SignaturePolicy.AddSigningRule(BootNotificationResponse.DefaultJSONLDContext, responseKeyPair);
 
 
-                var requestKeyPair           = KeyPair.GenerateKeys()!;
+                var requestKeyPair           = ECCKeyPair.GenerateKeys()!;
                 var reason                   = BootReason.PowerUp;
                 var now                      = Timestamp.Now;
                 var response1                = await chargingStation1.SendBootNotification(

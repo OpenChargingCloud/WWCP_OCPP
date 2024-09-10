@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ////};
 
                 //var now1                           = Timestamp.Now;
-                //var keyPair                        = KeyPair.GenerateKeys()!;
+                //var keyPair                        = ECCKeyPair.GenerateKeys()!;
                 //chargingStation1.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
                 //                                                     KeyPair:                 keyPair,
                 //                                                     UserIdGenerator:         (signableMessage) => "cs001",
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //                                                     VerificationRuleAction.VerifyAll);
 
                 //var now2                           = Timestamp.Now;
-                //var keyPair2                       = KeyPair.GenerateKeys()!;
+                //var keyPair2                       = ECCKeyPair.GenerateKeys()!;
                 //testCSMS01.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
                 //                                                     VerificationRuleAction.VerifyAll);
                 //testCSMS01.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                           VerificationRuleActions.VerifyAll);
 
 
-                var requestKeyPair  = KeyPair.GenerateKeys()!;
+                var requestKeyPair  = ECCKeyPair.GenerateKeys()!;
                 testCSMS01.OCPP.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, requestKeyPair!);
                 testCSMS01.OCPP.SignaturePolicy.AddVerificationRule(ResetResponse.DefaultJSONLDContext);
 

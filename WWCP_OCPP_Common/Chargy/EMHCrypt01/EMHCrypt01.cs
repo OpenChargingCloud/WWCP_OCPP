@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
             {
 
                 case PublicKeyFormats.DER:
-                    return new ECPublicKeyParameters("ECDSA", ECP.Curve.DecodePoint(PublicKey.HexStringToByteArray()), ECSpec);
+                    return new ECPublicKeyParameters("ECDSA", ECP.Curve.DecodePoint(PublicKey.FromHEX()), ECSpec);
 
                 case PublicKeyFormats.plain:
 #pragma warning disable IDE0057 // Use range operator
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
                                         verifier.Init(false, EMHPublicKey);
                                         verifier.BlockUpdate(sha256Hash, 0, 24);
 
-                                        var SignatureBytes  = signatureExpected.Value.HexStringToByteArray();
+                                        var SignatureBytes  = signatureExpected.Value.FromHEX();
                                         var verified        = false;
 
                                         switch (signatureExpected.Format)

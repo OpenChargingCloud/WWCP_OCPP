@@ -27,8 +27,8 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -380,8 +380,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("publicKeys",
                                               "energy meter public keys",
-                                              PublicKey.TryParse,
-                                              out HashSet<PublicKey> PublicKeys,
+                                              ECCPublicKey.TryParse,
+                                              out HashSet<ECCPublicKey> PublicKeys,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

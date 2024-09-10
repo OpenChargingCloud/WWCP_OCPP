@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
                                                                      Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                      Model:          "Virtual Energy Meter",
                                                                      SerialNumber:   "SN-EN0001",
-                                                                     PublicKeys:     [ PublicKey.Parse("0xcafebabe") ]
+                                                                     PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
                                                                  ),
                                        DisableSendHeartbeats:    true
                                    );

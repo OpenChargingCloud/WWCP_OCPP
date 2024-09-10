@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         return false;
                 }
 
-                var FileSHA256 = fileSHA256Text?.FromBase64();
+                var FileSHA256 = fileSHA256Text?.FromBASE64();
 
                 #endregion
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         return false;
                 }
 
-                var FileSHA512 = fileSHA512Text?.FromBase64();
+                var FileSHA512 = fileSHA512Text?.FromBASE64();
 
                 #endregion
 
