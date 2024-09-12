@@ -251,6 +251,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public WebAPI?                     WebAPI                            { get; }
         public HTTPPath?                   WebAPI_Path                       { get; }
 
+
+        public RegistrationStatus          DefaultRegistrationStatus         { get; set; } = RegistrationStatus.Rejected;
+
         #endregion
 
         #region Constructor(s)
@@ -1044,7 +1047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region AddChargingStation           (ChargingStation, OnAdded = null, ...)
+        #region AddChargingStation            (ChargingStation, OnAdded = null, ...)
 
         /// <summary>
         /// A delegate called whenever a charging station was added.
@@ -1225,7 +1228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region AddChargingStationIfNotExists(ChargingStation, OnAdded = null, ...)
+        #region AddChargingStationIfNotExists (ChargingStation, OnAdded = null, ...)
 
         #region (protected internal) _AddChargingStationIfNotExists(ChargingStation, OnAdded = null, ...)
 
@@ -1387,7 +1390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region AddOrUpdateChargingStation   (ChargingStation, OnAdded = null, OnUpdated = null, ...)
+        #region AddOrUpdateChargingStation    (ChargingStation, OnAdded = null, OnUpdated = null, ...)
 
         #region (protected internal) _AddOrUpdateChargingStation(ChargingStation, OnAdded = null, OnUpdated = null, ...)
 
@@ -1581,7 +1584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateChargingStation        (ChargingStation,                 OnUpdated = null, ...)
+        #region UpdateChargingStation         (ChargingStation,                 OnUpdated = null, ...)
 
         /// <summary>
         /// A delegate called whenever a charging station was updated.
@@ -1910,7 +1913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteChargingStation        (ChargingStation, OnDeleted = null, ...)
+        #region DeleteChargingStation         (ChargingStation, OnDeleted = null, ...)
 
         /// <summary>
         /// A delegate called whenever a charging station was deleted.
@@ -2133,7 +2136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ChargingStationExists(ChargingStationId)
+        #region ChargingStationExists (ChargingStationId)
 
         /// <summary>
         /// Determines whether the given chargingStation identification exists within this API.
@@ -2218,7 +2221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetChargingStation   (ChargingStationId)
+        #region GetChargingStation    (ChargingStationId)
 
         /// <summary>
         /// Get the chargingStation having the given unique identification.
@@ -2315,7 +2318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TryGetChargingStation(ChargingStationId, out ChargingStation)
+        #region TryGetChargingStation (ChargingStationId, out ChargingStation)
 
         /// <summary>
         /// Try to get the chargingStation having the given unique identification.
