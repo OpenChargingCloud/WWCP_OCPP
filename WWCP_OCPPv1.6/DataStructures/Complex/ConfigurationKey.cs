@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                        ValueUnits.  Undefined);
 
         /// <summary>
-        /// Charge Point sending HTTP web socket pings every n seconds.
+        /// Charge Point sending HTTP WebSocket pings every n seconds.
         /// No pings, when n == 0.
         /// REJECTED, when n &lt; 0.
         /// optional, RW, integer, seconds
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             public const String AuthorizationKey                            = "AuthorizationKey";
 
             /// <summary>
-            /// Charge Point sending HTTP web socket pings every n seconds.
+            /// Charge Point sending HTTP WebSocket pings every n seconds.
             /// No pings, when n == 0.
             /// REJECTED, when n &lt; 0.
             /// optional, RW, integer, seconds

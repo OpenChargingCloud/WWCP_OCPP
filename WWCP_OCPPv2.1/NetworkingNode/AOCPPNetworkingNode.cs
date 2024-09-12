@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Wire On(JSON/Binary)MessageReceived
+            #region Wire On(JSON/Binary)MessageReceived with OCPP Adapter
 
             ocppWebSocketServer.OnJSONMessageReceived += (requestTimestamp,
                                                           wwcpWebSocketServer,
@@ -443,20 +443,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
-        #region (protected) WireWebSocketServer(WebSocketServer)
-
-        //protected void WireWebSocketServer(OCPP.WebSockets.OCPPWebSocketServer WebSocketServer)
-        //{
-
-        //    base.WireWebSocketServer(WebSocketServer);
-
-        //    // (Generic) Error Handling
-
-        //}
-
-        #endregion
-
 
 
         #region (Timer) DoMaintenance(State)

@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AOCPPNetworkingNode                             NetworkingNode,
+        public HTTPAPI(AOCPPNetworkingNode                         NetworkingNode,
                        HTTPExtAPI                                  HTTPAPI,
                        String?                                     HTTPServerName         = null,
                        HTTPPath?                                   URLPathPrefix          = null,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             RegisterURITemplates();
             AttachNetworkingNode(networkingNode);
 
-            DebugX.Log($"Networking Node HTTP API started on {HTTPBaseAPI.HTTPServer.IPPorts.AggregateWith(", ")}");
+            //DebugX.Log($"OCPP Networking Node HTTP API started on {HTTPBaseAPI.HTTPServer.IPPorts.AggregateWith(", ")}");
 
         }
 

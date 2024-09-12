@@ -153,6 +153,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             RegisterURITemplates();
 
+            DebugX.Log($"OCPP {Version.String} LocalController UploadAPI started on {HTTPServer.IPSockets.AggregateWith(", ")}{URLPathPrefix}");
+
         }
 
         #endregion

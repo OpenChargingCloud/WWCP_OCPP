@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #region Events
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
+        /// An event sent whenever the HTTP WebSocket server started.
         /// </summary>
         event OnServerStartedDelegate?                OnServerStarted;
 
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
 
         /// <summary>
-        /// An event sent whenever the HTTP web socket server stopped.
+        /// An event sent whenever the HTTP WebSocket server stopped.
         /// </summary>
         event OnServerStoppedDelegate?                OnServerStopped;
 
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #region Process(Text/Binary)Message
 
         /// <summary>
-        /// The default HTTP web socket text message processor.
+        /// The default HTTP WebSocket text message processor.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request message.</param>
         /// <param name="Connection">The web socket connection.</param>
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                                    CancellationToken          CancellationToken);
 
         /// <summary>
-        /// The default HTTP web socket binary message processor.
+        /// The default HTTP WebSocket binary message processor.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request message.</param>
         /// <param name="Connection">The web socket connection.</param>
@@ -238,17 +238,17 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// Remove the given web socket connection.
         /// </summary>
-        /// <param name="Connection">A HTTP web socket connection.</param>
+        /// <param name="Connection">A HTTP WebSocket connection.</param>
         Boolean RemoveConnection(WebSocketServerConnection Connection);
 
 
         /// <summary>
-        /// Start the HTTP web socket listener thread.
+        /// Start the HTTP WebSocket listener thread.
         /// </summary>
         void Start();
 
         /// <summary>
-        /// Shutdown the HTTP web socket listener thread.
+        /// Shutdown the HTTP WebSocket listener thread.
         /// </summary>
         /// <param name="Message">An optional shutdown message.</param>
         /// <param name="Wait">Wait until the server finally shutted down.</param>

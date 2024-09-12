@@ -480,69 +480,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #endregion
 
 
-
-        #region (private) LogEvent(Logger, LogHandler, ...)
-
-        private async Task LogEvent<TDelegate>(TDelegate?                                         Logger,
-                                               Func<TDelegate, Task>                              LogHandler,
-                                               [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
-                                               [CallerMemberName()]                       String  OCPPCommand   = "")
-
-            where TDelegate : Delegate
-
-        {
-            if (Logger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(
-                              Logger.GetInvocationList().
-                                     OfType<TDelegate>().
-                                     Select(LogHandler)
-                          );
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(nameof(OCPPWebSocketClient), $"{OCPPCommand}.{EventName}", e);
-                }
-            }
-        }
-
-        #endregion
-
-        #region (private) HandleErrors(Module, Caller, ErrorResponse)
-
-        private Task HandleErrors(String  Module,
-                                  String  Caller,
-                                  String  ErrorResponse)
-        {
-
-            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
-
-            return Task.CompletedTask;
-
-        }
-
-        #endregion
-
-        #region (private) HandleErrors(Module, Caller, ExceptionOccured)
-
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccured)
-        {
-
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
-
-            return Task.CompletedTask;
-
-        }
-
-        #endregion
-
-
     }
 
 }

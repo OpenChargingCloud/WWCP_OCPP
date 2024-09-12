@@ -32,7 +32,6 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-//using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -44,12 +43,6 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
     {
 
         #region Data
-
-        //private          readonly  HashSet<SignaturePolicy>                                    signaturePolicies            = [];
-
-        //private                    Int64                                                       internalRequestId            = 900000;
-
-        //private          readonly  List<EnqueuedRequest>                                       EnqueuedRequests             = [];
 
         private DateTime lastRoutesBroadcast = Timestamp.Now;
 
@@ -119,15 +112,6 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         {
 
-            //this.OCPP = new OCPPAdapter(
-            //                this,
-            //                DisableSendHeartbeats,
-            //                SendHeartbeatsEvery,
-            //                DefaultRequestTimeout,
-            //                SignaturePolicy,
-            //                ForwardingSignaturePolicy
-            //            );
-
         }
 
         #endregion
@@ -193,10 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                           MaxNumberOfRetries,
                                           InternalBufferSize,
 
-                                          SecWebSocketProtocols,//?? [
-                                                                //      "ocpp2.0.1",
-                                                                //       Version.WebSocketSubProtocolId
-                                                                //   ],
+                                          SecWebSocketProtocols,
                                           NetworkingMode,
 
                                           DisableWebSocketPings,
@@ -224,54 +205,6 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                              CancellationToken
 
                          );
-
-            //wwcpWebSocketClients.Add(ocppWebSocketClient);
-
-            //var connectResponse = await ocppWebSocketClient.Connect(
-            //                                EventTrackingId:      EventTrackingId ?? EventTracking_Id.New,
-            //                                RequestTimeout:       RequestTimeout,
-            //                                MaxNumberOfRetries:   MaxNumberOfRetries,
-            //                                HTTPRequestBuilder:   (httpRequestBuilder) => {
-            //                                                          if (NetworkingMode == NetworkingNode.NetworkingMode.OverlayNetwork)
-            //                                                              httpRequestBuilder.SetHeaderField(OCPPAdapter.X_OCPP_NetworkingMode, NetworkingMode.ToString());
-            //                                                      },
-            //                                CancellationToken:    CancellationToken
-            //                            );
-
-            //if (connectResponse.Item2.HTTPStatusCode == HTTPStatusCode.SwitchingProtocols &&
-            //    connectResponse.Item1 is not null)
-            //{
-
-            //    if (NextHopNetworkingNodeId is not null)
-            //    {
-
-            //        connectResponse.Item1.TryAddCustomData(
-            //            OCPPAdapter.NetworkingNodeId_WebSocketKey,
-            //            NextHopNetworkingNodeId
-            //        );
-
-            //        OCPP.Routing.AddOrUpdateStaticRouting(
-            //            NextHopNetworkingNodeId.Value,
-            //            ocppWebSocketClient,
-            //            0,
-            //            1,
-            //            Timestamp.Now
-            //        );
-
-            //    }
-
-            //    if (RoutingNetworkingNodeIds is not null && RoutingNetworkingNodeIds.Any())
-            //        OCPP.Routing.AddOrUpdateStaticRouting(
-            //            RoutingNetworkingNodeIds,
-            //            ocppWebSocketClient,
-            //            0,
-            //            1,
-            //            Timestamp.Now
-            //        );
-
-            //}
-
-            //return connectResponse.Item2;
 
         }
 
@@ -365,14 +298,14 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         #region (protected) WireWebSocketServer(WebSocketServer)
 
-        protected void WireWebSocketServer(OCPPWebSocketServer WebSocketServer)
-        {
+        //protected void WireWebSocketServer(OCPPWebSocketServer WebSocketServer)
+        //{
 
-            base.WireWebSocketServer(WebSocketServer);
+        //    base.WireWebSocketServer(WebSocketServer);
 
-            // (Generic) Error Handling
+        //    // (Generic) Error Handling
 
-        }
+        //}
 
         #endregion
 
