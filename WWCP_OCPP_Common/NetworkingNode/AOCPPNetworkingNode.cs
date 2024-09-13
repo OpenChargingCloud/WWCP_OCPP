@@ -352,63 +352,63 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         #region LogEvent(OCPPIO, Logger, LogHandler, ...)
 
-        public async Task LogEvent<TDelegate>(String                                             OCPPIO,
-                                              TDelegate?                                         Logger,
-                                              Func<TDelegate, Task>                              LogHandler,
-                                              [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
-                                              [CallerMemberName()]                       String  OCPPCommand   = "")
+        //public async Task LogEvent<TDelegate>(String                                             OCPPIO,
+        //                                      TDelegate?                                         Logger,
+        //                                      Func<TDelegate, Task>                              LogHandler,
+        //                                      [CallerArgumentExpression(nameof(Logger))] String  EventName     = "",
+        //                                      [CallerMemberName()]                       String  OCPPCommand   = "")
 
-            where TDelegate : Delegate
+        //    where TDelegate : Delegate
 
-        {
-            if (Logger is not null)
-            {
-                try
-                {
+        //{
+        //    if (Logger is not null)
+        //    {
+        //        try
+        //        {
 
-                    await Task.WhenAll(
-                              Logger.GetInvocationList().
-                                     OfType<TDelegate>().
-                                     Select(LogHandler)
-                          );
+        //            await Task.WhenAll(
+        //                      Logger.GetInvocationList().
+        //                             OfType<TDelegate>().
+        //                             Select(LogHandler)
+        //                  );
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(OCPPIO, $"{OCPPCommand}.{EventName}", e);
-                }
-            }
-        }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            await HandleErrors(OCPPIO, $"{OCPPCommand}.{EventName}", e);
+        //        }
+        //    }
+        //}
 
         #endregion
 
         #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
 
-        public virtual Task HandleErrors(String  Module,
-                                         String  Caller,
-                                         String  ErrorResponse)
-        {
+        //public virtual Task HandleErrors(String  Module,
+        //                                 String  Caller,
+        //                                 String  ErrorResponse)
+        //{
 
-            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
+        //    DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
 
-            return Task.CompletedTask;
+        //    return Task.CompletedTask;
 
-        }
+        //}
 
         #endregion
 
         #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
 
-        public virtual Task HandleErrors(String     Module,
-                                         String     Caller,
-                                         Exception  ExceptionOccured)
-        {
+        //public virtual Task HandleErrors(String     Module,
+        //                                 String     Caller,
+        //                                 Exception  ExceptionOccured)
+        //{
 
-            DebugX.LogException(ExceptionOccured, Caller);
+        //    DebugX.LogException(ExceptionOccured, Caller);
 
-            return Task.CompletedTask;
+        //    return Task.CompletedTask;
 
-        }
+        //}
 
         #endregion
 

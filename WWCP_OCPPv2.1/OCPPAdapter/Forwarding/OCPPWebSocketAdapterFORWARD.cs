@@ -29,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
@@ -332,6 +332,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region Counters
+
+        /// <summary>
+        /// A counter for forwarded messages.
+        /// </summary>
+        public UInt64 ForwardedMessages
+            => (UInt64) forwardedMessages;
+
+        private Int64 forwardedMessages;
+
+
+        /// <summary>
+        /// A counter for replaced messages.
+        /// </summary>
+        public UInt64 ReplacedMessages
+            => (UInt64) replacedMessages;
+
+        private Int64 replacedMessages;
+
+
+        /// <summary>
+        /// A counter for rejected messages.
+        /// </summary>
+        public UInt64 RejectedMessages
+            => (UInt64) rejectedMessages;
+
+        private Int64 rejectedMessages;
+
+
+        /// <summary>
+        /// A counter for dropped messages.
+        /// </summary>
+        public UInt64 DroppedMessages
+            => (UInt64) droppedMessages;
+
+        private Int64 droppedMessages;
+
+        #endregion
+
         #region Events
 
         public event OnAnyJSONRequestFilterDelegate?          OnAnyJSONRequestFilter;
@@ -404,17 +443,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
-
-        public NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId)
-        {
-
-            if (expectedResponses.TryGetValue(RequestId, out var responseInfo))
-                return responseInfo.SourceNodeId;
-
-            return null;
-
-        }
 
 
         #region ProcessJSONRequestMessage         (JSONRequestMessage,         WebSocketConnection)
@@ -490,7 +518,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
-                        DebugX.Log($"Invalid result type for a '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+                        await HandleErrorsAndSendRequestError(
+                                  nameof(forwardingMessageProcessorsLookup),
+                                  JSONRequestMessage,
+                                  ResultCode.InternalError,
+                                  $"Invalid result type for a '{JSONRequestMessage.Action}' JSON request message handler!"
+                              );
 
                 }
 
@@ -499,27 +532,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region ...or error!
 
                 else
-                {
-
-                    DebugX.Log($"Undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
-
-                    await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
-                              new OCPP_JSONRequestErrorMessage(
-                                  Timestamp.Now,
-                                  EventTracking_Id.New,
-                                  NetworkingMode.Unknown,
-                                  SourceRouting.Zero,
-                                  NetworkPath.Empty,
-                                  JSONRequestMessage.RequestId,
-                                  ResultCode.ProtocolError,
-                                  $"Received unknown OCPP '{JSONRequestMessage.Action}' JSON request message!",
-                                  new JObject(
-                                      new JProperty("request", JSONRequestMessage.ToJSON())
-                                  )
-                              )
+                    await HandleErrorsAndSendRequestError(
+                              nameof(forwardingMessageProcessorsLookup),
+                              JSONRequestMessage,
+                              ResultCode.InternalError,
+                              $"Undefined '{JSONRequestMessage.Action}' JSON request message handler!"
                           );
-
-                }
 
                 #endregion
 
@@ -551,6 +569,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
+                Interlocked.Increment(ref forwardedMessages);
+
                 var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
                 if (forwardingDecision.NewDestination is not null)
@@ -566,10 +586,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     )
                 );
 
-                await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
-                          newJSONRequestMessage,
-                          forwardingDecision.SentMessageLogger
-                      );
+                var sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
+                                                  newJSONRequestMessage,
+                                                  forwardingDecision.SentMessageLogger
+                                              );
+
+                if (sentMessageResult.Result != WWCP.WebSockets.SentMessageResults.Success)
+                    await HandleErrorsAndSendRequestError(
+                              "FORWARD",
+                              JSONRequestMessage,
+                              ResultCode.NetworkError,
+                              $"Failed to forward OCPP JSON request message '{JSONRequestMessage.RequestId}' to '{newJSONRequestMessage.Destination}': '{sentMessageResult}'!"
+                          );
 
             }
 
@@ -579,6 +607,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
+
+                Interlocked.Increment(ref replacedMessages);
 
                 var newJSONRequestMessage = forwardingDecision.NewJSONRequest is null
                                                 ? JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id)
@@ -621,6 +651,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                      forwardingDecision.JSONRejectResponse is not null)
             {
 
+                Interlocked.Increment(ref rejectedMessages);
+
                 await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                           new OCPP_JSONRequestErrorMessage(
                               Timestamp.Now,
@@ -645,6 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else
             {
                 // Just ignore the request!
+                Interlocked.Increment(ref droppedMessages);
             }
 
             #endregion
@@ -1560,6 +1593,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region GetForwardedNodeId(RequestId)
+
+        public NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId)
+        {
+
+            if (expectedResponses.TryGetValue(RequestId, out var responseInfo))
+                return responseInfo.SourceNodeId;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region ToJSON()
 
         public JObject ToJSON()
         {
@@ -1570,7 +1619,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            new JProperty("anycastIdsAllowed",           new JArray(AnycastIdsAllowed.          Select(networkingNodeId => networkingNodeId.ToString()))),
                            new JProperty("anycastIdsDenied",            new JArray(AnycastIdsDenied.           Select(networkingNodeId => networkingNodeId.ToString()))),
 
-                           new JProperty("signaturePolicies",           new JArray(ForwardingSignaturePolicies.Select(signaturePolicy  => signaturePolicy. ToJSON())))
+                           new JProperty("signaturePolicies",           new JArray(ForwardingSignaturePolicies.Select(signaturePolicy  => signaturePolicy. ToJSON()))),
+
+                           new JProperty("messageCounters",             new JObject(
+                                                                            new JProperty("forwarded",  forwardedMessages),
+                                                                            new JProperty("replaced",   replacedMessages),
+                                                                            new JProperty("rejected",   rejectedMessages),
+                                                                            new JProperty("dropped",    droppedMessages)
+                                                                        ))
 
                        );
 
@@ -1578,9 +1634,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+        #endregion
 
 
-        #region (private) LogEvent     (Logger, LogHandler,    ...)
+
+        #region (private) LogEvent   (Logger, LogHandler,    ...)
 
         private Task LogEvent<TDelegate>(TDelegate?                                         Logger,
                                          Func<TDelegate, Task>                              LogHandler,
@@ -1593,7 +1651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) CallFilter   (Filter, FilterHandler, ...)
+        #region (private) CallFilter (Filter, FilterHandler, ...)
 
         private async Task<T?> CallFilter<TDelegate, T>(TDelegate?                                         Filter,
                                                         Func<TDelegate, Task<T>>                           FilterHandler,
@@ -1627,7 +1685,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors (Caller, ErrorOccured)
+
+        #region (private) HandleErrors                    (Caller, ErrorOccured)
 
         private Task HandleErrors(String  Caller,
                                   String  ErrorOccured)
@@ -1640,7 +1699,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors (Caller, ExceptionOccured)
+        #region (private) HandleErrorsAndSendRequestError (Caller, JSONRequestMessage, ResultCode, ErrorOccured, ErrorDetails = null)
+
+        private async Task HandleErrorsAndSendRequestError(String                   Caller,
+                                                           OCPP_JSONRequestMessage  JSONRequestMessage,
+                                                           ResultCode               ResultCode,
+                                                           String                   ErrorOccured,
+                                                           JObject?                 ErrorDetails   = null)
+        {
+
+            await parentNetworkingNode.HandleErrors(
+                      nameof(OCPPWebSocketAdapterFORWARD),
+                      Caller,
+                      ErrorOccured
+                  );
+
+            await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
+                      new OCPP_JSONRequestErrorMessage(
+                          Timestamp.Now,
+                          JSONRequestMessage.EventTrackingId,
+                          NetworkingMode.Unknown,
+                          JSONRequestMessage.NetworkPath.BackToSource,
+                          NetworkPath.From(parentNetworkingNode.Id),
+                          JSONRequestMessage.RequestId,
+                          ResultCode,
+                          ErrorOccured,
+                          ErrorDetails ?? new JObject(
+                                              new JProperty("request",  JSONRequestMessage.ToJSON())
+                                          )
+                      )
+                  );
+
+        }
+
+        #endregion
+
+        #region (private) HandleErrors                    (Caller, ExceptionOccured)
         private Task HandleErrors(String     Caller,
                                   Exception  ExceptionOccured)
 
@@ -1663,6 +1757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => parentNetworkingNode.Id.ToString();
 
         #endregion
+
 
     }
 
