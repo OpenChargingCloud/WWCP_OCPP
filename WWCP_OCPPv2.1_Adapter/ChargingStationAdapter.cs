@@ -671,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEStatusTypes, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
