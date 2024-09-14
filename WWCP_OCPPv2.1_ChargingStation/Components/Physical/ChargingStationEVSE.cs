@@ -19,19 +19,17 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.utils.QRCodes.TOTP;
-using System.Runtime.CompilerServices;
-using org.GraphDefined.Vanaheimr.Styx;
 
 #endregion
 
@@ -293,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 var (url,
                      remainingTime,
-                     endTime) = QRCodeTOTPGenerator.GenerateURL(
+                     endTime) = TOTPGenerator.GenerateURL(
                                     qrCodePaymentsController.URLTemplate,
                                     qrCodePaymentsController.SharedSecret,
                                     qrCodePaymentsController.ValidityTime,

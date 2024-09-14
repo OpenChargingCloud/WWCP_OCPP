@@ -18,6 +18,10 @@
 #region Usings
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -26,14 +30,11 @@ using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.utils.QRCodes.TOTP;
-using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json.Linq;
-using System.Runtime.CompilerServices;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -48,8 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static class UserRoles
         {
-            public static readonly UserRole_Id Admin  = UserRole_Id.Parse("admin");
-            public static readonly UserRole_Id User   = UserRole_Id.Parse("user");
+
+            /// <summary>
+            /// Vendor User Role.
+            /// </summary>
+            public static readonly UserRole_Id Vendor  = UserRole_Id.Parse("vendor");
+
+            /// <summary>
+            /// Admin User Role.
+            /// </summary>
+            public static readonly UserRole_Id Admin   = UserRole_Id.Parse("admin");
+
+            /// <summary>
+            /// User User Role.
+            /// </summary>
+            public static readonly UserRole_Id User    = UserRole_Id.Parse("user");
+
         }
 
     }

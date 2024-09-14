@@ -19,7 +19,7 @@
 
 using NUnit.Framework;
 
-using QRCode = cloud.charging.open.utils.QRCodes.TOTP.QRCodeTOTPGenerator;
+using QRCode = org.GraphDefined.Vanaheimr.Hermod.TOTPGenerator;
 
 #endregion
 
