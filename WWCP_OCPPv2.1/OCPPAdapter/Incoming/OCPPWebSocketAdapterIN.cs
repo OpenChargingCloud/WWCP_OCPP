@@ -358,21 +358,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONResponseMessage       is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage);
+                                {
+
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse(ocppResponse.JSONResponseMessage);
+
+                                    if (sentMessageResult.Result != SentMessageResults.Success)
+                                    {
+                                        await HandleErrors(
+                                                  nameof(ProcessJSONMessage),
+                                                  $"Sent JSON Response Message: {ocppResponse.JSONResponseMessage.ToJSON().ToString(Formatting.None)} => '{sentMessageResult}'!"
+                                              );
+                                    }
+
+                                }
 
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
+                                {
+
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage);
 
+                                    if (sentMessageResult.Result != SentMessageResults.Success)
+                                    {
+                                        await HandleErrors(
+                                                  nameof(ProcessJSONMessage),
+                                                  $"Sent JSON Request Error Message: {ocppResponse.JSONRequestErrorMessage.ToJSON().ToString(Formatting.None)} => '{sentMessageResult}'!"
+                                              );
+                                    }
+
+                                }
+
                                 if (ocppResponse.BinaryResponseMessage     is not null)
+                                {
+
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage);
 
+                                    if (sentMessageResult.Result != SentMessageResults.Success)
+                                    {
+                                        await HandleErrors(
+                                                  nameof(ProcessJSONMessage),
+                                                  $"Sent Binary Response Message: {ocppResponse.BinaryResponseMessage.ToByteArray().ToBase64()} => '{sentMessageResult}'!"
+                                              );
+                                    }
+
+                                }
+
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
+                                {
+
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage);
+
+                                    if (sentMessageResult.Result != SentMessageResults.Success)
+                                    {
+                                        await HandleErrors(
+                                                  nameof(ProcessJSONMessage),
+                                                  $"Sent Request Error Message: {ocppResponse.BinaryRequestErrorMessage.ToByteArray().ToBase64()} => '{sentMessageResult}'!"
+                                              ); 
+                                    }
+
+                                }
 
 
                                 // Notify about the result of the sent message
                                 if (ocppResponse.SentMessageLogger         is not null)
                                     await ocppResponse.SentMessageLogger.Invoke(sentMessageResult ?? SentMessageResult.Unknown());
+
+
+                                if (sentMessageResult is null ||
+                                    sentMessageResult.Result != SentMessageResults.Success)
+                                {
+                                    await HandleErrors(
+                                              "JSONRequestMessage",
+                                              $"Sent message result: {sentMessageResult}"
+                                          );
+                                }
 
                             }
 
@@ -1187,6 +1245,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return default;
 
         }
+
+        #endregion
+
+        #region (private) HandleErrors  (Caller, ErrorResponse)
+
+        private Task HandleErrors(String  Caller,
+                                  String  ErrorResponse)
+
+            => parentNetworkingNode.HandleErrors(
+                   nameof(OCPPWebSocketAdapterIN),
+                   Caller,
+                   ErrorResponse
+               );
 
         #endregion
 

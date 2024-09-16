@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_BootNotification(DateTime              RequestTimestamp,
                                      IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting     Destination,
+                                     SourceRouting         Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
                                      Request_Id            RequestId,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (BootNotificationRequest.TryParse(JSONRequest,
                                                      RequestId,
-                                                 Destination,
+                                                     Destination,
                                                      NetworkPath,
                                                      out var request,
                                                      out var errorResponse,

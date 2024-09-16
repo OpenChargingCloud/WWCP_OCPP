@@ -853,6 +853,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 // ChargingStation
                 // Reason
 
+                if (!Routing.LookupNetworkingNode(request.NetworkPath.Source, out _))
+                {
+                    Routing.AddOrUpdateStaticRouting(
+                        request.NetworkPath.Source,
+                        request.NetworkPath.Last
+                    );
+                }
+
                 return Task.FromResult(
                            new BootNotificationResponse(
                                Request:               request,

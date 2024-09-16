@@ -158,8 +158,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS;
-
             #region Create new OCPP WebSocket client
 
             var ocppWebSocketClient = new OCPP.WebSockets.OCPPWebSocketClient(

@@ -25,9 +25,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.OCPP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -711,14 +710,15 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToJSON()
+        #region ToJSON(ForcedNetworkingMode = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public JArray ToJSON()
+        /// <param name="ForcedNetworkingMode">Optionally enforce the given </param>
+        public JArray ToJSON(NetworkingMode? ForcedNetworkingMode = null)
 
-            => NetworkingMode switch {
+            => (ForcedNetworkingMode ?? NetworkingMode) switch {
 
                    #region OCPP Standard Mode
 

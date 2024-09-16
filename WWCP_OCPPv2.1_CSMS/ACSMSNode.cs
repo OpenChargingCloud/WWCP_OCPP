@@ -2436,46 +2436,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-
-        #region (override) HandleErrors(Module, Caller, ErrorResponse)
-
-        public override Task HandleErrors(String  Module,
-                                          String  Caller,
-                                          String  ErrorResponse)
-        {
-
-            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
-
-            return base.HandleErrors(
-                       Module,
-                       Caller,
-                       ErrorResponse
-                   );
-
-        }
-
-        #endregion
-
-        #region (override) HandleErrors(Module, Caller, ExceptionOccured)
-
-        public override Task HandleErrors(String     Module,
-                                          String     Caller,
-                                          Exception  ExceptionOccured)
-        {
-
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
-
-            return base.HandleErrors(
-                       Module,
-                       Caller,
-                       ExceptionOccured
-                   );
-
-        }
-
-        #endregion
-
-
     }
 
 }

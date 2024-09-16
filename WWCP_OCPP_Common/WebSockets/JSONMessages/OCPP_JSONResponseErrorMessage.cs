@@ -25,9 +25,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.OCPP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -560,41 +559,41 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToJSON()
+        #region ToJSON(ForcedNetworkingMode = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public JArray ToJSON()
+        /// <param name="ForcedNetworkingMode">Optionally enforce the given </param>
+        public JArray ToJSON(NetworkingMode? ForcedNetworkingMode = null)
 
-            // [
-            //     5,            // MessageType: CALLRESULTERROR
-            //    "19223201",    // RequestId from request
-            //    "<errorCode>",
-            //    "<errorDescription>",
-            //    {
-            //        <errorDetails>
-            //    }
-            // ]
+            => (ForcedNetworkingMode ?? NetworkingMode) switch {
 
-            // Error Code                    Description
-            // -----------------------------------------------------------------------------------------------
-            // NotImplemented                Requested Action is not known by receiver
-            // NotSupported                  Requested Action is recognized but not supported by the receiver
-            // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
-            // ProtocolError                 Payload for Action is incomplete
-            // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
-            // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
-            // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
-            // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
-            // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
-            // GenericError                  Any other error not covered by the previous ones
+                   #region OCPP Standard Mode
 
-            => new (4,
-                    RequestId.ToString(),
-                    ErrorCode.ToString(),
-                    ErrorDescription,
-                    ErrorDetails);
+                   NetworkingMode.Unknown or
+                   NetworkingMode.Standard
+                       => new (5,
+                              RequestId.ToString(),
+                              ErrorCode.ToString(),
+                              ErrorDescription,
+                              ErrorDetails),
+
+                   #endregion
+
+                   #region OCPP Overlay Network Mode
+
+                   _ => new (5,
+                             Destination.Next.ToString(),
+                             NetworkPath.     ToJSON(),
+                             RequestId.       ToString(),
+                             ErrorCode.       ToString(),
+                             ErrorDescription,
+                             ErrorDetails)
+
+                   #endregion
+
+               };
 
         #endregion
 

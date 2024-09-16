@@ -35,6 +35,10 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Authentication;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -786,6 +790,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             };
 
         }
+
+        #endregion
+
+
+        #region ConnectWebSocketClient(...)
+
+        public override Task<HTTPResponse>
+
+            ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
+                                       HTTPHostname?                                                   VirtualHostname              = null,
+                                       I18NString?                                                     Description                  = null,
+                                       Boolean?                                                        PreferIPv4                   = null,
+                                       RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
+                                       X509Certificate?                                                ClientCert                   = null,
+                                       SslProtocols?                                                   TLSProtocol                  = null,
+                                       String?                                                         HTTPUserAgent                = null,
+                                       IHTTPAuthentication?                                            HTTPAuthentication           = null,
+                                       TimeSpan?                                                       RequestTimeout               = null,
+                                       TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
+                                       UInt16?                                                         MaxNumberOfRetries           = 3,
+                                       UInt32?                                                         InternalBufferSize           = null,
+
+                                       IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                       NetworkingMode?                                                 NetworkingMode               = null,
+                                       NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
+                                       IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
+
+                                       Boolean                                                         DisableWebSocketPings        = false,
+                                       TimeSpan?                                                       WebSocketPingEvery           = null,
+                                       TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+
+                                       Boolean                                                         DisableMaintenanceTasks      = false,
+                                       TimeSpan?                                                       MaintenanceEvery             = null,
+
+                                       String?                                                         LoggingPath                  = null,
+                                       String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?                                         LogfileCreator               = null,
+                                       HTTPClientLogger?                                               HTTPLogger                   = null,
+                                       DNSClient?                                                      DNSClient                    = null,
+
+                                       EventTracking_Id?                                               EventTrackingId              = null,
+                                       CancellationToken                                               CancellationToken            = default)
+
+            => base.ConnectOCPPWebSocketClient(
+                   RemoteURL,
+                   VirtualHostname,
+                   Description,
+                   PreferIPv4,
+                   RemoteCertificateValidator,
+                   LocalCertificateSelector,
+                   ClientCert,
+                   TLSProtocol,
+                   HTTPUserAgent,
+                   HTTPAuthentication,
+                   RequestTimeout,
+                   TransmissionRetryDelay,
+                   MaxNumberOfRetries,
+                   InternalBufferSize,
+
+                   SecWebSocketProtocols,
+                   NetworkingMode,
+                   NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS,
+                   RoutingNetworkingNodeIds,
+
+                   DisableWebSocketPings,
+                   WebSocketPingEvery,
+                   SlowNetworkSimulationDelay,
+
+                   DisableMaintenanceTasks,
+                   MaintenanceEvery,
+
+                   LoggingPath,
+                   LoggingContext,
+                   LogfileCreator,
+                   HTTPLogger,
+                   DNSClient,
+
+                   EventTrackingId,
+                   CancellationToken
+               );
 
         #endregion
 
