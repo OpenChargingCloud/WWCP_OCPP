@@ -1003,7 +1003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("preconditioningStatus",
                                        "preconditioning status",
-                                       PreconditioningStatusExtensions.TryParse,
+                                       OCPPv2_1.PreconditioningStatus.TryParse,
                                        out PreconditioningStatus? PreconditioningStatus,
                                        out ErrorResponse))
                 {
@@ -1168,7 +1168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            PreconditioningStatus.HasValue
-                               ? new JProperty("preconditioningStatus",   PreconditioningStatus.Value.AsText())
+                               ? new JProperty("preconditioningStatus",   PreconditioningStatus.Value.ToString())
                                : null,
 
                            Signatures.Any()
