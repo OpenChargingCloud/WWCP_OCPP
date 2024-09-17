@@ -19,7 +19,6 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.WWCP;
 
 #endregion
@@ -39,6 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Indicates the configuration profile the station uses at that moment to connect to the network.
         /// </summary>
         public NetworkProfiles?                   ActiveNetworkProfile                { get; }
+
+        /// <summary>
+        /// The optional timestamp when the configuration was changed externally, i.e. outside of CSMS,
+        /// for example by a local service action. This can be monitored by CSMS to decide whether to
+        /// issue a new GetBaseReportRequest to get the updated configuration.
+        /// </summary>
+        public DateTime?                          ExternalConfigChangeDate            { get; internal set; }
 
         /// <summary>
         /// List of supported file transfer protocols.
@@ -147,6 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ResetRetries">Number of times to retry a reset of the charging station when a reset was unsuccessful.</param>
         /// 
         /// <param name="ActiveNetworkProfile">Indicates the configuration profile the station uses at that moment to connect to the network.</param>
+        /// <param name="ExternalConfigChangeDate">An optional timestamp when the configuration was changed externally, i.e. outside of CSMS, for example by a local service action. This can be monitored by CSMS to decide whether to issue a new GetBaseReportRequest to get the updated configuration.</param>
         /// <param name="HeartbeatInterval">Interval in seconds of inactivity (no OCPP exchanges) with CSMS after which the charging station should send HeartbeatRequest.</param>
         /// <param name="PublicKeyWithSignedMeterValue">This Configuration Variable can be used to configure whether a public key needs to be sent with a signed meter value.</param>
         /// <param name="QueueAllMessages">When this variable is set to true, the charging station will queue all message until they are delivered to the CSMS.</param>
@@ -168,6 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                              Byte                               ResetRetries,                               // ToDo: Only defined in 2.1.14. but not under 3.1.12. OCPPCommCtrlr
 
                              NetworkProfiles?                   ActiveNetworkProfile               = null,
+                             DateTime?                          ExternalConfigChangeDate           = null,
                              TimeSpan?                          HeartbeatInterval                  = null,
                              PublicKeyWithSignedMeterValues?    PublicKeyWithSignedMeterValue      = null,  // ToDo: Should not be here!
                              Boolean?                           QueueAllMessages                   = null,
@@ -197,6 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ResetRetries                      = ResetRetries;
 
             this.ActiveNetworkProfile              = ActiveNetworkProfile;
+            this.ExternalConfigChangeDate          = ExternalConfigChangeDate;
             this.HeartbeatInterval                 = HeartbeatInterval;
             this.PublicKeyWithSignedMeterValue     = PublicKeyWithSignedMeterValue;
             this.QueueAllMessages                  = QueueAllMessages;
@@ -223,6 +232,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       ),
 
                     Description:      I18NString.Create("Indicates the configuration profile the station uses at that moment to connect to the network.")
+
+                )
+            );
+
+            #endregion
+
+            #region ExternalConfigChangeDate
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ExternalConfigChangeDate",
+                    ValueGetter:      () => this.ExternalConfigChangeDate?.ToIso8601(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.DateTime
+                                      ),
+
+                    Description:      I18NString.Create("An optional timestamp when the configuration was changed externally, i.e. outside of CSMS, for example by a local service action. This can be monitored by CSMS to decide whether to issue a new GetBaseReportRequest to get the updated configuration.")
 
                 )
             );

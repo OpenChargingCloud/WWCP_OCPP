@@ -202,26 +202,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// ASCII
         /// </summary>
-        public static MessageFormat ASCII    { get; }
+        public static MessageFormat  ASCII     { get; }
             = Register("ASCII");
 
         /// <summary>
         /// HTML
         /// </summary>
-        public static MessageFormat HTML     { get; }
+        public static MessageFormat  HTML      { get; }
             = Register("HTML");
 
         /// <summary>
         /// URL/URI
         /// </summary>
-        public static MessageFormat URI      { get; }
+        public static MessageFormat  URI       { get; }
             = Register("URI");
 
         /// <summary>
         /// UTF8
         /// </summary>
-        public static MessageFormat UTF8     { get; }
+        public static MessageFormat  UTF8      { get; }
             = Register("UTF8");
+
+        /// <summary>
+        /// QR-Code
+        /// </summary>
+        public static MessageFormat  QRCODE    { get; }
+            = Register("QRCODE");
 
         #endregion
 

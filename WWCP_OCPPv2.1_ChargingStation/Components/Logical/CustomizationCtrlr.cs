@@ -42,7 +42,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// variable matches the vendorId of the customization in CustomData or
         /// DataTransfer messages.
         /// </summary>
-        public Boolean?  CustomImplementationEnabled    { get; set; }
+        public Boolean?             CustomImplementationEnabled    { get; set; }
+
+
+        /// <summary>
+        /// This variable defines the names of custom triggers that a charging station
+        /// supports in a customTrigger field of TriggerMessageRequest.
+        /// </summary>
+        public IEnumerable<String>  CustomTriggers                 { get; }
 
         #endregion
 
@@ -52,13 +59,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new customization controller.
         /// </summary>
         /// <param name="CustomImplementationEnabled">This standard configuration variable can be used to enable/disable custom implementations that the Charging Station supports.The instance name of the variable matches the vendorId of the customization in CustomData or DataTransfer messages.</param>
-        /// 
+        /// <param name="CustomTriggers">This variable defines the names of custom triggers that a charging station supports in a customTrigger field of TriggerMessageRequest.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public CustomizationCtrlr(Boolean?     CustomImplementationEnabled   = null,
+        public CustomizationCtrlr(Boolean?              CustomImplementationEnabled   = null,
+                                  IEnumerable<String>?  CustomTriggers                = null,
 
-                                  String?      Instance                      = null,
-                                  CustomData?  CustomData                    = null)
+                                  String?               Instance                      = null,
+                                  CustomData?           CustomData                    = null)
 
             : base(nameof(CustomizationCtrlr),
                    Instance,
@@ -67,8 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.CustomImplementationEnabled = CustomImplementationEnabled;
-
+            this.CustomImplementationEnabled  = CustomImplementationEnabled;
+            this.CustomTriggers               = CustomTriggers ?? [];
 
             #region Enabled
 
@@ -101,9 +109,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region CustomTriggers
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "CustomTriggers",
+                    ValueGetter:      () => this.CustomTriggers.AggregateWith(", "),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.MemberList
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "This variable defines the names of custom triggers that a charging station supports" +
+                                          " in a customTrigger field of TriggerMessageRequest."
+                                      )
+
+                )
+            );
+
+            #endregion
+
         }
 
         #endregion
+
+
 
 
     }
