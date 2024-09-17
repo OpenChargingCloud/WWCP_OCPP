@@ -31,11 +31,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A ThrottlePeriodicEventStream response.
+    /// A AdjustPeriodicEventStream response.
     /// </summary>
-    public class ThrottlePeriodicEventStreamResponse : AResponse<CSMS.ThrottlePeriodicEventStreamRequest,
-                                                                      ThrottlePeriodicEventStreamResponse>,
-                                                       IResponse<Result>
+    public class AdjustPeriodicEventStreamResponse : AResponse<CSMS.AdjustPeriodicEventStreamRequest,
+                                                                    AdjustPeriodicEventStreamResponse>,
+                                                     IResponse<Result>
     {
 
         #region Data
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region ThrottlePeriodicEventStreamResponse(Request, Status, StatusInfo = null, ...)
+        #region AdjustPeriodicEventStreamResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new open periodic event stream response.
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ThrottlePeriodicEventStreamResponse(CSMS.ThrottlePeriodicEventStreamRequest  Request,
+        public AdjustPeriodicEventStreamResponse(CSMS.AdjustPeriodicEventStreamRequest  Request,
                                                    GenericStatus                            Status,
                                                    StatusInfo?                              StatusInfo          = null,
                                                    DateTime?                                ResponseTimestamp   = null,
@@ -128,14 +128,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ThrottlePeriodicEventStreamResponse(Request, Result)
+        #region AdjustPeriodicEventStreamResponse(Request, Result)
 
         /// <summary>
         /// Create a new open periodic event stream response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public ThrottlePeriodicEventStreamResponse(CSMS.ThrottlePeriodicEventStreamRequest  Request,
+        public AdjustPeriodicEventStreamResponse(CSMS.AdjustPeriodicEventStreamRequest  Request,
                                                    Result                                   Result)
 
             : base(Request,
@@ -159,17 +159,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomThrottlePeriodicEventStreamResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomAdjustPeriodicEventStreamResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get periodic event streams response.
         /// </summary>
         /// <param name="Request">The open periodic event stream request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomThrottlePeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static ThrottlePeriodicEventStreamResponse Parse(CSMS.ThrottlePeriodicEventStreamRequest                            Request,
+        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
+        public static AdjustPeriodicEventStreamResponse Parse(CSMS.AdjustPeriodicEventStreamRequest                            Request,
                                                                 JObject                                                            JSON,
-                                                                CustomJObjectParserDelegate<ThrottlePeriodicEventStreamResponse>?  CustomThrottlePeriodicEventStreamResponseParser   = null)
+                                                                CustomJObjectParserDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseParser   = null)
         {
 
 
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var throttlePeriodicEventStreamResponse,
                          out var errorResponse,
-                         CustomThrottlePeriodicEventStreamResponseParser) &&
+                         CustomAdjustPeriodicEventStreamResponseParser) &&
                 throttlePeriodicEventStreamResponse is not null)
             {
                 return throttlePeriodicEventStreamResponse;
@@ -190,27 +190,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ThrottlePeriodicEventStreamResponse, out ErrorResponse, CustomThrottlePeriodicEventStreamResponseParser = null)
+        #region (static) TryParse(Request, JSON, out AdjustPeriodicEventStreamResponse, out ErrorResponse, CustomAdjustPeriodicEventStreamResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a get periodic event streams response.
         /// </summary>
         /// <param name="Request">The open periodic event stream request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ThrottlePeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomThrottlePeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static Boolean TryParse(CSMS.ThrottlePeriodicEventStreamRequest                            Request,
+        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
+        public static Boolean TryParse(CSMS.AdjustPeriodicEventStreamRequest                            Request,
                                        JObject                                                            JSON,
-                                       [NotNullWhen(true)]  out ThrottlePeriodicEventStreamResponse?      ThrottlePeriodicEventStreamResponse,
+                                       [NotNullWhen(true)]  out AdjustPeriodicEventStreamResponse?      AdjustPeriodicEventStreamResponse,
                                        [NotNullWhen(false)] out String?                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<ThrottlePeriodicEventStreamResponse>?  CustomThrottlePeriodicEventStreamResponseParser   = null)
+                                       CustomJObjectParserDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseParser   = null)
         {
 
             try
             {
 
-                ThrottlePeriodicEventStreamResponse = null;
+                AdjustPeriodicEventStreamResponse = null;
 
                 #region Status        [mandatory]
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                ThrottlePeriodicEventStreamResponse = new ThrottlePeriodicEventStreamResponse(
+                AdjustPeriodicEventStreamResponse = new AdjustPeriodicEventStreamResponse(
 
                                                           Request,
                                                           Status,
@@ -284,17 +284,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                       );
 
-                if (CustomThrottlePeriodicEventStreamResponseParser is not null)
-                    ThrottlePeriodicEventStreamResponse = CustomThrottlePeriodicEventStreamResponseParser(JSON,
-                                                                                                          ThrottlePeriodicEventStreamResponse);
+                if (CustomAdjustPeriodicEventStreamResponseParser is not null)
+                    AdjustPeriodicEventStreamResponse = CustomAdjustPeriodicEventStreamResponseParser(JSON,
+                                                                                                          AdjustPeriodicEventStreamResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ThrottlePeriodicEventStreamResponse  = null;
-                ErrorResponse                        = "The given JSON representation of a ThrottlePeriodicEventStreamResponse is invalid: " + e.Message;
+                AdjustPeriodicEventStreamResponse  = null;
+                ErrorResponse                        = "The given JSON representation of a AdjustPeriodicEventStreamResponse is invalid: " + e.Message;
                 return false;
             }
 
@@ -302,16 +302,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomThrottlePeriodicEventStreamResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomAdjustPeriodicEventStreamResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomThrottlePeriodicEventStreamResponseSerializer">A delegate to serialize custom open periodic event stream responses.</param>
+        /// <param name="CustomAdjustPeriodicEventStreamResponseSerializer">A delegate to serialize custom open periodic event stream responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ThrottlePeriodicEventStreamResponse>?  CustomThrottlePeriodicEventStreamResponseSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                           CustomStatusInfoSerializer                            = null,
                               CustomJObjectSerializerDelegate<Signature>?                            CustomSignatureSerializer                             = null,
                               CustomJObjectSerializerDelegate<CustomData>?                           CustomCustomDataSerializer                            = null)
@@ -337,8 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomThrottlePeriodicEventStreamResponseSerializer is not null
-                       ? CustomThrottlePeriodicEventStreamResponseSerializer(this, json)
+            return CustomAdjustPeriodicEventStreamResponseSerializer is not null
+                       ? CustomAdjustPeriodicEventStreamResponseSerializer(this, json)
                        : json;
 
         }
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The open periodic event stream failed.
         /// </summary>
-        public static ThrottlePeriodicEventStreamResponse Failed(CSMS.ThrottlePeriodicEventStreamRequest Request)
+        public static AdjustPeriodicEventStreamResponse Failed(CSMS.AdjustPeriodicEventStreamRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -361,50 +361,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Operator overloading
 
-        #region Operator == (ThrottlePeriodicEventStreamResponse1, ThrottlePeriodicEventStreamResponse2)
+        #region Operator == (AdjustPeriodicEventStreamResponse1, AdjustPeriodicEventStreamResponse2)
 
         /// <summary>
         /// Compares two open periodic event stream responses for equality.
         /// </summary>
-        /// <param name="ThrottlePeriodicEventStreamResponse1">A get periodic event streams response.</param>
-        /// <param name="ThrottlePeriodicEventStreamResponse2">Another open periodic event stream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse1">A get periodic event streams response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ThrottlePeriodicEventStreamResponse? ThrottlePeriodicEventStreamResponse1,
-                                           ThrottlePeriodicEventStreamResponse? ThrottlePeriodicEventStreamResponse2)
+        public static Boolean operator == (AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse1,
+                                           AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ThrottlePeriodicEventStreamResponse1, ThrottlePeriodicEventStreamResponse2))
+            if (ReferenceEquals(AdjustPeriodicEventStreamResponse1, AdjustPeriodicEventStreamResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (ThrottlePeriodicEventStreamResponse1 is null || ThrottlePeriodicEventStreamResponse2 is null)
+            if (AdjustPeriodicEventStreamResponse1 is null || AdjustPeriodicEventStreamResponse2 is null)
                 return false;
 
-            return ThrottlePeriodicEventStreamResponse1.Equals(ThrottlePeriodicEventStreamResponse2);
+            return AdjustPeriodicEventStreamResponse1.Equals(AdjustPeriodicEventStreamResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (ThrottlePeriodicEventStreamResponse1, ThrottlePeriodicEventStreamResponse2)
+        #region Operator != (AdjustPeriodicEventStreamResponse1, AdjustPeriodicEventStreamResponse2)
 
         /// <summary>
         /// Compares two open periodic event stream responses for inequality.
         /// </summary>
-        /// <param name="ThrottlePeriodicEventStreamResponse1">A get periodic event streams response.</param>
-        /// <param name="ThrottlePeriodicEventStreamResponse2">Another open periodic event stream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse1">A get periodic event streams response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ThrottlePeriodicEventStreamResponse? ThrottlePeriodicEventStreamResponse1,
-                                           ThrottlePeriodicEventStreamResponse? ThrottlePeriodicEventStreamResponse2)
+        public static Boolean operator != (AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse1,
+                                           AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse2)
 
-            => !(ThrottlePeriodicEventStreamResponse1 == ThrottlePeriodicEventStreamResponse2);
-
-        #endregion
+            => !(AdjustPeriodicEventStreamResponse1 == AdjustPeriodicEventStreamResponse2);
 
         #endregion
 
-        #region IEquatable<ThrottlePeriodicEventStreamResponse> Members
+        #endregion
+
+        #region IEquatable<AdjustPeriodicEventStreamResponse> Members
 
         #region Equals(Object)
 
@@ -414,27 +414,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Object">A get periodic event streams response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ThrottlePeriodicEventStreamResponse throttlePeriodicEventStreamResponse &&
+            => Object is AdjustPeriodicEventStreamResponse throttlePeriodicEventStreamResponse &&
                    Equals(throttlePeriodicEventStreamResponse);
 
         #endregion
 
-        #region Equals(ThrottlePeriodicEventStreamResponse)
+        #region Equals(AdjustPeriodicEventStreamResponse)
 
         /// <summary>
         /// Compares two open periodic event stream responses for equality.
         /// </summary>
-        /// <param name="ThrottlePeriodicEventStreamResponse">A get periodic event streams response to compare with.</param>
-        public override Boolean Equals(ThrottlePeriodicEventStreamResponse? ThrottlePeriodicEventStreamResponse)
+        /// <param name="AdjustPeriodicEventStreamResponse">A get periodic event streams response to compare with.</param>
+        public override Boolean Equals(AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse)
 
-            => ThrottlePeriodicEventStreamResponse is not null &&
+            => AdjustPeriodicEventStreamResponse is not null &&
 
-               Status.Equals(ThrottlePeriodicEventStreamResponse.Status) &&
+               Status.Equals(AdjustPeriodicEventStreamResponse.Status) &&
 
-             ((StatusInfo is     null && ThrottlePeriodicEventStreamResponse.StatusInfo is     null) ||
-              (StatusInfo is not null && ThrottlePeriodicEventStreamResponse.StatusInfo is not null && StatusInfo.Equals(ThrottlePeriodicEventStreamResponse.StatusInfo))) &&
+             ((StatusInfo is     null && AdjustPeriodicEventStreamResponse.StatusInfo is     null) ||
+              (StatusInfo is not null && AdjustPeriodicEventStreamResponse.StatusInfo is not null && StatusInfo.Equals(AdjustPeriodicEventStreamResponse.StatusInfo))) &&
 
-               base.GenericEquals(ThrottlePeriodicEventStreamResponse);
+               base.GenericEquals(AdjustPeriodicEventStreamResponse);
 
         #endregion
 

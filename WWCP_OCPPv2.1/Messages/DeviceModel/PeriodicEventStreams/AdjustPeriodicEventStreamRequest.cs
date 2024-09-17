@@ -33,9 +33,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A ThrottlePeriodicEventStream request.
+    /// A AdjustPeriodicEventStream request.
     /// </summary>
-    public class ThrottlePeriodicEventStreamRequest : ARequest<ThrottlePeriodicEventStreamRequest>,
+    public class AdjustPeriodicEventStreamRequest : ARequest<AdjustPeriodicEventStreamRequest>,
                                                       IRequest
     {
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/csms/ThrottlePeriodicEventStreamsRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/csms/AdjustPeriodicEventStreamsRequest");
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The unique identification of the data stream to throttle.
+        /// The unique identification of the data stream to adjust.
         /// </summary>
         [Mandatory]
         public PeriodicEventStream_Id         StreamId      { get; }
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new get periodic event stream request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="StreamId">The unique identification of the data stream to throttle.</param>
+        /// <param name="StreamId">The unique identification of the data stream to adjust.</param>
         /// <param name="Parameters">The updated rate of sending data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ThrottlePeriodicEventStreamRequest(SourceRouting                  Destination,
+        public AdjustPeriodicEventStreamRequest(SourceRouting                  Destination,
                                                   PeriodicEventStream_Id         StreamId,
                                                   PeriodicEventStreamParameters  Parameters,
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   CancellationToken              CancellationToken     = default)
 
             : base(Destination,
-                   nameof(ThrottlePeriodicEventStreamRequest)[..^7],
+                   nameof(AdjustPeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -147,21 +147,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomThrottlePeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomAdjustPeriodicEventStreamRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an ThrottlePeriodicEventStreams request.
+        /// Parse the given JSON representation of an AdjustPeriodicEventStreams request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
-        public static ThrottlePeriodicEventStreamRequest Parse(JObject                                                           JSON,
+        /// <param name="CustomAdjustPeriodicEventStreamRequestParser">A delegate to parse custom AdjustPeriodicEventStreams requests.</param>
+        public static AdjustPeriodicEventStreamRequest Parse(JObject                                                           JSON,
                                                                Request_Id                                                        RequestId,
                                                                SourceRouting                                                 Destination,
                                                                NetworkPath                                                       NetworkPath,
-                                                               CustomJObjectParserDelegate<ThrottlePeriodicEventStreamRequest>?  CustomThrottlePeriodicEventStreamRequestParser   = null)
+                                                               CustomJObjectParserDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestParser   = null)
         {
 
 
@@ -169,73 +169,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          RequestId,
                          Destination,
                          NetworkPath,
-                         out var throttlePeriodicEventStreamsRequest,
+                         out var adjustPeriodicEventStreamsRequest,
                          out var errorResponse,
-                         CustomThrottlePeriodicEventStreamRequestParser) &&
-                throttlePeriodicEventStreamsRequest is not null)
+                         CustomAdjustPeriodicEventStreamRequestParser) &&
+                adjustPeriodicEventStreamsRequest is not null)
             {
-                return throttlePeriodicEventStreamsRequest;
+                return adjustPeriodicEventStreamsRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a ThrottlePeriodicEventStreams request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a AdjustPeriodicEventStreams request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ThrottlePeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out AdjustPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a ThrottlePeriodicEventStreams request.
+        /// Try to parse the given JSON representation of a AdjustPeriodicEventStreams request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest">The parsed AdjustPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
                                        SourceRouting                                             Destination,
                                        NetworkPath                                                   NetworkPath,
-                                       [NotNullWhen(true)]  out ThrottlePeriodicEventStreamRequest?  ThrottlePeriodicEventStreamRequest,
+                                       [NotNullWhen(true)]  out AdjustPeriodicEventStreamRequest?  AdjustPeriodicEventStreamRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
                         Destination,
                         NetworkPath,
-                        out ThrottlePeriodicEventStreamRequest,
+                        out AdjustPeriodicEventStreamRequest,
                         out ErrorResponse,
                         null);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a ThrottlePeriodicEventStreams request.
+        /// Try to parse the given JSON representation of a AdjustPeriodicEventStreams request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ThrottlePeriodicEventStreamRequest">The parsed ThrottlePeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest">The parsed AdjustPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomThrottlePeriodicEventStreamRequestParser">A delegate to parse custom ThrottlePeriodicEventStreams requests.</param>
+        /// <param name="CustomAdjustPeriodicEventStreamRequestParser">A delegate to parse custom AdjustPeriodicEventStreams requests.</param>
         public static Boolean TryParse(JObject                                                           JSON,
                                        Request_Id                                                        RequestId,
                                        SourceRouting                                                 Destination,
                                        NetworkPath                                                       NetworkPath,
-                                       [NotNullWhen(true)]  out ThrottlePeriodicEventStreamRequest?      ThrottlePeriodicEventStreamRequest,
+                                       [NotNullWhen(true)]  out AdjustPeriodicEventStreamRequest?      AdjustPeriodicEventStreamRequest,
                                        [NotNullWhen(false)] out String?                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<ThrottlePeriodicEventStreamRequest>?  CustomThrottlePeriodicEventStreamRequestParser)
+                                       CustomJObjectParserDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestParser)
         {
 
             try
             {
 
-                ThrottlePeriodicEventStreamRequest = null;
+                AdjustPeriodicEventStreamRequest = null;
 
                 #region StreamId      [mandatory]
 
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                ThrottlePeriodicEventStreamRequest = new ThrottlePeriodicEventStreamRequest(
+                AdjustPeriodicEventStreamRequest = new AdjustPeriodicEventStreamRequest(
 
                                                     Destination,
                                                     StreamId,
@@ -313,17 +313,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                                 );
 
-                if (CustomThrottlePeriodicEventStreamRequestParser is not null)
-                    ThrottlePeriodicEventStreamRequest = CustomThrottlePeriodicEventStreamRequestParser(JSON,
-                                                                                              ThrottlePeriodicEventStreamRequest);
+                if (CustomAdjustPeriodicEventStreamRequestParser is not null)
+                    AdjustPeriodicEventStreamRequest = CustomAdjustPeriodicEventStreamRequestParser(JSON,
+                                                                                              AdjustPeriodicEventStreamRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ThrottlePeriodicEventStreamRequest  = null;
-                ErrorResponse                  = "The given JSON representation of a ThrottlePeriodicEventStreams request is invalid: " + e.Message;
+                AdjustPeriodicEventStreamRequest  = null;
+                ErrorResponse                  = "The given JSON representation of a AdjustPeriodicEventStreams request is invalid: " + e.Message;
                 return false;
             }
 
@@ -331,16 +331,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomThrottlePeriodicEventStreamRequestSerializer = null, CustomPeriodicEventStreamParametersSerializer = null, ...)
+        #region ToJSON(CustomAdjustPeriodicEventStreamRequestSerializer = null, CustomPeriodicEventStreamParametersSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomThrottlePeriodicEventStreamRequestSerializer">A delegate to serialize custom ThrottlePeriodicEventStreams requests.</param>
+        /// <param name="CustomAdjustPeriodicEventStreamRequestSerializer">A delegate to serialize custom AdjustPeriodicEventStreams requests.</param>
         /// <param name="CustomPeriodicEventStreamParametersSerializer">A delegate to serialize custom periodic event stream parameterss.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ThrottlePeriodicEventStreamRequest>?  CustomThrottlePeriodicEventStreamRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?       CustomPeriodicEventStreamParametersSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                           CustomSignatureSerializer                       = null,
                               CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                      = null)
@@ -363,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                        );
 
-            return CustomThrottlePeriodicEventStreamRequestSerializer is not null
-                       ? CustomThrottlePeriodicEventStreamRequestSerializer(this, json)
+            return CustomAdjustPeriodicEventStreamRequestSerializer is not null
+                       ? CustomAdjustPeriodicEventStreamRequestSerializer(this, json)
                        : json;
 
         }
@@ -374,78 +374,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Operator overloading
 
-        #region Operator == (ThrottlePeriodicEventStreamRequest1, ThrottlePeriodicEventStreamRequest2)
+        #region Operator == (AdjustPeriodicEventStreamRequest1, AdjustPeriodicEventStreamRequest2)
 
         /// <summary>
-        /// Compares two ThrottlePeriodicEventStreams requests for equality.
+        /// Compares two AdjustPeriodicEventStreams requests for equality.
         /// </summary>
-        /// <param name="ThrottlePeriodicEventStreamRequest1">A ThrottlePeriodicEventStreams request.</param>
-        /// <param name="ThrottlePeriodicEventStreamRequest2">Another ThrottlePeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest1">A AdjustPeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest2">Another AdjustPeriodicEventStreams request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ThrottlePeriodicEventStreamRequest? ThrottlePeriodicEventStreamRequest1,
-                                           ThrottlePeriodicEventStreamRequest? ThrottlePeriodicEventStreamRequest2)
+        public static Boolean operator == (AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest1,
+                                           AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ThrottlePeriodicEventStreamRequest1, ThrottlePeriodicEventStreamRequest2))
+            if (ReferenceEquals(AdjustPeriodicEventStreamRequest1, AdjustPeriodicEventStreamRequest2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (ThrottlePeriodicEventStreamRequest1 is null || ThrottlePeriodicEventStreamRequest2 is null)
+            if (AdjustPeriodicEventStreamRequest1 is null || AdjustPeriodicEventStreamRequest2 is null)
                 return false;
 
-            return ThrottlePeriodicEventStreamRequest1.Equals(ThrottlePeriodicEventStreamRequest2);
+            return AdjustPeriodicEventStreamRequest1.Equals(AdjustPeriodicEventStreamRequest2);
 
         }
 
         #endregion
 
-        #region Operator != (ThrottlePeriodicEventStreamRequest1, ThrottlePeriodicEventStreamRequest2)
+        #region Operator != (AdjustPeriodicEventStreamRequest1, AdjustPeriodicEventStreamRequest2)
 
         /// <summary>
-        /// Compares two ThrottlePeriodicEventStreams requests for inequality.
+        /// Compares two AdjustPeriodicEventStreams requests for inequality.
         /// </summary>
-        /// <param name="ThrottlePeriodicEventStreamRequest1">A ThrottlePeriodicEventStreams request.</param>
-        /// <param name="ThrottlePeriodicEventStreamRequest2">Another ThrottlePeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest1">A AdjustPeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest2">Another AdjustPeriodicEventStreams request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ThrottlePeriodicEventStreamRequest? ThrottlePeriodicEventStreamRequest1,
-                                           ThrottlePeriodicEventStreamRequest? ThrottlePeriodicEventStreamRequest2)
+        public static Boolean operator != (AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest1,
+                                           AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest2)
 
-            => !(ThrottlePeriodicEventStreamRequest1 == ThrottlePeriodicEventStreamRequest2);
-
-        #endregion
+            => !(AdjustPeriodicEventStreamRequest1 == AdjustPeriodicEventStreamRequest2);
 
         #endregion
 
-        #region IEquatable<ThrottlePeriodicEventStreamRequest> Members
+        #endregion
+
+        #region IEquatable<AdjustPeriodicEventStreamRequest> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two ThrottlePeriodicEventStreams requests for equality.
+        /// Compares two AdjustPeriodicEventStreams requests for equality.
         /// </summary>
-        /// <param name="Object">A ThrottlePeriodicEventStreams request to compare with.</param>
+        /// <param name="Object">A AdjustPeriodicEventStreams request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ThrottlePeriodicEventStreamRequest ThrottlePeriodicEventStreamsRequest &&
-                   Equals(ThrottlePeriodicEventStreamsRequest);
+            => Object is AdjustPeriodicEventStreamRequest AdjustPeriodicEventStreamsRequest &&
+                   Equals(AdjustPeriodicEventStreamsRequest);
 
         #endregion
 
-        #region Equals(ThrottlePeriodicEventStreamRequest)
+        #region Equals(AdjustPeriodicEventStreamRequest)
 
         /// <summary>
-        /// Compares two ThrottlePeriodicEventStreams requests for equality.
+        /// Compares two AdjustPeriodicEventStreams requests for equality.
         /// </summary>
-        /// <param name="ThrottlePeriodicEventStreamRequest">A ThrottlePeriodicEventStreams request to compare with.</param>
-        public override Boolean Equals(ThrottlePeriodicEventStreamRequest? ThrottlePeriodicEventStreamRequest)
+        /// <param name="AdjustPeriodicEventStreamRequest">A AdjustPeriodicEventStreams request to compare with.</param>
+        public override Boolean Equals(AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest)
 
-            => ThrottlePeriodicEventStreamRequest is not null &&
+            => AdjustPeriodicEventStreamRequest is not null &&
 
-               StreamId.  Equals(ThrottlePeriodicEventStreamRequest.StreamId)   &&
-               Parameters.Equals(ThrottlePeriodicEventStreamRequest.Parameters) &&
+               StreamId.  Equals(AdjustPeriodicEventStreamRequest.StreamId)   &&
+               Parameters.Equals(AdjustPeriodicEventStreamRequest.Parameters) &&
 
-               base.GenericEquals(ThrottlePeriodicEventStreamRequest);
+               base.GenericEquals(AdjustPeriodicEventStreamRequest);
 
         #endregion
 
