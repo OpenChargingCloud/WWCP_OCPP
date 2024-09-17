@@ -195,14 +195,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Immediate reset of the charging station.
         /// </summary>
-        public static ResetType Immediate    { get; }
+        public static ResetType  Immediate             { get; }
             = Register("Immediate");
+
 
         /// <summary>
         /// Delay reset until no more transactions are active.
         /// </summary>
-        public static ResetType OnIdle       { get; }
+        public static ResetType  OnIdle                { get; }
             = Register("OnIdle");
+
+
+        /// <summary>
+        /// Immediate reset the charging station and resume transaction(s) afterwards.
+        /// </summary>
+        public static ResetType  ImmediateAndResume    { get; }
+            = Register("ImmediateAndResume");
 
         #endregion
 
