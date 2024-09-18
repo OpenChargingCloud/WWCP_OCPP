@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                         IEnumerable<Signature>?  Signatures          = null,
+                                         IEnumerable<Signature>?       Signatures          = null,
 
                                          CustomData?                   CustomData          = null,
 

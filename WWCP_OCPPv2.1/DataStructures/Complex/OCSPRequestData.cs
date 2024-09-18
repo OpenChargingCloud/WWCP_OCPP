@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -194,9 +195,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OCSPRequestData">The parsed OCSP request data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out OCSPRequestData?  OCSPRequestData,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out OCSPRequestData?  OCSPRequestData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out OCSPRequestData,
@@ -212,8 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomOCSPRequestDataParser">A delegate to parse custom OCSP request data.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out OCSPRequestData?                           OCSPRequestData,
-                                       out String?                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out OCSPRequestData?      OCSPRequestData,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
                                        CustomJObjectParserDelegate<OCSPRequestData>?  CustomOCSPRequestDataParser)
         {
 

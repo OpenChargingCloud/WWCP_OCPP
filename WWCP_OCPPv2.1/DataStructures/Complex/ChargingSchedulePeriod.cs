@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -362,9 +364,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                      JSON,
-                                       out ChargingSchedulePeriod?  ChargingSchedulePeriod,
-                                       out String?                  ErrorResponse)
+        public static Boolean TryParse(JObject                                           JSON,
+                                       [NotNullWhen(true)]  out ChargingSchedulePeriod?  ChargingSchedulePeriod,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingSchedulePeriod,
@@ -380,8 +382,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingSchedulePeriodParser">A delegate to parse custom CustomChargingSchedulePeriod JSON objects.</param>
         public static Boolean TryParse(JObject                                               JSON,
-                                       out ChargingSchedulePeriod?                           ChargingSchedulePeriod,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingSchedulePeriod?      ChargingSchedulePeriod,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodParser)
         {
 

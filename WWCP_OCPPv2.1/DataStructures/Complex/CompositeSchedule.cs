@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -115,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "customData": {
         //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "compositeSchedulePeriod": {
+        //     "chargingSchedulePeriod": {
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {
@@ -145,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "duration",
         //     "scheduleStart",
         //     "chargingRateUnit",
-        //     "compositeSchedulePeriod"
+        //     "chargingSchedulePeriod"
         //   ]
         // }
 
@@ -188,9 +190,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CompositeSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out CompositeSchedule?  CompositeSchedule,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out CompositeSchedule?  CompositeSchedule,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out CompositeSchedule,
@@ -206,8 +208,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCompositeScheduleParser">A delegate to parse custom Authorize requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out CompositeSchedule?                           CompositeSchedule,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out CompositeSchedule?      CompositeSchedule,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<CompositeSchedule>?  CustomCompositeScheduleParser)
         {
 
@@ -218,8 +220,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region EVSEId                     [mandatory]
 
-                if (!JSON.ParseMandatory("duration",
-                                         "duration",
+                if (!JSON.ParseMandatory("evseId",
+                                         "EVSE identification",
                                          EVSE_Id.TryParse,
                                          out EVSE_Id EVSEId,
                                          out ErrorResponse))
@@ -268,8 +270,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region ChargingSchedulePeriods    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("compositeSchedulePeriod",
-                                                "composite schedule period",
+                if (!JSON.ParseMandatoryHashSet("chargingSchedulePeriod",
+                                                "charging schedule periods",
                                                 ChargingSchedulePeriod.TryParse,
                                                 out HashSet<ChargingSchedulePeriod> ChargingSchedulePeriods,
                                                 out ErrorResponse))

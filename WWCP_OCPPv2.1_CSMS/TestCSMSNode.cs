@@ -425,17 +425,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 // Certificate
                 // ISO15118CertificateHashData
 
-                return Task.FromResult(
-                           new AuthorizeResponse(
-                               Request:             request,
-                               IdTokenInfo:         new IdTokenInfo(
-                                                        Status:                AuthorizationStatus.Accepted,
-                                                        CacheExpiryDateTime:   Timestamp.Now.AddDays(3)
-                                                    ),
-                               CertificateStatus:   AuthorizeCertificateStatus.Accepted,
-                               CustomData:          null
-                           )
-                       );
+                return request.IdToken.Value.StartsWith("aa")
+
+                           ? Task.FromResult(
+                                 new AuthorizeResponse(
+                                     Request:             request,
+                                     IdTokenInfo:         new IdTokenInfo(
+                                                              Status:                AuthorizationStatus.Accepted,
+                                                              CacheExpiryDateTime:   Timestamp.Now.AddDays(3)
+                                                          ),
+                                     CertificateStatus:   AuthorizeCertificateStatus.Accepted,
+                                     CustomData:          null
+                                 )
+                             )
+
+                           : Task.FromResult(
+                                   new AuthorizeResponse(
+                                       Request:       request,
+                                       IdTokenInfo:   new IdTokenInfo(
+                                                          Status:   AuthorizationStatus.Invalid
+                                                      ),
+                                       CustomData:    null
+                                   )
+                               );
 
             };
 

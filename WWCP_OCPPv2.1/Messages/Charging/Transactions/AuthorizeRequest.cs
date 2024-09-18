@@ -416,9 +416,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     return false;
                 }
 
-                if (IdToken is null)
-                    return false;
-
                 #endregion
 
                 #region Certificate                    [optional]
