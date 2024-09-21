@@ -91,6 +91,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.IssuerPublicKeyHash  = IssuerPublicKeyHash;
             this.SerialNumber         = SerialNumber;
 
+            unchecked
+            {
+
+                hashCode = this.HashAlgorithm.      GetHashCode() * 11 ^
+                           this.IssuerNameHash.     GetHashCode() *  7 ^
+                           this.IssuerPublicKeyHash.GetHashCode() *  5 ^
+                           this.SerialNumber.       GetHashCode() *  3 ^
+                           base.                    GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -200,6 +211,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CertificateHashData = null;
 
+// {
+//   "certificateHashData": {
+//     "hashAlgorithm": "SHA256",
+//     "issuerKeyHash": "89783f8f6ee47dc5e8f318fd4e8ef8d07fda19f99945e9b4da2884169662be05",
+//     "issuerNameHash": "d5780595f5221adba8bbf9ba76ceade403518cc7cb3d642180654d823b8fc8a2",
+//     "serialNumber": "6f973cf2da5ba83c"
+//   },
+//   "certificateType": "CSMSRootCertificate"
+// }
+
                 #region HashAlgorithm          [mandatory]
 
                 if (!JSON.ParseMandatory("hashAlgorithm",
@@ -217,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("issuerNameHash",
                                              "issuer name hash",
-                                             out String IssuerNameHash,
+                                             out String? IssuerNameHash,
                                              out ErrorResponse))
                 {
                     return false;
@@ -229,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("issuerKeyHash",
                                              "issuer public key hash",
-                                             out String IssuerPublicKeyHash,
+                                             out String? IssuerPublicKeyHash,
                                              out ErrorResponse))
                 {
                     return false;
@@ -241,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("serialNumber",
                                              "serial number",
-                                             out String SerialNumber,
+                                             out String? SerialNumber,
                                              out ErrorResponse))
                 {
                     return false;
@@ -406,24 +427,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return HashAlgorithm.      GetHashCode() * 11 ^
-                       IssuerNameHash.     GetHashCode() *  7 ^
-                       IssuerPublicKeyHash.GetHashCode() *  5 ^
-                       SerialNumber.       GetHashCode() *  3 ^
-
-                       base.               GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

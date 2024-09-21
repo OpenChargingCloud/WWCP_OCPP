@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 // Certificate
                 // ISO15118CertificateHashData
 
-                return request.IdToken.Value.StartsWith("aa")
+                return !request.IdToken.Value.StartsWith("aa")
 
                            ? Task.FromResult(
                                  new AuthorizeResponse(

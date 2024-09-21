@@ -215,19 +215,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 // CertificateTypes
 
-                var certs = new List<CertificateHashData>();
+                var certificateHashDataChain = new List<CertificateHashDataChain>();
 
                 foreach (var certificateType in request.CertificateTypes)
                 {
 
                     if (certificates.TryGetValue(InstallCertificateUse.Parse(certificateType.ToString()), out var cert))
-                        certs.Add(new CertificateHashData(
-                                      HashAlgorithm:         HashAlgorithms.SHA256,
-                                      IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
-                                      IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
-                                      SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
-                                      CustomData:            null
-                                  ));
+                        certificateHashDataChain.Add(
+                            new CertificateHashDataChain(
+                                new CertificateHashData(
+                                    HashAlgorithm:         HashAlgorithms.SHA256,
+                                    IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
+                                    IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
+                                    SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
+                                    CustomData:            null
+                                ),
+                                GetCertificateIdUse.CSMSRootCertificate
+                            )
+                        );
 
                 }
 
@@ -235,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            new GetInstalledCertificateIdsResponse(
                                Request:                    request,
                                Status:                     GetInstalledCertificateStatus.Accepted,
-                               CertificateHashDataChain:   certs,
+                               CertificateHashDataChain:   certificateHashDataChain,
                                StatusInfo:                 null,
                                CustomData:                 null
                            )

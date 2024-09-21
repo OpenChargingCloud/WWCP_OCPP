@@ -168,6 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          response,
                                          response.ToJSON(
                                              parentNetworkingNode.OCPP.CustomGetInstalledCertificateIdsResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomCertificateHashDataChainSerializer,
                                              parentNetworkingNode.OCPP.CustomCertificateHashDataSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,

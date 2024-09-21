@@ -2216,8 +2216,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response3 = await testCSMS01.DeleteCertificate(
-                                          Destination:    SourceRouting.To(       chargingStation1.Id),
-                                          CertificateHashData:   response2.CertificateHashDataChain.First(),
+                                          Destination:           SourceRouting.To(chargingStation1.Id),
+                                          CertificateHashData:   response2.CertificateHashDataChain.First().CertificateHashData,
                                           CustomData:            null
                                       );
 
@@ -2232,11 +2232,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 getInstalledCertificateIdsRequests.Clear();
 
                 var response4  = await testCSMS01.GetInstalledCertificateIds(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           CertificateTypes:    new[] {
-                                                                    GetCertificateIdUse.V2GRootCertificate
-                                                                },
-                                           CustomData:          null
+                                           Destination:        SourceRouting.To( chargingStation1.Id),
+                                           CertificateTypes:   [ GetCertificateIdUse.V2GRootCertificate ],
+                                           CustomData:         null
                                        );
 
 

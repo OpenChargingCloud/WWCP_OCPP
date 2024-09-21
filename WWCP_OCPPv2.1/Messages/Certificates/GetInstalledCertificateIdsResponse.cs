@@ -54,26 +54,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext                     Context
+        public JSONLDContext                          Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The Charge Point indicates if it can process the request.
         /// </summary>
         [Mandatory]
-        public GetInstalledCertificateStatus     Status                      { get; }
+        public GetInstalledCertificateStatus          Status                      { get; }
 
         /// <summary>
         /// The optional enumeration of information about available certificates.
         /// </summary>
         [Mandatory]
-        public IEnumerable<CertificateHashData>  CertificateHashDataChain    { get; }
+        public IEnumerable<CertificateHashDataChain>  CertificateHashDataChain    { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?                       StatusInfo                  { get; }
+        public StatusInfo?                            StatusInfo                  { get; }
 
         #endregion
 
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
                                                   GetInstalledCertificateStatus           Status,
-                                                  IEnumerable<CertificateHashData>?       CertificateHashDataChain   = null,
+                                                  IEnumerable<CertificateHashDataChain>?  CertificateHashDataChain   = null,
                                                   StatusInfo?                             StatusInfo                 = null,
 
                                                   Result?                                 Result                     = null,
@@ -416,8 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatoryJSON("certificateHashDataChain",
                                              "certificate hash data chain",
-                                             CertificateHashData.TryParse,
-                                             out IEnumerable<CertificateHashData> CertificateHashDataChain,
+                                             OCPPv2_1.CertificateHashDataChain.TryParse,
+                                             out IEnumerable<CertificateHashDataChain> CertificateHashDataChain,
                                              out ErrorResponse))
                 {
                     return false;
@@ -507,17 +507,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGetInstalledCertificateIdsResponseSerializer = null, CustomCertificateHashDataSerializer = null, ...)
+        #region ToJSON(CustomGetInstalledCertificateIdsResponseSerializer = null, CustomCertificateHashDataChainSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetInstalledCertificateIdsResponseSerializer">A delegate to serialize custom GetInstalledCertificateIds responses.</param>
-        /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash data.</param>
+        /// <param name="CustomCertificateHashDataChainSerializer">A delegate to serialize custom CertificateHashDataChains.</param>
+        /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom CertificateHashData.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CertificateHashDataChain>?            CustomCertificateHashDataChainSerializer             = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?                 CustomCertificateHashDataSerializer                  = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                          CustomStatusInfoSerializer                           = null,
                               CustomJObjectSerializerDelegate<Signature>?                           CustomSignatureSerializer                            = null,
@@ -527,7 +529,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             var json = JSONObject.Create(
 
                                  new JProperty("status",                     Status.    AsText()),
-                                 new JProperty("certificateHashDataChain",   new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer)))),
+                                 new JProperty("certificateHashDataChain",   new JArray(CertificateHashDataChain.Select(certificateHashDataChain => certificateHashDataChain.ToJSON(CustomCertificateHashDataChainSerializer,
+                                                                                                                                                                                    CustomCertificateHashDataSerializer)))),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",                 StatusInfo.ToJSON(CustomStatusInfoSerializer,

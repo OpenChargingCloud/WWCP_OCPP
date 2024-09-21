@@ -428,8 +428,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region SetMonitoringResults    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("setVariableResult",
-                                                "SetVariableMonitoring results",
+                if (!JSON.ParseMandatoryHashSet("setMonitoringResult",
+                                                "set monitoring result results",
                                                 SetMonitoringResult.TryParse,
                                                 out HashSet<SetMonitoringResult> SetMonitoringResults,
                                                 out ErrorResponse))
