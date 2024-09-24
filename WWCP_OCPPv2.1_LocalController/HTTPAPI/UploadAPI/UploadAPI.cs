@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "PUT" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
 
 
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "PUT" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
 
 
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "PUT" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
 
                                       #endregion
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ "PUT" ],
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  AccessControlAllowMethods  = [ "PUT" ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "POST" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
 
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "POST" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
 
 
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "POST" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
 
                                       #endregion
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ "POST" ],
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  AccessControlAllowMethods  = [ "POST" ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }

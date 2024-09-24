@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
             //                                                                          "</ul>" +
             //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
+            //                                         Connection                 = ConnectionType.Close
             //                                     }.AsImmutable);
 
             //                             });
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             //                                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                                             ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                             Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-            //                                             Connection                 = "close",
+            //                                             Connection                 = ConnectionType.Close,
             //                                             Vary                       = "Accept"
             //                                         }.AsImmutable);
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = new JArray(chargingStation.EVSEs.Select(evse => evse.ToJSON())).ToUTF8Bytes(jsonFormatting),
-                                   Connection                 = "close",
+                                   Connection                 = ConnectionType.Close,
                                    Vary                       = "Accept"
                                }.AsImmutable);
 

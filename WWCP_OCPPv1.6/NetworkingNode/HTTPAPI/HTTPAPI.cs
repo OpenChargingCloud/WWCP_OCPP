@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
             //                                                                          "</ul>" +
             //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
+            //                                         Connection                 = ConnectionType.Close
             //                                     }.AsImmutable);
 
             //                             });
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = systemInfo.ToUTF8Bytes(jsonFormatting),
-                                   Connection                 = "close",
+                                   Connection                 = ConnectionType.Close,
                                    Vary                       = "Accept"
                                }.AsImmutable);
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = NetworkingNode.OCPP.ToJSON().ToUTF8Bytes(jsonFormatting),
-                                   Connection                 = "close",
+                                   Connection                 = ConnectionType.Close,
                                    Vary                       = "Accept"
                                }.AsImmutable);
 

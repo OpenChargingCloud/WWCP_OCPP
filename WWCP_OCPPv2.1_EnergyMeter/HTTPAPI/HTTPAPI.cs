@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
             //                                                                          "</ul>" +
             //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
+            //                                         Connection                 = ConnectionType.Close
             //                                     }.AsImmutable);
 
             //                             });

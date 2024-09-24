@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ "GET" ],
-                                                     Connection                 = "close"
+                                                     Connection                 = ConnectionType.Close
                                                  };
                                       }
 
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                   HTTPContentType.Application.OCTETSTREAM
                                                                               ).First(),
                                                  Content                    = fileContent,
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  AccessControlAllowMethods  = [ "GET" ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }

@@ -591,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
             //                                                                          "</ul>" +
             //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
+            //                                         Connection                 = ConnectionType.Close
             //                                     }.AsImmutable);
 
             //                             });
@@ -654,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = systemInfo.ToUTF8Bytes(jsonFormatting),
-                                   Connection                 = "close",
+                                   Connection                 = ConnectionType.Close,
                                    Vary                       = "Accept"
                                }.AsImmutable);
 
@@ -751,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                           new JProperty("clients",        jsonResults)
                                                                       ).ToUTF8Bytes(jsonFormatting)
                                                                     : new JArray(jsonResults).ToUTF8Bytes(jsonFormatting),
-                                   Connection                 = "close",
+                                   Connection                 = ConnectionType.Close,
                                    Vary                       = "Accept"
                                }.AsImmutable);
 
@@ -843,7 +843,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                           new JProperty("servers",        jsonResults)
                                                                       ).ToUTF8Bytes(jsonFormatting)
                                                                     : new JArray(jsonResults).ToUTF8Bytes(jsonFormatting),
-                                   Connection                 = "close",
+                                   Connection                 = ConnectionType.Close,
                                    Vary                       = "Accept"
                                }.AsImmutable);
 
@@ -903,7 +903,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             //                       AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                       ContentType                = HTTPContentType.Application.JSON_UTF8,
             //                       Content                    = networkingNode.OCPP.ToJSON().ToUTF8Bytes(jsonFormatting),
-            //                       Connection                 = "close",
+            //                       Connection                 = ConnectionType.Close,
             //                       Vary                       = "Accept"
             //                   }.AsImmutable);
 
@@ -951,7 +951,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             //                                             AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                                             ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                             Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-            //                                             Connection                 = "close",
+            //                                             Connection                 = ConnectionType.Close,
             //                                             Vary                       = "Accept"
             //                                         }.AsImmutable);
 

@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
             //                                                                          "</ul>" +
             //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
+            //                                         Connection                 = ConnectionType.Close
             //                                     }.AsImmutable);
 
             //                             });
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             //                                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
             //                                                 ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                                 Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-            //                                                 Connection                 = "close",
+            //                                                 Connection                 = ConnectionType.Close,
             //                                                 Vary                       = "Accept"
             //                                             }.AsImmutable);
 

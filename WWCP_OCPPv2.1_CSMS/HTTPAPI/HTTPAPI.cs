@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
                     Server          = OCPPHTTPAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
-                    Connection      = "close"
+                    Connection      = ConnectionType.Close
                 };
 
                 return false;
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     Date            = Timestamp.Now,
                     ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
-                    Connection      = "close"
+                    Connection      = ConnectionType.Close
                 };
 
                 return false;
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
                     Server          = OCPPHTTPAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
-                    Connection      = "close"
+                    Connection      = ConnectionType.Close
                 };
 
                 return false;
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     Date            = Timestamp.Now,
                     ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
-                    Connection      = "close"
+                    Connection      = ConnectionType.Close
                 };
 
                 return false;
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     Date            = Timestamp.Now,
                     ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Unknown charging station identification!"" }".ToUTF8Bytes(),
-                    Connection      = "close"
+                    Connection      = ConnectionType.Close
                 };
 
                 return false;
@@ -6213,7 +6213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
             //                                                                          "</ul>" +
             //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
+            //                                         Connection                 = ConnectionType.Close
             //                                     }.AsImmutable);
 
             //                             });
@@ -6260,7 +6260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                              AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                              ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                              Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                             Connection                 = "close",
+                                                             Connection                 = ConnectionType.Close,
                                                              Vary                       = "Accept"
                                                          }.AsImmutable);
 
