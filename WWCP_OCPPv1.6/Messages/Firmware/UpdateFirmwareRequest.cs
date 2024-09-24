@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -347,8 +347,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                UpdateFirmwareRequest = null;
-                ErrorResponse = "The given XML representation of an UpdateFirmware request is invalid: " + e.Message;
+                UpdateFirmwareRequest  = null;
+                ErrorResponse          = "The given XML representation of an UpdateFirmware request is invalid: " + e.Message;
                 return false;
             }
 
@@ -501,8 +501,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                UpdateFirmwareRequest = null;
-                ErrorResponse = "The given JSON representation of an UpdateFirmware request is invalid: " + e.Message;
+                UpdateFirmwareRequest  = null;
+                ErrorResponse          = "The given JSON representation of an UpdateFirmware request is invalid: " + e.Message;
                 return false;
             }
 
@@ -520,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             => new(OCPPNS.OCPPv1_6_CP + "getDiagnosticsRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "retrieveDate", RetrieveTimestamp.ToIso8601()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "location", FirmwareURL.ToString()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "location",     FirmwareURL.      ToString()),
 
                    Retries.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "retries", Retries.Value)

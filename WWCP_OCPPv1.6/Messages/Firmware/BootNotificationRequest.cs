@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a BootNotification request.
@@ -381,15 +381,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         public static BootNotificationRequest Parse(XElement       XML,
                                                     Request_Id     RequestId,
-                                                    SourceRouting  Destination)
+                                                    SourceRouting  Destination,
+                                                    NetworkPath    NetworkPath)
         {
 
 
             if (TryParse(XML,
                          RequestId,
                          Destination,
+                         NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse))
             {
@@ -454,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, Destination, out BootNotificationRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out BootNotificationRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a BootNotification request.
@@ -462,11 +465,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                                           XML,
                                        Request_Id                                         RequestId,
                                        SourceRouting                                      Destination,
+                                       NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationRequest?  BootNotificationRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse)
         {

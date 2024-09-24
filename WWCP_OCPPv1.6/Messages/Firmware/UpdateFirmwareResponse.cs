@@ -24,10 +24,11 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -68,11 +69,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The update firmware request leading to this response.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public UpdateFirmwareResponse(UpdateFirmwareRequest    Request,
 
                                       Result?                  Result                = null,
@@ -165,9 +174,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of an UpdateFirmwareResponse.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
+        /// <param name="Request">The UpdateFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUpdateFirmwareResponseParser">An optional delegate to parse custom UpdateFirmwareResponses.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">An optional delegate to parse custom UpdateFirmware responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static UpdateFirmwareResponse Parse(UpdateFirmwareRequest                                 Request,
                                                    JObject                                               JSON,
                                                    SourceRouting                                         Destination,
@@ -239,11 +253,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given JSON representation of an UpdateFirmwareResponse.
         /// </summary>
-        /// <param name="Request">The update firmware request leading to this response.</param>
+        /// <param name="Request">The UpdateFirmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UpdateFirmwareResponse">The parsed UpdateFirmwareResponse.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="UpdateFirmwareResponse">The parsed UpdateFirmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateFirmwareResponseParser">An optional delegate to parse custom UpdateFirmwareResponses.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">An optional delegate to parse custom UpdateFirmware responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static Boolean TryParse(UpdateFirmwareRequest                                 Request,
                                        JObject                                               JSON,
                                        SourceRouting                                         Destination,

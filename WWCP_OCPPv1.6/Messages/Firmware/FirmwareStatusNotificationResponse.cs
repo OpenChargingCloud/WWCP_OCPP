@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
@@ -68,11 +69,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The firmware status notification request leading to this response.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public FirmwareStatusNotificationResponse(FirmwareStatusNotificationRequest  Request,
 
                                                   Result?                            Result                = null,
@@ -163,17 +172,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Parse the given JSON representation of a firmware status notification response.
         /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom firmware status notification responses.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseParser">An optional delegate to parse custom FirmwareStatusNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static FirmwareStatusNotificationResponse Parse(FirmwareStatusNotificationRequest                                 Request,
                                                                JObject                                                           JSON,
                                                                SourceRouting                                                     Destination,
                                                                NetworkPath                                                       NetworkPath,
-                                                               DateTime?                                                         ResponseTimestamp                                        = null,
-                                                               CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null,
-                                                               CustomJObjectParserDelegate<Signature>?                           CustomSignatureParser                                    = null,
-                                                               CustomJObjectParserDelegate<CustomData>?                          CustomCustomDataParser                                   = null)
+                                                               DateTime?                                                         ResponseTimestamp                                = null,
+                                                               CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseParser   = null,
+                                                               CustomJObjectParserDelegate<Signature>?                           CustomSignatureParser                            = null,
+                                                               CustomJObjectParserDelegate<CustomData>?                          CustomCustomDataParser                           = null)
         {
 
             if (TryParse(Request,
@@ -183,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          out var firmwareStatusNotificationResponse,
                          out var errorResponse,
                          ResponseTimestamp,
-                         CustomFirmwareStatusNotificationResponseResponseParser,
+                         CustomFirmwareStatusNotificationResponseParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
@@ -237,25 +251,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given JSON representation of a FirmwareStatusNotification response.
         /// </summary>
-        /// <param name="Request">The FirmwareStatusNotification request request leading to this response.</param>
+        /// <param name="Request">The FirmwareStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// 
-        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
-        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
-        /// 
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="FirmwareStatusNotificationResponse">The parsed FirmwareStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom FirmwareStatusNotification responses.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseParser">An optional delegate to parse custom FirmwareStatusNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static Boolean TryParse(FirmwareStatusNotificationRequest                                 Request,
                                        JObject                                                           JSON,
                                        SourceRouting                                                     Destination,
                                        NetworkPath                                                       NetworkPath,
                                        [NotNullWhen(true)]  out FirmwareStatusNotificationResponse?      FirmwareStatusNotificationResponse,
                                        [NotNullWhen(false)] out String?                                  ErrorResponse,
-                                       DateTime?                                                         ResponseTimestamp                                        = null,
-                                       CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null,
-                                       CustomJObjectParserDelegate<Signature>?                           CustomSignatureParser                                    = null,
-                                       CustomJObjectParserDelegate<CustomData>?                          CustomCustomDataParser                                   = null)
+                                       DateTime?                                                         ResponseTimestamp                                = null,
+                                       CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                           CustomSignatureParser                            = null,
+                                       CustomJObjectParserDelegate<CustomData>?                          CustomCustomDataParser                           = null)
         {
 
             try
@@ -310,9 +325,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                      );
 
-                if (CustomFirmwareStatusNotificationResponseResponseParser is not null)
-                    FirmwareStatusNotificationResponse = CustomFirmwareStatusNotificationResponseResponseParser(JSON,
-                                                                                                                FirmwareStatusNotificationResponse);
+                if (CustomFirmwareStatusNotificationResponseParser is not null)
+                    FirmwareStatusNotificationResponse = CustomFirmwareStatusNotificationResponseParser(JSON,
+                                                                                                        FirmwareStatusNotificationResponse);
 
                 return true;
 

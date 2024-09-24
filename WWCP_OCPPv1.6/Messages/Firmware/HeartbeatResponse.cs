@@ -74,11 +74,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="CurrentTime">The current time at the central system.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public HeartbeatResponse(HeartbeatRequest         Request,
                                  DateTime                 CurrentTime,
 
@@ -176,10 +184,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          XML,
-                         out var HeartbeatResponse,
+                         out var heartbeatResponse,
                          out var errorResponse))
             {
-                return HeartbeatResponse;
+                return heartbeatResponse;
             }
 
             throw new ArgumentException("The given XML representation of a Heartbeat response is invalid: " + errorResponse,
@@ -196,7 +204,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
         /// <param name="CustomHeartbeatResponseParser">An optional delegate to parse custom Heartbeat responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static HeartbeatResponse Parse(HeartbeatRequest                                 Request,
                                               JObject                                          JSON,
                                               SourceRouting                                    Destination,
@@ -211,14 +224,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          Destination,
                          NetworkPath,
-                         out var HeartbeatResponse,
+                         out var heartbeatResponse,
                          out var errorResponse,
                          ResponseTimestamp,
                          CustomHeartbeatResponseParser,
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
-                return HeartbeatResponse;
+                return heartbeatResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a Heartbeat response is invalid: " + errorResponse,
@@ -276,9 +289,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="HeartbeatResponse">The parsed Heartbeat response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
         /// <param name="CustomHeartbeatResponseParser">An optional delegate to parse custom Heartbeat responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static Boolean TryParse(HeartbeatRequest                                 Request,
                                        JObject                                          JSON,
                                        SourceRouting                                    Destination,

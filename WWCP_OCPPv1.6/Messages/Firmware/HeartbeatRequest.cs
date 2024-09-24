@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, Destination)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a Heartbeat request.
@@ -155,14 +155,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         public static HeartbeatRequest Parse(XElement       XML,
                                              Request_Id     RequestId,
-                                             SourceRouting  Destination)
+                                             SourceRouting  Destination,
+                                             NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
                          Destination,
+                         NetworkPath,
                          out var heartbeatRequest,
                          out var errorResponse))
             {
@@ -220,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, Destination, out HeartbeatRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out HeartbeatRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a Heartbeat request.
@@ -228,11 +231,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                                    XML,
                                        Request_Id                                  RequestId,
                                        SourceRouting                               Destination,
+                                       NetworkPath                                 NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatRequest?  HeartbeatRequest,
                                        [NotNullWhen(false)] out String?            ErrorResponse)
         {
@@ -241,11 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 HeartbeatRequest = new HeartbeatRequest(
-
                                        Destination,
-
                                        RequestId: RequestId
-
                                    );
 
                 ErrorResponse = null;
@@ -380,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>?  CustomHeartbeatRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?    CustomSignatureSerializer          = null,
+                              CustomJObjectSerializerDelegate<Signature>?         CustomSignatureSerializer          = null,
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 

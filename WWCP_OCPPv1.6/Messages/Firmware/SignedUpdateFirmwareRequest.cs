@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?  CustomSignedUpdateFirmwareRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<FirmwareImage>?                CustomFirmwareImageSerializer                 = null,
-                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                     = null,
+                              CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 

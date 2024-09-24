@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {

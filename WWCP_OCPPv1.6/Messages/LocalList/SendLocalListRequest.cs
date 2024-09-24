@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The send local list request.
+    /// The SendLocalList request.
     /// </summary>
     public class SendLocalListRequest : ARequest<SendLocalListRequest>,
                                         IRequest
@@ -82,14 +84,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a send local list request.
+        /// Create a SendLocalList request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -97,15 +102,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SendLocalListRequest(NetworkingNode_Id                NetworkingNodeId,
+        public SendLocalListRequest(SourceRouting                    Destination,
                                     UInt64                           ListVersion,
                                     UpdateTypes                      UpdateType,
                                     IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
 
-                                    IEnumerable<WWCP.KeyPair>?       SignKeys                 = null,
-                                    IEnumerable<WWCP.SignInfo>?      SignInfos                = null,
-                                    IEnumerable<Signature>?     Signatures               = null,
+                                    IEnumerable<KeyPair>?            SignKeys                 = null,
+                                    IEnumerable<SignInfo>?           SignInfos                = null,
+                                    IEnumerable<Signature>?          Signatures               = null,
 
                                     CustomData?                      CustomData               = null,
 
@@ -114,9 +120,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     TimeSpan?                        RequestTimeout           = null,
                                     EventTracking_Id?                EventTrackingId          = null,
                                     NetworkPath?                     NetworkPath              = null,
+                                    SerializationFormats?            SerializationFormat      = null,
                                     CancellationToken                CancellationToken        = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(SendLocalListRequest)[..^7],
 
                    SignKeys,
@@ -130,13 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.ListVersion             = ListVersion;
             this.UpdateType              = UpdateType;
-            this.LocalAuthorizationList  = LocalAuthorizationList ?? Array.Empty<AuthorizationData>();
+            this.LocalAuthorizationList  = LocalAuthorizationList ?? [];
+
+            unchecked
+            {
+
+                hashCode = this.ListVersion.           GetHashCode()  * 7 ^
+                           this.UpdateType.            GetHashCode()  * 5 ^
+                           this.LocalAuthorizationList.CalcHashCode() * 3 ^
+                           base.                       GetHashCode();
+
+            }
 
         }
 
@@ -258,30 +276,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a send local list request.
+        /// Parse the given XML representation of a SendLocalList request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static SendLocalListRequest Parse(XElement           XML,
-                                                 Request_Id         RequestId,
-                                                 NetworkingNode_Id  NetworkingNodeId,
-                                                 NetworkPath        NetworkPath)
+        public static SendLocalListRequest Parse(XElement       XML,
+                                                 Request_Id     RequestId,
+                                                 SourceRouting  Destination,
+                                                 NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var sendLocalListRequest,
-                         out var errorResponse) &&
-                sendLocalListRequest is not null)
+                         out var errorResponse))
             {
                 return sendLocalListRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a send local list request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a SendLocalList request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -291,33 +308,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSendLocalListRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a send local list request.
+        /// Parse the given JSON representation of a SendLocalList request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSendLocalListRequestParser">An optional delegate to parse custom send local list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static SendLocalListRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 NetworkingNode_Id                                   NetworkingNodeId,
+                                                 SourceRouting                                       Destination,
                                                  NetworkPath                                         NetworkPath,
-                                                 CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser   = null)
+                                                 DateTime?                                           RequestTimestamp                   = null,
+                                                 TimeSpan?                                           RequestTimeout                     = null,
+                                                 EventTracking_Id?                                   EventTrackingId                    = null,
+                                                 CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser   = null,
+                                                 CustomJObjectParserDelegate<Signature>?             CustomSignatureParser              = null,
+                                                 CustomJObjectParserDelegate<CustomData>?            CustomCustomDataParser             = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var sendLocalListRequest,
                          out var errorResponse,
-                         CustomSendLocalListRequestParser) &&
-                sendLocalListRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomSendLocalListRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return sendLocalListRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a send local list request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SendLocalList request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -327,20 +358,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out SendLocalListRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a send local list request.
+        /// Try to parse the given XML representation of a SendLocalList request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                   XML,
-                                       Request_Id                 RequestId,
-                                       NetworkingNode_Id          NetworkingNodeId,
-                                       NetworkPath                NetworkPath,
-                                       out SendLocalListRequest?  SendLocalListRequest,
-                                       out String?                ErrorResponse)
+        public static Boolean TryParse(XElement                                        XML,
+                                       Request_Id                                      RequestId,
+                                       SourceRouting                                   Destination,
+                                       NetworkPath                                     NetworkPath,
+                                       [NotNullWhen(true)]  out SendLocalListRequest?  SendLocalListRequest,
+                                       [NotNullWhen(false)] out String?                ErrorResponse)
         {
 
             try
@@ -348,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SendLocalListRequest = new SendLocalListRequest(
 
-                                           NetworkingNodeId,
+                                           Destination,
 
                                            XML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "listVersion",
                                                                    UInt64.Parse),
@@ -371,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 SendLocalListRequest  = null;
-                ErrorResponse         = "The given XML representation of a send local list request is invalid: " + e.Message;
+                ErrorResponse         = "The given XML representation of a SendLocalList request is invalid: " + e.Message;
                 return false;
             }
 
@@ -381,50 +412,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SendLocalListRequest, out ErrorResponse, CustomSendLocalListRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a send local list request.
+        /// Try to parse the given JSON representation of a SendLocalList request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       Request_Id                 RequestId,
-                                       NetworkingNode_Id          NetworkingNodeId,
-                                       NetworkPath                NetworkPath,
-                                       out SendLocalListRequest?  SendLocalListRequest,
-                                       out String?                ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SendLocalListRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a send local list request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendLocalListRequestParser">An optional delegate to parse custom send local list requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       NetworkingNode_Id                                   NetworkingNodeId,
+                                       SourceRouting                                       Destination,
                                        NetworkPath                                         NetworkPath,
-                                       out SendLocalListRequest?                           SendLocalListRequest,
-                                       out String?                                         ErrorResponse,
-                                       CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser)
+                                       [NotNullWhen(true)]  out SendLocalListRequest?      SendLocalListRequest,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
+                                       DateTime?                                           RequestTimestamp                   = null,
+                                       TimeSpan?                                           RequestTimeout                     = null,
+                                       EventTracking_Id?                                   EventTrackingId                    = null,
+                                       CustomJObjectParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?             CustomSignatureParser              = null,
+                                       CustomJObjectParserDelegate<CustomData>?            CustomCustomDataParser             = null)
         {
 
             try
@@ -501,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SendLocalListRequest = new SendLocalListRequest(
 
-                                           NetworkingNodeId,
+                                           Destination,
                                            ListVersion,
                                            UpdateType,
                                            LocalAuthorizationList,
@@ -513,9 +527,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            CustomData,
 
                                            RequestId,
-                                           null,
-                                           null,
-                                           null,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
                                            NetworkPath
 
                                        );
@@ -530,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 SendLocalListRequest  = null;
-                ErrorResponse         = "The given JSON representation of a send local list request is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a SendLocalList request is invalid: " + e.Message;
                 return false;
             }
 
@@ -572,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<AuthorizationData>?     CustomAuthorizationDataSerializer      = null,
                               CustomJObjectSerializerDelegate<IdTagInfo>?             CustomIdTagInfoSerializer              = null,
-                              CustomJObjectSerializerDelegate<Signature>?        CustomSignatureSerializer              = null,
+                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
@@ -611,10 +625,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (SendLocalListRequest1, SendLocalListRequest2)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="SendLocalListRequest1">A send local list request.</param>
-        /// <param name="SendLocalListRequest2">Another send local list request.</param>
+        /// <param name="SendLocalListRequest1">A SendLocalList request.</param>
+        /// <param name="SendLocalListRequest2">Another SendLocalList request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SendLocalListRequest? SendLocalListRequest1,
                                            SendLocalListRequest? SendLocalListRequest2)
@@ -637,10 +651,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (SendLocalListRequest1, SendLocalListRequest2)
 
         /// <summary>
-        /// Compares two send local list requests for inequality.
+        /// Compares two SendLocalList requests for inequality.
         /// </summary>
-        /// <param name="SendLocalListRequest1">A send local list request.</param>
-        /// <param name="SendLocalListRequest2">Another send local list request.</param>
+        /// <param name="SendLocalListRequest1">A SendLocalList request.</param>
+        /// <param name="SendLocalListRequest2">Another SendLocalList request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SendLocalListRequest? SendLocalListRequest1,
                                            SendLocalListRequest? SendLocalListRequest2)
@@ -656,9 +670,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="Object">A send local list request to compare with.</param>
+        /// <param name="Object">A SendLocalList request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SendLocalListRequest sendLocalListRequest &&
@@ -669,9 +683,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(SendLocalListRequest)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="SendLocalListRequest">A send local list request to compare with.</param>
+        /// <param name="SendLocalListRequest">A SendLocalList request to compare with.</param>
         public override Boolean Equals(SendLocalListRequest? SendLocalListRequest)
 
             => SendLocalListRequest is not null &&
@@ -690,23 +704,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ListVersion.           GetHashCode()  * 7 ^
-                       UpdateType.            GetHashCode()  * 5 ^
-                       LocalAuthorizationList.CalcHashCode() * 3 ^
-
-                       base.                  GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

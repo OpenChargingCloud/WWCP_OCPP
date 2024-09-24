@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
@@ -96,11 +97,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
         /// <param name="HeartbeatInterval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public BootNotificationResponse(BootNotificationRequest  Request,
                                         RegistrationStatus       Status,
                                         DateTime                 CurrentTime,
@@ -149,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 hashCode = this.Status.           GetHashCode() * 7 ^
                            this.CurrentTime.      GetHashCode() * 5 ^
                            this.HeartbeatInterval.GetHashCode() * 3 ^
-                           base.GetHashCode();
+                           base.                  GetHashCode();
 
             }
 
@@ -239,9 +248,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Parse the given JSON representation of a boot notification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom BootNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static BootNotificationResponse Parse(BootNotificationRequest                                 Request,
                                                      JObject                                                 JSON,
                                                      SourceRouting                                           Destination,
@@ -324,11 +338,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification response.
         /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
+        /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="BootNotificationResponse">The parsed BootNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom BootNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static Boolean TryParse(BootNotificationRequest                                 Request,
                                        JObject                                                 JSON,
                                        SourceRouting                                           Destination,
@@ -483,7 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse>?  CustomBootNotificationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
