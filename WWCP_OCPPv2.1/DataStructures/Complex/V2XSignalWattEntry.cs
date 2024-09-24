@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Signal">A signal from the transmission system operator (TSO) [-1, ..., 1].</param>
         /// <param name="Power">A power to charge (positive) or discharge (negative) at frequency.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public V2XSignalWattEntry(Decimal      Signal,
                                   Watt         Power,
                                   CustomData?  CustomData   = null)

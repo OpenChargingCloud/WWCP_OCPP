@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SalesTariffEntries">An enumeration of all relevant details for one time interval of the sales tariff. The number of sales tariff entries is limited by the parameter maxScheduleTuples [max 1024].</param>
         /// <param name="Description">An optional human readable description of the sales tariff e.g. for HMI displays [max 32].</param>
         /// <param name="NumEPriceLevels">An optional number of overall distinct price levels used across all provided sales tariff elements.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SalesTariff(SalesTariff_Id                 Id,
                            IEnumerable<SalesTariffEntry>  SalesTariffEntries,
                            String?                        Description,

@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ReserveNowResponse(CS.ReserveNowRequest          Request,
                                   ReservationStatus             Status,
 

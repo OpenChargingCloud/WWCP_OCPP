@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EncodingMethod">Method used to encode the meter values before applying the digital signature algorithm.</param>
         /// <param name="SigningMethod">An optional method used to create the digital signature. This information might already be included within the signedMeterData.</param>
         /// <param name="PublicKey">An optional, but when it is given base64 encoded public key..</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SignedMeterValue(String       SignedMeterData,
                                 String       EncodingMethod,
                                 String?      SigningMethod   = null,

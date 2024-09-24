@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EVMaxV2XEnergyRequest">The optional energy to maximum state-of-charge for cycling (V2X) activity.</param>
         /// <param name="TargetSoC">The optional target state-of-charge at departure as a percentage.</param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public V2XChargingParameters(Watt?           MinChargePower          = null,
                                      Watt?           MinChargePower_L2       = null,
                                      Watt?           MinChargePower_L3       = null,

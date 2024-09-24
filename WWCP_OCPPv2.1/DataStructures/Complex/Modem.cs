@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// </summary>
     /// <param name="ICCID">An optional integrated circuit card identifier of the modem’s SIM card.</param>
     /// <param name="IMSI">An optional IMSI of the modem’s SIM card.</param>
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
     public class Modem(String?      ICCID        = null,
                        String?      IMSI         = null,
                        CustomData?  CustomData   = null) : ACustomData(CustomData),

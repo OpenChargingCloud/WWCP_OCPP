@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="UpdateInterval">Optional period of time after receipt of last update, when to request a profile update by sending a PullDynamicScheduleUpdateRequest message.</param>
         /// <param name="PriceScheduleSignature">Optional Base64 encoded ISO 15118-2/20 signature for all price schedules in charging schedules</param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingProfile(ChargingProfile_Id             ChargingProfileId,
                                UInt32                         StackLevel,
                                ChargingProfilePurpose         ChargingProfilePurpose,

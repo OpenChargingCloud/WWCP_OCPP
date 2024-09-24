@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingTariffId">An optional unique charging tariff identification used to calculate the costs for this charging period.</param>
         /// <param name="Costs">An optional enumeration of volume per cost dimension for this charging period.</param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingPeriod(TimeSpan                           StartPeriod,
                               Tariff_Id?                 ChargingTariffId   = null,
                               IEnumerable<CostDimensionVolume>?  Costs              = null,

@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SIMPINCode">An optional PIN code of the SIM card.</param>
         /// <param name="PreferredNetwork">An optional preferred network, written as string concatenation of MCC and MNC.</param>
         /// <param name="OnlyPreferredNetwork">Use only the preferred mobile phone network. Do not dial into a roaming network when the preferred network is not available.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public APNConfiguration(String                    AccessPointName,
                                 APNAuthenticationMethods  AuthenticationMethod,
                                 String?                   Username               = null,

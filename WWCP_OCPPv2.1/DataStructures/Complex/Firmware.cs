@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="InstallTimestamp">The timestamp at which the charging station shall installed the firmware image.</param>
         /// <param name="SigningCertificate">The optional PEM encoded X.509 firmware signing certificate.</param>
         /// <param name="Signature">The optional base64 encoded firmware signature.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public Firmware(URL          FirmwareURL,
                         DateTime     RetrieveTimestamp,
                         DateTime?    InstallTimestamp     = null,

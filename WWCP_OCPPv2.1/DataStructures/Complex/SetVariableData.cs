@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="AttributeValue">The value to be assigned to the attribute of the variable.</param>
         /// <param name="OldAttributeValue">An optional old attribute value of the variable for safe conditional changes within a distributed system.</param>
         /// <param name="AttributeType">An optional type of the attribute: Actual, Target, MinSet, MaxSet [Default: actual]</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SetVariableData(Component        Component,
                                Variable         Variable,
                                String           AttributeValue,

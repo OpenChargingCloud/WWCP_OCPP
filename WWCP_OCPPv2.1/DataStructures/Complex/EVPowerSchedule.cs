@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="TimeAnchor">An starting time of the energy offer.</param>
         /// <param name="EVPowerScheduleEntries">An enumeration of power schedule entries offered for discharging (max 1024).</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EVPowerSchedule(DateTime                           TimeAnchor,
                                IEnumerable<EVPowerScheduleEntry>  EVPowerScheduleEntries,
                                CustomData?                        CustomData   = null)

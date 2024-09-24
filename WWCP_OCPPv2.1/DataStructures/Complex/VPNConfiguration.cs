@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SharedSecret">The VPN shared secret/key.</param>
         /// <param name="Protocol">The VPN protocol.</param>
         /// <param name="AccessGroup">An optional VPN (user/access) group.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VPNConfiguration(URL           ServerURL,
                                 String        Login,
                                 String        Password,

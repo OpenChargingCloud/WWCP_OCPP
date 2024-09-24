@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RemoteLocation">The URL of the location at the remote system where the log should be stored.</param>
         /// <param name="OldestTimestamp">An optional timestamp of the oldest logging information to include in the diagnostics.</param>
         /// <param name="LatestTimestamp">An optional timestamp of the latest logging information to include in the diagnostics.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public LogParameters(URL          RemoteLocation,
                              DateTime?    OldestTimestamp   = null,
                              DateTime?    LatestTimestamp   = null,

@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// <param name="SerializationFormat">The optional serialization format for this response.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public CertificateSignedResponse(CSMS.CertificateSignedRequest  Request,

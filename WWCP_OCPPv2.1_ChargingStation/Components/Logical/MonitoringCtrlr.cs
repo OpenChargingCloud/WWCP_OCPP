@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="OfflineQueuingSeverity">When set and the charging station is offline, the charging station shall queue any notifyEventRequest messages triggered by a monitor with a severity number equal to or lower than the severity configured here. Value ranging from 0 (Emergency) to 9 (Debug).</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public MonitoringCtrlr(ItemsPerMessageClass  ItemsPerMessage,
                                BytesPerMessageClass  BytesPerMessage,
 

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="IdToken">The identifier to which this authorization applies.</param>
         /// <param name="IdTokenInfo">Information about authorization status, expiry and parent id. For a Differential update the following applies: If this element is present, then this entry SHALL be added or updated in the Local Authorization List. If this element is absent, than the entry for this idtag in the Local Authorization List SHALL be deleted.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AuthorizationData(IdToken       IdToken,
                                  IdTokenInfo?  IdTokenInfo,
                                  CustomData?   CustomData   = null)

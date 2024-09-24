@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Duration">The duration.</param>
         /// <param name="EVPriceRules">An enumeration of EV price rules (max 8).</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EVAbsolutePriceScheduleEntry(TimeSpan                  Duration,
                                             IEnumerable<EVPriceRule>  EVPriceRules,
                                             CustomData?               CustomData   = null)

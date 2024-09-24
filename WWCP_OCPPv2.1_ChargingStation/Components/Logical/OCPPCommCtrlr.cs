@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="WebSocketPingInterval">A value of 0 disables client side websocket ping/pong. In this case there is either no ping/pong or the server initiates the ping and client responds with Pong. Positive values are interpreted as number of seconds between pings. Negative values are not allowed, SetConfiguration is then expected to return a Rejected result. It is recommended to configure WebSocketPingInterval smaller then: MessageAttemptsTransactionEvent * MessageAttemptIntervalTransactionEvent. This will limit the chance of the resend mechanism for transactionrelated messages being triggered by connectivity issues.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public OCPPCommCtrlr(TimeSpan                           DefaultMessageTimeout,
                              IEnumerable<FileTransferProtocol>  FileTransferProtocols,
                              IEnumerable<String>                NetworkConfigurationPriority,

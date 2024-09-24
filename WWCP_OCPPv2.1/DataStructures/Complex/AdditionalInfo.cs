@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="AdditionalIdToken">This field specifies the additional IdToken.</param>
         /// <param name="Type">This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AdditionalInfo(String       AdditionalIdToken,
                               String       Type,
                               CustomData?  CustomData   = null)

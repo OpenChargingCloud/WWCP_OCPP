@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DCChargingParameters">Optional ISO 15118-2 EV DC charging parameters.</param>
         /// <param name="V2XChargingParameters">Optional ISO 15118-20 EV charging parameters.</param>
         /// <param name="EVEnergyOffer"></param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingNeeds(EnergyTransferMode                RequestedEnergyTransferMode,
                              IEnumerable<EnergyTransferMode>?  AvailableEnergyTransferModes   = null,
                              ControlModes?                     ControlMode                    = null,

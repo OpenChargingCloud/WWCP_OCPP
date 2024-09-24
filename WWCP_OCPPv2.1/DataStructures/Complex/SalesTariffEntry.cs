@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RelativeTimeInterval">The time interval the sales tariff entry is valid, based upon relative times.</param>
         /// <param name="EPriceLevel"></param>
         /// <param name="ConsumptionCosts">Optional additional means for further relative price information and/or alternative costs.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SalesTariffEntry(RelativeTimeInterval           RelativeTimeInterval,
                                 UInt32?                        EPriceLevel        = null,
                                 IEnumerable<ConsumptionCost>?  ConsumptionCosts   = null,

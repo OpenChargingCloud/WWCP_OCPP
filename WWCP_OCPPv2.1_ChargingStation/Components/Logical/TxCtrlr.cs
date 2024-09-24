@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StopTxOnEVSideDisconnect">When set to true, the Charging Station SHALL administratively stop the transaction when the cable is unplugged from the EV.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public TxCtrlr(TimeSpan                   EVConnectionTimeOut,
                        Boolean                    StopTxOnEVSideDisconnect,
                        IEnumerable<TxStartPoint>  TxStartPoint,

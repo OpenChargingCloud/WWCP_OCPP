@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Mutability">The optional mutability of this attribute. Default when omitted: Read/Write.</param>
         /// <param name="Persistent">Optional persistency of the attribute across system reboots or power down. Default when omitted: false (no persistency).</param>
         /// <param name="Constant">Optional constancy of the attribute at runtime. Default when omitted: false.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VariableAttribute(AttributeTypes?   Type         = null,
                                  String?           Value        = null,
                                  MutabilityTypes?  Mutability   = null,

@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Value">Value for threshold or delta monitoring. For periodic or periodicClockAligned monitors this is their monitoring interval in seconds.</param>
         /// <param name="Type">The enumeration of monitors for the given variable monitoring pair.</param>
         /// <param name="Severity">The severity that will be assigned to an event that is triggered by this monitor.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VariableMonitoring(VariableMonitoring_Id  Id,
                                   Boolean                Transaction,
                                   Decimal                Value,

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="StartValue">The lowest level of consumption that defines the starting point of this consumption block. The block interval extends to the start of the next interval.</param>
         /// <param name="Costs">Detailed information about the costs.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ConsumptionCost(Decimal            StartValue,
                                IEnumerable<Cost>  Costs,
                                CustomData?        CustomData   = null)

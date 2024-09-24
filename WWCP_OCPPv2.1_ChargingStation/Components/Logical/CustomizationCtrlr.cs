@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomImplementationEnabled">This standard configuration variable can be used to enable/disable custom implementations that the Charging Station supports.The instance name of the variable matches the vendorId of the customization in CustomData or DataTransfer messages.</param>
         /// <param name="CustomTriggers">This variable defines the names of custom triggers that a charging station supports in a customTrigger field of TriggerMessageRequest.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public CustomizationCtrlr(Boolean?              CustomImplementationEnabled   = null,
                                   IEnumerable<String>?  CustomTriggers                = null,
 

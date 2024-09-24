@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Component">A device model component.</param>
         /// <param name="AccessRights">An enumeration of component access rights.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ComponentAccessRights(Component                 Component,
                                      IEnumerable<AccessRight>  AccessRights,
                                      CustomData?               CustomData   = null)

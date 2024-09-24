@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MinLimit">The optional minimal value of this variable.</param>
         /// <param name="MaxLimit">The optional maximal value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.</param>
         /// <param name="ValuesList">The optional CSV list of allowed values when variable is Option/Member/SequenceList.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VariableCharacteristics(DataTypes             DataType,
                                        Boolean               SupportsMonitoring   = false,
                                        UnitsOfMeasure?       Unit                 = null,

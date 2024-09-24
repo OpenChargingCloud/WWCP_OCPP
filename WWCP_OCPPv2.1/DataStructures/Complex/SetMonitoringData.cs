@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Variable">The variable for which the variable monitor is created or updated.</param>
         /// <param name="VariableMonitoringId">An optional unique monitoring identification for replace an existing variable monitor. The charging station handles the generation of monitoring identifications for new monitors.</param>
         /// <param name="Transaction">This variable monitoring is only active when a transaction is ongoing on a setMonitoringData relevant to this transaction. Default: false</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SetMonitoringData(Decimal                         Value,
                                  MonitorType                     MonitorType,
                                  Severities                      Severity,

@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// </summary>
     /// <param name="Unit">The unit of the measured value.</param>
     /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
-    /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+    /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
     public class UnitsOfMeasure(UnitOfMeasure  Unit,
                                 Int32?         Multiplier   = null,
                                 CustomData?    CustomData   = null) : ACustomData(CustomData),

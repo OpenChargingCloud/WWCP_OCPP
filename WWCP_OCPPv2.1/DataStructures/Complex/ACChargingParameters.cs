@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EVMinCurrent">The minimum current (in A) supported by the electric vehicle (per phase).</param>
         /// <param name="EVMaxCurrent">The maximum current (in A) supported by the electric vehicle (per phase) including the maximum cable capacity.</param>
         /// <param name="EVMaxVoltage">The maximum voltage (in V) supported by the electric vehicle.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ACChargingParameters(WattHour     EnergyAmount,
                                     Ampere       EVMinCurrent,
                                     Ampere       EVMaxCurrent,

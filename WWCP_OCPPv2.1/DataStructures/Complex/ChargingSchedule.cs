@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignatureId">An identification of this element for referencing in a digital signature.</param>
         /// <param name="DigestValue">An Base64-encoded cryptographical hash value (SHA256 for 15118-2, SHA512 for 15118-20) of the EXI price schedule element.</param>
         /// <param name="PowerTolerance">The power tolerance when following the EV power profile.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingSchedule(ChargingSchedule_Id                  Id,
                                 ChargingRateUnits                    ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,

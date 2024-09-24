@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EndTimestamp">Optional timestamp after which the message should be removed.</param>
         /// <param name="TransactionId">When the message should only be shown during a specific transaction and removed after afterwards.</param>
         /// <param name="Display">When the charging station has multiple displays, this optional field can be used to define to which display the message should be shown on.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public MessageInfo(DisplayMessage_Id  Id,
                            MessagePriority    Priority,
                            MessageContent     Message,

@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ValueSetter">A delegate to set the value of the variable. The old value can optionally be passed as second parameter. This is null for all ReadOnly variables.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the variable exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VariableConfig(String                                        Name,
                               Func<String?>?                                ValueGetter       = null,
                               Func<String?, String?, ValueSetterResponse>?  ValueSetter       = null,

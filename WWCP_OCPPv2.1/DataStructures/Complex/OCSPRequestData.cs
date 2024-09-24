@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="IssuerKeyHash">The hashed value of the issuers public key.</param>
         /// <param name="SerialNumber">The serial number of the certificate to verify.</param>
         /// <param name="ResponderURL">The case-insensitive responder URL.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public OCSPRequestData(HashAlgorithms  HashAlgorithm,
                                String          IssuerNameHash,
                                String          IssuerKeyHash,

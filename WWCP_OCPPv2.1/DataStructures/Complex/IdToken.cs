@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Value">The hidden case insensitive identification of an RFID tag, or an UUID.</param>
         /// <param name="Type">The type of the identification token.</param>
         /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public IdToken(String                        Value,
                        IdTokenType                   Type,
                        IEnumerable<AdditionalInfo>?  AdditionalInfos   = null,

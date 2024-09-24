@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Component">The component for which the variable monitor is created or updated.</param>
         /// <param name="Variable">The variable for which the variable monitor is created or updated.</param>
         /// <param name="AttributeType">The optional type of the attribute: Actual, Target, MinSet, MaxSet [Default: actual]</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SetVariableResult(SetVariableStatus  AttributeStatus,
                                  Component          Component,
                                  Variable           Variable,

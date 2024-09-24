@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="NonEvseSpecific">When this configuration variable is present and set to true: The charging station supports reservation without a specified EVSE Id.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ReservationCtrlr(Boolean?     Enabled,
                                 Boolean?     Available,
                                 Boolean?     NonEvseSpecific,

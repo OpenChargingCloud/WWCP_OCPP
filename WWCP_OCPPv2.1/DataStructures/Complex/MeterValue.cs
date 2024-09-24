@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Timestamp">The common timestamp of all sampled meter values.</param>
         /// <param name="SampledValues">The sampled meter values.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public MeterValue(DateTime                   Timestamp,
                           IEnumerable<SampledValue>  SampledValues,
                           CustomData?                CustomData   = null)

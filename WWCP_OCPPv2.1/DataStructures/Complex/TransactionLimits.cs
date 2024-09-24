@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MaxCost">Maximum transactionLimits allowed transactionLimits(s) for this transaction in currency used for transaction.</param>
         /// <param name="MaxEnergy">Maximum energy allowed to charge during this transaction.</param>
         /// <param name="MaxTime">Maximum time allowed to charge during this transaction.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public TransactionLimits(Decimal?     MaxCost      = null,
                                  WattHour?    MaxEnergy    = null,
                                  TimeSpan?    MaxTime      = null,

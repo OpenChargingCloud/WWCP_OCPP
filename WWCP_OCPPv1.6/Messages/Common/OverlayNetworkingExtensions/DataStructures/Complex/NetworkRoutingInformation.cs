@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Uplink"></param>
         /// <param name="Downlink"></param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public NetworkRoutingInformation(NetworkingNode_Id        NetworkingNodeId,
                                          UInt16?                  Priority     = null,
                                          NetworkLinkInformation?  Uplink       = null,

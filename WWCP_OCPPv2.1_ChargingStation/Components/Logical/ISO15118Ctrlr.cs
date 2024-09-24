@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestedEnergyTransferMode">RequestedEnergyTransferMode "AC_single_phase_core", "AC_three_phase_core", "DC_core, "DC_extended", "DC_combo_core", "DC_unique".</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ISO15118Ctrlr(Boolean?             Enabled                            = null,
                              Boolean?             Active                             = null,
                              Boolean?             Tripped                            = null,

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Component">The component for which a report of the monitoring report was requested.</param>
         /// <param name="Variable">The variable for which the monitoring report was is requested.</param>
         /// <param name="VariableAttributes">An enumeration of monitors for the given report data pair.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ReportData(Component                       Component,
                           Variable                        Variable,
                           IEnumerable<VariableAttribute>  VariableAttributes,

@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostKind">The kind of cost referred to in the message element amount.</param>
         /// <param name="Amount">The estimated or actual cost per kWh.</param>
         /// <param name="AmountMultiplier">The optional amount multiplier defines the exponent to base 10 (dec): finalAmount = amount * 10 ^ amountMultiplier. [min -3, max +3]</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public Cost(CostKinds    CostKind,
                     UInt32       Amount,
                     Int16?       AmountMultiplier   = null,

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="MaxItems">The number of items to be sent together in stream.</param>
         /// <param name="MaxTime">The optional time after which stream data is sent.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public PeriodicEventStreamParameters(UInt32       MaxItems,
                                              TimeSpan?    MaxTime,
                                              CustomData?  CustomData   = null)

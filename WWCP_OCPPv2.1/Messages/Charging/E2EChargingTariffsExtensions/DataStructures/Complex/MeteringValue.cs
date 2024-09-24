@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MeasurementLocation">An optional indication where the measured value has been metering. Default: "Outlet".</param>
         /// <param name="SignedMeterValue">An optional meter value with signature and encoding information.</param>
         /// <param name="UnitOfMeasure">An optional unit of measure including a multiplier.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public MeteringValue(DateTime              Timestamp,
                              Decimal               Value,
                              ReadingContext?       Context               = null,

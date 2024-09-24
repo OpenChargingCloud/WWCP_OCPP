@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EVEnergyCapacity">The optional capacity of the electric vehicle battery (in Wh).</param>
         /// <param name="FullSoC">The optional percentage of SoC at which the EV considers the battery fully charged.</param>
         /// <param name="BulkSoC">The optional percentage of SoC at which the EV considers a fast charging process to end.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public DCChargingParameters(Ampere          EVMaxCurrent,
                                     Volt            EVMaxVoltage,
                                     WattHour?       EnergyAmount,

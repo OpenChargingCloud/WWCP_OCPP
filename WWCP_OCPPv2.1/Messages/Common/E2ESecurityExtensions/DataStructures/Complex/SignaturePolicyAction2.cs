@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Value">A signature value.</param>
         /// <param name="SigningMethod">An optional method used to create the digital signature.</param>
         /// <param name="EncodingMethod">An optional encoding method.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SignaturePolicyAction2(String       KeyId,
                          String       Value,
                          String?      Algorithm        = "secp256r1",

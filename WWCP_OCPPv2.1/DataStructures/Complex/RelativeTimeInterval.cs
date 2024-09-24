@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Start">The start of the relative time interval.</param>
         /// <param name="Duration">An optional duration of the time interval.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public RelativeTimeInterval(TimeSpan     Start,
                                     TimeSpan?    Duration     = null,
                                     CustomData?  CustomData   = null)

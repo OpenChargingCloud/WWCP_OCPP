@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Component">A component for which the variable is requested.</param>
         /// <param name="Variable">A variable for which the attribute value is requested.</param>
         /// <param name="AttributeType">An optional attribute type.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public GetVariableData(Component        Component,
                                Variable         Variable,
                                AttributeTypes?  AttributeType   = null,

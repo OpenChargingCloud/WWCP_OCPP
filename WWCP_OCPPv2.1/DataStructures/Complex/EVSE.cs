@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Id">The EVSE identification at a charging station.</param>
         /// <param name="ConnectorId">The connector identification at an EVSE.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EVSE(EVSE_Id        Id,
                     Connector_Id?  ConnectorId   = null,
                     CustomData?    CustomData    = null)

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="EnergyFee">The energy fee/cost per kWh.</param>
         /// <param name="PowerRangeStart">The EnergyFee applies between this value and the value of the PowerRangeStart of the subsequent EVPriceRule.If the power is below this value, the EnergyFee of the previous EVPriceRule applies.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EVPriceRule(Decimal      EnergyFee,
                            Decimal      PowerRangeStart,
                            CustomData?  CustomData   = null)

@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="ReasonCode">A predefined case-insensitive code for the reason why the status is returned in this response.</param>
         /// <param name="AdditionalInfo">Additional text to provide detailed information.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public StatusInfo(String       ReasonCode,
                           String?      AdditionalInfo   = null,
                           CustomData?  CustomData       = null)
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Status">A generic status.</param>
         /// <param name="ReasonCode">A predefined case-insensitive code for the reason why the status is returned in this response.</param>
         /// <param name="AdditionalInfo">Additional text to provide detailed information.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public StatusInfo(T            Status,
                           String?      ReasonCode       = null,
                           String?      AdditionalInfo   = null,

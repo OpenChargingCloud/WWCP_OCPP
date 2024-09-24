@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ValueSize">Can be used to limit the following fields: SetVariableData.attributeValue, GetVariableResult.attributeValue, VariableAttribute.value, VariableCharacteristics.valueList and EventData.actualValue.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public DeviceDataCtrlr(BytesPerMessageClass  BytesPerMessage,
                                ItemsPerMessageClass  ItemsPerMessage,
                                ValueSizeClass        ValueSize,

@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PreconditioningStatus">The current preconditioning status of the BMS in the EV. Default value is Unknown.</param>
         /// <param name="EVSESleep">True when EVSE electronics are in sleep mode for this transaction. Default value(when absent) is false.</param>
         /// <param name="ChargingTariffId">An optional unique charging tariff identification used for the transaction.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public Transaction(Transaction_Id          TransactionId,
                            ChargingStates?         ChargingState           = null,
                            TimeSpan?               TimeSpentCharging       = null,

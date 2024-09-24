@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Name">The case insensitive name of the variable. Name should be taken from the list of standardized variable names whenever possible.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the variable exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public Variable(String       Name,
                         String?      Instance     = null,
                         CustomData?  CustomData   = null)

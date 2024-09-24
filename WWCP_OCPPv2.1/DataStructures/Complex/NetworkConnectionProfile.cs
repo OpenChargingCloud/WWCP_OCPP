@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="NetworkInterface">The network interface to use when connecting to the central service (CSMS).</param>
         /// <param name="VPNConfiguration">An optional VPN configuration to use when connecting to the central service (CSMS).</param>
         /// <param name="APNConfiguration">An optional APN configuration to use when connecting to the central service (CSMS).</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public NetworkConnectionProfile(OCPPVersion         Version,
                                         TransportProtocols  Transport,
                                         URL                 CentralServiceURL,

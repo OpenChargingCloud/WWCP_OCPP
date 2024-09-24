@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Cleared">The optional "cleared" bit is set to true to report the clearing of a monitored situation, i.e.a 'return to normal'.</param>
         /// <param name="TransactionId">An optional transaction identification links this event notification to a specific transaction.</param>
         /// <param name="VariableMonitoringId">An optional variable monitoring identification which triggered this event.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EventData(Event_Id                EventId,
                          DateTime                Timestamp,
                          EventTriggers           Trigger,

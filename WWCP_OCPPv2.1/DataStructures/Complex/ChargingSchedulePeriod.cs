@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="V2XSignalWattCurve">An optional power frequency curve used, but not required, when operationMode = LocalFrequency.</param>
         /// <param name="DynUpdateTime">An optional timestamp when this charging schedule period had been updated last. Only relevant in a dynamic charging profile.</param>
         /// 
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingSchedulePeriod(TimeSpan                          StartPeriod,
                                       Byte?                             NumberOfPhases           = null,
                                       PhasesToUse?                      PhaseToUse               = null,

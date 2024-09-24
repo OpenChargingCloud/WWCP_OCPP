@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Component">A component for which a report of a variable is requested.</param>
         /// <param name="Variable">An optional variable for which the report is requested.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ComponentVariable(Component    Component,
                                  Variable?    Variable     = null,
                                  CustomData?  CustomData   = null)

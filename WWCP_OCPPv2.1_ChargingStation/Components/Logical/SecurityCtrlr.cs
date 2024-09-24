@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MaxCertificateChainSize">This configuration variable can be used to limit the size of the 'certificateChain' field from the CertificateSignedRequest PDU.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public SecurityCtrlr(String            OrganizationName,
                              UInt16            CertificateEntries,
                              SecurityProfiles  SecurityProfile,

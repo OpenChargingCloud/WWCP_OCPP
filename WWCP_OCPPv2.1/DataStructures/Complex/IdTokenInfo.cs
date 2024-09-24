@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Language1">The first optional preferred user interface language of identifier user.</param>
         /// <param name="Language2">The second optional preferred user interface language of identifier user.</param>
         /// <param name="PersonalMessage">An optional personal message to be displayed at a charging station.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public IdTokenInfo(AuthorizationStatus    Status,
                            Int16?                 ChargingPriority      = 0,
                            DateTime?              CacheExpiryDateTime   = null,

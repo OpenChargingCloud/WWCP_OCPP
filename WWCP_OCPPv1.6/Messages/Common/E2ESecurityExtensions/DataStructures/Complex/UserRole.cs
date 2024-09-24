@@ -199,7 +199,7 @@
 //        /// <param name="SignerName">An optional name of a person or process signing the message.</param>
 //        /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
 //        /// <param name="Timestamp">An optional timestamp of the message signature.</param>
-//        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+//        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
 //        public UserRole(Byte[]                               Public,
 
 //                        Byte[]?                              Private                 = null,

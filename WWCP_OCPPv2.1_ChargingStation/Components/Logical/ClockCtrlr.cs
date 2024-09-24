@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TimeAdjustmentReportingThreshold">If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ClockCtrlr(DateTime                 DateTime,
                           IEnumerable<TimeSource>  TimeSource,
 
