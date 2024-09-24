@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 hashCode = this.Status.GetHashCode() * 3 ^
-                           base.GetHashCode();
+                           base.       GetHashCode();
 
             }
 

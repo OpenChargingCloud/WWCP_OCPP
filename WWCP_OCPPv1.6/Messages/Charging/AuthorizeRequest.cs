@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The authorize request.
+    /// The Authorize request.
     /// </summary>
     public class AuthorizeRequest : ARequest<AuthorizeRequest>,
                                     IRequest
@@ -43,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/authorizeRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/AuthorizeRequest");
 
         #endregion
 
@@ -56,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The identifier that needs to be authorized.
+        /// The identifier that needs to be Authorized.
         /// </summary>
         [Mandatory]
         public IdToken        IdTag    { get; }
@@ -66,12 +68,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new authorize request.
+        /// Create a new Authorize request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="IdTag">The identifier that needs to be authorized.</param>
+        /// <param name="IdTag">The identifier that needs to be Authorized.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -79,24 +84,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AuthorizeRequest(NetworkingNode_Id             NetworkingNodeId,
-                                IdToken                       IdTag,
+        public AuthorizeRequest(SourceRouting            Destination,
+                                IdToken                  IdTag,
 
-                                IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<KeyPair>?    SignKeys              = null,
+                                IEnumerable<SignInfo>?   SignInfos             = null,
+                                IEnumerable<Signature>?  Signatures            = null,
 
-                                CustomData?                   CustomData          = null,
+                                CustomData?              CustomData            = null,
 
-                                Request_Id?                   RequestId           = null,
-                                DateTime?                     RequestTimestamp    = null,
-                                TimeSpan?                     RequestTimeout      = null,
-                                EventTracking_Id?             EventTrackingId     = null,
-                                NetworkPath?                  NetworkPath         = null,
-                                CancellationToken             CancellationToken   = default)
+                                Request_Id?              RequestId             = null,
+                                DateTime?                RequestTimestamp      = null,
+                                TimeSpan?                RequestTimeout        = null,
+                                EventTracking_Id?        EventTrackingId       = null,
+                                NetworkPath?             NetworkPath           = null,
+                                SerializationFormats?    SerializationFormat   = null,
+                                CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(AuthorizeRequest)[..^7],
 
                    SignKeys,
@@ -110,10 +117,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
+
             this.IdTag = IdTag;
+
+            unchecked
+            {
+
+                hashCode = this.IdTag.GetHashCode() * 3 ^
+                           base.      GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -130,11 +148,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //    </soap:Header>
         //
         //    <soap:Body>
-        //       <ns:authorizeRequest>
+        //       <ns:AuthorizeRequest>
         //
         //          <ns:idTag>?</ns:idTag>
         //
-        //       </ns:authorizeRequest>
+        //       </ns:AuthorizeRequest>
         //    </soap:Body>
         //
         // </soap:Envelope>
@@ -158,30 +176,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
+        #region (static) Parse   (XML,  RequestId, Destination)
 
         /// <summary>
-        /// Parse the given XML representation of an authorize request.
+        /// Parse the given XML representation of an Authorize request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        public static AuthorizeRequest Parse(XElement           XML,
-                                             Request_Id         RequestId,
-                                             NetworkingNode_Id  NetworkingNodeId)
+        /// <param name="NetworkPath">The network path of the request.</param>
+        public static AuthorizeRequest Parse(XElement       XML,
+                                             Request_Id     RequestId,
+                                             SourceRouting  Destination,
+                                             NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
+                         NetworkPath,
                          out var authorizeRequest,
-                         out var errorResponse) &&
-                authorizeRequest is not null)
+                         out var errorResponse))
             {
                 return authorizeRequest;
             }
 
-            throw new ArgumentException("The given XML representation of an authorize request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of an Authorize request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -191,54 +211,69 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an authorize request.
+        /// Parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomAuthorizeRequestParser">An optional delegate to parse custom authorize requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom Authorize requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             NetworkingNode_Id                               NetworkingNodeId,
+                                             SourceRouting                                   Destination,
                                              NetworkPath                                     NetworkPath,
-                                             CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser   = null)
+                                             DateTime?                                       RequestTimestamp               = null,
+                                             TimeSpan?                                       RequestTimeout                 = null,
+                                             EventTracking_Id?                               EventTrackingId                = null,
+                                             CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser   = null,
+                                             CustomJObjectParserDelegate<Signature>?         CustomSignatureParser          = null,
+                                             CustomJObjectParserDelegate<CustomData>?        CustomCustomDataParser         = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var authorizeRequest,
                          out var errorResponse,
-                         CustomAuthorizeRequestParser) &&
-                authorizeRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomAuthorizeRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return authorizeRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an authorize request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an Authorize request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out AuthorizeRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, out AuthorizeRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of an authorize request.
+        /// Try to parse the given XML representation of an Authorize request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
+        /// <param name="AuthorizeRequest">The parsed Authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement               XML,
-                                       Request_Id             RequestId,
-                                       NetworkingNode_Id      NetworkingNodeId,
-                                       out AuthorizeRequest?  AuthorizeRequest,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(XElement                                    XML,
+                                       Request_Id                                  RequestId,
+                                       SourceRouting                               Destination,
+                                       NetworkPath                                 NetworkPath,
+                                       [NotNullWhen(true)]  out AuthorizeRequest?  AuthorizeRequest,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
         {
 
             try
@@ -246,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 AuthorizeRequest = new AuthorizeRequest(
 
-                                       NetworkingNodeId,
+                                       Destination,
 
                                        XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "idTag",
                                                           IdToken.Parse),
@@ -262,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 AuthorizeRequest  = null;
-                ErrorResponse     = "The given XML representation of an authorize request is invalid: " + e.Message;
+                ErrorResponse     = "The given XML representation of an Authorize request is invalid: " + e.Message;
                 return false;
 
             }
@@ -273,50 +308,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of an authorize request.
+        /// Try to parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
+        /// <param name="AuthorizeRequest">The parsed Authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       Request_Id             RequestId,
-                                       NetworkingNode_Id      NetworkingNodeId,
-                                       NetworkPath            NetworkPath,
-                                       out AuthorizeRequest?  AuthorizeRequest,
-                                       out String?            ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out AuthorizeRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an authorize request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAuthorizeRequestParser">An optional delegate to parse custom Authorize requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom Authorize requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       NetworkingNode_Id                               NetworkingNodeId,
+                                       SourceRouting                                   Destination,
                                        NetworkPath                                     NetworkPath,
-                                       out AuthorizeRequest?                           AuthorizeRequest,
-                                       out String?                                     ErrorResponse,
-                                       CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser)
+                                       [NotNullWhen(true)]  out AuthorizeRequest?      AuthorizeRequest,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
+                                       DateTime?                                       RequestTimestamp               = null,
+                                       TimeSpan?                                       RequestTimeout                 = null,
+                                       EventTracking_Id?                               EventTrackingId                = null,
+                                       CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?         CustomSignatureParser          = null,
+                                       CustomJObjectParserDelegate<CustomData>?        CustomCustomDataParser         = null)
         {
 
             try
@@ -368,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 AuthorizeRequest = new AuthorizeRequest(
 
-                                       NetworkingNodeId,
+                                       Destination,
                                        IdTag,
 
                                        null,
@@ -378,9 +396,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        CustomData,
 
                                        RequestId,
-                                       null,
-                                       null,
-                                       null,
+                                       RequestTimestamp,
+                                       RequestTimeout,
+                                       EventTrackingId,
                                        NetworkPath
 
                                    );
@@ -395,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 AuthorizeRequest  = null;
-                ErrorResponse     = "The given JSON representation of an authorize request is invalid: " + e.Message;
+                ErrorResponse     = "The given JSON representation of an Authorize request is invalid: " + e.Message;
                 return false;
             }
 
@@ -410,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public XElement ToXML()
 
-            => new (OCPPNS.OCPPv1_6_CS + "authorizeRequest",
+            => new (OCPPNS.OCPPv1_6_CS + "AuthorizeRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "idTag",  IdTag.ToString())
 
@@ -423,11 +441,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
+        /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom Authorize requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?    CustomSignatureSerializer          = null,
+                              CustomJObjectSerializerDelegate<Signature>?         CustomSignatureSerializer          = null,
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
@@ -460,10 +478,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (AuthorizeRequest1, AuthorizeRequest2)
 
         /// <summary>
-        /// Compares two authorize requests for equality.
+        /// Compares two Authorize requests for equality.
         /// </summary>
-        /// <param name="AuthorizeRequest1">An authorize request.</param>
-        /// <param name="AuthorizeRequest2">Another authorize request.</param>
+        /// <param name="AuthorizeRequest1">An Authorize request.</param>
+        /// <param name="AuthorizeRequest2">Another Authorize request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AuthorizeRequest? AuthorizeRequest1,
                                            AuthorizeRequest? AuthorizeRequest2)
@@ -486,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (AuthorizeRequest1, AuthorizeRequest2)
 
         /// <summary>
-        /// Compares two authorize requests for inequality.
+        /// Compares two Authorize requests for inequality.
         /// </summary>
-        /// <param name="AuthorizeRequest1">An authorize request.</param>
-        /// <param name="AuthorizeRequest2">Another authorize request.</param>
+        /// <param name="AuthorizeRequest1">An Authorize request.</param>
+        /// <param name="AuthorizeRequest2">Another Authorize request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AuthorizeRequest? AuthorizeRequest1,
                                            AuthorizeRequest? AuthorizeRequest2)
@@ -505,22 +523,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two authorize requests for equality.
+        /// Compares two Authorize requests for equality.
         /// </summary>
-        /// <param name="Object">An authorize request to compare with.</param>
+        /// <param name="Object">An Authorize request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is AuthorizeRequest authorizeRequest &&
-                   Equals(authorizeRequest);
+            => Object is AuthorizeRequest AuthorizeRequest &&
+                   Equals(AuthorizeRequest);
 
         #endregion
 
         #region Equals(AuthorizeRequest)
 
         /// <summary>
-        /// Compares two authorize requests for equality.
+        /// Compares two Authorize requests for equality.
         /// </summary>
-        /// <param name="AuthorizeRequest">An authorize request to compare with.</param>
+        /// <param name="AuthorizeRequest">An Authorize request to compare with.</param>
         public override Boolean Equals(AuthorizeRequest? AuthorizeRequest)
 
             => AuthorizeRequest is not null &&
@@ -535,20 +553,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return IdTag.GetHashCode() * 3 ^
-                       base. GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

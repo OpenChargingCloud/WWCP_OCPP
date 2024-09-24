@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -31,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A status notification response.
+    /// A StatusNotification response.
     /// </summary>
-    public class StatusNotificationResponse : AResponse<CP.StatusNotificationRequest,
-                                                           StatusNotificationResponse>,
+    public class StatusNotificationResponse : AResponse<StatusNotificationRequest,
+                                                        StatusNotificationResponse>,
                                               IResponse
     {
 
@@ -59,37 +64,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region StatusNotificationResponse(Request)
-
         /// <summary>
-        /// Create a new status notification response.
+        /// Create a new StatusNotification response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
-        public StatusNotificationResponse(CP.StatusNotificationRequest  Request)
+        /// <param name="Request">The StatusNotification request leading to this response.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public StatusNotificationResponse(StatusNotificationRequest  Request,
+
+                                          Result?                    Result                = null,
+                                          DateTime?                  ResponseTimestamp     = null,
+
+                                          SourceRouting?             Destination           = null,
+                                          NetworkPath?               NetworkPath           = null,
+
+                                          IEnumerable<KeyPair>?      SignKeys              = null,
+                                          IEnumerable<SignInfo>?     SignInfos             = null,
+                                          IEnumerable<Signature>?    Signatures            = null,
+
+                                          CustomData?                CustomData            = null,
+
+                                          SerializationFormats?      SerializationFormat   = null,
+                                          CancellationToken          CancellationToken     = default)
 
             : base(Request,
-                   Result.OK())
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         { }
-
-        #endregion
-
-        #region StatusNotificationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new status notification response.
-        /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public StatusNotificationResponse(CP.StatusNotificationRequest  Request,
-                                          Result                        Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -118,24 +144,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (Request, XML)
 
         /// <summary>
-        /// Parse the given XML representation of a status notification response.
+        /// Parse the given XML representation of a StatusNotification response.
         /// </summary>
-        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="Request">The StatusNotification request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
-                                                       XElement                      XML)
+        public static StatusNotificationResponse Parse(StatusNotificationRequest  Request,
+                                                       XElement                   XML)
         {
 
             if (TryParse(Request,
                          XML,
                          out var statusNotificationResponse,
-                         out var errorResponse) &&
-                statusNotificationResponse is not null)
+                         out var errorResponse))
             {
                 return statusNotificationResponse;
             }
 
-            throw new ArgumentException("The given XML representation of a status notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a StatusNotification response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -145,27 +170,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (Request, JSON, CustomStatusNotificationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a status notification response.
+        /// Parse the given JSON representation of a StatusNotification response.
         /// </summary>
-        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="Request">The StatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomStatusNotificationResponseParser">An optional delegate to parse custom status notification responses.</param>
-        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomStatusNotificationResponseParser">An optional delegate to parse custom StatusNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static StatusNotificationResponse Parse(StatusNotificationRequest                                 Request,
                                                        JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null)
+                                                       SourceRouting                                             Destination,
+                                                       NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                                       CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null,
+                                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var statusNotificationResponse,
                          out var errorResponse,
-                         CustomStatusNotificationResponseParser) &&
-                statusNotificationResponse is not null)
+                         ResponseTimestamp,
+                         CustomStatusNotificationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return statusNotificationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a status notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a StatusNotification response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -175,16 +214,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  out StatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a status notification response.
+        /// Try to parse the given XML representation of a StatusNotification response.
         /// </summary>
-        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="Request">The StatusNotification request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
+        /// <param name="StatusNotificationResponse">The parsed StatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.StatusNotificationRequest     Request,
-                                       XElement                         XML,
-                                       out StatusNotificationResponse?  StatusNotificationResponse,
-                                       out String?                      ErrorResponse)
+        public static Boolean TryParse(StatusNotificationRequest                             Request,
+                                       XElement                                              XML,
+                                       [NotNullWhen(true)]  out StatusNotificationResponse?  StatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse)
         {
 
             try
@@ -199,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 StatusNotificationResponse  = null;
-                ErrorResponse               = "The given XML representation of a status notification response is invalid: " + e.Message;
+                ErrorResponse               = "The given XML representation of a StatusNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -210,26 +249,81 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(JSON, out StatusNotificationResponse, out ErrorResponse, CustomStatusNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a status notification response.
+        /// Try to parse the given JSON representation of a StatusNotification response.
         /// </summary>
-        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="Request">The StatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="StatusNotificationResponse">The parsed StatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStatusNotificationResponseParser">An optional delegate to parse custom status notification responses.</param>
-        public static Boolean TryParse(CP.StatusNotificationRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomStatusNotificationResponseParser">An optional delegate to parse custom StatusNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(StatusNotificationRequest                                 Request,
                                        JObject                                                   JSON,
-                                       out StatusNotificationResponse?                           StatusNotificationResponse,
-                                       out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null)
+                                       SourceRouting                                             Destination,
+                                       NetworkPath                                               NetworkPath,
+                                       [NotNullWhen(true)]  out StatusNotificationResponse?      StatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
+                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                       CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
-
-            ErrorResponse = null;
 
             try
             {
 
-                StatusNotificationResponse = new StatusNotificationResponse(Request);
+                StatusNotificationResponse = null;
+
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                StatusNotificationResponse = new StatusNotificationResponse(
+
+                                                 Request,
+
+                                                 null,
+                                                 ResponseTimestamp,
+
+                                                 Destination,
+                                                 NetworkPath,
+
+                                                 null,
+                                                 null,
+                                                 Signatures,
+
+                                                 CustomData
+
+                                             );
 
                 if (CustomStatusNotificationResponseParser is not null)
                     StatusNotificationResponse = CustomStatusNotificationResponseParser(JSON,
@@ -241,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 StatusNotificationResponse  = null;
-                ErrorResponse               = "The given JSON representation of a status notification response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a StatusNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,9 +359,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomStatusNotificationResponseSerializer">A delegate to serialize custom status notification responses.</param>
+        /// <param name="CustomStatusNotificationResponseSerializer">A delegate to serialize custom StatusNotification responses.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer                    = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
@@ -285,12 +379,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The start transaction failed.
+        /// The StatusNotification failed because of a request error.
         /// </summary>
-        public static StatusNotificationResponse Failed(CP.StatusNotificationRequest Request)
+        /// <param name="Request">The StatusNotification request.</param>
+        public static StatusNotificationResponse RequestError(StatusNotificationRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
+
+                                                              SourceRouting?             Destination         = null,
+                                                              NetworkPath?               NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
+
+                                                              CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The StatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The StatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static StatusNotificationResponse FormationViolation(StatusNotificationRequest  Request,
+                                                                    String                     ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The StatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The StatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static StatusNotificationResponse SignatureError(StatusNotificationRequest  Request,
+                                                                String                     ErrorDescription)
+
+            => new (Request,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The StatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The StatusNotification request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static StatusNotificationResponse Failed(StatusNotificationRequest  Request,
+                                                        String?                    Description   = null)
+
+            => new (Request,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The StatusNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The StatusNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static StatusNotificationResponse ExceptionOccured(StatusNotificationRequest  Request,
+                                                                  Exception                  Exception)
+
+            => new (Request,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -300,10 +479,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (StatusNotificationResponse1, StatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two status notification responses for equality.
+        /// Compares two StatusNotification responses for equality.
         /// </summary>
-        /// <param name="StatusNotificationResponse1">A status notification response.</param>
-        /// <param name="StatusNotificationResponse2">Another status notification response.</param>
+        /// <param name="StatusNotificationResponse1">A StatusNotification response.</param>
+        /// <param name="StatusNotificationResponse2">Another StatusNotification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (StatusNotificationResponse? StatusNotificationResponse1,
                                            StatusNotificationResponse? StatusNotificationResponse2)
@@ -326,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (StatusNotificationResponse1, StatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two status notification responses for inequality.
+        /// Compares two StatusNotification responses for inequality.
         /// </summary>
-        /// <param name="StatusNotificationResponse1">A status notification response.</param>
-        /// <param name="StatusNotificationResponse2">Another status notification response.</param>
+        /// <param name="StatusNotificationResponse1">A StatusNotification response.</param>
+        /// <param name="StatusNotificationResponse2">Another StatusNotification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (StatusNotificationResponse? StatusNotificationResponse1,
                                            StatusNotificationResponse? StatusNotificationResponse2)
@@ -345,9 +524,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two status notification responses for equality.
+        /// Compares two StatusNotification responses for equality.
         /// </summary>
-        /// <param name="Object">A status notification response to compare with.</param>
+        /// <param name="Object">A StatusNotification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is StatusNotificationResponse statusNotificationResponse &&
@@ -358,9 +537,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(StatusNotificationResponse)
 
         /// <summary>
-        /// Compares two status notification responses for equality.
+        /// Compares two StatusNotification responses for equality.
         /// </summary>
-        /// <param name="StatusNotificationResponse">A status notification response to compare with.</param>
+        /// <param name="StatusNotificationResponse">A StatusNotification response to compare with.</param>
         public override Boolean Equals(StatusNotificationResponse? StatusNotificationResponse)
 
             => StatusNotificationResponse is not null;

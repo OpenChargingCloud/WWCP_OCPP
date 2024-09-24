@@ -235,6 +235,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        #region Static defaults
+
+        /// <summary>
+        /// Empty
+        /// </summary>
+        public static Transaction_Id  Empty    { get; }
+            = Parse(0);
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (TransactionId1, TransactionId2)

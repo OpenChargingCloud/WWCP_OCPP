@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -120,6 +121,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.Phase      = Phase;
             this.Location   = Location  ?? Locations.Outlet;
             this.Unit       = Unit      ?? UnitsOfMeasure.Wh;
+
+            unchecked
+            {
+
+                hashCode = this.Value.    GetHashCode() * 17 ^
+                           this.Context.  GetHashCode() * 13 ^
+                           this.Format.   GetHashCode() * 11 ^
+                           this.Measurand.GetHashCode() *  7 ^
+                           this.Location. GetHashCode() *  5 ^
+                           this.Unit.     GetHashCode() *  3 ^
+                          (this.Phase?.   GetHashCode() ?? 0);
+
+            }
 
         }
 
@@ -387,9 +401,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            JSON,
-                                       out SampledValue?  SampledValue,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject                                 JSON,
+                                       [NotNullWhen(true)]  out SampledValue?  SampledValue,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
 
             => TryParse(JSON,
                         out SampledValue,
@@ -405,8 +419,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSampledValueParser">An optional delegate to parse custom SampledValues.</param>
         public static Boolean TryParse(JObject                                     JSON,
-                                       out SampledValue?                           SampledValue,
-                                       out String?                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out SampledValue?      SampledValue,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
                                        CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser)
         {
 
@@ -419,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.ParseMandatoryText("value",
                                              "value",
-                                             out String Value,
+                                             out String? Value,
                                              out ErrorResponse))
                 {
                     return false;
@@ -687,26 +701,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Value.    GetHashCode() * 17 ^
-                       Context.  GetHashCode() * 13 ^
-                       Format.   GetHashCode() * 11 ^
-                       Measurand.GetHashCode() *  7 ^
-                       Location. GetHashCode() *  5 ^
-                       Unit.     GetHashCode() *  3 ^
-
-                      (Phase?.   GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -717,9 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Value,
-                             Unit,
-                             " measured at " + Location);
+            => $"{Value} {Unit} measured at '{Location}'";
 
         #endregion
 

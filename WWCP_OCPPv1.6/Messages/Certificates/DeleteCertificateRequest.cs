@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 hashCode = this.CertificateHashData.GetHashCode() * 3 ^
-                           base.GetHashCode();
+                           base.                    GetHashCode();
 
             }
 

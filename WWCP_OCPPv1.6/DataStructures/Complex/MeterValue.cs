@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -68,6 +69,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.Timestamp      = Timestamp;
             this.SampledValues  = SampledValues;
+
+
+            unchecked
+            {
+
+                hashCode = this.Timestamp.    GetHashCode() * 3 ^
+                           this.SampledValues.CalcHashCode();
+
+            }
 
         }
 
@@ -241,25 +251,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML,  OnException = null)
+        #region (static) Parse   (XML)
 
         /// <summary>
         /// Parse the given XML representation of a meter value.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue Parse(XElement              XML,
-                                       OnExceptionDelegate?  OnException   = null)
+        public static MeterValue Parse(XElement XML, OnExceptionDelegate? OnException = null)
         {
 
             if (TryParse(XML,
                          out var meterValue,
-                         OnException))
+                         out var errorResponse))
             {
                 return meterValue;
             }
 
-            throw new ArgumentException("The given JSON representation of a MeterValue is invalid: ", // + errorResponse,
+            throw new ArgumentException("The given XML representation of a MeterValue is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -292,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(XML,  out MeterValue, OnException = null)
+        #region (static) TryParse(XML,  out MeterValue, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a meter value.
@@ -300,10 +308,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              XML,
-                                       out MeterValue?       MeterValue,
-                                       OnExceptionDelegate?  OnException   = null)
+        public static Boolean TryParse(XElement                              XML,
+                                       [NotNullWhen(true)]  out MeterValue?  MeterValue,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -323,12 +333,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, XML, e);
-
-                MeterValue = null;
+                MeterValue     = null;
+                ErrorResponse  = "The given XML representation of a MeterValue is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -345,9 +352,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject          JSON,
-                                       out MeterValue?  MeterValue,
-                                       out String?      ErrorResponse)
+        public static Boolean TryParse(JObject                               JSON,
+                                       [NotNullWhen(true)]  out MeterValue?  MeterValue,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
 
             => TryParse(JSON,
                         out MeterValue,
@@ -363,8 +370,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMeterValueParser">An optional delegate to parse custom MeterValues.</param>
         public static Boolean TryParse(JObject                                   JSON,
-                                       out MeterValue?                           MeterValue,
-                                       out String?                               ErrorResponse,
+                                       [NotNullWhen(true)]  out MeterValue?      MeterValue,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
                                        CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser)
         {
 
@@ -414,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                MeterValue     = default;
+                MeterValue     = null;
                 ErrorResponse  = "The given JSON representation of a MeterValue is invalid: " + e.Message;
                 return false;
             }
@@ -547,20 +554,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Timestamp.    GetHashCode() * 3 ^
-                       SampledValues.CalcHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

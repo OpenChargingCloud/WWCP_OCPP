@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -108,7 +110,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="VendorId">An optional identifier of a vendor-specific extension.</param>
         /// <param name="VendorErrorCode">An optional vendor-specific error code.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -116,31 +121,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
-                                         Connector_Id                  ConnectorId,
-                                         ChargePointStatus             Status,
-                                         ChargePointErrorCodes         ErrorCode,
+        public StatusNotificationRequest(SourceRouting            Destination,
+                                         Connector_Id             ConnectorId,
+                                         ChargePointStatus        Status,
+                                         ChargePointErrorCodes    ErrorCode,
 
-                                         String?                       Info                = null,
-                                         DateTime?                     StatusTimestamp     = null,
-                                         String?                       VendorId            = null,
-                                         String?                       VendorErrorCode     = null,
+                                         String?                  Info                  = null,
+                                         DateTime?                StatusTimestamp       = null,
+                                         String?                  VendorId              = null,
+                                         String?                  VendorErrorCode       = null,
 
-                                         IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                         IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                         IEnumerable<Signature>?       Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys              = null,
+                                         IEnumerable<SignInfo>?   SignInfos             = null,
+                                         IEnumerable<Signature>?  Signatures            = null,
 
-                                         CustomData?                   CustomData          = null,
+                                         CustomData?              CustomData            = null,
 
-                                         Request_Id?                   RequestId           = null,
-                                         DateTime?                     RequestTimestamp    = null,
-                                         TimeSpan?                     RequestTimeout      = null,
-                                         EventTracking_Id?             EventTrackingId     = null,
-                                         NetworkPath?                  NetworkPath         = null,
-                                         CancellationToken             CancellationToken   = default)
+                                         Request_Id?              RequestId             = null,
+                                         DateTime?                RequestTimestamp      = null,
+                                         TimeSpan?                RequestTimeout        = null,
+                                         EventTracking_Id?        EventTrackingId       = null,
+                                         NetworkPath?             NetworkPath           = null,
+                                         SerializationFormats?    SerializationFormat   = null,
+                                         CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(StatusNotificationRequest)[..^7],
 
                    SignKeys,
@@ -154,6 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -166,7 +174,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.StatusTimestamp  = StatusTimestamp;
             this.VendorId         = VendorId?.       Trim();
             this.VendorErrorCode  = VendorErrorCode?.Trim();
-
 
             unchecked
             {
@@ -246,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //                 "PowerMeterFailure",
         //                 "PowerSwitchFailure",
         //                 "ReaderFailure",
-        //                 "ResetFailure",
+        //                 "StatusNotificationFailure",
         //                 "UnderVoltage",
         //                 "OverVoltage",
         //                 "WeakSignal"
@@ -297,27 +304,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
 
         /// <summary>
-        /// Parse the given XML representation of a status notification request.
+        /// Parse the given XML representation of a StatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        public static StatusNotificationRequest Parse(XElement           XML,
-                                                      Request_Id         RequestId,
-                                                      NetworkingNode_Id  NetworkingNodeId)
+        /// <param name="NetworkPath">The network path of the request.</param>
+        public static StatusNotificationRequest Parse(XElement       XML,
+                                                      Request_Id     RequestId,
+                                                      SourceRouting  Destination,
+                                                      NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
+                         NetworkPath,
                          out var statusNotificationRequest,
-                         out var errorResponse) &&
-                statusNotificationRequest is not null)
+                         out var errorResponse))
             {
                 return statusNotificationRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a StatusNotification request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -327,33 +336,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a status notification request.
+        /// Parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomStatusNotificationRequestParser">An optional delegate to parse custom status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
-                                                      CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
+                                                      CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var statusNotificationRequest,
                          out var errorResponse,
-                         CustomStatusNotificationRequestParser) &&
-                statusNotificationRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomStatusNotificationRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return statusNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a StatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -363,16 +386,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out StatusNotificationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a status notification request.
+        /// Try to parse the given XML representation of a StatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                        XML,
                                        Request_Id                      RequestId,
-                                       NetworkingNode_Id               NetworkingNodeId,
+                                       SourceRouting                   Destination,
+                                       NetworkPath                     NetworkPath,
                                        out StatusNotificationRequest?  StatusNotificationRequest,
                                        out String?                     ErrorResponse)
         {
@@ -382,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StatusNotificationRequest = new StatusNotificationRequest(
 
-                                                NetworkingNodeId,
+                                                Destination,
 
                                                 XML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "connectorId",
                                                                           Connector_Id.Parse),
@@ -413,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 StatusNotificationRequest  = null;
-                ErrorResponse              = "The given XML representation of a status notification request is invalid: " + e.Message;
+                ErrorResponse              = "The given XML representation of a StatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -423,50 +448,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out CustomStatusNotificationRequestParser, out ErrorResponse)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a status notification request.
+        /// Try to parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                         JSON,
-                                       Request_Id                      RequestId,
-                                       NetworkingNode_Id               NetworkingNodeId,
-                                       NetworkPath                     NetworkPath,
-                                       out StatusNotificationRequest?  StatusNotificationRequest,
-                                       out String?                     ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out StatusNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a status notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStatusNotificationRequestParser">An optional delegate to parse custom status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
-                                       out StatusNotificationRequest?                           StatusNotificationRequest,
-                                       out String?                                              ErrorResponse,
-                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser)
+                                       [NotNullWhen(true)]  out StatusNotificationRequest?      StatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -598,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StatusNotificationRequest = new StatusNotificationRequest(
 
-                                                NetworkingNodeId,
+                                                Destination,
                                                 ConnectorId,
                                                 Status,
                                                 ErrorCode,
@@ -615,9 +623,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -632,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 StatusNotificationRequest  = null;
-                ErrorResponse              = "The given JSON representation of a status notification request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a StatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -682,7 +690,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -776,9 +784,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A status notification request to compare with.</param>
+        /// <param name="Object">A StatusNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is StatusNotificationRequest statusNotificationRequest &&
@@ -789,9 +797,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(StatusNotificationRequest)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="StatusNotificationRequest">A status notification request to compare with.</param>
+        /// <param name="StatusNotificationRequest">A StatusNotification request to compare with.</param>
         public override Boolean Equals(StatusNotificationRequest? StatusNotificationRequest)
 
             => StatusNotificationRequest is not null &&

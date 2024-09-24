@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -31,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A cancel reservation response.
+    /// A CancelReservation response.
     /// </summary>
-    public class CancelReservationResponse : AResponse<CS.CancelReservationRequest,
-                                                          CancelReservationResponse>,
+    public class CancelReservationResponse : AResponse<CancelReservationRequest,
+                                                       CancelReservationResponse>,
                                              IResponse
     {
 
@@ -64,12 +69,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region CancelReservationResponse(Request, Status)
-
         /// <summary>
-        /// Create a new cancel reservation response.
+        /// Create a new CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -77,54 +80,53 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public CancelReservationResponse(CS.CancelReservationRequest   Request,
-                                         CancelReservationStatus       Status,
+        public CancelReservationResponse(CancelReservationRequest  Request,
+                                         CancelReservationStatus   Status,
 
-                                         DateTime?                     ResponseTimestamp   = null,
+                                         Result?                   Result                = null,
+                                         DateTime?                 ResponseTimestamp     = null,
 
-                                         IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                         IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                         IEnumerable<Signature>?  Signatures          = null,
+                                         SourceRouting?            Destination           = null,
+                                         NetworkPath?              NetworkPath           = null,
 
-                                         CustomData?                   CustomData          = null)
+                                         IEnumerable<KeyPair>?     SignKeys              = null,
+                                         IEnumerable<SignInfo>?    SignInfos             = null,
+                                         IEnumerable<Signature>?   Signatures            = null,
+
+                                         CustomData?               CustomData            = null,
+
+                                         SerializationFormats?     SerializationFormat   = null,
+                                         CancellationToken         CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.       GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region CancelReservationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new cancel reservation response.
-        /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public CancelReservationResponse(CS.CancelReservationRequest  Request,
-                                         Result                       Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -169,9 +171,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, XML)
 
         /// <summary>
-        /// Parse the given XML representation of a cancel reservation response.
+        /// Parse the given XML representation of a CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static CancelReservationResponse Parse(CS.CancelReservationRequest  Request,
                                                       XElement                     XML)
@@ -186,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return cancelReservationResponse;
             }
 
-            throw new ArgumentException("The given XML representation of a cancel reservation response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a CancelReservation response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -196,27 +198,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, JSON, CustomCancelReservationResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cancel reservation response.
+        /// Parse the given JSON representation of a CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCancelReservationResponseParser">An optional delegate to parse custom cancel reservation responses.</param>
-        public static CancelReservationResponse Parse(CS.CancelReservationRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomCancelReservationResponseParser">An optional delegate to parse custom CancelReservation responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static CancelReservationResponse Parse(CancelReservationRequest                                 Request,
                                                       JObject                                                  JSON,
-                                                      CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
+                                                      SourceRouting                                            Destination,
+                                                      NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                ResponseTimestamp                       = null,
+                                                      CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var cancelReservationResponse,
                          out var errorResponse,
-                         CustomCancelReservationResponseParser) &&
-                cancelReservationResponse is not null)
+                         ResponseTimestamp,
+                         CustomCancelReservationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return cancelReservationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a cancel reservation response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a CancelReservation response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -226,11 +242,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, XML,  out CancelReservationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a cancel reservation response.
+        /// Try to parse the given XML representation of a CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
+        /// <param name="CancelReservationResponse">The parsed CancelReservation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(CS.CancelReservationRequest     Request,
                                        XElement                        XML,
@@ -257,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 CancelReservationResponse  = null;
-                ErrorResponse              = "The given XML representation of a cancel reservation response is invalid: " + e.Message;
+                ErrorResponse              = "The given XML representation of a CancelReservation response is invalid: " + e.Message;
                 return false;
             }
 
@@ -268,18 +284,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, JSON, out CancelReservationResponse, out ErrorResponse, CustomCancelReservationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation response.
+        /// Try to parse the given JSON representation of a CancelReservation response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The CancelReservation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="CancelReservationResponse">The parsed CancelReservation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationResponseParser">An optional delegate to parse custom cancel reservation responses.</param>
-        public static Boolean TryParse(CS.CancelReservationRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomCancelReservationResponseParser">An optional delegate to parse custom CancelReservation responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(CancelReservationRequest                                 Request,
                                        JObject                                                  JSON,
-                                       out CancelReservationResponse?                           CancelReservationResponse,
-                                       out String?                                              ErrorResponse,
-                                       CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
+                                       SourceRouting                                            Destination,
+                                       NetworkPath                                              NetworkPath,
+                                       [NotNullWhen(true)]  out CancelReservationResponse?      CancelReservationResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                ResponseTimestamp                       = null,
+                                       CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -290,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                       "cancel reservation status",
+                                       "CancelReservation status",
                                        CancelReservationStatusExtensions.Parse,
                                        out CancelReservationStatus Status,
                                        out ErrorResponse))
@@ -333,7 +359,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                 Request,
                                                 Status,
+
                                                 null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
 
                                                 null,
                                                 null,
@@ -353,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 CancelReservationResponse  = null;
-                ErrorResponse              = "The given JSON representation of a cancel reservation response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a CancelReservation response is invalid: " + e.Message;
                 return false;
             }
 
@@ -379,11 +410,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom cancel reservation responses.</param>
+        /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom CancelReservation responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse>?  CustomCancelReservationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -414,13 +445,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The cancel reservation failed.
+        /// The CancelReservation failed because of a request error.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        public static CancelReservationResponse Failed(CS.CancelReservationRequest Request)
+        /// <param name="Request">The CancelReservation request.</param>
+        public static CancelReservationResponse RequestError(CancelReservationRequest  Request,
+                                                             EventTracking_Id          EventTrackingId,
+                                                             ResultCode                ErrorCode,
+                                                             String?                   ErrorDescription    = null,
+                                                             JObject?                  ErrorDetails        = null,
+                                                             DateTime?                 ResponseTimestamp   = null,
+
+                                                             SourceRouting?            Destination         = null,
+                                                             NetworkPath?              NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?     SignKeys            = null,
+                                                             IEnumerable<SignInfo>?    SignInfos           = null,
+                                                             IEnumerable<Signature>?   Signatures          = null,
+
+                                                             CustomData?               CustomData          = null)
+
+            => new (
+
+                   Request,
+                   CancelReservationStatus.Rejected,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The CancelReservation failed.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static CancelReservationResponse FormationViolation(CancelReservationRequest  Request,
+                                                                   String                    ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    CancelReservationStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The CancelReservation failed.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static CancelReservationResponse SignatureError(CancelReservationRequest  Request,
+                                                               String                    ErrorDescription)
+
+            => new (Request,
+                    CancelReservationStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The CancelReservation failed.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static CancelReservationResponse Failed(CancelReservationRequest  Request,
+                                                       String?                   Description   = null)
+
+            => new (Request,
+                    CancelReservationStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The CancelReservation failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The CancelReservation request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static CancelReservationResponse ExceptionOccured(CancelReservationRequest  Request,
+                                                                 Exception                 Exception)
+
+            => new (Request,
+                    CancelReservationStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -430,10 +550,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (CancelReservationResponse1, CancelReservationResponse2)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two CancelReservation responses for equality.
         /// </summary>
-        /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
-        /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
+        /// <param name="CancelReservationResponse1">A CancelReservation response.</param>
+        /// <param name="CancelReservationResponse2">Another CancelReservation response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CancelReservationResponse? CancelReservationResponse1,
                                            CancelReservationResponse? CancelReservationResponse2)
@@ -456,10 +576,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (CancelReservationResponse1, CancelReservationResponse2)
 
         /// <summary>
-        /// Compares two cancel reservation responses for inequality.
+        /// Compares two CancelReservation responses for inequality.
         /// </summary>
-        /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
-        /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
+        /// <param name="CancelReservationResponse1">A CancelReservation response.</param>
+        /// <param name="CancelReservationResponse2">Another CancelReservation response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CancelReservationResponse? CancelReservationResponse1,
                                            CancelReservationResponse? CancelReservationResponse2)
@@ -475,9 +595,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two CancelReservation responses for equality.
         /// </summary>
-        /// <param name="Object">A cancel reservation response to compare with.</param>
+        /// <param name="Object">A CancelReservation response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CancelReservationResponse cancelReservationResponse &&
@@ -488,9 +608,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(CancelReservationResponse)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two CancelReservation responses for equality.
         /// </summary>
-        /// <param name="CancelReservationResponse">A cancel reservation response to compare with.</param>
+        /// <param name="CancelReservationResponse">A CancelReservation response to compare with.</param>
         public override Boolean Equals(CancelReservationResponse? CancelReservationResponse)
 
             => CancelReservationResponse is not null &&
@@ -502,13 +622,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => Status.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

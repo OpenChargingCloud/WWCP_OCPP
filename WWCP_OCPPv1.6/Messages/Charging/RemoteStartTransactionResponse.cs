@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -33,8 +38,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A remote start transaction response.
     /// </summary>
-    public class RemoteStartTransactionResponse : AResponse<CS.RemoteStartTransactionRequest,
-                                                               RemoteStartTransactionResponse>,
+    public class RemoteStartTransactionResponse : AResponse<RemoteStartTransactionRequest,
+                                                            RemoteStartTransactionResponse>,
                                                   IResponse
     {
 
@@ -64,67 +69,72 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region RemoteStartTransactionResponse(Request, Status)
-
         /// <summary>
         /// Create a new remote start transaction response.
         /// </summary>
         /// <param name="Request">The remote start transaction request leading to this response.</param>
         /// <param name="Status">The status indicating whether the charge point accepts the request to start a charging transaction.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public RemoteStartTransactionResponse(CS.RemoteStartTransactionRequest  Request,
-                                              RemoteStartStopStatus             Status,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public RemoteStartTransactionResponse(RemoteStartTransactionRequest  Request,
+                                              RemoteStartStopStatus          Status,
 
-                                              DateTime?                         ResponseTimestamp   = null,
+                                              Result?                        Result                = null,
+                                              DateTime?                      ResponseTimestamp     = null,
 
-                                              IEnumerable<WWCP.KeyPair>?        SignKeys            = null,
-                                              IEnumerable<WWCP.SignInfo>?       SignInfos           = null,
-                                              IEnumerable<Signature>?      Signatures          = null,
+                                              SourceRouting?                 Destination           = null,
+                                              NetworkPath?                   NetworkPath           = null,
 
-                                              CustomData?                       CustomData          = null)
+                                              IEnumerable<KeyPair>?          SignKeys              = null,
+                                              IEnumerable<SignInfo>?         SignInfos             = null,
+                                              IEnumerable<Signature>?        Signatures            = null,
+
+                                              CustomData?                    CustomData            = null,
+
+                                              SerializationFormats?          SerializationFormat   = null,
+                                              CancellationToken              CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.       GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region RemoteStartTransactionResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new remote start transaction response.
-        /// </summary>
-        /// <param name="Request">The remote start transaction request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public RemoteStartTransactionResponse(CS.RemoteStartTransactionRequest  Request,
-                                              Result                            Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -173,15 +183,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The remote start transaction request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static RemoteStartTransactionResponse Parse(CS.RemoteStartTransactionRequest  Request,
-                                                           XElement                          XML)
+        public static RemoteStartTransactionResponse Parse(RemoteStartTransactionRequest  Request,
+                                                           XElement                       XML)
         {
 
             if (TryParse(Request,
                          XML,
                          out var remoteStartTransactionResponse,
-                         out var errorResponse) &&
-                remoteStartTransactionResponse is not null)
+                         out var errorResponse))
             {
                 return remoteStartTransactionResponse;
             }
@@ -198,20 +207,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a remote start transaction response.
         /// </summary>
-        /// <param name="Request">The remote start transaction request leading to this response.</param>
+        /// <param name="Request">The RemoteStartTransaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRemoteStartTransactionResponseParser">An optional delegate to parse custom remote start transaction responses.</param>
-        public static RemoteStartTransactionResponse Parse(CS.RemoteStartTransactionRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomRemoteStartTransactionResponseParser">An optional delegate to parse custom RemoteStartTransaction responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static RemoteStartTransactionResponse Parse(RemoteStartTransactionRequest                                 Request,
                                                            JObject                                                       JSON,
-                                                           CustomJObjectParserDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseParser   = null)
+                                                           SourceRouting                                                 Destination,
+                                                           NetworkPath                                                   NetworkPath,
+                                                           DateTime?                                                     ResponseTimestamp                            = null,
+                                                           CustomJObjectParserDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseParser   = null,
+                                                           CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                                           CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var remoteStartTransactionResponse,
                          out var errorResponse,
-                         CustomRemoteStartTransactionResponseParser) &&
-                remoteStartTransactionResponse is not null)
+                         ResponseTimestamp,
+                         CustomRemoteStartTransactionResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return remoteStartTransactionResponse;
             }
@@ -270,16 +293,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given JSON representation of a remote start transaction response.
         /// </summary>
-        /// <param name="Request">The remote start transaction request leading to this response.</param>
+        /// <param name="Request">The RemoteStartTransaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RemoteStartTransactionResponse">The parsed remote start transaction response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="RemoteStartTransactionResponse">The parsed RemoteStartTransaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRemoteStartTransactionResponseParser">An optional delegate to parse custom remote start transaction responses.</param>
-        public static Boolean TryParse(CS.RemoteStartTransactionRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomRemoteStartTransactionResponseParser">An optional delegate to parse custom RemoteStartTransaction responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(RemoteStartTransactionRequest                                 Request,
                                        JObject                                                       JSON,
-                                       out RemoteStartTransactionResponse?                           RemoteStartTransactionResponse,
-                                       out String?                                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseParser   = null)
+                                       SourceRouting                                                 Destination,
+                                       NetworkPath                                                   NetworkPath,
+                                       [NotNullWhen(true)]  out RemoteStartTransactionResponse?      RemoteStartTransactionResponse,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse,
+                                       DateTime?                                                     ResponseTimestamp                            = null,
+                                       CustomJObjectParserDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                       CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             try
@@ -333,7 +366,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      Request,
                                                      RemoteStartStopStatus,
+
                                                      null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
 
                                                      null,
                                                      null,
@@ -383,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                        = null,
+                              CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
@@ -414,13 +452,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The stop transaction failed.
+        /// The RemoteStartTransaction failed because of a request error.
         /// </summary>
-        /// <param name="Request">The remote start transaction request leading to this response.</param>
-        public static RemoteStartTransactionResponse Failed(CS.RemoteStartTransactionRequest  Request)
+        /// <param name="Request">The RemoteStartTransaction request.</param>
+        public static RemoteStartTransactionResponse RequestError(RemoteStartTransactionRequest  Request,
+                                                                  EventTracking_Id               EventTrackingId,
+                                                                  ResultCode                     ErrorCode,
+                                                                  String?                        ErrorDescription    = null,
+                                                                  JObject?                       ErrorDetails        = null,
+                                                                  DateTime?                      ResponseTimestamp   = null,
+
+                                                                  SourceRouting?                 Destination         = null,
+                                                                  NetworkPath?                   NetworkPath         = null,
+
+                                                                  IEnumerable<KeyPair>?          SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?         SignInfos           = null,
+                                                                  IEnumerable<Signature>?        Signatures          = null,
+
+                                                                  CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   RemoteStartStopStatus.Rejected,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The RemoteStartTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RemoteStartTransaction request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static RemoteStartTransactionResponse FormationViolation(RemoteStartTransactionRequest  Request,
+                                                                        String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    RemoteStartStopStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The RemoteStartTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RemoteStartTransaction request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static RemoteStartTransactionResponse SignatureError(RemoteStartTransactionRequest  Request,
+                                                                    String                         ErrorDescription)
+
+            => new (Request,
+                    RemoteStartStopStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The RemoteStartTransaction failed.
+        /// </summary>
+        /// <param name="Request">The RemoteStartTransaction request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static RemoteStartTransactionResponse Failed(RemoteStartTransactionRequest  Request,
+                                                            String?                        Description   = null)
+
+            => new (Request,
+                    RemoteStartStopStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The RemoteStartTransaction failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The RemoteStartTransaction request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static RemoteStartTransactionResponse ExceptionOccured(RemoteStartTransactionRequest  Request,
+                                                                      Exception                      Exception)
+
+            => new (Request,
+                    RemoteStartStopStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -502,13 +629,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => Status.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

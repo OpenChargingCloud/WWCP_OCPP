@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The unlock connector request.
+    /// The UnlockConnector request.
     /// </summary>
     public class UnlockConnectorRequest : ARequest<UnlockConnectorRequest>,
                                           IRequest
@@ -65,12 +67,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new unlock connector request.
+        /// Create a new UnlockConnector request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -78,24 +83,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UnlockConnectorRequest(NetworkingNode_Id             NetworkingNodeId,
-                                      Connector_Id                  ConnectorId,
+        public UnlockConnectorRequest(SourceRouting            Destination,
+                                      Connector_Id             ConnectorId,
 
-                                      IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                      IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                      IEnumerable<Signature>?  Signatures          = null,
+                                      IEnumerable<KeyPair>?    SignKeys              = null,
+                                      IEnumerable<SignInfo>?   SignInfos             = null,
+                                      IEnumerable<Signature>?  Signatures            = null,
 
-                                      CustomData?                   CustomData          = null,
+                                      CustomData?              CustomData            = null,
 
-                                      Request_Id?                   RequestId           = null,
-                                      DateTime?                     RequestTimestamp    = null,
-                                      TimeSpan?                     RequestTimeout      = null,
-                                      EventTracking_Id?             EventTrackingId     = null,
-                                      NetworkPath?                  NetworkPath         = null,
-                                      CancellationToken             CancellationToken   = default)
+                                      Request_Id?              RequestId             = null,
+                                      DateTime?                RequestTimestamp      = null,
+                                      TimeSpan?                RequestTimeout        = null,
+                                      EventTracking_Id?        EventTrackingId       = null,
+                                      NetworkPath?             NetworkPath           = null,
+                                      SerializationFormats?    SerializationFormat   = null,
+                                      CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(UnlockConnectorRequest)[..^7],
 
                    SignKeys,
@@ -109,11 +116,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.ConnectorId = ConnectorId;
+
+            unchecked
+            {
+
+                hashCode = this.ConnectorId.GetHashCode() * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
 
@@ -161,30 +177,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of an unlock connector request.
+        /// Parse the given XML representation of an UnlockConnector request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static UnlockConnectorRequest Parse(XElement           XML,
-                                                   Request_Id         RequestId,
-                                                   NetworkingNode_Id  NetworkingNodeId,
-                                                   NetworkPath        NetworkPath)
+        public static UnlockConnectorRequest Parse(XElement       XML,
+                                                   Request_Id     RequestId,
+                                                   SourceRouting  Destination,
+                                                   NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var unlockConnectorRequest,
-                         out var errorResponse) &&
-                unlockConnectorRequest is not null)
+                         out var errorResponse))
             {
                 return unlockConnectorRequest;
             }
 
-            throw new ArgumentException("The given XML representation of an unlock connector request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of an UnlockConnector request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -194,33 +209,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUnlockConnectorRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an unlock connector request.
+        /// Parse the given JSON representation of an UnlockConnector request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUnlockConnectorRequestParser">An optional delegate to parse custom unlock connector requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static UnlockConnectorRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
-                                                   CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser   = null)
+                                                   DateTime?                                             RequestTimestamp                     = null,
+                                                   TimeSpan?                                             RequestTimeout                       = null,
+                                                   EventTracking_Id?                                     EventTrackingId                      = null,
+                                                   CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser   = null,
+                                                   CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                                   CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var unlockConnectorRequest,
                          out var errorResponse,
-                         CustomUnlockConnectorRequestParser) &&
-                unlockConnectorRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomUnlockConnectorRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return unlockConnectorRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an unlock connector request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an UnlockConnector request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -230,20 +259,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out UnlockConnectorRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of an unlock connector request.
+        /// Try to parse the given XML representation of an UnlockConnector request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
+        /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                     XML,
-                                       Request_Id                   RequestId,
-                                       NetworkingNode_Id            NetworkingNodeId,
-                                       NetworkPath                  NetworkPath,
-                                       out UnlockConnectorRequest?  UnlockConnectorRequest,
-                                       out String?                  ErrorResponse)
+        public static Boolean TryParse(XElement                                          XML,
+                                       Request_Id                                        RequestId,
+                                       SourceRouting                                     Destination,
+                                       NetworkPath                                       NetworkPath,
+                                       [NotNullWhen(true)]  out UnlockConnectorRequest?  UnlockConnectorRequest,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse)
         {
 
             try
@@ -251,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UnlockConnectorRequest = new UnlockConnectorRequest(
 
-                                             NetworkingNodeId,
+                                             Destination,
 
                                              XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                 Connector_Id.Parse),
@@ -268,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 UnlockConnectorRequest  = null;
-                ErrorResponse           = "The given XML representation of an unlock connector request is invalid: " + e.Message;
+                ErrorResponse           = "The given XML representation of an UnlockConnector request is invalid: " + e.Message;
                 return false;
             }
 
@@ -278,50 +307,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of an unlock connector request.
+        /// Try to parse the given JSON representation of an UnlockConnector request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
+        /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                      JSON,
-                                       Request_Id                   RequestId,
-                                       NetworkingNode_Id            NetworkingNodeId,
-                                       NetworkPath                  NetworkPath,
-                                       out UnlockConnectorRequest?  UnlockConnectorRequest,
-                                       out String?                  ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out UnlockConnectorRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an unlock connector request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnlockConnectorRequestParser">An optional delegate to parse custom unlock connector requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                           NetworkPath,
-                                       out UnlockConnectorRequest?                           UnlockConnectorRequest,
-                                       out String?                                           ErrorResponse,
-                                       CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser)
+                                       [NotNullWhen(true)]  out UnlockConnectorRequest?      UnlockConnectorRequest,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
+                                       DateTime?                                             RequestTimestamp                     = null,
+                                       TimeSpan?                                             RequestTimeout                       = null,
+                                       EventTracking_Id?                                     EventTrackingId                      = null,
+                                       CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                       CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             try
@@ -373,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UnlockConnectorRequest = new UnlockConnectorRequest(
 
-                                             NetworkingNodeId,
+                                             Destination,
                                              ConnectorId,
 
                                              null,
@@ -383,9 +395,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              CustomData,
 
                                              RequestId,
-                                             null,
-                                             null,
-                                             null,
+                                             RequestTimestamp,
+                                             RequestTimeout,
+                                             EventTrackingId,
                                              NetworkPath
 
                                          );
@@ -400,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 UnlockConnectorRequest  = null;
-                ErrorResponse           = "The given JSON representation of an unlock connector request is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of an UnlockConnector request is invalid: " + e.Message;
                 return false;
             }
 
@@ -428,11 +440,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom unlock connector requests.</param>
+        /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom UnlockConnector requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer                = null,
+                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
@@ -465,10 +477,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (UnlockConnectorRequest1, UnlockConnectorRequest2)
 
         /// <summary>
-        /// Compares two unlock connector requests for equality.
+        /// Compares two UnlockConnector requests for equality.
         /// </summary>
-        /// <param name="UnlockConnectorRequest1">An unlock connector request.</param>
-        /// <param name="UnlockConnectorRequest2">Another unlock connector request.</param>
+        /// <param name="UnlockConnectorRequest1">An UnlockConnector request.</param>
+        /// <param name="UnlockConnectorRequest2">Another UnlockConnector request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UnlockConnectorRequest? UnlockConnectorRequest1,
                                            UnlockConnectorRequest? UnlockConnectorRequest2)
@@ -491,10 +503,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (UnlockConnectorRequest1, UnlockConnectorRequest2)
 
         /// <summary>
-        /// Compares two unlock connector requests for inequality.
+        /// Compares two UnlockConnector requests for inequality.
         /// </summary>
-        /// <param name="UnlockConnectorRequest1">An unlock connector request.</param>
-        /// <param name="UnlockConnectorRequest2">Another unlock connector request.</param>
+        /// <param name="UnlockConnectorRequest1">An UnlockConnector request.</param>
+        /// <param name="UnlockConnectorRequest2">Another UnlockConnector request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UnlockConnectorRequest? UnlockConnectorRequest1,
                                            UnlockConnectorRequest? UnlockConnectorRequest2)
@@ -510,9 +522,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two unlock connector requests for equality.
+        /// Compares two UnlockConnector requests for equality.
         /// </summary>
-        /// <param name="Object">An unlock connector request to compare with.</param>
+        /// <param name="Object">An UnlockConnector request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UnlockConnectorRequest unlockConnectorRequest &&
@@ -523,9 +535,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(UnlockConnectorRequest)
 
         /// <summary>
-        /// Compares two unlock connector requests for equality.
+        /// Compares two UnlockConnector requests for equality.
         /// </summary>
-        /// <param name="UnlockConnectorRequest">An unlock connector request to compare with.</param>
+        /// <param name="UnlockConnectorRequest">An UnlockConnector request to compare with.</param>
         public override Boolean Equals(UnlockConnectorRequest? UnlockConnectorRequest)
 
             => UnlockConnectorRequest is not null &&
@@ -540,20 +552,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ConnectorId.GetHashCode() * 3 ^
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

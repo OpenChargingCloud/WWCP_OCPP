@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -31,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A meter values response.
+    /// A MeterValues response.
     /// </summary>
-    public class MeterValuesResponse : AResponse<CP.MeterValuesRequest,
-                                                    MeterValuesResponse>,
+    public class MeterValuesResponse : AResponse<MeterValuesRequest,
+                                                 MeterValuesResponse>,
                                        IResponse
     {
 
@@ -59,37 +64,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region MeterValuesResponse(Request)
-
         /// <summary>
-        /// Create a new meter values response.
+        /// Create a new MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
-        public MeterValuesResponse(CP.MeterValuesRequest  Request)
+        /// <param name="Request">The MeterValues request leading to this response.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public MeterValuesResponse(MeterValuesRequest       Request,
+
+                                   Result?                  Result                = null,
+                                   DateTime?                ResponseTimestamp     = null,
+
+                                   SourceRouting?           Destination           = null,
+                                   NetworkPath?             NetworkPath           = null,
+
+                                   IEnumerable<KeyPair>?    SignKeys              = null,
+                                   IEnumerable<SignInfo>?   SignInfos             = null,
+                                   IEnumerable<Signature>?  Signatures            = null,
+
+                                   CustomData?              CustomData            = null,
+
+                                   SerializationFormats?    SerializationFormat   = null,
+                                   CancellationToken        CancellationToken     = default)
 
             : base(Request,
-                   Result.OK())
+                   Result ?? Result.OK(),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         { }
-
-        #endregion
-
-        #region MeterValuesResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new meter values response.
-        /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public MeterValuesResponse(CP.MeterValuesRequest  Request,
-                                   Result                 Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -118,19 +144,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (Request, XML)
 
         /// <summary>
-        /// Parse the given XML representation of a meter values response.
+        /// Parse the given XML representation of a MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
-                                                XElement               XML)
+        public static MeterValuesResponse Parse(MeterValuesRequest  Request,
+                                                XElement            XML)
         {
 
             if (TryParse(Request,
                          XML,
                          out var meterValuesResponse,
-                         out var errorResponse) &&
-                meterValuesResponse is not null)
+                         out var errorResponse))
             {
                 return meterValuesResponse;
             }
@@ -145,22 +170,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (Request, JSON, CustomMeterValuesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a meter values response.
+        /// Parse the given JSON representation of a MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomMeterValuesResponseParser">An optional delegate to parse custom meter values responses.</param>
-        public static MeterValuesResponse Parse(CP.MeterValuesRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomMeterValuesResponseParser">An optional delegate to parse custom MeterValues responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static MeterValuesResponse Parse(MeterValuesRequest                                 Request,
                                                 JObject                                            JSON,
-                                                CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
+                                                SourceRouting                                      Destination,
+                                                NetworkPath                                        NetworkPath,
+                                                DateTime?                                          ResponseTimestamp                 = null,
+                                                CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null,
+                                                CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                                CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var meterValuesResponse,
                          out var errorResponse,
-                         CustomMeterValuesResponseParser) &&
-                meterValuesResponse is not null)
+                         ResponseTimestamp,
+                         CustomMeterValuesResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return meterValuesResponse;
             }
@@ -175,11 +214,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(Request, XML,  out MeterValuesResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a meter values response.
+        /// Try to parse the given XML representation of a MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="MeterValuesResponse">The parsed meter values response.</param>
+        /// <param name="MeterValuesResponse">The parsed MeterValues response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(CP.MeterValuesRequest     Request,
                                        XElement                  XML,
@@ -199,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 MeterValuesResponse  = null;
-                ErrorResponse        = "The given XML representation of a meter values response is invalid: " + e.Message;
+                ErrorResponse        = "The given XML representation of a MeterValues response is invalid: " + e.Message;
                 return false;
             }
 
@@ -210,26 +249,81 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(Request, JSON, out MeterValuesResponse, out ErrorResponse, CustomMeterValuesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a meter values response.
+        /// Try to parse the given JSON representation of a MeterValues response.
         /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="MeterValuesResponse">The parsed meter values response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="MeterValuesResponse">The parsed MeterValues response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMeterValuesResponseParser">An optional delegate to parse custom meter values responses.</param>
-        public static Boolean TryParse(CP.MeterValuesRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomMeterValuesResponseParser">An optional delegate to parse custom MeterValues responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(MeterValuesRequest                                 Request,
                                        JObject                                            JSON,
-                                       out MeterValuesResponse?                           MeterValuesResponse,
-                                       out String?                                        ErrorResponse,
-                                       CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
+                                       SourceRouting                                      Destination,
+                                       NetworkPath                                        NetworkPath,
+                                       [NotNullWhen(true)]  out MeterValuesResponse?      MeterValuesResponse,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
+                                       DateTime?                                          ResponseTimestamp                 = null,
+                                       CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?            CustomSignatureParser             = null,
+                                       CustomJObjectParserDelegate<CustomData>?           CustomCustomDataParser            = null)
         {
-
-            ErrorResponse = null;
 
             try
             {
 
-                MeterValuesResponse = new MeterValuesResponse(Request);
+                MeterValuesResponse = null;
+
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                MeterValuesResponse = new MeterValuesResponse(
+
+                                          Request,
+
+                                          null,
+                                          ResponseTimestamp,
+
+                                          Destination,
+                                          NetworkPath,
+
+                                          null,
+                                          null,
+                                          Signatures,
+
+                                          CustomData
+
+                                      );
 
                 if (CustomMeterValuesResponseParser is not null)
                     MeterValuesResponse = CustomMeterValuesResponseParser(JSON,
@@ -241,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 MeterValuesResponse  = null;
-                ErrorResponse        = "The given JSON representation of a meter values response is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a MeterValues response is invalid: " + e.Message;
                 return false;
             }
 
@@ -265,9 +359,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom meter values responses.</param>
+        /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom MeterValues responses.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse>?  CustomMeterValuesResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?       CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
@@ -285,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The meter values request failed.
+        /// The MeterValues request failed.
         /// </summary>
         public static MeterValuesResponse Failed(CP.MeterValuesRequest Request)
 
@@ -300,10 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (MeterValuesResponse1, MeterValuesResponse2)
 
         /// <summary>
-        /// Compares two meter values responses for equality.
+        /// Compares two MeterValues responses for equality.
         /// </summary>
-        /// <param name="MeterValuesResponse1">A meter values response.</param>
-        /// <param name="MeterValuesResponse2">Another meter values response.</param>
+        /// <param name="MeterValuesResponse1">A MeterValues response.</param>
+        /// <param name="MeterValuesResponse2">Another MeterValues response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (MeterValuesResponse? MeterValuesResponse1,
                                            MeterValuesResponse? MeterValuesResponse2)
@@ -326,10 +420,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (MeterValuesResponse1, MeterValuesResponse2)
 
         /// <summary>
-        /// Compares two meter values responses for inequality.
+        /// Compares two MeterValues responses for inequality.
         /// </summary>
-        /// <param name="MeterValuesResponse1">A meter values response.</param>
-        /// <param name="MeterValuesResponse2">Another meter values response.</param>
+        /// <param name="MeterValuesResponse1">A MeterValues response.</param>
+        /// <param name="MeterValuesResponse2">Another MeterValues response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (MeterValuesResponse? MeterValuesResponse1,
                                            MeterValuesResponse? MeterValuesResponse2)
@@ -345,9 +439,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two meter values responses for equality.
+        /// Compares two MeterValues responses for equality.
         /// </summary>
-        /// <param name="Object">A meter values response to compare with.</param>
+        /// <param name="Object">A MeterValues response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is MeterValuesResponse meterValuesResponse &&
@@ -358,9 +452,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(MeterValuesResponse)
 
         /// <summary>
-        /// Compares two meter values responses for equality.
+        /// Compares two MeterValues responses for equality.
         /// </summary>
-        /// <param name="MeterValuesResponse">A meter values response to compare with.</param>
+        /// <param name="MeterValuesResponse">A MeterValues response to compare with.</param>
         public override Boolean Equals(MeterValuesResponse? MeterValuesResponse)
 
             => MeterValuesResponse is not null;

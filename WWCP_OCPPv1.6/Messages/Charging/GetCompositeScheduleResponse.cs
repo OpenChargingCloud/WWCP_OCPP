@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -31,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A get composite schedule response.
+    /// A GetCompositeSchedule response.
     /// </summary>
-    public class GetCompositeScheduleResponse : AResponse<CS.GetCompositeScheduleRequest,
-                                                             GetCompositeScheduleResponse>,
+    public class GetCompositeScheduleResponse : AResponse<GetCompositeScheduleRequest,
+                                                          GetCompositeScheduleResponse>,
                                                 IResponse
     {
 
@@ -82,48 +87,61 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region GetCompositeScheduleResponse(Request, Status, ConnectorId, ScheduleStart, ChargingSchedule)
-
         /// <summary>
-        /// Create a new get composite schedule response.
+        /// Create a new GetCompositeSchedule response.
         /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
-        /// <param name="Status">The result of the request.</param>
-        /// <param name="ConnectorId">The charging schedule contained in this notification applies to a specific connector.</param>
-        /// <param name="ScheduleStart">The periods contained in the charging profile are relative to this timestamp.</param>
-        /// <param name="ChargingSchedule">The planned composite charging schedule, the energy consumption over time. Always relative to ScheduleStart.</param>
+        /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
+        /// <param name="Status">The success or failure of the GetCompositeSchedule command.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public GetCompositeScheduleResponse(CS.GetCompositeScheduleRequest  Request,
-                                            GetCompositeScheduleStatus      Status,
-                                            Connector_Id?                   ConnectorId         = null,
-                                            DateTime?                       ScheduleStart       = null,
-                                            ChargingSchedule?               ChargingSchedule    = null,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public GetCompositeScheduleResponse(GetCompositeScheduleRequest  Request,
+                                            GetCompositeScheduleStatus   Status,
+                                            Connector_Id?                ConnectorId           = null,
+                                            DateTime?                    ScheduleStart         = null,
+                                            ChargingSchedule?            ChargingSchedule      = null,
 
-                                            DateTime?                       ResponseTimestamp   = null,
+                                            Result?                      Result                = null,
+                                            DateTime?                    ResponseTimestamp     = null,
 
-                                            IEnumerable<WWCP.KeyPair>?      SignKeys            = null,
-                                            IEnumerable<WWCP.SignInfo>?     SignInfos           = null,
-                                            IEnumerable<Signature>?    Signatures          = null,
+                                            SourceRouting?               Destination           = null,
+                                            NetworkPath?                 NetworkPath           = null,
 
-                                            CustomData?                     CustomData          = null)
+                                            IEnumerable<KeyPair>?        SignKeys              = null,
+                                            IEnumerable<SignInfo>?       SignInfos             = null,
+                                            IEnumerable<Signature>?      Signatures            = null,
+
+                                            CustomData?                  CustomData            = null,
+
+                                            SerializationFormats?        SerializationFormat   = null,
+                                            CancellationToken            CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
@@ -132,26 +150,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ScheduleStart     = ScheduleStart;
             this.ChargingSchedule  = ChargingSchedule;
 
+            unchecked
+            {
+
+                hashCode = this.Status.           GetHashCode()       * 11 ^
+                          (this.ConnectorId?.     GetHashCode() ?? 0) *  7 ^
+                          (this.ScheduleStart?.   GetHashCode() ?? 0) *  5 ^
+                          (this.ChargingSchedule?.GetHashCode() ?? 0) *  3 ^
+                           base.                  GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region GetCompositeScheduleResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get composite schedule response.
-        /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetCompositeScheduleResponse(CS.GetCompositeScheduleRequest  Request,
-                                            Result                          Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -288,9 +298,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, XML)
 
         /// <summary>
-        /// Parse the given XML representation of a get composite schedule response.
+        /// Parse the given XML representation of a GetCompositeSchedule response.
         /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest  Request,
                                                          XElement                        XML)
@@ -305,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return getCompositeScheduleResponse;
             }
 
-            throw new ArgumentException("The given XML representation of a get composite schedule response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a GetCompositeSchedule response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -315,27 +325,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, JSON, CustomGetCompositeScheduleResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get composite schedule response.
+        /// Parse the given JSON representation of a GetCompositeSchedule response.
         /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetCompositeScheduleResponseParser">An optional delegate to parse custom get composite schedule responses.</param>
-        public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">An optional delegate to parse custom GetCompositeSchedule responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static GetCompositeScheduleResponse Parse(GetCompositeScheduleRequest                                 Request,
                                                          JObject                                                     JSON,
-                                                         CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
+                                                         SourceRouting                                               Destination,
+                                                         NetworkPath                                                 NetworkPath,
+                                                         DateTime?                                                   ResponseTimestamp                          = null,
+                                                         CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null,
+                                                         CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                                         CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var getCompositeScheduleResponse,
                          out var errorResponse,
-                         CustomGetCompositeScheduleResponseParser) &&
-                getCompositeScheduleResponse is not null)
+                         ResponseTimestamp,
+                         CustomGetCompositeScheduleResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getCompositeScheduleResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get composite schedule response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetCompositeSchedule response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -345,11 +369,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, XML,  out GetCompositeScheduleResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a get composite schedule response.
+        /// Try to parse the given XML representation of a GetCompositeSchedule response.
         /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
+        /// <param name="GetCompositeScheduleResponse">The parsed GetCompositeSchedule response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(CS.GetCompositeScheduleRequest     Request,
                                        XElement                           XML,
@@ -385,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetCompositeScheduleResponse  = null;
-                ErrorResponse                 = "The given JSON representation of a get composite schedule response is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a GetCompositeSchedule response is invalid: " + e.Message;
                 return false;
             }
 
@@ -396,18 +420,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, JSON, out GetCompositeScheduleResponse, out ErrorResponse, CustomGetCompositeScheduleResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get composite schedule response.
+        /// Try to parse the given JSON representation of a GetCompositeSchedule response.
         /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="GetCompositeScheduleResponse">The parsed GetCompositeSchedule response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCompositeScheduleResponseParser">An optional delegate to parse custom get composite schedule responses.</param>
-        public static Boolean TryParse(CS.GetCompositeScheduleRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">An optional delegate to parse custom GetCompositeSchedule responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(GetCompositeScheduleRequest                                 Request,
                                        JObject                                                     JSON,
-                                       out GetCompositeScheduleResponse?                           GetCompositeScheduleResponse,
-                                       out String?                                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
+                                       SourceRouting                                               Destination,
+                                       NetworkPath                                                 NetworkPath,
+                                       [NotNullWhen(true)]  out GetCompositeScheduleResponse?      GetCompositeScheduleResponse,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
+                                       DateTime?                                                   ResponseTimestamp                          = null,
+                                       CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                       CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             try
@@ -418,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #region GetCompositeScheduleStatus    [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                       "get composite schedule status",
+                                       "GetCompositeSchedule status",
                                        GetCompositeScheduleStatusExtensions.Parse,
                                        out GetCompositeScheduleStatus GetCompositeScheduleStatus,
                                        out ErrorResponse))
@@ -505,7 +539,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    ConnectorId,
                                                    ScheduleStart,
                                                    ChargingSchedule,
+
                                                    null,
+                                                   ResponseTimestamp,
+
+                                                   Destination,
+                                                   NetworkPath,
 
                                                    null,
                                                    null,
@@ -525,7 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetCompositeScheduleResponse  = null;
-                ErrorResponse                 = "The given JSON representation of a get composite schedule response is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a GetCompositeSchedule response is invalid: " + e.Message;
                 return false;
             }
 
@@ -563,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetCompositeScheduleResponseSerializer">A delegate to serialize custom get composite schedule responses.</param>
+        /// <param name="CustomGetCompositeScheduleResponseSerializer">A delegate to serialize custom GetCompositeSchedule responses.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
@@ -615,13 +654,105 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The get composite schedule request failed.
+        /// The GetCompositeSchedule failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get composite schedule request leading to this response.</param>
-        public static GetCompositeScheduleResponse Failed(CS.GetCompositeScheduleRequest Request)
+        /// <param name="Request">The GetCompositeSchedule request.</param>
+        public static GetCompositeScheduleResponse RequestError(GetCompositeScheduleRequest  Request,
+                                                                EventTracking_Id             EventTrackingId,
+                                                                ResultCode                   ErrorCode,
+                                                                String?                      ErrorDescription    = null,
+                                                                JObject?                     ErrorDetails        = null,
+                                                                DateTime?                    ResponseTimestamp   = null,
+
+                                                                SourceRouting?               Destination         = null,
+                                                                NetworkPath?                 NetworkPath         = null,
+
+                                                                IEnumerable<KeyPair>?        SignKeys            = null,
+                                                                IEnumerable<SignInfo>?       SignInfos           = null,
+                                                                IEnumerable<Signature>?      Signatures          = null,
+
+                                                                CustomData?                  CustomData          = null)
+
+            => new (
+
+                   Request,
+                   GetCompositeScheduleStatus.Rejected,
+                   null,
+                   null,
+                   null,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetCompositeSchedule failed.
+        /// </summary>
+        /// <param name="Request">The GetCompositeSchedule request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetCompositeScheduleResponse FormationViolation(GetCompositeScheduleRequest  Request,
+                                                                      String                       ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    GetCompositeScheduleStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetCompositeSchedule failed.
+        /// </summary>
+        /// <param name="Request">The GetCompositeSchedule request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetCompositeScheduleResponse SignatureError(GetCompositeScheduleRequest  Request,
+                                                                  String                       ErrorDescription)
+
+            => new (Request,
+                    GetCompositeScheduleStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetCompositeSchedule failed.
+        /// </summary>
+        /// <param name="Request">The GetCompositeSchedule request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static GetCompositeScheduleResponse Failed(GetCompositeScheduleRequest  Request,
+                                                          String?                      Description   = null)
+
+            => new (Request,
+                    GetCompositeScheduleStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetCompositeSchedule failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetCompositeSchedule request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetCompositeScheduleResponse ExceptionOccured(GetCompositeScheduleRequest  Request,
+                                                                    Exception                    Exception)
+
+            => new (Request,
+                    GetCompositeScheduleStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -631,10 +762,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (GetCompositeScheduleResponse1, GetCompositeScheduleResponse2)
 
         /// <summary>
-        /// Compares two get composite schedule responses for equality.
+        /// Compares two GetCompositeSchedule responses for equality.
         /// </summary>
-        /// <param name="GetCompositeScheduleResponse1">A get composite schedule response.</param>
-        /// <param name="GetCompositeScheduleResponse2">Another get composite schedule response.</param>
+        /// <param name="GetCompositeScheduleResponse1">A GetCompositeSchedule response.</param>
+        /// <param name="GetCompositeScheduleResponse2">Another GetCompositeSchedule response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetCompositeScheduleResponse? GetCompositeScheduleResponse1,
                                            GetCompositeScheduleResponse? GetCompositeScheduleResponse2)
@@ -657,10 +788,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (GetCompositeScheduleResponse1, GetCompositeScheduleResponse2)
 
         /// <summary>
-        /// Compares two get composite schedule responses for inequality.
+        /// Compares two GetCompositeSchedule responses for inequality.
         /// </summary>
-        /// <param name="GetCompositeScheduleResponse1">A get composite schedule response.</param>
-        /// <param name="GetCompositeScheduleResponse2">Another get composite schedule response.</param>
+        /// <param name="GetCompositeScheduleResponse1">A GetCompositeSchedule response.</param>
+        /// <param name="GetCompositeScheduleResponse2">Another GetCompositeSchedule response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetCompositeScheduleResponse? GetCompositeScheduleResponse1,
                                            GetCompositeScheduleResponse? GetCompositeScheduleResponse2)
@@ -676,9 +807,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get composite schedule responses for equality.
+        /// Compares two GetCompositeSchedule responses for equality.
         /// </summary>
-        /// <param name="Object">A get composite schedule response to compare with.</param>
+        /// <param name="Object">A GetCompositeSchedule response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetCompositeScheduleResponse getCompositeScheduleResponse &&
@@ -689,9 +820,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(GetCompositeScheduleResponse)
 
         /// <summary>
-        /// Compares two get composite schedule responses for equality.
+        /// Compares two GetCompositeSchedule responses for equality.
         /// </summary>
-        /// <param name="GetCompositeScheduleResponse">A get composite schedule response to compare with.</param>
+        /// <param name="GetCompositeScheduleResponse">A GetCompositeSchedule response to compare with.</param>
         public override Boolean Equals(GetCompositeScheduleResponse? GetCompositeScheduleResponse)
 
             => GetCompositeScheduleResponse is not null &&
@@ -713,23 +844,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return  Status.           GetHashCode()       * 7 ^
-
-                       (ConnectorId?.     GetHashCode() ?? 0) * 5 ^
-                       (ScheduleStart?.   GetHashCode() ?? 0) * 3 ^
-                       (ChargingSchedule?.GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

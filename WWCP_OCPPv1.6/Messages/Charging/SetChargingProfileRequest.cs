@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The set charging profile request.
+    /// The SetChargingProfile request.
     /// </summary>
     public class SetChargingProfileRequest : ARequest<SetChargingProfileRequest>,
                                              IRequest
@@ -72,13 +74,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set charging profile request.
+        /// Create a new SetChargingProfile request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -86,25 +91,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetChargingProfileRequest(NetworkingNode_Id             NetworkingNodeId,
-                                         Connector_Id                  ConnectorId,
-                                         ChargingProfile               ChargingProfile,
+        public SetChargingProfileRequest(SourceRouting            Destination,
+                                         Connector_Id             ConnectorId,
+                                         ChargingProfile          ChargingProfile,
 
-                                         IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                         IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                         IEnumerable<Signature>?  Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys              = null,
+                                         IEnumerable<SignInfo>?   SignInfos             = null,
+                                         IEnumerable<Signature>?  Signatures            = null,
 
-                                         CustomData?                   CustomData          = null,
+                                         CustomData?              CustomData            = null,
 
-                                         Request_Id?                   RequestId           = null,
-                                         DateTime?                     RequestTimestamp    = null,
-                                         TimeSpan?                     RequestTimeout      = null,
-                                         EventTracking_Id?             EventTrackingId     = null,
-                                         NetworkPath?                  NetworkPath         = null,
-                                         CancellationToken             CancellationToken   = default)
+                                         Request_Id?              RequestId             = null,
+                                         DateTime?                RequestTimestamp      = null,
+                                         TimeSpan?                RequestTimeout        = null,
+                                         EventTracking_Id?        EventTrackingId       = null,
+                                         NetworkPath?             NetworkPath           = null,
+                                         SerializationFormats?    SerializationFormat   = null,
+                                         CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(SetChargingProfileRequest)[..^7],
 
                    SignKeys,
@@ -118,12 +125,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.ConnectorId      = ConnectorId;
             this.ChargingProfile  = ChargingProfile ?? throw new ArgumentNullException(nameof(ChargingProfile),  "The given charging profile must not be null!");
+
+            unchecked
+            {
+
+                hashCode = this.ConnectorId.    GetHashCode() * 5 ^
+                           this.ChargingProfile.GetHashCode() * 3 ^
+                           base.                GetHashCode();
+
+            }
 
         }
 
@@ -328,30 +345,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a set charging profile request.
+        /// Parse the given XML representation of a SetChargingProfile request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static SetChargingProfileRequest Parse(XElement           XML,
-                                                      Request_Id         RequestId,
-                                                      NetworkingNode_Id  NetworkingNodeId,
-                                                      NetworkPath        NetworkPath)
+        public static SetChargingProfileRequest Parse(XElement       XML,
+                                                      Request_Id     RequestId,
+                                                      SourceRouting  Destination,
+                                                      NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var setChargingProfileRequest,
-                         out var errorResponse) &&
-                setChargingProfileRequest is not null)
+                         out var errorResponse))
             {
                 return setChargingProfileRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a set charging profile request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a SetChargingProfile request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -361,33 +377,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetChargingProfileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set charging profile request.
+        /// Parse the given JSON representation of a SetChargingProfile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetChargingProfileRequestParser">An optional delegate to parse custom set charging profile requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom SetChargingProfile requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static SetChargingProfileRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
-                                                      CustomJObjectParserDelegate<SetChargingProfileRequest>?  CustomSetChargingProfileRequestParser   = null)
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
+                                                      CustomJObjectParserDelegate<SetChargingProfileRequest>?  CustomSetChargingProfileRequestParser   = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var setChargingProfileRequest,
                          out var errorResponse,
-                         CustomSetChargingProfileRequestParser) &&
-                setChargingProfileRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomSetChargingProfileRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return setChargingProfileRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set charging profile request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetChargingProfile request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -397,20 +427,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out SetChargingProfileRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a set charging profile request.
+        /// Try to parse the given XML representation of a SetChargingProfile request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
+        /// <param name="SetChargingProfileRequest">The parsed SetChargingProfile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                        XML,
-                                       Request_Id                      RequestId,
-                                       NetworkingNode_Id               NetworkingNodeId,
-                                       NetworkPath                     NetworkPath,
-                                       out SetChargingProfileRequest?  SetChargingProfileRequest,
-                                       out String?                     ErrorResponse)
+        public static Boolean TryParse(XElement                                             XML,
+                                       Request_Id                                           RequestId,
+                                       SourceRouting                                        Destination,
+                                       NetworkPath                                          NetworkPath,
+                                       [NotNullWhen(true)]  out SetChargingProfileRequest?  SetChargingProfileRequest,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse)
         {
 
             try
@@ -418,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SetChargingProfileRequest = new SetChargingProfileRequest(
 
-                                                NetworkingNodeId,
+                                                Destination,
 
                                                 XML.MapValueOrFail  (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                      Connector_Id.Parse),
@@ -438,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 SetChargingProfileRequest  = null;
-                ErrorResponse              = "The given XML representation of a set charging profile request is invalid: " + e.Message;
+                ErrorResponse              = "The given XML representation of a SetChargingProfile request is invalid: " + e.Message;
                 return false;
             }
 
@@ -448,50 +478,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetChargingProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a set charging profile request.
+        /// Try to parse the given JSON representation of a SetChargingProfile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
+        /// <param name="SetChargingProfileRequest">The parsed SetChargingProfile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                         JSON,
-                                       Request_Id                      RequestId,
-                                       NetworkingNode_Id               NetworkingNodeId,
-                                       NetworkPath                     NetworkPath,
-                                       out SetChargingProfileRequest?  SetChargingProfileRequest,
-                                       out String?                     ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SetChargingProfileRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a set charging profile request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetChargingProfileRequestParser">An optional delegate to parse custom set charging profile requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom SetChargingProfile requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
-                                       out SetChargingProfileRequest?                           SetChargingProfileRequest,
-                                       out String?                                              ErrorResponse,
-                                       CustomJObjectParserDelegate<SetChargingProfileRequest>?  CustomSetChargingProfileRequestParser)
+                                       [NotNullWhen(true)]  out SetChargingProfileRequest?      SetChargingProfileRequest,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<SetChargingProfileRequest>?  CustomSetChargingProfileRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -557,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SetChargingProfileRequest = new SetChargingProfileRequest(
 
-                                                NetworkingNodeId,
+                                                Destination,
                                                 ConnectorId,
                                                 ChargingProfile,
 
@@ -568,9 +581,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -585,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 SetChargingProfileRequest  = null;
-                ErrorResponse              = "The given JSON representation of a set charging profile request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a SetChargingProfile request is invalid: " + e.Message;
                 return false;
             }
 
@@ -624,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                               CustomJObjectSerializerDelegate<ChargingProfile>?            CustomChargingProfileSerializer             = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?           CustomChargingScheduleSerializer            = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?     CustomChargingSchedulePeriodSerializer      = null,
-                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -661,10 +674,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (SetChargingProfileRequest1, SetChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two set charging profile requests for equality.
+        /// Compares two SetChargingProfile requests for equality.
         /// </summary>
-        /// <param name="SetChargingProfileRequest1">A set charging profile request.</param>
-        /// <param name="SetChargingProfileRequest2">Another set charging profile request.</param>
+        /// <param name="SetChargingProfileRequest1">A SetChargingProfile request.</param>
+        /// <param name="SetChargingProfileRequest2">Another SetChargingProfile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetChargingProfileRequest? SetChargingProfileRequest1,
                                            SetChargingProfileRequest? SetChargingProfileRequest2)
@@ -687,10 +700,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (SetChargingProfileRequest1, SetChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two set charging profile requests for inequality.
+        /// Compares two SetChargingProfile requests for inequality.
         /// </summary>
-        /// <param name="SetChargingProfileRequest1">A set charging profile request.</param>
-        /// <param name="SetChargingProfileRequest2">Another set charging profile request.</param>
+        /// <param name="SetChargingProfileRequest1">A SetChargingProfile request.</param>
+        /// <param name="SetChargingProfileRequest2">Another SetChargingProfile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetChargingProfileRequest? SetChargingProfileRequest1,
                                            SetChargingProfileRequest? SetChargingProfileRequest2)
@@ -706,9 +719,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set charging profile requests for equality.
+        /// Compares two SetChargingProfile requests for equality.
         /// </summary>
-        /// <param name="Object">A set charging profile request to compare with.</param>
+        /// <param name="Object">A SetChargingProfile request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetChargingProfileRequest setChargingProfileRequest &&
@@ -719,9 +732,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(SetChargingProfileRequest)
 
         /// <summary>
-        /// Compares two set charging profile requests for equality.
+        /// Compares two SetChargingProfile requests for equality.
         /// </summary>
-        /// <param name="SetChargingProfileRequest">A set charging profile request to compare with.</param>
+        /// <param name="SetChargingProfileRequest">A SetChargingProfile request to compare with.</param>
         public override Boolean Equals(SetChargingProfileRequest? SetChargingProfileRequest)
 
             => SetChargingProfileRequest is not null &&
@@ -737,22 +750,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ConnectorId.    GetHashCode() * 5 ^
-                       ChargingProfile.GetHashCode() * 3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

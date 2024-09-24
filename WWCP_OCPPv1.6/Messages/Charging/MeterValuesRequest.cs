@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -82,7 +84,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="MeterValues">The sampled meter values with timestamps.</param>
         /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -90,26 +95,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public MeterValuesRequest(NetworkingNode_Id             NetworkingNodeId,
-                                  Connector_Id                  ConnectorId,
-                                  IEnumerable<MeterValue>       MeterValues,
-                                  Transaction_Id?               TransactionId       = null,
+        public MeterValuesRequest(SourceRouting            Destination,
+                                  Connector_Id             ConnectorId,
+                                  IEnumerable<MeterValue>  MeterValues,
+                                  Transaction_Id?          TransactionId         = null,
 
-                                  IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                  IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
+                                  IEnumerable<KeyPair>?    SignKeys              = null,
+                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  IEnumerable<Signature>?  Signatures            = null,
 
-                                  CustomData?                   CustomData          = null,
+                                  CustomData?              CustomData            = null,
 
-                                  Request_Id?                   RequestId           = null,
-                                  DateTime?                     RequestTimestamp    = null,
-                                  TimeSpan?                     RequestTimeout      = null,
-                                  EventTracking_Id?             EventTrackingId     = null,
-                                  NetworkPath?                  NetworkPath         = null,
-                                  CancellationToken             CancellationToken   = default)
+                                  Request_Id?              RequestId             = null,
+                                  DateTime?                RequestTimestamp      = null,
+                                  TimeSpan?                RequestTimeout        = null,
+                                  EventTracking_Id?        EventTrackingId       = null,
+                                  NetworkPath?             NetworkPath           = null,
+                                  SerializationFormats?    SerializationFormat   = null,
+                                  CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(MeterValuesRequest)[..^7],
 
                    SignKeys,
@@ -123,6 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -366,17 +374,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        public static MeterValuesRequest Parse(XElement           XML,
-                                               Request_Id         RequestId,
-                                               NetworkingNode_Id  NetworkingNodeId)
+        public static MeterValuesRequest Parse(XElement       XML,
+                                               Request_Id     RequestId,
+                                               SourceRouting  Destination,
+                                               NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
+                         NetworkPath,
                          out var meterValuesRequest,
-                         out var errorResponse) &&
-                meterValuesRequest is not null)
+                         out var errorResponse))
             {
                 return meterValuesRequest;
             }
@@ -397,22 +406,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomMeterValuesRequestParser">An optional delegate to parse custom MeterValues requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static MeterValuesRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               NetworkingNode_Id                                 NetworkingNodeId,
+                                               SourceRouting                                     Destination,
                                                NetworkPath                                       NetworkPath,
-                                               CustomJObjectParserDelegate<MeterValuesRequest>?  CustomMeterValuesRequestParser   = null)
+                                               DateTime?                                         RequestTimestamp                 = null,
+                                               TimeSpan?                                         RequestTimeout                   = null,
+                                               EventTracking_Id?                                 EventTrackingId                  = null,
+                                               CustomJObjectParserDelegate<MeterValuesRequest>?  CustomMeterValuesRequestParser   = null,
+                                               CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                               CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var meterValuesRequest,
                          out var errorResponse,
-                         CustomMeterValuesRequestParser) &&
-                meterValuesRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomMeterValuesRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return meterValuesRequest;
             }
@@ -434,11 +457,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                 XML,
-                                       Request_Id               RequestId,
-                                       NetworkingNode_Id        NetworkingNodeId,
-                                       out MeterValuesRequest?  MeterValuesRequest,
-                                       out String?              ErrorResponse)
+        public static Boolean TryParse(XElement                                      XML,
+                                       Request_Id                                    RequestId,
+                                       SourceRouting                                 Destination,
+                                       NetworkPath                                   NetworkPath,
+                                       [NotNullWhen(true)]  out MeterValuesRequest?  MeterValuesRequest,
+                                       [NotNullWhen(false)] out String?              ErrorResponse)
         {
 
             try
@@ -446,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 MeterValuesRequest = new MeterValuesRequest(
 
-                                         NetworkingNodeId,
+                                         Destination,
 
                                          XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
                                                                 Connector_Id.Parse),
@@ -478,33 +502,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a meter values request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="MeterValuesRequest">The parsed meter values request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                  JSON,
-                                       Request_Id               RequestId,
-                                       NetworkingNode_Id        NetworkingNodeId,
-                                       NetworkPath              NetworkPath,
-                                       out MeterValuesRequest?  MeterValuesRequest,
-                                       out String?              ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out MeterValuesRequest,
-                        out ErrorResponse,
-                        null);
-
-
         /// <summary>
         /// Try to parse the given JSON representation of a meter values request.
         /// </summary>
@@ -514,14 +511,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="MeterValuesRequest">The parsed MeterValues request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMeterValuesRequestParser">An optional delegate to parse custom BootNotification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       NetworkingNode_Id                                 NetworkingNodeId,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                       NetworkPath,
-                                       out MeterValuesRequest?                           MeterValuesRequest,
-                                       out String?                                       ErrorResponse,
-                                       CustomJObjectParserDelegate<MeterValuesRequest>?  CustomMeterValuesRequestParser)
+                                       [NotNullWhen(true)]  out MeterValuesRequest?      MeterValuesRequest,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
+                                       DateTime?                                         RequestTimestamp                 = null,
+                                       TimeSpan?                                         RequestTimeout                   = null,
+                                       EventTracking_Id?                                 EventTrackingId                  = null,
+                                       CustomJObjectParserDelegate<MeterValuesRequest>?  CustomMeterValuesRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?           CustomSignatureParser            = null,
+                                       CustomJObjectParserDelegate<CustomData>?          CustomCustomDataParser           = null)
         {
 
             try
@@ -602,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 MeterValuesRequest = new MeterValuesRequest(
 
-                                         NetworkingNodeId,
+                                         Destination,
                                          ConnectorId,
                                          MeterValues,
                                          TransactionId,
@@ -614,9 +621,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          CustomData,
 
                                          RequestId,
-                                         null,
-                                         null,
-                                         null,
+                                         RequestTimestamp,
+                                         RequestTimeout,
+                                         EventTrackingId,
                                          NetworkPath
 
                                      );
@@ -673,7 +680,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>?  CustomMeterValuesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MeterValue>?          CustomMeterValueSerializer           = null,
                               CustomJObjectSerializerDelegate<SampledValue>?        CustomSampledValueSerializer         = null,
-                              CustomJObjectSerializerDelegate<Signature>?      CustomSignatureSerializer            = null,
+                              CustomJObjectSerializerDelegate<Signature>?           CustomSignatureSerializer            = null,
                               CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 

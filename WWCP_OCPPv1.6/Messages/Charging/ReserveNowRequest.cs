@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The reserve now request.
+    /// The ReserveNow request.
     /// </summary>
     public class ReserveNowRequest : ARequest<ReserveNowRequest>,
                                      IRequest
@@ -92,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new reserve now request.
+        /// Create a new ReserveNow request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
@@ -101,7 +103,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="IdTag">The unique token identification for which the reservation is being made.</param>
         /// <param name="ParentIdTag">An optional ParentIdTag.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -109,28 +114,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ReserveNowRequest(NetworkingNode_Id             NetworkingNodeId,
-                                 Connector_Id                  ConnectorId,
-                                 Reservation_Id                ReservationId,
-                                 DateTime                      ExpiryDate,
-                                 IdToken                       IdTag,
-                                 IdToken?                      ParentIdTag         = null,
+        public ReserveNowRequest(SourceRouting            Destination,
+                                 Connector_Id             ConnectorId,
+                                 Reservation_Id           ReservationId,
+                                 DateTime                 ExpiryDate,
+                                 IdToken                  IdTag,
+                                 IdToken?                 ParentIdTag           = null,
 
-                                 IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                 IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                 CustomData?                   CustomData          = null,
+                                 CustomData?              CustomData            = null,
 
-                                 Request_Id?                   RequestId           = null,
-                                 DateTime?                     RequestTimestamp    = null,
-                                 TimeSpan?                     RequestTimeout      = null,
-                                 EventTracking_Id?             EventTrackingId     = null,
-                                 NetworkPath?                  NetworkPath         = null,
-                                 CancellationToken             CancellationToken   = default)
+                                 Request_Id?              RequestId             = null,
+                                 DateTime?                RequestTimestamp      = null,
+                                 TimeSpan?                RequestTimeout        = null,
+                                 EventTracking_Id?        EventTrackingId       = null,
+                                 NetworkPath?             NetworkPath           = null,
+                                 SerializationFormats?    SerializationFormat   = null,
+                                 CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(ReserveNowRequest)[..^7],
 
                    SignKeys,
@@ -144,6 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -153,6 +161,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.ExpiryDate     = ExpiryDate;
             this.IdTag          = IdTag;
             this.ParentIdTag    = ParentIdTag;
+
+            unchecked
+            {
+
+                hashCode = this.ReservationId.GetHashCode()       * 13 ^
+                           this.ConnectorId.  GetHashCode()       * 11 ^
+                           this.ExpiryDate.   GetHashCode()       *  7 ^
+                           this.IdTag.        GetHashCode()       *  5 ^
+                          (this.ParentIdTag?. GetHashCode() ?? 0) *  3 ^
+                           base.              GetHashCode();
+
+            }
 
         }
 
@@ -225,30 +245,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a reserve now request.
+        /// Parse the given XML representation of a ReserveNow request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static ReserveNowRequest Parse(XElement           XML,
-                                              Request_Id         RequestId,
-                                              NetworkingNode_Id  NetworkingNodeId,
-                                              NetworkPath        NetworkPath)
+        public static ReserveNowRequest Parse(XElement       XML,
+                                              Request_Id     RequestId,
+                                              SourceRouting  Destination,
+                                              NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var reserveNowRequest,
-                         out var errorResponse) &&
-                reserveNowRequest is not null)
+                         out var errorResponse))
             {
                 return reserveNowRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a reserve now response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a ReserveNow response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -258,33 +277,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomReserveNowRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reserve now request.
+        /// Parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomReserveNowRequestParser">An optional delegate to parse custom reserve now requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNow requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static ReserveNowRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              NetworkingNode_Id                                NetworkingNodeId,
+                                              SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
-                                              CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null)
+                                              DateTime?                                        RequestTimestamp                = null,
+                                              TimeSpan?                                        RequestTimeout                  = null,
+                                              EventTracking_Id?                                EventTrackingId                 = null,
+                                              CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null,
+                                              CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                              CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var reserveNowRequest,
                          out var errorResponse,
-                         CustomReserveNowRequestParser) &&
-                reserveNowRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomReserveNowRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return reserveNowRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ReserveNow response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -294,20 +327,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out ReserveNowRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a reserve now request.
+        /// Try to parse the given XML representation of a ReserveNow request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                XML,
-                                       Request_Id              RequestId,
-                                       NetworkingNode_Id       NetworkingNodeId,
-                                       NetworkPath             NetworkPath,
-                                       out ReserveNowRequest?  ReserveNowRequest,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(XElement                                     XML,
+                                       Request_Id                                   RequestId,
+                                       SourceRouting                                Destination,
+                                       NetworkPath                                  NetworkPath,
+                                       [NotNullWhen(true)]  out ReserveNowRequest?  ReserveNowRequest,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
         {
 
             try
@@ -315,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ReserveNowRequest = new ReserveNowRequest(
 
-                                        NetworkingNodeId,
+                                        Destination,
 
                                         XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                Connector_Id.Parse),
@@ -344,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ReserveNowRequest  = null;
-                ErrorResponse      = "The given XML representation of a reserve now request is invalid: " + e.Message;
+                ErrorResponse      = "The given XML representation of a ReserveNow request is invalid: " + e.Message;
                 return false;
             }
 
@@ -354,50 +387,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a reserve now request.
+        /// Try to parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       Request_Id              RequestId,
-                                       NetworkingNode_Id       NetworkingNodeId,
-                                       NetworkPath             NetworkPath,
-                                       out ReserveNowRequest?  ReserveNowRequest,
-                                       out String?             ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out ReserveNowRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a reserve now request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReserveNowRequestParser">An optional delegate to parse custom ReserveNowRequest requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNow requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       NetworkingNode_Id                                NetworkingNodeId,
+                                       SourceRouting                                    Destination,
                                        NetworkPath                                      NetworkPath,
-                                       out ReserveNowRequest?                           ReserveNowRequest,
-                                       out String?                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser)
+                                       [NotNullWhen(true)]  out ReserveNowRequest?      ReserveNowRequest,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
+                                       DateTime?                                        RequestTimestamp                = null,
+                                       TimeSpan?                                        RequestTimeout                  = null,
+                                       EventTracking_Id?                                EventTrackingId                 = null,
+                                       CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
+                                       CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
         {
 
             try
@@ -501,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ReserveNowRequest = new ReserveNowRequest(
 
-                                        NetworkingNodeId,
+                                        Destination,
                                         ConnectorId,
                                         ReservationId,
                                         ExpiryDate,
@@ -515,9 +531,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         CustomData,
 
                                         RequestId,
-                                        null,
-                                        null,
-                                        null,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
                                         NetworkPath
 
                                     );
@@ -532,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ReserveNowRequest  = null;
-                ErrorResponse      = "The given JSON representation of a reserve now request is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a ReserveNow request is invalid: " + e.Message;
                 return false;
             }
 
@@ -568,11 +584,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
+        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom ReserveNow requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer           = null,
+                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
@@ -612,10 +628,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (ReserveNowRequest1, ReserveNowRequest2)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="ReserveNowRequest1">A reserve now request.</param>
-        /// <param name="ReserveNowRequest2">Another reserve now request.</param>
+        /// <param name="ReserveNowRequest1">A ReserveNow request.</param>
+        /// <param name="ReserveNowRequest2">Another ReserveNow request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReserveNowRequest? ReserveNowRequest1,
                                            ReserveNowRequest? ReserveNowRequest2)
@@ -638,10 +654,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (ReserveNowRequest1, ReserveNowRequest2)
 
         /// <summary>
-        /// Compares two reserve now requests for inequality.
+        /// Compares two ReserveNow requests for inequality.
         /// </summary>
-        /// <param name="ReserveNowRequest1">A reserve now request.</param>
-        /// <param name="ReserveNowRequest2">Another reserve now request.</param>
+        /// <param name="ReserveNowRequest1">A ReserveNow request.</param>
+        /// <param name="ReserveNowRequest2">Another ReserveNow request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReserveNowRequest? ReserveNowRequest1,
                                            ReserveNowRequest? ReserveNowRequest2)
@@ -657,9 +673,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="Object">A reserve now request to compare with.</param>
+        /// <param name="Object">A ReserveNow request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ReserveNowRequest reserveNowRequest &&
@@ -670,9 +686,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(ReserveNowRequest)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="ReserveNowRequest">A reserve now request to compare with.</param>
+        /// <param name="ReserveNowRequest">A ReserveNow request to compare with.</param>
         public override Boolean Equals(ReserveNowRequest? ReserveNowRequest)
 
             => ReserveNowRequest is not null &&
@@ -693,26 +709,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ReservationId.GetHashCode()       * 13 ^
-                       ConnectorId.  GetHashCode()       * 11 ^
-                       ExpiryDate.   GetHashCode()       *  7 ^
-                       IdTag.        GetHashCode()       *  5 ^
-
-                      (ParentIdTag?. GetHashCode() ?? 0) *  3 ^
-
-                       base.         GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

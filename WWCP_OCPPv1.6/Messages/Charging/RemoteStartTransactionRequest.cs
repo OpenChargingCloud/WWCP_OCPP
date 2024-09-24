@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -32,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The remote start transaction request.
+    /// The RemoteStartTransaction request.
     /// </summary>
     public class RemoteStartTransactionRequest : ARequest<RemoteStartTransactionRequest>,
                                                  IRequest
@@ -78,14 +80,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new remote start transaction request.
+        /// Create a new RemoteStartTransaction request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="IdTag">The identification tag to start the charging transaction.</param>
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -93,26 +98,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public RemoteStartTransactionRequest(NetworkingNode_Id             NetworkingNodeId,
-                                             IdToken                       IdTag,
-                                             Connector_Id?                 ConnectorId         = null,
-                                             ChargingProfile?              ChargingProfile     = null,
+        public RemoteStartTransactionRequest(SourceRouting            Destination,
+                                             IdToken                  IdTag,
+                                             Connector_Id?            ConnectorId           = null,
+                                             ChargingProfile?         ChargingProfile       = null,
 
-                                             IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                             IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                             IEnumerable<Signature>?  Signatures          = null,
+                                             IEnumerable<KeyPair>?    SignKeys              = null,
+                                             IEnumerable<SignInfo>?   SignInfos             = null,
+                                             IEnumerable<Signature>?  Signatures            = null,
 
-                                             CustomData?                   CustomData          = null,
+                                             CustomData?              CustomData            = null,
 
-                                             Request_Id?                   RequestId           = null,
-                                             DateTime?                     RequestTimestamp    = null,
-                                             TimeSpan?                     RequestTimeout      = null,
-                                             EventTracking_Id?             EventTrackingId     = null,
-                                             NetworkPath?                  NetworkPath         = null,
-                                             CancellationToken             CancellationToken   = default)
+                                             Request_Id?              RequestId             = null,
+                                             DateTime?                RequestTimestamp      = null,
+                                             TimeSpan?                RequestTimeout        = null,
+                                             EventTracking_Id?        EventTrackingId       = null,
+                                             NetworkPath?             NetworkPath           = null,
+                                             SerializationFormats?    SerializationFormat   = null,
+                                             CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(RemoteStartTransactionRequest)[..^7],
 
                    SignKeys,
@@ -126,6 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -133,6 +141,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.IdTag            = IdTag;
             this.ConnectorId      = ConnectorId;
             this.ChargingProfile  = ChargingProfile;
+
+            unchecked
+            {
+
+                hashCode = this.IdTag.           GetHashCode()       * 7 ^
+                          (this.ConnectorId?.    GetHashCode() ?? 0) * 5 ^
+                          (this.ChargingProfile?.GetHashCode() ?? 0) * 3 ^
+                           base.                 GetHashCode();
+
+            }
 
         }
 
@@ -342,30 +360,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a remote start transaction request.
+        /// Parse the given XML representation of a RemoteStartTransaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static RemoteStartTransactionRequest Parse(XElement           XML,
-                                                          Request_Id         RequestId,
-                                                          NetworkingNode_Id  NetworkingNodeId,
-                                                          NetworkPath        NetworkPath)
+        public static RemoteStartTransactionRequest Parse(XElement       XML,
+                                                          Request_Id     RequestId,
+                                                          SourceRouting  Destination,
+                                                          NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var remoteStartTransactionRequest,
-                         out var errorResponse) &&
-                remoteStartTransactionRequest is not null)
+                         out var errorResponse))
             {
                 return remoteStartTransactionRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a remote start transaction request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a RemoteStartTransaction request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -375,33 +392,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a remote start transaction request.
+        /// Parse the given JSON representation of a RemoteStartTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomRemoteStartTransactionRequestParser">An optional delegate to parse custom remote start transaction requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomRemoteStartTransactionRequestParser">A delegate to parse custom RemoteStartTransaction requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static RemoteStartTransactionRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          NetworkingNode_Id                                            NetworkingNodeId,
+                                                          SourceRouting                                                Destination,
                                                           NetworkPath                                                  NetworkPath,
-                                                          CustomJObjectParserDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestParser   = null)
+                                                          DateTime?                                                    RequestTimestamp                            = null,
+                                                          TimeSpan?                                                    RequestTimeout                              = null,
+                                                          EventTracking_Id?                                            EventTrackingId                             = null,
+                                                          CustomJObjectParserDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestParser   = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var remoteStartTransactionRequest,
                          out var errorResponse,
-                         CustomRemoteStartTransactionRequestParser) &&
-                remoteStartTransactionRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomRemoteStartTransactionRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return remoteStartTransactionRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a remote start transaction request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a RemoteStartTransaction request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -411,20 +442,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out RemoteStartTransactionRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a remote start transaction request.
+        /// Try to parse the given XML representation of a RemoteStartTransaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
+        /// <param name="RemoteStartTransactionRequest">The parsed RemoteStartTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                            XML,
-                                       Request_Id                          RequestId,
-                                       NetworkingNode_Id                   NetworkingNodeId,
-                                       NetworkPath                         NetworkPath,
-                                       out RemoteStartTransactionRequest?  RemoteStartTransactionRequest,
-                                       out String?                         ErrorResponse)
+        public static Boolean TryParse(XElement                                                 XML,
+                                       Request_Id                                               RequestId,
+                                       SourceRouting                                            Destination,
+                                       NetworkPath                                              NetworkPath,
+                                       [NotNullWhen(true)]  out RemoteStartTransactionRequest?  RemoteStartTransactionRequest,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse)
         {
 
             try
@@ -432,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 RemoteStartTransactionRequest = new RemoteStartTransactionRequest(
 
-                                                    NetworkingNodeId,
+                                                    Destination,
 
                                                     XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
                                                                            IdToken.Parse),
@@ -455,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 RemoteStartTransactionRequest  = null;
-                ErrorResponse                  = "The given XML representation of a remote start transaction request is invalid: " + e.Message;
+                ErrorResponse                  = "The given XML representation of a RemoteStartTransaction request is invalid: " + e.Message;
                 return false;
             }
 
@@ -465,50 +496,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RemoteStartTransactionRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a remote start transaction request.
+        /// Try to parse the given JSON representation of a RemoteStartTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
+        /// <param name="RemoteStartTransactionRequest">The parsed RemoteStartTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                             JSON,
-                                       Request_Id                          RequestId,
-                                       NetworkingNode_Id                   NetworkingNodeId,
-                                       NetworkPath                         NetworkPath,
-                                       out RemoteStartTransactionRequest?  RemoteStartTransactionRequest,
-                                       out String?                         ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out RemoteStartTransactionRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a remote start transaction request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRemoteStartTransactionRequestParser">An optional delegate to parse custom remote start transaction requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomRemoteStartTransactionRequestParser">A delegate to parse custom RemoteStartTransaction requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       NetworkingNode_Id                                            NetworkingNodeId,
+                                       SourceRouting                                                Destination,
                                        NetworkPath                                                  NetworkPath,
-                                       out RemoteStartTransactionRequest?                           RemoteStartTransactionRequest,
-                                       out String?                                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestParser)
+                                       [NotNullWhen(true)]  out RemoteStartTransactionRequest?      RemoteStartTransactionRequest,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
+                                       DateTime?                                                    RequestTimestamp                            = null,
+                                       TimeSpan?                                                    RequestTimeout                              = null,
+                                       EventTracking_Id?                                            EventTrackingId                             = null,
+                                       CustomJObjectParserDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -588,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 RemoteStartTransactionRequest = new RemoteStartTransactionRequest(
 
-                                                    NetworkingNodeId,
+                                                    Destination,
                                                     IdTag,
                                                     ConnectorId,
                                                     ChargingProfile,
@@ -600,9 +614,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                     CustomData,
 
                                                     RequestId,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
                                                     NetworkPath
 
                                                 );
@@ -617,7 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 RemoteStartTransactionRequest  = null;
-                ErrorResponse                  = "The given JSON representation of a remote start transaction request is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a RemoteStartTransaction request is invalid: " + e.Message;
                 return false;
             }
 
@@ -651,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRemoteStartTransactionRequestSerializer">A delegate to serialize custom remote start transaction requests.</param>
+        /// <param name="CustomRemoteStartTransactionRequestSerializer">A delegate to serialize custom RemoteStartTransaction requests.</param>
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
@@ -704,10 +718,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (RemoteStartTransactionRequest1, RemoteStartTransactionRequest2)
 
         /// <summary>
-        /// Compares two remote start transaction requests for equality.
+        /// Compares two RemoteStartTransaction requests for equality.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequest1">A remote start transaction request.</param>
-        /// <param name="RemoteStartTransactionRequest2">Another remote start transaction request.</param>
+        /// <param name="RemoteStartTransactionRequest1">A RemoteStartTransaction request.</param>
+        /// <param name="RemoteStartTransactionRequest2">Another RemoteStartTransaction request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RemoteStartTransactionRequest? RemoteStartTransactionRequest1,
                                            RemoteStartTransactionRequest? RemoteStartTransactionRequest2)
@@ -730,10 +744,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (RemoteStartTransactionRequest1, RemoteStartTransactionRequest2)
 
         /// <summary>
-        /// Compares two remote start transaction requests for inequality.
+        /// Compares two RemoteStartTransaction requests for inequality.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequest1">A remote start transaction request.</param>
-        /// <param name="RemoteStartTransactionRequest2">Another remote start transaction request.</param>
+        /// <param name="RemoteStartTransactionRequest1">A RemoteStartTransaction request.</param>
+        /// <param name="RemoteStartTransactionRequest2">Another RemoteStartTransaction request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RemoteStartTransactionRequest? RemoteStartTransactionRequest1,
                                            RemoteStartTransactionRequest? RemoteStartTransactionRequest2)
@@ -749,9 +763,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two remote start transaction requests for equality.
+        /// Compares two RemoteStartTransaction requests for equality.
         /// </summary>
-        /// <param name="Object">A remote start transaction request to compare with.</param>
+        /// <param name="Object">A RemoteStartTransaction request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RemoteStartTransactionRequest remoteStartTransactionRequest &&
@@ -762,9 +776,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(RemoteStartTransactionRequest)
 
         /// <summary>
-        /// Compares two remote start transaction requests for equality.
+        /// Compares two RemoteStartTransaction requests for equality.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequest">A remote start transaction request to compare with.</param>
+        /// <param name="RemoteStartTransactionRequest">A RemoteStartTransaction request to compare with.</param>
         public override Boolean Equals(RemoteStartTransactionRequest? RemoteStartTransactionRequest)
 
             => RemoteStartTransactionRequest is not null &&
@@ -785,24 +799,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return IdTag.           GetHashCode()       * 7 ^
-
-                      (ConnectorId?.    GetHashCode() ?? 0) * 5 ^
-                      (ChargingProfile?.GetHashCode() ?? 0) * 3 ^
-
-                       base.            GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

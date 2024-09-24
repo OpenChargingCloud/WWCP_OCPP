@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -181,9 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement       XML,
-                                       out IdTagInfo  IdTagInfo,
-                                       out String?    ErrorResponse)
+        public static Boolean TryParse(XElement                            XML,
+                                       [NotNullWhen(true)]  out IdTagInfo  IdTagInfo,
+                                       [NotNullWhen(false)] out String?    ErrorResponse)
         {
 
             try
@@ -227,9 +228,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject        JSON,
-                                       out IdTagInfo  IdTagInfo,
-                                       out String?    ErrorResponse)
+        public static Boolean TryParse(JObject                             JSON,
+                                       [NotNullWhen(true)]  out IdTagInfo  IdTagInfo,
+                                       [NotNullWhen(false)] out String?    ErrorResponse)
 
             => TryParse(JSON,
                         out IdTagInfo,
@@ -245,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomIdTagInfoParser">An optional delegate to parse custom IdTagInfo JSON objects.</param>
         public static Boolean TryParse(JObject                                  JSON,
-                                       out IdTagInfo                            IdTagInfo,
-                                       out String?                              ErrorResponse,
+                                       [NotNullWhen(true)]  out IdTagInfo       IdTagInfo,
+                                       [NotNullWhen(false)] out String?         ErrorResponse,
                                        CustomJObjectParserDelegate<IdTagInfo>?  CustomIdTagInfoParser)
         {
 
@@ -255,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 IdTagInfo = default;
 
-                #region Status
+                #region Status         [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "authorization status",
@@ -268,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #endregion
 
-                #region ExpiryDate
+                #region ExpiryDate     [optional]
 
                 if (JSON.ParseOptional("expiryDate",
                                        "expiry date",
@@ -283,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #endregion
 
-                #region ParentIdTag
+                #region ParentIdTag    [optional]
 
                 if (JSON.ParseOptional("parentIdTag",
                                        "parent id tag",
@@ -300,9 +301,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                IdTagInfo = new IdTagInfo(Status,
-                                          ExpiryDate,
-                                          ParentIdTag);
+                IdTagInfo = new IdTagInfo(
+                                Status,
+                                ExpiryDate,
+                                ParentIdTag
+                            );
 
                 if (CustomIdTagInfoParser is not null)
                     IdTagInfo = CustomIdTagInfoParser(JSON,
