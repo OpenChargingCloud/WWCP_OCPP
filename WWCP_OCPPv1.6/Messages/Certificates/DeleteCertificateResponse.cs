@@ -17,11 +17,17 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -29,11 +35,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A delete certificate response.
+    /// A DeleteCertificate response.
     /// </summary>
     [SecurityExtensions]
-    public class DeleteCertificateResponse : AResponse<CS.DeleteCertificateRequest,
-                                                          DeleteCertificateResponse>,
+    public class DeleteCertificateResponse : AResponse<DeleteCertificateRequest,
+                                                       DeleteCertificateResponse>,
                                              IResponse
     {
 
@@ -55,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the delete certificate request.
+        /// The success or failure of the DeleteCertificate request.
         /// </summary>
         [Mandatory]
         public DeleteCertificateStatus  Status    { get; }
@@ -64,67 +70,72 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region DeleteCertificateResponse(Request, Status)
-
         /// <summary>
-        /// Create a new delete certificate response.
+        /// Create a new DeleteCertificate response.
         /// </summary>
-        /// <param name="Request">The delete certificate request leading to this response.</param>
-        /// <param name="Status">The success or failure of the delete certificate request.</param>
+        /// <param name="Request">The DeleteCertificate request leading to this response.</param>
+        /// <param name="Status">The success or failure of the DeleteCertificate request.</param>
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public DeleteCertificateResponse(CS.DeleteCertificateRequest   Request,
-                                         DeleteCertificateStatus       Status,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public DeleteCertificateResponse(DeleteCertificateRequest  Request,
+                                         DeleteCertificateStatus   Status,
 
-                                         DateTime?                     ResponseTimestamp   = null,
+                                         Result?                   Result                = null,
+                                         DateTime?                 ResponseTimestamp     = null,
 
-                                         IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                         IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                         IEnumerable<Signature>?  Signatures          = null,
+                                         SourceRouting?            Destination           = null,
+                                         NetworkPath?              NetworkPath           = null,
 
-                                         CustomData?                   CustomData          = null)
+                                         IEnumerable<KeyPair>?     SignKeys              = null,
+                                         IEnumerable<SignInfo>?    SignInfos             = null,
+                                         IEnumerable<Signature>?   Signatures            = null,
+
+                                         CustomData?               CustomData            = null,
+
+                                         SerializationFormats?     SerializationFormat   = null,
+                                         CancellationToken         CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region DeleteCertificateResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new delete certificate response.
-        /// </summary>
-        /// <param name="Request">The delete certificate request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public DeleteCertificateResponse(CS.DeleteCertificateRequest  Request,
-                                         Result                       Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -162,27 +173,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, JSON, CustomDeleteCertificateResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a delete certificate response.
+        /// Parse the given JSON representation of a DeleteCertificate response.
         /// </summary>
-        /// <param name="Request">The delete certificate request leading to this response.</param>
+        /// <param name="Request">The DeleteCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDeleteCertificateResponseParser">An optional delegate to parse custom delete certificate responses.</param>
-        public static DeleteCertificateResponse Parse(CS.DeleteCertificateRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomDeleteCertificateResponseParser">An optional delegate to parse custom DeleteCertificate responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static DeleteCertificateResponse Parse(DeleteCertificateRequest                                 Request,
                                                       JObject                                                  JSON,
-                                                      CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
+                                                      SourceRouting                                            Destination,
+                                                      NetworkPath                                              NetworkPath,
+                                                      DateTime?                                                ResponseTimestamp                       = null,
+                                                      CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var deleteCertificateResponse,
                          out var errorResponse,
-                         CustomDeleteCertificateResponseParser) &&
-                deleteCertificateResponse is not null)
+                         ResponseTimestamp,
+                         CustomDeleteCertificateResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return deleteCertificateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a delete certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DeleteCertificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -192,18 +217,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, JSON, out DeleteCertificateResponse, out ErrorResponse, CustomDeleteCertificateResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a delete certificate response.
+        /// Try to parse the given JSON representation of a DeleteCertificate response.
         /// </summary>
-        /// <param name="Request">The delete certificate request leading to this response.</param>
+        /// <param name="Request">The DeleteCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="DeleteCertificateResponse">The parsed delete certificate response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="DeleteCertificateResponse">The parsed DeleteCertificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteCertificateResponseParser">An optional delegate to parse custom delete certificate responses.</param>
-        public static Boolean TryParse(CS.DeleteCertificateRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomDeleteCertificateResponseParser">An optional delegate to parse custom DeleteCertificate responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(DeleteCertificateRequest                                 Request,
                                        JObject                                                  JSON,
-                                       out DeleteCertificateResponse?                           DeleteCertificateResponse,
-                                       out String?                                              ErrorResponse,
-                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
+                                       SourceRouting                                            Destination,
+                                       NetworkPath                                              NetworkPath,
+                                       [NotNullWhen(true)]  out DeleteCertificateResponse?      DeleteCertificateResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                ResponseTimestamp                       = null,
+                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -214,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                       "delete certificate status",
+                                       "DeleteCertificate status",
                                        DeleteCertificateStatusExtensions.Parse,
                                        out DeleteCertificateStatus Status,
                                        out ErrorResponse))
@@ -257,7 +292,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                 Request,
                                                 Status,
+
                                                 null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
 
                                                 null,
                                                 null,
@@ -277,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 DeleteCertificateResponse  = null;
-                ErrorResponse              = "The given JSON representation of a delete certificate response is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a DeleteCertificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -290,11 +330,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDeleteCertificateResponseSerializer">A delegate to serialize custom delete certificate responses.</param>
+        /// <param name="CustomDeleteCertificateResponseSerializer">A delegate to serialize custom DeleteCertificate responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -325,13 +365,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The delete certificate failed.
+        /// The DeleteCertificate failed because of a request error.
         /// </summary>
-        /// <param name="Request">The delete certificate request leading to this response.</param>
-        public static DeleteCertificateResponse Failed(CS.DeleteCertificateRequest Request)
+        /// <param name="Request">The DeleteCertificate request.</param>
+        public static DeleteCertificateResponse RequestError(DeleteCertificateRequest  Request,
+                                                             EventTracking_Id          EventTrackingId,
+                                                             ResultCode                ErrorCode,
+                                                             String?                   ErrorDescription    = null,
+                                                             JObject?                  ErrorDetails        = null,
+                                                             DateTime?                 ResponseTimestamp   = null,
+
+                                                             SourceRouting?            Destination         = null,
+                                                             NetworkPath?              NetworkPath         = null,
+
+                                                             IEnumerable<KeyPair>?     SignKeys            = null,
+                                                             IEnumerable<SignInfo>?    SignInfos           = null,
+                                                             IEnumerable<Signature>?   Signatures          = null,
+
+                                                             CustomData?               CustomData          = null)
+
+            => new (
+
+                   Request,
+                   DeleteCertificateStatus.Failed,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The DeleteCertificate failed.
+        /// </summary>
+        /// <param name="Request">The DeleteCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static DeleteCertificateResponse FormationViolation(DeleteCertificateRequest  Request,
+                                                                   String                    ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    DeleteCertificateStatus.Failed,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The DeleteCertificate failed.
+        /// </summary>
+        /// <param name="Request">The DeleteCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static DeleteCertificateResponse SignatureError(DeleteCertificateRequest  Request,
+                                                               String                    ErrorDescription)
+
+            => new (Request,
+                    DeleteCertificateStatus.Failed,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The DeleteCertificate failed.
+        /// </summary>
+        /// <param name="Request">The DeleteCertificate request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static DeleteCertificateResponse Failed(DeleteCertificateRequest  Request,
+                                                       String?                   Description   = null)
+
+            => new (Request,
+                    DeleteCertificateStatus.Failed,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The DeleteCertificate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The DeleteCertificate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static DeleteCertificateResponse ExceptionOccured(DeleteCertificateRequest  Request,
+                                                                 Exception                 Exception)
+
+            => new (Request,
+                    DeleteCertificateStatus.Failed,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -341,10 +470,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (DeleteCertificateResponse1, DeleteCertificateResponse2)
 
         /// <summary>
-        /// Compares two delete certificate responses for equality.
+        /// Compares two DeleteCertificate responses for equality.
         /// </summary>
-        /// <param name="DeleteCertificateResponse1">A delete certificate response.</param>
-        /// <param name="DeleteCertificateResponse2">Another delete certificate response.</param>
+        /// <param name="DeleteCertificateResponse1">A DeleteCertificate response.</param>
+        /// <param name="DeleteCertificateResponse2">Another DeleteCertificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DeleteCertificateResponse? DeleteCertificateResponse1,
                                            DeleteCertificateResponse? DeleteCertificateResponse2)
@@ -367,10 +496,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (DeleteCertificateResponse1, DeleteCertificateResponse2)
 
         /// <summary>
-        /// Compares two delete certificate responses for inequality.
+        /// Compares two DeleteCertificate responses for inequality.
         /// </summary>
-        /// <param name="DeleteCertificateResponse1">A delete certificate response.</param>
-        /// <param name="DeleteCertificateResponse2">Another delete certificate response.</param>
+        /// <param name="DeleteCertificateResponse1">A DeleteCertificate response.</param>
+        /// <param name="DeleteCertificateResponse2">Another DeleteCertificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DeleteCertificateResponse? DeleteCertificateResponse1,
                                            DeleteCertificateResponse? DeleteCertificateResponse2)
@@ -386,9 +515,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two delete certificate responses for equality.
+        /// Compares two DeleteCertificate responses for equality.
         /// </summary>
-        /// <param name="Object">A delete certificate response to compare with.</param>
+        /// <param name="Object">A DeleteCertificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DeleteCertificateResponse deleteCertificateResponse &&
@@ -399,9 +528,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(DeleteCertificateResponse)
 
         /// <summary>
-        /// Compares two delete certificate responses for equality.
+        /// Compares two DeleteCertificate responses for equality.
         /// </summary>
-        /// <param name="DeleteCertificateResponse">A delete certificate response to compare with.</param>
+        /// <param name="DeleteCertificateResponse">A DeleteCertificate response to compare with.</param>
         public override Boolean Equals(DeleteCertificateResponse? DeleteCertificateResponse)
 
             => DeleteCertificateResponse is not null &&
@@ -413,13 +542,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => Status.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

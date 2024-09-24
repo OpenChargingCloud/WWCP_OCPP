@@ -24,10 +24,11 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -37,8 +38,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A reset response.
     /// </summary>
-    public class ResetResponse : AResponse<CS.ResetRequest,
-                                              ResetResponse>,
+    public class ResetResponse : AResponse<ResetRequest,
+                                           ResetResponse>,
                                  IResponse
     {
 
@@ -85,6 +86,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ResetResponse(ResetRequest             Request,
                              ResetStatus              Status,
 
@@ -116,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                    CustomData,
 
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -206,7 +209,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
         /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static ResetResponse Parse(ResetRequest                                 Request,
                                           JObject                                      JSON,
                                           SourceRouting                                Destination,
@@ -287,9 +295,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The Reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="ResetResponse">The parsed Reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
         /// <param name="CustomResetResponseParser">An optional delegate to parse custom Reset responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
         public static Boolean TryParse(ResetRequest                                 Request,
                                        JObject                                      JSON,
                                        SourceRouting                                Destination,

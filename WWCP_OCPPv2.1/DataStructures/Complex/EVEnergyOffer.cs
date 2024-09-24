@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="EVPowerSchedule">An EV power schedule.</param>
         /// <param name="EVAbsolutePriceSchedule">An optional absolute EV price schedule.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public EVEnergyOffer(EVPowerSchedule           EVPowerSchedule,
                              EVAbsolutePriceSchedule?  EVAbsolutePriceSchedule,
                              CustomData?               CustomData   = null)

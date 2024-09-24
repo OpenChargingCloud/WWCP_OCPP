@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Org.BouncyCastle.X509;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -234,9 +236,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Text">A text representation of a PEM encoded X.509 certificate.</param>
         /// <param name="Certificate">The parsed PEM encoded X.509 certificate.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(String            Text,
-                                       out Certificate?  Certificate,
-                                       out String?       ErrorResponse)
+        public static Boolean TryParse(String                                 Text,
+                                       [NotNullWhen(true)]  out Certificate?  Certificate,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(Text,
                         out Certificate,
@@ -252,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCertificateParser">An optional delegate to parse custom PEM encoded X.509 certificates.</param>
         public static Boolean TryParse(String                                  Text,
-                                       out Certificate?                        Certificate,
-                                       out String?                             ErrorResponse,
+                                       [NotNullWhen(true)]  out Certificate?   Certificate,
+                                       [NotNullWhen(false)] out String?        ErrorResponse,
                                        CustomTextParserDelegate<Certificate>?  CustomCertificateParser)
         {
 
@@ -287,9 +289,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Lines">An enumeration of text lines of a PEM encoded X.509 certificate.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="Certificate">The parsed PEM encoded X.509 certificate.</param>
-        public static Boolean TryParse(IEnumerable<String>  Lines,
-                                       out Certificate?     Certificate,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(IEnumerable<String>                    Lines,
+                                       [NotNullWhen(true)]  out Certificate?  Certificate,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(Lines,
                         out Certificate,
@@ -304,8 +306,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="Certificate">The parsed PEM encoded X.509 certificate.</param>
         public static Boolean TryParse(IEnumerable<String>                     Lines,
-                                       out Certificate?                        Certificate,
-                                       out String?                             ErrorResponse,
+                                       [NotNullWhen(true)]  out Certificate?   Certificate,
+                                       [NotNullWhen(false)] out String?        ErrorResponse,
                                        CustomTextParserDelegate<Certificate>?  CustomCertificateParser)
         {
 

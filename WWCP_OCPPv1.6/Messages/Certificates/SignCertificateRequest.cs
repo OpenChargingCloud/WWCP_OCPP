@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The sign certificate request.
+    /// The SignCertificate request.
     /// </summary>
     public class SignCertificateRequest : ARequest<SignCertificateRequest>,
                                           IRequest
@@ -64,37 +67,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new sign certificate request.
+        /// Create a new SignCertificate request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="CSR">The PEM encoded certificate signing request (CSR) [max 5500].</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SignCertificateRequest(NetworkingNode_Id             NetworkingNodeId,
-                                      String                        CSR,
+        public SignCertificateRequest(SourceRouting            Destination,
+                                      String                   CSR,
 
-                                      IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                      IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                      IEnumerable<Signature>?  Signatures          = null,
+                                      IEnumerable<KeyPair>?    SignKeys              = null,
+                                      IEnumerable<SignInfo>?   SignInfos             = null,
+                                      IEnumerable<Signature>?  Signatures            = null,
 
-                                      CustomData?                   CustomData          = null,
+                                      CustomData?              CustomData            = null,
 
-                                      Request_Id?                   RequestId           = null,
-                                      DateTime?                     RequestTimestamp    = null,
-                                      TimeSpan?                     RequestTimeout      = null,
-                                      EventTracking_Id?             EventTrackingId     = null,
-                                      NetworkPath?                  NetworkPath         = null,
-                                      CancellationToken             CancellationToken   = default)
+                                      Request_Id?              RequestId             = null,
+                                      DateTime?                RequestTimestamp      = null,
+                                      TimeSpan?                RequestTimeout        = null,
+                                      EventTracking_Id?        EventTrackingId       = null,
+                                      NetworkPath?             NetworkPath           = null,
+                                      SerializationFormats?    SerializationFormat   = null,
+                                      CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(SignCertificateRequest)[..^7],
 
                    SignKeys,
@@ -108,11 +116,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.CSR = CSR;
+
+            unchecked
+            {
+
+                hashCode = this.CSR.GetHashCode() * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
 
@@ -142,33 +159,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSignCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a sign certificate request.
+        /// Parse the given JSON representation of a SignCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomSignCertificateRequestParser">An optional delegate to parse custom SignCertificate requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
-                                                   CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null)
+                                                   DateTime?                                             RequestTimestamp                     = null,
+                                                   TimeSpan?                                             RequestTimeout                       = null,
+                                                   EventTracking_Id?                                     EventTrackingId                      = null,
+                                                   CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null,
+                                                   CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                                   CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var signCertificateRequest,
                          out var errorResponse,
-                         CustomSignCertificateRequestParser) &&
-                signCertificateRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomSignCertificateRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return signCertificateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a sign certificate request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SignCertificate request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -177,50 +208,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a sign certificate request.
+        /// Try to parse the given JSON representation of a SignCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
+        /// <param name="SignCertificateRequest">The parsed SignCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                      JSON,
-                                       Request_Id                   RequestId,
-                                       NetworkingNode_Id            NetworkingNodeId,
-                                       NetworkPath                  NetworkPath,
-                                       out SignCertificateRequest?  SignCertificateRequest,
-                                       out String?                  ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SignCertificateRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a sign certificate request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignCertificateRequestParser">An optional delegate to parse custom sign certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                           NetworkPath,
-                                       out SignCertificateRequest?                           SignCertificateRequest,
-                                       out String?                                           ErrorResponse,
-                                       CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser)
+                                       [NotNullWhen(true)]  out SignCertificateRequest?      SignCertificateRequest,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
+                                       DateTime?                                             RequestTimestamp                     = null,
+                                       TimeSpan?                                             RequestTimeout                       = null,
+                                       EventTracking_Id?                                     EventTrackingId                      = null,
+                                       CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                       CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             try
@@ -232,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseMandatoryText("csr",
                                              "certificate signing request",
-                                             out String CSR,
+                                             out String? CSR,
                                              out ErrorResponse))
                 {
                     return false;
@@ -271,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 SignCertificateRequest = new SignCertificateRequest(
 
-                                             NetworkingNodeId,
+                                             Destination,
                                              CSR,
 
                                              null,
@@ -281,9 +295,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              CustomData,
 
                                              RequestId,
-                                             null,
-                                             null,
-                                             null,
+                                             RequestTimestamp,
+                                             RequestTimeout,
+                                             EventTrackingId,
                                              NetworkPath
 
                                          );
@@ -298,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 SignCertificateRequest  = null;
-                ErrorResponse           = "The given JSON representation of a sign certificate request is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a SignCertificate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -311,11 +325,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSignCertificateRequestSerializer">A delegate to serialize custom sign certificate requests.</param>
+        /// <param name="CustomSignCertificateRequestSerializer">A delegate to serialize custom SignCertificate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SignCertificateRequest>?  CustomSignCertificateRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer                = null,
+                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
@@ -348,10 +362,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (SignCertificateRequest1, SignCertificateRequest2)
 
         /// <summary>
-        /// Compares two sign certificate requests for equality.
+        /// Compares two SignCertificate requests for equality.
         /// </summary>
-        /// <param name="SignCertificateRequest1">A sign certificate request.</param>
-        /// <param name="SignCertificateRequest2">Another sign certificate request.</param>
+        /// <param name="SignCertificateRequest1">A SignCertificate request.</param>
+        /// <param name="SignCertificateRequest2">Another SignCertificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SignCertificateRequest? SignCertificateRequest1,
                                            SignCertificateRequest? SignCertificateRequest2)
@@ -374,10 +388,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (SignCertificateRequest1, SignCertificateRequest2)
 
         /// <summary>
-        /// Compares two sign certificate requests for inequality.
+        /// Compares two SignCertificate requests for inequality.
         /// </summary>
-        /// <param name="SignCertificateRequest1">A sign certificate request.</param>
-        /// <param name="SignCertificateRequest2">Another sign certificate request.</param>
+        /// <param name="SignCertificateRequest1">A SignCertificate request.</param>
+        /// <param name="SignCertificateRequest2">Another SignCertificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SignCertificateRequest? SignCertificateRequest1,
                                            SignCertificateRequest? SignCertificateRequest2)
@@ -393,9 +407,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two sign certificate requests for equality.
+        /// Compares two SignCertificate requests for equality.
         /// </summary>
-        /// <param name="Object">A sign certificate request to compare with.</param>
+        /// <param name="Object">A SignCertificate request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SignCertificateRequest signCertificateRequest &&
@@ -406,9 +420,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(SignCertificateRequest)
 
         /// <summary>
-        /// Compares two sign certificate requests for equality.
+        /// Compares two SignCertificate requests for equality.
         /// </summary>
-        /// <param name="SignCertificateRequest">A sign certificate request to compare with.</param>
+        /// <param name="SignCertificateRequest">A SignCertificate request to compare with.</param>
         public override Boolean Equals(SignCertificateRequest? SignCertificateRequest)
 
             => SignCertificateRequest is not null &&
@@ -423,20 +437,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return CSR. GetHashCode() * 3 ^
-                       base.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

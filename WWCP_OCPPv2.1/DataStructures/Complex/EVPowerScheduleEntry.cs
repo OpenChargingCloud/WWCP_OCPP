@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Duration">The duration of the given power schedule entry.</param>
         /// <param name="Power">The maximum amount of power for this power schedule entry to be discharged from the EV battery through EVSE power outlet. Negative values are used for discharging.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public EVPowerScheduleEntry(TimeSpan     Duration,
                                     Decimal      Power,
                                     CustomData?  CustomData   = null)

@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The install certificate request.
+    /// The InstallCertificate request.
     /// </summary>
     [SecurityExtensions]
     public class InstallCertificateRequest : ARequest<InstallCertificateRequest>,
@@ -69,39 +72,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new install certificate request.
+        /// Create a new InstallCertificate request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public InstallCertificateRequest(NetworkingNode_Id            NetworkingNodeId,
-                                         CertificateUse               CertificateType,
-                                         Certificate                  Certificate,
+        public InstallCertificateRequest(SourceRouting            Destination,
+                                         CertificateUse           CertificateType,
+                                         Certificate              Certificate,
 
-                                        IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                        IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?  Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys              = null,
+                                         IEnumerable<SignInfo>?   SignInfos             = null,
+                                         IEnumerable<Signature>?  Signatures            = null,
 
-                                        CustomData?                   CustomData          = null,
+                                         CustomData?              CustomData            = null,
 
-                                        Request_Id?                   RequestId           = null,
-                                        DateTime?                     RequestTimestamp    = null,
-                                        TimeSpan?                     RequestTimeout      = null,
-                                        EventTracking_Id?             EventTrackingId     = null,
-                                        NetworkPath?                  NetworkPath         = null,
-                                        CancellationToken             CancellationToken   = default)
+                                         Request_Id?              RequestId             = null,
+                                         DateTime?                RequestTimestamp      = null,
+                                         TimeSpan?                RequestTimeout        = null,
+                                         EventTracking_Id?        EventTrackingId       = null,
+                                         NetworkPath?             NetworkPath           = null,
+                                         SerializationFormats?    SerializationFormat   = null,
+                                         CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(InstallCertificateRequest)[..^7],
 
                    SignKeys,
@@ -115,12 +123,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.CertificateType  = CertificateType;
             this.Certificate      = Certificate;
+
+            unchecked
+            {
+
+                hashCode = this.CertificateType.GetHashCode() * 5 ^
+                           this.Certificate.    GetHashCode() * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
 
@@ -164,33 +182,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomInstallCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate request.
+        /// Parse the given JSON representation of an InstallCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomInstallCertificateRequestParser">An optional delegate to parse custom install certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomInstallCertificateRequestParser">An optional delegate to parse custom InstallCertificate requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static InstallCertificateRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
-                                                      CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null)
+                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      TimeSpan?                                                RequestTimeout                          = null,
+                                                      EventTracking_Id?                                        EventTrackingId                         = null,
+                                                      CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null,
+                                                      CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                                      CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var installCertificateRequest,
                          out var errorResponse,
-                         CustomInstallCertificateRequestParser) &&
-                installCertificateRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomInstallCertificateRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return installCertificateRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an InstallCertificate request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -199,50 +231,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out InstallCertificateRequest, out ErrorResponse, CustomInstallCertificateRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate request.
-        /// </summary>
-        /// <param name="InstallCertificateRequestJSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="InstallCertificateRequest">The parsed install certificate request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                         InstallCertificateRequestJSON,
-                                       Request_Id                      RequestId,
-                                       NetworkingNode_Id               NetworkingNodeId,
-                                       NetworkPath                     NetworkPath,
-                                       out InstallCertificateRequest?  InstallCertificateRequest,
-                                       out String?                     ErrorResponse)
-
-            => TryParse(InstallCertificateRequestJSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out InstallCertificateRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an install certificate request.
+        /// Try to parse the given JSON representation of an InstallCertificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="InstallCertificateRequest">The parsed install certificate request.</param>
+        /// <param name="InstallCertificateRequest">The parsed InstallCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateRequestParser">An optional delegate to parse custom install certificate requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomInstallCertificateRequestParser">An optional delegate to parse custom InstallCertificate requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
-                                       out InstallCertificateRequest?                           InstallCertificateRequest,
-                                       out String?                                              ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser)
+                                       [NotNullWhen(true)]  out InstallCertificateRequest?      InstallCertificateRequest,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                RequestTimestamp                        = null,
+                                       TimeSpan?                                                RequestTimeout                          = null,
+                                       EventTracking_Id?                                        EventTrackingId                         = null,
+                                       CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                  CustomSignatureParser                   = null,
+                                       CustomJObjectParserDelegate<CustomData>?                 CustomCustomDataParser                  = null)
         {
 
             try
@@ -267,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryText("certificate",
                                              "certificate",
-                                             out String certificateText,
+                                             out String? certificateText,
                                              out ErrorResponse))
                 {
                     return false;
@@ -279,9 +294,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
                     return false;
                 }
-
-                if (Certificate is null)
-                    return false;
 
                 #endregion
 
@@ -316,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 InstallCertificateRequest = new InstallCertificateRequest(
 
-                                                NetworkingNodeId,
+                                                Destination,
                                                 CertificateType,
                                                 Certificate,
 
@@ -327,9 +339,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 CustomData,
 
                                                 RequestId,
-                                                null,
-                                                null,
-                                                null,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
                                                 NetworkPath
 
                                             );
@@ -344,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 InstallCertificateRequest  = null;
-                ErrorResponse              = "The given JSON representation of an install certificate request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of an InstallCertificate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -357,11 +369,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateRequestSerializer">A delegate to serialize custom install certificate requests.</param>
+        /// <param name="CustomInstallCertificateRequestSerializer">A delegate to serialize custom InstallCertificate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -395,10 +407,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (InstallCertificateRequest1, InstallCertificateRequest2)
 
         /// <summary>
-        /// Compares two install certificate requests for equality.
+        /// Compares two InstallCertificate requests for equality.
         /// </summary>
-        /// <param name="InstallCertificateRequest1">An install certificate request.</param>
-        /// <param name="InstallCertificateRequest2">Another install certificate request.</param>
+        /// <param name="InstallCertificateRequest1">An InstallCertificate request.</param>
+        /// <param name="InstallCertificateRequest2">Another InstallCertificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (InstallCertificateRequest? InstallCertificateRequest1,
                                            InstallCertificateRequest? InstallCertificateRequest2)
@@ -421,10 +433,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (InstallCertificateRequest1, InstallCertificateRequest2)
 
         /// <summary>
-        /// Compares two install certificate requests for inequality.
+        /// Compares two InstallCertificate requests for inequality.
         /// </summary>
-        /// <param name="InstallCertificateRequest1">An install certificate request.</param>
-        /// <param name="InstallCertificateRequest2">Another install certificate request.</param>
+        /// <param name="InstallCertificateRequest1">An InstallCertificate request.</param>
+        /// <param name="InstallCertificateRequest2">Another InstallCertificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (InstallCertificateRequest? InstallCertificateRequest1,
                                            InstallCertificateRequest? InstallCertificateRequest2)
@@ -440,9 +452,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate requests for equality.
+        /// Compares two InstallCertificate requests for equality.
         /// </summary>
-        /// <param name="Object">An install certificate request to compare with.</param>
+        /// <param name="Object">An InstallCertificate request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is InstallCertificateRequest installCertificateRequest &&
@@ -453,9 +465,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(InstallCertificateRequest)
 
         /// <summary>
-        /// Compares two install certificate requests for equality.
+        /// Compares two InstallCertificate requests for equality.
         /// </summary>
-        /// <param name="InstallCertificateRequest">An install certificate request to compare with.</param>
+        /// <param name="InstallCertificateRequest">An InstallCertificate request to compare with.</param>
         public override Boolean Equals(InstallCertificateRequest? InstallCertificateRequest)
 
             => InstallCertificateRequest is not null &&
@@ -471,22 +483,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return CertificateType.GetHashCode() * 5 ^
-                       Certificate.    GetHashCode() * 3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

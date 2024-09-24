@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The reset request.
+    /// The Reset request.
     /// </summary>
     public class ResetRequest : ARequest<ResetRequest>,
                                 IRequest
@@ -67,19 +67,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new reset request.
+        /// Create a new Reset request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ResetType">The type of Reset that the charging station should perform.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ResetRequest(SourceRouting            Destination,
                             ResetType                ResetType,
@@ -112,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -121,8 +125,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             unchecked
             {
+
                 hashCode = this.ResetType.GetHashCode() * 3 ^
                            base.          GetHashCode();
+
             }
 
         }
@@ -176,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a reset request.
+        /// Parse the given XML representation of a Reset request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -198,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return resetRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a reset request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a Reset request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -218,6 +224,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
                                          SourceRouting                               Destination,
@@ -225,7 +233,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          DateTime?                                   RequestTimestamp           = null,
                                          TimeSpan?                                   RequestTimeout             = null,
                                          EventTracking_Id?                           EventTrackingId            = null,
-                                         CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
+                                         CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null,
+                                         CustomJObjectParserDelegate<Signature>?     CustomSignatureParser      = null,
+                                         CustomJObjectParserDelegate<CustomData>?    CustomCustomDataParser     = null)
         {
 
             if (TryParse(JSON,
@@ -237,12 +247,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          RequestTimestamp,
                          RequestTimeout,
                          EventTrackingId,
-                         CustomResetRequestParser))
+                         CustomResetRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return resetRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a reset request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a Reset request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -252,13 +264,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out ResetRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a reset request.
+        /// Try to parse the given XML representation of a Reset request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ResetRequest">The parsed reset request.</param>
+        /// <param name="ResetRequest">The parsed Reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                                XML,
                                        Request_Id                              RequestId,
@@ -290,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ResetRequest   = null;
-                ErrorResponse  = "The given XML representation of a reset request is invalid: " + e.Message;
+                ErrorResponse  = "The given XML representation of a Reset request is invalid: " + e.Message;
                 return false;
             }
 
@@ -313,6 +325,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional request timeout.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
                                        SourceRouting                               Destination,
@@ -322,7 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        DateTime?                                   RequestTimestamp           = null,
                                        TimeSpan?                                   RequestTimeout             = null,
                                        EventTracking_Id?                           EventTrackingId            = null,
-                                       CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
+                                       CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?     CustomSignatureParser      = null,
+                                       CustomJObjectParserDelegate<CustomData>?    CustomCustomDataParser     = null)
         {
 
             try
@@ -401,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ResetRequest   = null;
-                ErrorResponse  = "The given JSON representation of a reset request is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a Reset request is invalid: " + e.Message;
                 return false;
             }
 
@@ -429,11 +445,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomResetRequestSerializer">A delegate to serialize custom reset requests.</param>
+        /// <param name="CustomResetRequestSerializer">A delegate to serialize custom Reset requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?CustomSignatureSerializer      = null,
+                              CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer      = null,
                               CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null)
         {
 
@@ -466,10 +482,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (ResetRequest1, ResetRequest2)
 
         /// <summary>
-        /// Compares two reset requests for equality.
+        /// Compares two Reset requests for equality.
         /// </summary>
-        /// <param name="ResetRequest1">A reset request.</param>
-        /// <param name="ResetRequest2">Another reset request.</param>
+        /// <param name="ResetRequest1">A Reset request.</param>
+        /// <param name="ResetRequest2">Another Reset request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ResetRequest? ResetRequest1,
                                            ResetRequest? ResetRequest2)
@@ -492,10 +508,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (ResetRequest1, ResetRequest2)
 
         /// <summary>
-        /// Compares two reset requests for inequality.
+        /// Compares two Reset requests for inequality.
         /// </summary>
-        /// <param name="ResetRequest1">A reset request.</param>
-        /// <param name="ResetRequest2">Another reset request.</param>
+        /// <param name="ResetRequest1">A Reset request.</param>
+        /// <param name="ResetRequest2">Another Reset request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ResetRequest? ResetRequest1,
                                            ResetRequest? ResetRequest2)
@@ -511,9 +527,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two reset requests for equality.
+        /// Compares two Reset requests for equality.
         /// </summary>
-        /// <param name="Object">A reset request to compare with.</param>
+        /// <param name="Object">A Reset request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ResetRequest resetRequest &&
@@ -524,9 +540,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(ResetRequest)
 
         /// <summary>
-        /// Compares two reset requests for equality.
+        /// Compares two Reset requests for equality.
         /// </summary>
-        /// <param name="ResetRequest">A reset request to compare with.</param>
+        /// <param name="ResetRequest">A Reset request to compare with.</param>
         public override Boolean Equals(ResetRequest? ResetRequest)
 
             => ResetRequest is not null &&

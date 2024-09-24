@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The get installed certificate ids request.
+    /// The GetInstalledCertificateIds request.
     /// </summary>
     [SecurityExtensions]
     public class GetInstalledCertificateIdsRequest : ARequest<GetInstalledCertificateIdsRequest>,
@@ -64,37 +67,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get installed certificate ids request.
+        /// Create a new GetInstalledCertificateIds request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="CertificateType">The type of the certificates requested.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetInstalledCertificateIdsRequest(NetworkingNode_Id             NetworkingNodeId,
-                                                 CertificateUse                CertificateType,
+        public GetInstalledCertificateIdsRequest(SourceRouting            Destination,
+                                                 CertificateUse           CertificateType,
 
-                                                 IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                                 IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                                 IEnumerable<Signature>?  Signatures          = null,
+                                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                                 CustomData?                   CustomData          = null,
+                                                 CustomData?              CustomData            = null,
 
-                                                 Request_Id?                   RequestId           = null,
-                                                 DateTime?                     RequestTimestamp    = null,
-                                                 TimeSpan?                     RequestTimeout      = null,
-                                                 EventTracking_Id?             EventTrackingId     = null,
-                                                 NetworkPath?                  NetworkPath         = null,
-                                                 CancellationToken             CancellationToken   = default)
+                                                 Request_Id?              RequestId             = null,
+                                                 DateTime?                RequestTimestamp      = null,
+                                                 TimeSpan?                RequestTimeout        = null,
+                                                 EventTracking_Id?        EventTrackingId       = null,
+                                                 NetworkPath?             NetworkPath           = null,
+                                                 SerializationFormats?    SerializationFormat   = null,
+                                                 CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(GetInstalledCertificateIdsRequest)[..^7],
 
                    SignKeys,
@@ -108,11 +116,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.CertificateType = CertificateType;
+
+            unchecked
+            {
+
+                hashCode = this.CertificateType.GetHashCode() * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
 
@@ -151,33 +168,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetInstalledCertificateIdsRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get installed certificate ids request.
+        /// Parse the given JSON representation of a GetInstalledCertificateIds request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetInstalledCertificateIdsRequestParser">An optional delegate to parse custom get installed certificate ids requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestParser">An optional delegate to parse custom GetInstalledCertificateIds requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static GetInstalledCertificateIdsRequest Parse(JObject                                                          JSON,
                                                               Request_Id                                                       RequestId,
-                                                              NetworkingNode_Id                                                NetworkingNodeId,
+                                                              SourceRouting                                                    Destination,
                                                               NetworkPath                                                      NetworkPath,
-                                                              CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser   = null)
+                                                              DateTime?                                                        RequestTimestamp                                = null,
+                                                              TimeSpan?                                                        RequestTimeout                                  = null,
+                                                              EventTracking_Id?                                                EventTrackingId                                 = null,
+                                                              CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser   = null,
+                                                              CustomJObjectParserDelegate<Signature>?                          CustomSignatureParser                           = null,
+                                                              CustomJObjectParserDelegate<CustomData>?                         CustomCustomDataParser                          = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var getInstalledCertificateIdsRequest,
                          out var errorResponse,
-                         CustomGetInstalledCertificateIdsRequestParser) &&
-                getInstalledCertificateIdsRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomGetInstalledCertificateIdsRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getInstalledCertificateIdsRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get installed certificate ids request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetInstalledCertificateIds request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -186,50 +217,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetInstalledCertificateIdsRequest, out ErrorResponse, CustomGetInstalledCertificateIdsRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
-        /// Try to parse the given JSON representation of a get installed certificate ids request.
+        /// Try to parse the given JSON representation of a GetInstalledCertificateIds request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest">The parsed get installed certificate ids request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest">The parsed GetInstalledCertificateIds request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                 JSON,
-                                       Request_Id                              RequestId,
-                                       NetworkingNode_Id                       NetworkingNodeId,
-                                       NetworkPath                             NetworkPath,
-                                       out GetInstalledCertificateIdsRequest?  GetInstalledCertificateIdsRequest,
-                                       out String?                             ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out GetInstalledCertificateIdsRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a get installed certificate ids request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest">The parsed get installed certificate ids request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetInstalledCertificateIdsRequestParser">An optional delegate to parse custom get installed certificate ids requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestParser">An optional delegate to parse custom GetInstalledCertificateIds requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                          JSON,
                                        Request_Id                                                       RequestId,
-                                       NetworkingNode_Id                                                NetworkingNodeId,
+                                       SourceRouting                                                    Destination,
                                        NetworkPath                                                      NetworkPath,
-                                       out GetInstalledCertificateIdsRequest?                           GetInstalledCertificateIdsRequest,
-                                       out String?                                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser)
+                                       [NotNullWhen(true)]  out GetInstalledCertificateIdsRequest?      GetInstalledCertificateIdsRequest,
+                                       [NotNullWhen(false)] out String?                                 ErrorResponse,
+                                       DateTime?                                                        RequestTimestamp                                = null,
+                                       TimeSpan?                                                        RequestTimeout                                  = null,
+                                       EventTracking_Id?                                                EventTrackingId                                 = null,
+                                       CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                          CustomSignatureParser                           = null,
+                                       CustomJObjectParserDelegate<CustomData>?                         CustomCustomDataParser                          = null)
         {
 
             try
@@ -281,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 GetInstalledCertificateIdsRequest = new GetInstalledCertificateIdsRequest(
 
-                                                        NetworkingNodeId,
+                                                        Destination,
                                                         CertificateType,
 
                                                         null,
@@ -291,9 +305,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         CustomData,
 
                                                         RequestId,
-                                                        null,
-                                                        null,
-                                                        null,
+                                                        RequestTimestamp,
+                                                        RequestTimeout,
+                                                        EventTrackingId,
                                                         NetworkPath
 
                                                     );
@@ -308,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 GetInstalledCertificateIdsRequest  = null;
-                ErrorResponse                      = "The given JSON representation of a get installed certificate ids request is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of a GetInstalledCertificateIds request is invalid: " + e.Message;
                 return false;
             }
 
@@ -325,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                           = null,
+                              CustomJObjectSerializerDelegate<Signature>?                          CustomSignatureSerializer                           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)
         {
 
@@ -358,10 +372,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (GetInstalledCertificateIdsRequest1, GetInstalledCertificateIdsRequest2)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for equality.
+        /// Compares two GetInstalledCertificateIds requests for equality.
         /// </summary>
-        /// <param name="GetInstalledCertificateIdsRequest1">A get installed certificate ids request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest2">Another get installed certificate ids request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest1">A GetInstalledCertificateIds request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest2">Another GetInstalledCertificateIds request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest1,
                                            GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest2)
@@ -384,10 +398,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (GetInstalledCertificateIdsRequest1, GetInstalledCertificateIdsRequest2)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for inequality.
+        /// Compares two GetInstalledCertificateIds requests for inequality.
         /// </summary>
-        /// <param name="GetInstalledCertificateIdsRequest1">A get installed certificate ids request.</param>
-        /// <param name="GetInstalledCertificateIdsRequest2">Another get installed certificate ids request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest1">A GetInstalledCertificateIds request.</param>
+        /// <param name="GetInstalledCertificateIdsRequest2">Another GetInstalledCertificateIds request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest1,
                                            GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest2)
@@ -403,9 +417,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for equality.
+        /// Compares two GetInstalledCertificateIds requests for equality.
         /// </summary>
-        /// <param name="Object">A get installed certificate ids request to compare with.</param>
+        /// <param name="Object">A GetInstalledCertificateIds request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetInstalledCertificateIdsRequest getInstalledCertificateIdsRequest &&
@@ -416,9 +430,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(GetInstalledCertificateIdsRequest)
 
         /// <summary>
-        /// Compares two get installed certificate ids requests for equality.
+        /// Compares two GetInstalledCertificateIds requests for equality.
         /// </summary>
-        /// <param name="GetInstalledCertificateIdsRequest">A get installed certificate ids request to compare with.</param>
+        /// <param name="GetInstalledCertificateIdsRequest">A GetInstalledCertificateIds request to compare with.</param>
         public override Boolean Equals(GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest)
 
             => GetInstalledCertificateIdsRequest is not null &&
@@ -433,20 +447,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return CertificateType.GetHashCode() * 3 ^
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

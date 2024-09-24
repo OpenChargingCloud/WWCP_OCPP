@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="NetworkingNode">A networking node.</param>
         /// <param name="NetworkTopologyInformation">Network topology information.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="Destination"></param>
         /// <param name="NetworkPath"></param>

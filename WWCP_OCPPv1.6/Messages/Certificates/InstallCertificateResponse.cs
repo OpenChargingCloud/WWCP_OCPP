@@ -17,11 +17,17 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -29,11 +35,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An install certificate response.
+    /// An InstallCertificate response.
     /// </summary>
     [SecurityExtensions]
-    public class InstallCertificateResponse : AResponse<CS.InstallCertificateRequest,
-                                                           InstallCertificateResponse>,
+    public class InstallCertificateResponse : AResponse<InstallCertificateRequest,
+                                                        InstallCertificateResponse>,
                                               IResponse
     {
 
@@ -55,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the install certificate request.
+        /// The success or failure of the InstallCertificate request.
         /// </summary>
         public CertificateStatus  Status    { get; }
 
@@ -63,67 +69,72 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region InstallCertificateResponse(Request, Status)
-
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Status">The success or failure of the install certificate request.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
+        /// <param name="Status">The success or failure of the InstallCertificate request.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          CertificateStatus             Status,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public InstallCertificateResponse(InstallCertificateRequest  Request,
+                                          CertificateStatus          Status,
 
-                                          DateTime?                     ResponseTimestamp   = null,
+                                          Result?                    Result                = null,
+                                          DateTime?                  ResponseTimestamp     = null,
 
-                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                          IEnumerable<Signature>?  Signatures          = null,
+                                          SourceRouting?             Destination           = null,
+                                          NetworkPath?               NetworkPath           = null,
 
-                                          CustomData?                   CustomData          = null)
+                                          IEnumerable<KeyPair>?      SignKeys              = null,
+                                          IEnumerable<SignInfo>?     SignInfos             = null,
+                                          IEnumerable<Signature>?    Signatures            = null,
+
+                                          CustomData?                CustomData            = null,
+
+                                          SerializationFormats?      SerializationFormat   = null,
+                                          CancellationToken          CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region InstallCertificateResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new install certificate response.
-        /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          Result                        Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -161,27 +172,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate response.
+        /// Parse the given JSON representation of an InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomInstallCertificateResponseParser">An optional delegate to parse custom install certificate responses.</param>
-        public static InstallCertificateResponse Parse(CS.InstallCertificateRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomInstallCertificateResponseParser">An optional delegate to parse custom InstallCertificate responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static InstallCertificateResponse Parse(InstallCertificateRequest                                 Request,
                                                        JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+                                                       SourceRouting                                             Destination,
+                                                       NetworkPath                                               NetworkPath,
+                                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null,
+                                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var installCertificateResponse,
                          out var errorResponse,
-                         CustomInstallCertificateResponseParser) &&
-                installCertificateResponse is not null)
+                         ResponseTimestamp,
+                         CustomInstallCertificateResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return installCertificateResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an InstallCertificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -191,18 +216,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate response.
+        /// Try to parse the given JSON representation of an InstallCertificate response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The InstallCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="InstallCertificateResponse">The parsed InstallCertificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateResponseParser">An optional delegate to parse custom install certificate responses.</param>
-        public static Boolean TryParse(CS.InstallCertificateRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomInstallCertificateResponseParser">An optional delegate to parse custom InstallCertificate responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(InstallCertificateRequest                                 Request,
                                        JObject                                                   JSON,
-                                       out InstallCertificateResponse?                           InstallCertificateResponse,
-                                       out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+                                       SourceRouting                                             Destination,
+                                       NetworkPath                                               NetworkPath,
+                                       [NotNullWhen(true)]  out InstallCertificateResponse?      InstallCertificateResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
+                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             try
@@ -213,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                       "install certificate status",
+                                       "InstallCertificate status",
                                        CertificateStatusExtensions.Parse,
                                        out CertificateStatus Status,
                                        out ErrorResponse))
@@ -256,7 +291,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  Request,
                                                  Status,
+
                                                  null,
+                                                 ResponseTimestamp,
+
+                                                 Destination,
+                                                 NetworkPath,
 
                                                  null,
                                                  null,
@@ -276,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 InstallCertificateResponse  = null;
-                ErrorResponse               = "The given JSON representation of an install certificate response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of an InstallCertificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -289,11 +329,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom install certificate responses.</param>
+        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom InstallCertificate responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer                    = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
@@ -324,13 +364,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The install certificate failed.
+        /// The InstallCertificate failed because of a request error.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        public static InstallCertificateResponse Failed(CS.InstallCertificateRequest Request)
+        /// <param name="Request">The InstallCertificate request.</param>
+        public static InstallCertificateResponse RequestError(InstallCertificateRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
+
+                                                              SourceRouting?             Destination         = null,
+                                                              NetworkPath?               NetworkPath         = null,
+
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
+
+                                                              CustomData?                CustomData          = null)
+
+            => new (
+
+                   Request,
+                   CertificateStatus.Rejected,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The InstallCertificate failed.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static InstallCertificateResponse FormationViolation(InstallCertificateRequest  Request,
+                                                                    String                     ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    CertificateStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The InstallCertificate failed.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static InstallCertificateResponse SignatureError(InstallCertificateRequest  Request,
+                                                                String                     ErrorDescription)
+
+            => new (Request,
+                    CertificateStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The InstallCertificate failed.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static InstallCertificateResponse Failed(InstallCertificateRequest  Request,
+                                                        String?                    Description   = null)
+
+            => new (Request,
+                    CertificateStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The InstallCertificate failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The InstallCertificate request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static InstallCertificateResponse ExceptionOccured(InstallCertificateRequest  Request,
+                                                                  Exception                  Exception)
+
+            => new (Request,
+                    CertificateStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -340,10 +469,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (InstallCertificateResponse1, InstallCertificateResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two InstallCertificate responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="InstallCertificateResponse1">An InstallCertificate response.</param>
+        /// <param name="InstallCertificateResponse2">Another InstallCertificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
                                            InstallCertificateResponse? InstallCertificateResponse2)
@@ -366,10 +495,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (InstallCertificateResponse1, InstallCertificateResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for inequality.
+        /// Compares two InstallCertificate responses for inequality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="InstallCertificateResponse1">An InstallCertificate response.</param>
+        /// <param name="InstallCertificateResponse2">Another InstallCertificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
                                            InstallCertificateResponse? InstallCertificateResponse2)
@@ -385,9 +514,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two InstallCertificate responses for equality.
         /// </summary>
-        /// <param name="Object">An install certificate response to compare with.</param>
+        /// <param name="Object">An InstallCertificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is InstallCertificateResponse installCertificateResponse &&
@@ -398,9 +527,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(InstallCertificateResponse)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two InstallCertificate responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse">An install certificate response to compare with.</param>
+        /// <param name="InstallCertificateResponse">An InstallCertificate response to compare with.</param>
         public override Boolean Equals(InstallCertificateResponse? InstallCertificateResponse)
 
             => InstallCertificateResponse is not null &&
@@ -412,13 +541,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => Status.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

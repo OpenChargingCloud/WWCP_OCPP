@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -154,9 +156,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CertificateHashData">The parsed certificate hash data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                   JSON,
-                                       out CertificateHashData?  CertificateHashData,
-                                       out String?               ErrorResponse)
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out CertificateHashData?  CertificateHashData,
+                                       [NotNullWhen(false)] out String?               ErrorResponse)
 
             => TryParse(JSON,
                         out CertificateHashData,
@@ -172,8 +174,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCertificateHashDataParser">An optional delegate to parse custom CertificateHashDatas.</param>
         public static Boolean TryParse(JObject                                            JSON,
-                                       out CertificateHashData?                           CertificateHashData,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out CertificateHashData?      CertificateHashData,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<CertificateHashData>?  CustomCertificateHashDataParser)
         {
 
@@ -199,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.ParseMandatoryText("issuerNameHash",
                                              "issuer name hash",
-                                             out String IssuerNameHash,
+                                             out String? IssuerNameHash,
                                              out ErrorResponse))
                 {
                     return false;
@@ -211,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.ParseMandatoryText("issuerKeyHash",
                                              "issuer public key hash",
-                                             out String IssuerPublicKeyHash,
+                                             out String? IssuerPublicKeyHash,
                                              out ErrorResponse))
                 {
                     return false;
@@ -223,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.ParseMandatoryText("serialNumber",
                                              "serial number",
-                                             out String SerialNumber,
+                                             out String? SerialNumber,
                                              out ErrorResponse))
                 {
                     return false;
@@ -232,10 +234,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                CertificateHashData = new CertificateHashData(HashAlgorithm,
-                                                              IssuerNameHash,
-                                                              IssuerPublicKeyHash,
-                                                              SerialNumber);
+                CertificateHashData = new CertificateHashData(
+                                          HashAlgorithm,
+                                          IssuerNameHash,
+                                          IssuerPublicKeyHash,
+                                          SerialNumber
+                                      );
 
                 if (CustomCertificateHashDataParser is not null)
                     CertificateHashData = CustomCertificateHashDataParser(JSON,
