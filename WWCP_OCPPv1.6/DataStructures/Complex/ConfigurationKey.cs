@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -120,10 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new configuration key.
         /// </summary>
         /// <param name="Key">A configuration key.</param>
-        /// <param name="KeyStatus">Whether the configuration key is mandatory or optional.</param>
         /// <param name="AccessRights">This configuration value is: read/write, read-only, write-only.</param>
-        /// <param name="ValueType">The type of the value.</param>
-        /// <param name="ValueUnit">The unit of the value.</param>
         /// <param name="Value">The configuration value or 'null' when the key exists but the value is not (yet) defined.</param>
         public ConfigurationKey(String        Key,
                                 AccessRights  AccessRights,
@@ -210,25 +208,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML,  out ErrorResponse)
+        #region (static) Parse   (XML)
 
         /// <summary>
         /// Parse the given XML representation of a configuration key value pair.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ConfigurationKey Parse(XElement              XML,
-                                             OnExceptionDelegate?  OnException   = null)
+        public static ConfigurationKey Parse(XElement XML)
         {
 
             if (TryParse(XML,
                          out var configurationKey,
-                         OnException))
+                         out var errorResponse))
             {
                 return configurationKey;
             }
 
-            throw new ArgumentException("The given XML representation of a configuration key value pair is invalid: ", // + errorResponse,
+            throw new ArgumentException("The given XML representation of a configuration key value pair is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -244,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static ConfigurationKey Parse(JObject JSON)
         {
 
-            if (TryParse2(JSON,
+            if (TryParse(JSON,
                          out var configurationKey,
                          out var errorResponse))
             {
@@ -264,12 +260,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given XML representation of a configuration key value pair.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="ConfigurationKey">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              XML,
-                                       out ConfigurationKey  ConfigurationKey,
-                                       OnExceptionDelegate?  OnException   = null)
+        /// <param name="ConfigurationKey">The parsed configuration key.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                                   XML,
+                                       [NotNullWhen(true)]  out ConfigurationKey  ConfigurationKey,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -287,12 +285,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ConfigurationKey = default;
+                ConfigurationKey  = default;
+                ErrorResponse     = "The given XML representation of a configuration key is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -305,10 +300,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given JSON representation of a configuration key value pair.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ConfigurationKey">The parsed connector type.</param>
-        public static Boolean TryParse2(JObject               JSON,
-                                       out ConfigurationKey  ConfigurationKey,
-                                       out String?           ErrorResponse)
+        /// <param name="ConfigurationKey">The parsed configuration key.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ConfigurationKey  ConfigurationKey,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
         {
 
             try
@@ -356,19 +352,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                ConfigurationKey = new ConfigurationKey(Key,
-                                                        Readonly
-                                                            ? AccessRights.ReadOnly
-                                                            : AccessRights.ReadWrite,
-                                                        Value);
+                ConfigurationKey = new ConfigurationKey(
+                                       Key,
+                                       Readonly
+                                           ? AccessRights.ReadOnly
+                                           : AccessRights.ReadWrite,
+                                       Value
+                                   );
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse    = e.Message;
-                ConfigurationKey = default;
+                ConfigurationKey  = default;
+                ErrorResponse     = "The given JSON representation of a configuration key is invalid: " + e.Message;
                 return false;
             }
 
@@ -397,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToJSON(CustomChangeAvailabilityResponseSerializer = null)
+        #region ToJSON(CustomConfigurationKeySerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -408,11 +406,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("key",          Key.SubstringMax(MaxConfigurationKeyLength)),
-                           new JProperty("readonly",     AccessRights == AccessRights.ReadOnly),
+                                 new JProperty("key",        Key.SubstringMax(MaxConfigurationKeyLength)),
+                                 new JProperty("readonly",   AccessRights == AccessRights.ReadOnly),
 
-                           Value != null
-                               ? new JProperty("value",  Value.SubstringMax(MaxConfigurationValueLength))
+                           Value is not null
+                               ? new JProperty("value",      Value.SubstringMax(MaxConfigurationValueLength))
                                : null
 
                        );

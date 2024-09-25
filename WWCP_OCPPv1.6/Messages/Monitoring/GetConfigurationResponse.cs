@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (JSON.ParseOptionalJSON("configurationKey",
                                            "configuration keys",
-                                           ConfigurationKey.TryParse2,
+                                           ConfigurationKey.TryParse,
                                            out IEnumerable<ConfigurationKey> ConfigurationKeys,
                                            out ErrorResponse))
                 {

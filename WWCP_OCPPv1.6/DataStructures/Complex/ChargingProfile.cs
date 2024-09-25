@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(JSON, out ChargingProfile, CustomChargingProfileParser = null)
+        #region (static) TryParse(JSON, out ChargingProfile, out ErrorResponse, CustomChargingProfileParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 

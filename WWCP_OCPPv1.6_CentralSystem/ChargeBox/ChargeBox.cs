@@ -362,423 +362,423 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Events
 
-        // Outgoing messages (to central system)
+        //// Outgoing messages (to central system)
 
-        #region OnBootNotification    (Request/-Response)
+        //#region OnBootNotification    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a boot notification request will be sent to the central system.
-        /// </summary>
-        public event OnBootNotificationRequestDelegate?                  OnBootNotificationRequest;
+        ///// <summary>
+        ///// An event fired whenever a boot notification request will be sent to the central system.
+        ///// </summary>
+        //public event OnBootNotificationRequestDelegate?                  OnBootNotificationRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
-        /// </summary>
-        public event OnBootNotificationResponseDelegate?                 OnBootNotificationResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a boot notification request was received.
+        ///// </summary>
+        //public event OnBootNotificationResponseDelegate?                 OnBootNotificationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnHeartbeat    (Request/-Response)
+        //#region OnHeartbeat    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a heartbeat request will be sent to the central system.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?                         OnHeartbeatRequest;
+        ///// <summary>
+        ///// An event fired whenever a heartbeat request will be sent to the central system.
+        ///// </summary>
+        //public event OnHeartbeatRequestDelegate?                         OnHeartbeatRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?                        OnHeartbeatResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a heartbeat request was received.
+        ///// </summary>
+        //public event OnHeartbeatResponseDelegate?                        OnHeartbeatResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnDiagnosticsStatusNotification    (Request/-Response)
+        //#region OnDiagnosticsStatusNotification    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
+        ///// <summary>
+        ///// An event fired whenever a diagnostics status notification request will be sent to the central system.
+        ///// </summary>
+        //public event OnDiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a diagnostics status notification request was received.
+        ///// </summary>
+        //public event OnDiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnFirmwareStatusNotification    (Request/-Response)
+        //#region OnFirmwareStatusNotification    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a firmware status notification request will be sent to the central system.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?        OnFirmwareStatusNotificationRequest;
+        ///// <summary>
+        ///// An event fired whenever a firmware status notification request will be sent to the central system.
+        ///// </summary>
+        //public event OnFirmwareStatusNotificationRequestDelegate?        OnFirmwareStatusNotificationRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?       OnFirmwareStatusNotificationResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a firmware status notification request was received.
+        ///// </summary>
+        //public event OnFirmwareStatusNotificationResponseDelegate?       OnFirmwareStatusNotificationResponse;
 
-        #endregion
+        //#endregion
 
 
 
-        #region OnAuthorize    (Request/-Response)
+        //#region OnAuthorize    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever an authorize request will be sent to the central system.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+        ///// <summary>
+        ///// An event fired whenever an authorize request will be sent to the central system.
+        ///// </summary>
+        //public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to an authorize request was received.
+        ///// </summary>
+        //public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnStartTransaction    (Request/-Response)
+        //#region OnStartTransaction    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a start transaction request will be sent to the central system.
-        /// </summary>
-        public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
+        ///// <summary>
+        ///// An event fired whenever a start transaction request will be sent to the central system.
+        ///// </summary>
+        //public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a start transaction request was received.
-        /// </summary>
-        public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a start transaction request was received.
+        ///// </summary>
+        //public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnStatusNotification    (Request/-Response)
+        //#region OnStatusNotification    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a status notification request will be sent to the central system.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+        ///// <summary>
+        ///// An event fired whenever a status notification request will be sent to the central system.
+        ///// </summary>
+        //public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a status notification request was received.
+        ///// </summary>
+        //public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnMeterValues    (Request/-Response)
+        //#region OnMeterValues    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a meter values request will be sent to the central system.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+        ///// <summary>
+        ///// An event fired whenever a meter values request will be sent to the central system.
+        ///// </summary>
+        //public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a meter values request was received.
+        ///// </summary>
+        //public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnStopTransaction    (Request/-Response)
+        //#region OnStopTransaction    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a stop transaction request will be sent to the central system.
-        /// </summary>
-        public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
+        ///// <summary>
+        ///// An event fired whenever a stop transaction request will be sent to the central system.
+        ///// </summary>
+        //public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a stop transaction request was received.
-        /// </summary>
-        public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a stop transaction request was received.
+        ///// </summary>
+        //public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
 
-        #endregion
+        //#endregion
 
 
-        #region OnDataTransfer    (Request/-Response)
+        //#region OnDataTransfer    (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a data transfer request will be sent to the central system.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        ///// <summary>
+        ///// An event fired whenever a data transfer request will be sent to the central system.
+        ///// </summary>
+        //public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        ///// <summary>
+        ///// An event fired whenever a response to a data transfer request was received.
+        ///// </summary>
+        //public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
-        #endregion
+        //#endregion
 
 
 
 
-        // Incoming messages (from central system)
+        //// Incoming messages (from central system)
 
-        #region OnReset    (Request/-Response)
+        //#region OnReset    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnResetRequestDelegate?   OnResetRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnResetRequestDelegate?   OnResetRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnResetResponseDelegate?  OnResetResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnResetResponseDelegate?  OnResetResponse;
 
-        #endregion
+        //#endregion
 
-        #region ChangeAvailability    (Request/-Response)
+        //#region ChangeAvailability    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
-        #endregion
+        //#endregion
 
-        #region GetConfiguration    (Request/-Response)
+        //#region GetConfiguration    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
-        #endregion
+        //#endregion
 
-        #region ChangeConfiguration    (Request/-Response)
+        //#region ChangeConfiguration    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnIncomingDataTransfer    (Request/-Response)
+        //#region OnIncomingDataTransfer    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        public event CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a data transfer request was received.
+        ///// </summary>
+        //public event CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a data transfer request was sent.
+        ///// </summary>
+        //public event CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
-        #endregion
+        //#endregion
 
-        #region GetDiagnostics    (Request/-Response)
+        //#region GetDiagnostics    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
-        #endregion
+        //#endregion
 
-        #region TriggerMessage    (Request/-Response)
+        //#region TriggerMessage    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
-        #endregion
+        //#endregion
 
-        #region UpdateFirmware    (Request/-Response)
+        //#region UpdateFirmware    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
-        #endregion
+        //#endregion
 
 
-        #region OnReserveNow    (Request/-Response)
+        //#region OnReserveNow    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reserve now request was received.
-        /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        ///// <summary>
+        ///// An event sent whenever a reserve now request was received.
+        ///// </summary>
+        //public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
-        /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reserve now request was sent.
+        ///// </summary>
+        //public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnCancelReservation    (Request/-Response)
+        //#region OnCancelReservation    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
-        /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        ///// <summary>
+        ///// An event sent whenever a cancel reservation request was received.
+        ///// </summary>
+        //public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
-        /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a cancel reservation request was sent.
+        ///// </summary>
+        //public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnRemoteStartTransaction    (Request/-Response)
+        //#region OnRemoteStartTransaction    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a remote start transaction request was received.
-        /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+        ///// <summary>
+        ///// An event sent whenever a remote start transaction request was received.
+        ///// </summary>
+        //public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a remote start transaction request was sent.
-        /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a remote start transaction request was sent.
+        ///// </summary>
+        //public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnRemoteStopTransaction    (Request/-Response)
+        //#region OnRemoteStopTransaction    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a remote stop transaction request was received.
-        /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+        ///// <summary>
+        ///// An event sent whenever a remote stop transaction request was received.
+        ///// </summary>
+        //public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a remote stop transaction request was sent.
-        /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a remote stop transaction request was sent.
+        ///// </summary>
+        //public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
-        #endregion
+        //#endregion
 
-        #region SetChargingProfile    (Request/-Response)
+        //#region SetChargingProfile    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
-        #endregion
+        //#endregion
 
-        #region ClearChargingProfile    (Request/-Response)
+        //#region ClearChargingProfile    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
-        #endregion
+        //#endregion
 
-        #region GetCompositeSchedule    (Request/-Response)
+        //#region GetCompositeSchedule    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
-        #endregion
+        //#endregion
 
-        #region UnlockConnector    (Request/-Response)
+        //#region UnlockConnector    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
-        #endregion
+        //#endregion
 
 
-        #region GetLocalListVersion    (Request/-Response)
+        //#region GetLocalListVersion    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
-        #endregion
+        //#endregion
 
-        #region SendLocalList    (Request/-Response)
+        //#region SendLocalList    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
-        #endregion
+        //#endregion
 
-        #region ClearCache    (Request/-Response)
+        //#region ClearCache    (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was received.
+        ///// </summary>
+        //public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
-        #endregion
+        //#endregion
 
         #endregion
 

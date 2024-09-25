@@ -24,6 +24,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
+    /// <summary>
+    /// A certificate chain.
+    /// </summary>
     public class CertificateChain
     {
 

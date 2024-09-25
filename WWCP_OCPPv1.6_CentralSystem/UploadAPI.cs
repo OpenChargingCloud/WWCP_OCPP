@@ -186,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = new[] { "PUT" },
-                                                 Connection                 = "close"
+                                                 AccessControlAllowMethods  = [ "PUT" ],
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -201,10 +201,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = new[] { "PUT" },
+                                                 AccessControlAllowMethods  = [ "PUT" ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "PUT" },
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  AccessControlAllowMethods  = new[] { "PUT" },
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
-                                                 Connection                 = "close"
+                                                 Connection                 = ConnectionType.Close
                                              };
 
                                   }

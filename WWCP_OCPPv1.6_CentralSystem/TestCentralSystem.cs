@@ -49,9 +49,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private          readonly  HashSet<WWCP.SignaturePolicy>                                                                 signaturePolicies        = [];
 
-        private          readonly  HashSet<OCPPv1_6.CS.ICentralSystemChannel>                                                    centralSystemServers     = [];
+        //private          readonly  HashSet<OCPPv1_6.CS.ICentralSystemChannel>                                                    centralSystemServers     = [];
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv1_6.CS.ICentralSystemChannel, DateTime>>   reachableChargeBoxes     = [];
+        //private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv1_6.CS.ICentralSystemChannel, DateTime>>   reachableChargeBoxes     = [];
 
         private          readonly  HTTPExtAPI                                                                                    TestAPI;
 
@@ -100,17 +100,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public TimeSpan   DefaultRequestTimeout     { get; }
 
 
-        /// <summary>
-        /// An enumeration of central system servers.
-        /// </summary>
-        public IEnumerable<OCPPv1_6.CS.ICentralSystemChannel> CentralSystemServers
-            => centralSystemServers;
+        ///// <summary>
+        ///// An enumeration of central system servers.
+        ///// </summary>
+        //public IEnumerable<OCPPv1_6.CS.ICentralSystemChannel> CentralSystemServers
+        //    => centralSystemServers;
 
-        /// <summary>
-        /// The unique identifications of all connected or reachable charge boxes.
-        /// </summary>
-        public IEnumerable<NetworkingNode_Id> ConnectedNetworkingNodeIds
-            => reachableChargeBoxes.Values.SelectMany(tuple => tuple.Item1.ConnectedNetworkingNodeIds);
+        ///// <summary>
+        ///// The unique identifications of all connected or reachable charge boxes.
+        ///// </summary>
+        //public IEnumerable<NetworkingNode_Id> ConnectedNetworkingNodeIds
+        //    => reachableChargeBoxes.Values.SelectMany(tuple => tuple.Item1.ConnectedNetworkingNodeIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = [];
@@ -190,685 +190,685 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Generic JSON Messages
 
-        /// <summary>
-        /// An event sent whenever a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        ///// <summary>
+        ///// An event sent whenever a JSON message request was received.
+        ///// </summary>
+        //public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
-        /// <summary>
-        /// An event sent whenever the response to a JSON message was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+        ///// <summary>
+        ///// An event sent whenever the response to a JSON message was sent.
+        ///// </summary>
+        //public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the error response to a JSON message was sent.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        ///// <summary>
+        ///// An event sent whenever the error response to a JSON message was sent.
+        ///// </summary>
+        //public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
-        /// <summary>
-        /// An event sent whenever a JSON message request was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+        ///// <summary>
+        ///// An event sent whenever a JSON message request was sent.
+        ///// </summary>
+        //public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
-        /// <summary>
-        /// An event sent whenever the response to a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+        ///// <summary>
+        ///// An event sent whenever the response to a JSON message request was received.
+        ///// </summary>
+        //public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
-        /// <summary>
-        /// An event sent whenever an error response to a JSON message request was received.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        ///// <summary>
+        ///// An event sent whenever an error response to a JSON message request was received.
+        ///// </summary>
+        //public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
         #endregion
 
         #region Generic Binary Messages
 
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+        ///// <summary>
+        ///// An event sent whenever a binary message request was received.
+        ///// </summary>
+        //public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+        ///// <summary>
+        ///// An event sent whenever the response to a binary message was sent.
+        ///// </summary>
+        //public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the error response to a binary message was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+        ///// <summary>
+        ///// An event sent whenever the error response to a binary message was sent.
+        ///// </summary>
+        ////public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
 
 
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+        ///// <summary>
+        ///// An event sent whenever a binary message request was sent.
+        ///// </summary>
+        //public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
 
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+        ///// <summary>
+        ///// An event sent whenever the response to a binary message request was received.
+        ///// </summary>
+        //public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
 
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+        ///// <summary>
+        ///// An event sent whenever the error response to a binary message request was sent.
+        ///// </summary>
+        ////public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
 
 
         #region CSMS <- Charging Station Messages
 
-        // Certificates
+        //// Certificates
 
-        #region OnSignCertificate
-
-        /// <summary>
-        /// An event sent whenever a SignCertificate request was received.
-        /// </summary>
-        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a SignCertificate request was sent.
-        /// </summary>
-        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
-
-        #endregion
-
-
-        // Charging
-
-        #region OnAuthorize
-
-        /// <summary>
-        /// An event sent whenever an Authorize request was received.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an Authorize request was sent.
-        /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
-
-        #endregion
-
-        #region OnMeterValues
-
-        /// <summary>
-        /// An event sent whenever a MeterValues request was received.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a MeterValues request was sent.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-        #endregion
-
-        #region OnStartTransaction
-
-        /// <summary>
-        /// An event sent whenever a StartTransaction request was received.
-        /// </summary>
-        public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a StartTransaction request was sent.
-        /// </summary>
-        public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
-
-        #endregion
-
-        #region OnStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a StatusNotification request was received.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a StatusNotification request was sent.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
-
-        #endregion
-
-        #region OnStopTransaction
-
-        /// <summary>
-        /// An event sent whenever a StopTransaction request was received.
-        /// </summary>
-        public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a StopTransaction request was sent.
-        /// </summary>
-        public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
-
-        #endregion
-
-
-        // Firmware
-
-        #region OnBootNotification
-
-        /// <summary>
-        /// An event sent whenever a BootNotification request was received.
-        /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a BootNotification request was sent.
-        /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
-
-        #endregion
-
-        #region OnFirmwareStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a FirmwareStatusNotification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
-
-        #endregion
-
-        #region OnHeartbeat
-
-        /// <summary>
-        /// An event sent whenever a Heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a Heartbeat request was sent.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
-
-        #endregion
-
-        #region OnSignedFirmwareStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a SignedFirmwareStatusNotification request was received.
-        /// </summary>
-        public event OnSignedFirmwareStatusNotificationRequestDelegate?   OnSignedFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a SignedFirmwareStatusNotification request was sent.
-        /// </summary>
-        public event OnSignedFirmwareStatusNotificationResponseDelegate?  OnSignedFirmwareStatusNotificationResponse;
-
-        #endregion
-
-
-        // Monitoring
-
-        #region OnDiagnosticsStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a DiagnosticsStatusNotification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
-
-        #endregion
-
-        #region OnLogStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a LogStatusNotification request was received.
-        /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a LogStatusNotification request was sent.
-        /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
-
-        #endregion
-
-        #region OnSecurityEventNotification
-
-        /// <summary>
-        /// An event sent whenever a SecurityEventNotification request was received.
-        /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a SecurityEventNotification request was sent.
-        /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
-
-        #endregion
-
-
-        #region OnIncomingDataTransfer
-
-        /// <summary>
-        /// An event sent whenever an IncomingDataTransfer request was received.
-        /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an IncomingDataTransfer request was sent.
-        /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
-
-        #endregion
-
-
-
-        // Binary Data Streams Extensions
-
-        #region OnIncomingBinaryDataTransfer (Request/-Response)
+        //#region OnSignCertificate
 
         ///// <summary>
-        ///// An event sent whenever an IncomingBinaryDataTransfer request was received.
+        ///// An event sent whenever a SignCertificate request was received.
         ///// </summary>
-        //public event OnBinaryDataTransferRequestReceivedDelegate?   OnBinaryDataTransferRequestReceived;
+        //public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         ///// <summary>
-        ///// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
+        ///// An event sent whenever a response to a SignCertificate request was sent.
         ///// </summary>
-        //public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
+        //public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
 
-        #endregion
+        //#endregion
+
+
+        //// Charging
+
+        //#region OnAuthorize
+
+        ///// <summary>
+        ///// An event sent whenever an Authorize request was received.
+        ///// </summary>
+        //public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to an Authorize request was sent.
+        ///// </summary>
+        //public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+        //#endregion
+
+        //#region OnMeterValues
+
+        ///// <summary>
+        ///// An event sent whenever a MeterValues request was received.
+        ///// </summary>
+        //public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a MeterValues request was sent.
+        ///// </summary>
+        //public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+
+        //#endregion
+
+        //#region OnStartTransaction
+
+        ///// <summary>
+        ///// An event sent whenever a StartTransaction request was received.
+        ///// </summary>
+        //public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a StartTransaction request was sent.
+        ///// </summary>
+        //public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
+
+        //#endregion
+
+        //#region OnStatusNotification
+
+        ///// <summary>
+        ///// An event sent whenever a StatusNotification request was received.
+        ///// </summary>
+        //public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a StatusNotification request was sent.
+        ///// </summary>
+        //public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+
+        //#endregion
+
+        //#region OnStopTransaction
+
+        ///// <summary>
+        ///// An event sent whenever a StopTransaction request was received.
+        ///// </summary>
+        //public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a StopTransaction request was sent.
+        ///// </summary>
+        //public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
+
+        //#endregion
+
+
+        //// Firmware
+
+        //#region OnBootNotification
+
+        ///// <summary>
+        ///// An event sent whenever a BootNotification request was received.
+        ///// </summary>
+        //public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a BootNotification request was sent.
+        ///// </summary>
+        //public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+
+        //#endregion
+
+        //#region OnFirmwareStatusNotification
+
+        ///// <summary>
+        ///// An event sent whenever a FirmwareStatusNotification request was received.
+        ///// </summary>
+        //public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a FirmwareStatusNotification request was sent.
+        ///// </summary>
+        //public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+
+        //#endregion
+
+        //#region OnHeartbeat
+
+        ///// <summary>
+        ///// An event sent whenever a Heartbeat request was received.
+        ///// </summary>
+        //public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a Heartbeat request was sent.
+        ///// </summary>
+        //public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+
+        //#endregion
+
+        //#region OnSignedFirmwareStatusNotification
+
+        ///// <summary>
+        ///// An event sent whenever a SignedFirmwareStatusNotification request was received.
+        ///// </summary>
+        //public event OnSignedFirmwareStatusNotificationRequestDelegate?   OnSignedFirmwareStatusNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a SignedFirmwareStatusNotification request was sent.
+        ///// </summary>
+        //public event OnSignedFirmwareStatusNotificationResponseDelegate?  OnSignedFirmwareStatusNotificationResponse;
+
+        //#endregion
+
+
+        //// Monitoring
+
+        //#region OnDiagnosticsStatusNotification
+
+        ///// <summary>
+        ///// An event sent whenever a DiagnosticsStatusNotification request was received.
+        ///// </summary>
+        //public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
+        ///// </summary>
+        //public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
+
+        //#endregion
+
+        //#region OnLogStatusNotification
+
+        ///// <summary>
+        ///// An event sent whenever a LogStatusNotification request was received.
+        ///// </summary>
+        //public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a LogStatusNotification request was sent.
+        ///// </summary>
+        //public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+        //#endregion
+
+        //#region OnSecurityEventNotification
+
+        ///// <summary>
+        ///// An event sent whenever a SecurityEventNotification request was received.
+        ///// </summary>
+        //public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to a SecurityEventNotification request was sent.
+        ///// </summary>
+        //public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+
+        //#endregion
+
+
+        //#region OnIncomingDataTransfer
+
+        ///// <summary>
+        ///// An event sent whenever an IncomingDataTransfer request was received.
+        ///// </summary>
+        //public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to an IncomingDataTransfer request was sent.
+        ///// </summary>
+        //public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+
+        //#endregion
+
+
+
+        //// Binary Data Streams Extensions
+
+        //#region OnIncomingBinaryDataTransfer (Request/-Response)
+
+        /////// <summary>
+        /////// An event sent whenever an IncomingBinaryDataTransfer request was received.
+        /////// </summary>
+        ////public event OnBinaryDataTransferRequestReceivedDelegate?   OnBinaryDataTransferRequestReceived;
+
+        /////// <summary>
+        /////// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
+        /////// </summary>
+        ////public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
+
+        //#endregion
 
         #endregion
 
         #region CSMS -> Charging Station Messages
 
-        // Certificates
+        //// Certificates
 
-        #region OnCertificateSigned
+        //#region OnCertificateSigned
 
-        /// <summary>
-        /// An event sent whenever a CertificateSigned request was sent.
-        /// </summary>
-        public event CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        ///// <summary>
+        ///// An event sent whenever a CertificateSigned request was sent.
+        ///// </summary>
+        //public event CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a CertificateSigned request was sent.
-        /// </summary>
-        public event CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a CertificateSigned request was sent.
+        ///// </summary>
+        //public event CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnDeleteCertificate
+        //#region OnDeleteCertificate
 
-        /// <summary>
-        /// An event sent whenever a DeleteCertificate request was sent.
-        /// </summary>
-        public event CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+        ///// <summary>
+        ///// An event sent whenever a DeleteCertificate request was sent.
+        ///// </summary>
+        //public event CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a DeleteCertificate request was sent.
-        /// </summary>
-        public event CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a DeleteCertificate request was sent.
+        ///// </summary>
+        //public event CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetInstalledCertificateIds
+        //#region OnGetInstalledCertificateIds
 
-        /// <summary>
-        /// An event sent whenever a GetInstalledCertificateIds request was sent.
-        /// </summary>
-        public event CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+        ///// <summary>
+        ///// An event sent whenever a GetInstalledCertificateIds request was sent.
+        ///// </summary>
+        //public event CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
-        /// </summary>
-        public event CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
+        ///// </summary>
+        //public event CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnInstallCertificate
+        //#region OnInstallCertificate
 
-        /// <summary>
-        /// An event sent whenever an InstallCertificate request was sent.
-        /// </summary>
-        public event CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        ///// <summary>
+        ///// An event sent whenever an InstallCertificate request was sent.
+        ///// </summary>
+        //public event CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an InstallCertificate request was sent.
-        /// </summary>
-        public event CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to an InstallCertificate request was sent.
+        ///// </summary>
+        //public event CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
-        #endregion
+        //#endregion
 
 
-        // Charging
+        //// Charging
 
-        #region OnCancelReservation
+        //#region OnCancelReservation
 
-        /// <summary>
-        /// An event sent whenever a CancelReservation request was sent.
-        /// </summary>
-        public event CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        ///// <summary>
+        ///// An event sent whenever a CancelReservation request was sent.
+        ///// </summary>
+        //public event CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a CancelReservation request was sent.
-        /// </summary>
-        public event CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a CancelReservation request was sent.
+        ///// </summary>
+        //public event CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnClearChargingProfile
+        //#region OnClearChargingProfile
 
-        /// <summary>
-        /// An event sent whenever a ClearChargingProfile request was sent.
-        /// </summary>
-        public event CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        ///// <summary>
+        ///// An event sent whenever a ClearChargingProfile request was sent.
+        ///// </summary>
+        //public event CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a ClearChargingProfile request was sent.
-        /// </summary>
-        public event CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a ClearChargingProfile request was sent.
+        ///// </summary>
+        //public event CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetCompositeSchedule
+        //#region OnGetCompositeSchedule
 
-        /// <summary>
-        /// An event sent whenever a GetCompositeSchedule request was sent.
-        /// </summary>
-        public event CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        ///// <summary>
+        ///// An event sent whenever a GetCompositeSchedule request was sent.
+        ///// </summary>
+        //public event CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
-        /// </summary>
-        public event CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a GetCompositeSchedule request was sent.
+        ///// </summary>
+        //public event CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnRemoteStartTransaction
+        //#region OnRemoteStartTransaction
 
-        /// <summary>
-        /// An event sent whenever a RemoteStartTransaction request was sent.
-        /// </summary>
-        public event CS.OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+        ///// <summary>
+        ///// An event sent whenever a RemoteStartTransaction request was sent.
+        ///// </summary>
+        //public event CS.OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a RemoteStartTransaction request was sent.
-        /// </summary>
-        public event CS.OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a RemoteStartTransaction request was sent.
+        ///// </summary>
+        //public event CS.OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnRemoteStopTransaction
+        //#region OnRemoteStopTransaction
 
-        /// <summary>
-        /// An event sent whenever a RemoteStopTransaction request was sent.
-        /// </summary>
-        public event CS.OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+        ///// <summary>
+        ///// An event sent whenever a RemoteStopTransaction request was sent.
+        ///// </summary>
+        //public event CS.OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a RemoteStopTransaction request was sent.
-        /// </summary>
-        public event CS.OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a RemoteStopTransaction request was sent.
+        ///// </summary>
+        //public event CS.OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnReserveNow
+        //#region OnReserveNow
 
-        /// <summary>
-        /// An event sent whenever a ReserveNow request was sent.
-        /// </summary>
-        public event CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        ///// <summary>
+        ///// An event sent whenever a ReserveNow request was sent.
+        ///// </summary>
+        //public event CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a ReserveNow request was sent.
-        /// </summary>
-        public event CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a ReserveNow request was sent.
+        ///// </summary>
+        //public event CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnSetChargingProfile
+        //#region OnSetChargingProfile
 
-        /// <summary>
-        /// An event sent whenever a SetChargingProfile request was sent.
-        /// </summary>
-        public event CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        ///// <summary>
+        ///// An event sent whenever a SetChargingProfile request was sent.
+        ///// </summary>
+        //public event CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a SetChargingProfile request was sent.
-        /// </summary>
-        public event CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a SetChargingProfile request was sent.
+        ///// </summary>
+        //public event CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnUnlockConnector
+        //#region OnUnlockConnector
 
-        /// <summary>
-        /// An event sent whenever an UnlockConnector request was sent.
-        /// </summary>
-        public event CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        ///// <summary>
+        ///// An event sent whenever an UnlockConnector request was sent.
+        ///// </summary>
+        //public event CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an UnlockConnector request was sent.
-        /// </summary>
-        public event CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to an UnlockConnector request was sent.
+        ///// </summary>
+        //public event CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
-        #endregion
+        //#endregion
 
 
-        // Firmware
+        //// Firmware
 
-        #region OnReset
+        //#region OnReset
 
-        /// <summary>
-        /// An event sent whenever a Reset request was sent.
-        /// </summary>
-        public event CS.OnResetRequestDelegate?   OnResetRequest;
+        ///// <summary>
+        ///// An event sent whenever a Reset request was sent.
+        ///// </summary>
+        //public event CS.OnResetRequestDelegate?   OnResetRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a Reset request was sent.
-        /// </summary>
-        public event CS.OnResetResponseDelegate?  OnResetResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a Reset request was sent.
+        ///// </summary>
+        //public event CS.OnResetResponseDelegate?  OnResetResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnSignedUpdateFirmware
+        //#region OnSignedUpdateFirmware
 
-        /// <summary>
-        /// An event sent whenever a SignedUpdateFirmware request was sent.
-        /// </summary>
-        public event CS.OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
+        ///// <summary>
+        ///// An event sent whenever a SignedUpdateFirmware request was sent.
+        ///// </summary>
+        //public event CS.OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a SignedUpdateFirmware request was sent.
-        /// </summary>
-        public event CS.OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a SignedUpdateFirmware request was sent.
+        ///// </summary>
+        //public event CS.OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnUpdateFirmware
+        //#region OnUpdateFirmware
 
-        /// <summary>
-        /// An event sent whenever an UpdateFirmware request was sent.
-        /// </summary>
-        public event CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        ///// <summary>
+        ///// An event sent whenever an UpdateFirmware request was sent.
+        ///// </summary>
+        //public event CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an UpdateFirmware request was sent.
-        /// </summary>
-        public event CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to an UpdateFirmware request was sent.
+        ///// </summary>
+        //public event CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
-        #endregion
+        //#endregion
 
 
-        // LocalList
+        //// LocalList
 
-        #region OnClearCache
+        //#region OnClearCache
 
-        /// <summary>
-        /// An event sent whenever a ClearCache request was sent.
-        /// </summary>
-        public event CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        ///// <summary>
+        ///// An event sent whenever a ClearCache request was sent.
+        ///// </summary>
+        //public event CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a ClearCache request was sent.
-        /// </summary>
-        public event CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a ClearCache request was sent.
+        ///// </summary>
+        //public event CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetLocalListVersion
+        //#region OnGetLocalListVersion
 
-        /// <summary>
-        /// An event sent whenever a GetLocalListVersion request was sent.
-        /// </summary>
-        public event CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        ///// <summary>
+        ///// An event sent whenever a GetLocalListVersion request was sent.
+        ///// </summary>
+        //public event CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a GetLocalListVersion request was sent.
-        /// </summary>
-        public event CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a GetLocalListVersion request was sent.
+        ///// </summary>
+        //public event CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnSendLocalList
+        //#region OnSendLocalList
 
-        /// <summary>
-        /// An event sent whenever a SendLocalList request was sent.
-        /// </summary>
-        public event CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        ///// <summary>
+        ///// An event sent whenever a SendLocalList request was sent.
+        ///// </summary>
+        //public event CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a SendLocalList request was sent.
-        /// </summary>
-        public event CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a SendLocalList request was sent.
+        ///// </summary>
+        //public event CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
-        #endregion
+        //#endregion
 
 
-        // Monitoring
+        //// Monitoring
 
-        #region OnChangeAvailability
+        //#region OnChangeAvailability
 
-        /// <summary>
-        /// An event sent whenever a ChangeAvailability request was sent.
-        /// </summary>
-        public event CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        ///// <summary>
+        ///// An event sent whenever a ChangeAvailability request was sent.
+        ///// </summary>
+        //public event CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a ChangeAvailability request was sent.
-        /// </summary>
-        public event CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a ChangeAvailability request was sent.
+        ///// </summary>
+        //public event CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnChangeConfiguration
+        //#region OnChangeConfiguration
 
-        /// <summary>
-        /// An event sent whenever a ChangeConfiguration request was sent.
-        /// </summary>
-        public event CS.OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+        ///// <summary>
+        ///// An event sent whenever a ChangeConfiguration request was sent.
+        ///// </summary>
+        //public event CS.OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a ChangeConfiguration request was sent.
-        /// </summary>
-        public event CS.OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a ChangeConfiguration request was sent.
+        ///// </summary>
+        //public event CS.OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnExtendedTriggerMessage
+        //#region OnExtendedTriggerMessage
 
-        /// <summary>
-        /// An event sent whenever an ExtendedTriggerMessage request was sent.
-        /// </summary>
-        public event CS.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+        ///// <summary>
+        ///// An event sent whenever an ExtendedTriggerMessage request was sent.
+        ///// </summary>
+        //public event CS.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an ExtendedTriggerMessage request was sent.
-        /// </summary>
-        public event CS.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to an ExtendedTriggerMessage request was sent.
+        ///// </summary>
+        //public event CS.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetConfiguration
+        //#region OnGetConfiguration
 
-        /// <summary>
-        /// An event sent whenever a GetConfiguration request was sent.
-        /// </summary>
-        public event CS.OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+        ///// <summary>
+        ///// An event sent whenever a GetConfiguration request was sent.
+        ///// </summary>
+        //public event CS.OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a GetConfiguration request was sent.
-        /// </summary>
-        public event CS.OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a GetConfiguration request was sent.
+        ///// </summary>
+        //public event CS.OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetDiagnostics
+        //#region OnGetDiagnostics
 
-        /// <summary>
-        /// An event sent whenever a GetDiagnostics request was sent.
-        /// </summary>
-        public event CS.OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+        ///// <summary>
+        ///// An event sent whenever a GetDiagnostics request was sent.
+        ///// </summary>
+        //public event CS.OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a GetDiagnostics request was sent.
-        /// </summary>
-        public event CS.OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a GetDiagnostics request was sent.
+        ///// </summary>
+        //public event CS.OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnGetLog
+        //#region OnGetLog
 
-        /// <summary>
-        /// An event sent whenever a GetLog request was sent.
-        /// </summary>
-        public event CS.OnGetLogRequestDelegate?   OnGetLogRequest;
+        ///// <summary>
+        ///// An event sent whenever a GetLog request was sent.
+        ///// </summary>
+        //public event CS.OnGetLogRequestDelegate?   OnGetLogRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a GetLog request was sent.
-        /// </summary>
-        public event CS.OnGetLogResponseDelegate?  OnGetLogResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a GetLog request was sent.
+        ///// </summary>
+        //public event CS.OnGetLogResponseDelegate?  OnGetLogResponse;
 
-        #endregion
+        //#endregion
 
-        #region OnTriggerMessage
+        //#region OnTriggerMessage
 
-        /// <summary>
-        /// An event sent whenever a TriggerMessage request was sent.
-        /// </summary>
-        public event CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        ///// <summary>
+        ///// An event sent whenever a TriggerMessage request was sent.
+        ///// </summary>
+        //public event CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a TriggerMessage request was sent.
-        /// </summary>
-        public event CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a TriggerMessage request was sent.
+        ///// </summary>
+        //public event CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
-        #endregion
+        //#endregion
 
 
-        #region OnDataTransfer
+        //#region OnDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a reset request was sent.
+        ///// </summary>
+        //public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a reset request was sent.
+        ///// </summary>
+        //public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
-        #endregion
+        //#endregion
 
 
         // Binary Data Streams Extensions
@@ -1051,7 +1051,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Custom JSON serializer delegates
 
-        CustomJObjectSerializerDelegate<DataTransferResponse>? CustomIncomingDataTransferResponseSerializer { get; set; }
+     //   CustomJObjectSerializerDelegate<DataTransferResponse>? CustomIncomingDataTransferResponseSerializer { get; set; }
 
 
 
@@ -1164,7 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<CP.MeterValuesRequest>?                               CustomMeterValuesRequestSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<CP.StopTransactionRequest>?                           CustomStopTransactionRequestRequestSerializer                { get; set; }
 
-        public CustomJObjectSerializerDelegate<CP.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+      //  public CustomJObjectSerializerDelegate<CP.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CP.DiagnosticsStatusNotificationRequest>?             CustomDiagnosticsStatusNotificationRequestSerializer         { get; set; }
         public CustomJObjectSerializerDelegate<CP.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
 
@@ -1182,7 +1182,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public CustomJObjectSerializerDelegate<StatusInfo>?                             CustomStatusInfoSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<ConfigurationKey>?                       CustomConfigurationKeySerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<ChargingProfile>?                        CustomChargingProfileSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedule>?                       CustomChargingScheduleSerializer                        { get; set; }
@@ -1281,1779 +1280,1375 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region AttachSOAPService(...)
 
-        /// <summary>
-        /// Create a new central system for testing using HTTP/SOAP.
-        /// </summary>
-        /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
-        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="ServiceName">The TCP service name shown e.g. on service startup.</param>
-        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="ContentType">An optional HTTP content type to use.</param>
-        /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
-        /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemSOAPServer AttachSOAPService(String            HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
-                                                         IPPort?           TCPPort                   = null,
-                                                         String?           ServiceName               = null,
-                                                         HTTPPath?         URLPrefix                 = null,
-                                                         HTTPContentType?  ContentType               = null,
-                                                         Boolean           RegisterHTTPRootService   = true,
-                                                         DNSClient?        DNSClient                 = null,
-                                                         Boolean           AutoStart                 = false)
-        {
+        ///// <summary>
+        ///// Create a new central system for testing using HTTP/SOAP.
+        ///// </summary>
+        ///// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
+        ///// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        ///// <param name="ServiceName">The TCP service name shown e.g. on service startup.</param>
+        ///// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
+        ///// <param name="ContentType">An optional HTTP content type to use.</param>
+        ///// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
+        ///// <param name="DNSClient">An optional DNS client to use.</param>
+        ///// <param name="AutoStart">Start the server immediately.</param>
+        //public CentralSystemSOAPServer AttachSOAPService(String            HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
+        //                                                 IPPort?           TCPPort                   = null,
+        //                                                 String?           ServiceName               = null,
+        //                                                 HTTPPath?         URLPrefix                 = null,
+        //                                                 HTTPContentType?  ContentType               = null,
+        //                                                 Boolean           RegisterHTTPRootService   = true,
+        //                                                 DNSClient?        DNSClient                 = null,
+        //                                                 Boolean           AutoStart                 = false)
+        //{
 
-            var centralSystemServer = new CentralSystemSOAPServer(
-                                          HTTPServerName,
-                                          TCPPort,
-                                          ServiceName,
-                                          URLPrefix,
-                                          ContentType,
-                                          RegisterHTTPRootService,
-                                          DNSClient ?? this.DNSClient,
-                                          false
-                                      );
+        //    var centralSystemServer = new CentralSystemSOAPServer(
+        //                                  HTTPServerName,
+        //                                  TCPPort,
+        //                                  ServiceName,
+        //                                  URLPrefix,
+        //                                  ContentType,
+        //                                  RegisterHTTPRootService,
+        //                                  DNSClient ?? this.DNSClient,
+        //                                  false
+        //                              );
 
-            //Attach(centralSystemServer);
+        //    //Attach(centralSystemServer);
 
-            if (AutoStart)
-                centralSystemServer.Start();
+        //    if (AutoStart)
+        //        centralSystemServer.Start();
 
-            return centralSystemServer;
+        //    return centralSystemServer;
 
-        }
+        //}
 
         #endregion
 
         #region AttachWebSocketService(...)
 
-        /// <summary>
-        /// Create a new central system for testing using HTTP/WebSocket.
-        /// </summary>
-        /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
-        /// <param name="IPAddress">An IP address to listen on.</param>
-        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
-        /// 
-        /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer AttachWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServiceName,
-                                                            IIPAddress?  IPAddress                    = null,
-                                                            IPPort?      TCPPort                      = null,
-                                                            I18NString?  Description                  = null,
-
-                                                            Boolean      DisableWebSocketPings        = false,
-                                                            TimeSpan?    WebSocketPingEvery           = null,
-                                                            TimeSpan?    SlowNetworkSimulationDelay   = null,
-
-                                                            DNSClient?   DNSClient                    = null,
-                                                            Boolean      AutoStart                    = false)
-        {
-
-            var centralSystemServer = new CentralSystemWSServer(
-
-                                          NetworkingNode_Id.Parse(CentralSystemId.ToString()),
-
-                                          HTTPServerName,
-                                          IPAddress,
-                                          TCPPort,
-                                          Description,
-
-                                          RequireAuthentication,
-                                          DisableWebSocketPings,
-                                          WebSocketPingEvery,
-                                          SlowNetworkSimulationDelay,
-
-                                          DNSClient: DNSClient ?? this.DNSClient,
-                                          AutoStart: false
-
-                                      );
-
-            #region WebSocket related
-
-            #region OnServerStarted
-
-            centralSystemServer.OnServerStarted += async (timestamp,
-                                                          webSocketServer,
-                                                          eventTrackingId,
-                                                          cancellationToken) => {
-
-                var onServerStarted = OnServerStarted;
-                if (onServerStarted is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onServerStarted.GetInvocationList().
-                                               OfType <OnServerStartedDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              eventTrackingId,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnServerStarted),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnNewTCPConnection
-
-            centralSystemServer.OnNewTCPConnection += async (timestamp,
-                                                             webSocketServer,
-                                                             newTCPConnection,
-                                                             eventTrackingId,
-                                                             cancellationToken) => {
-
-                var onNewTCPConnection = OnNewTCPConnection;
-                if (onNewTCPConnection is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onNewTCPConnection.GetInvocationList().
-                                               OfType <OnNewTCPConnectionDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              newTCPConnection,
-                                                                              eventTrackingId,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnNewTCPConnection),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            // Failed (Charging Station) Authentication
-
-            #region OnNewWebSocketConnection
-
-            centralSystemServer.OnCSMSNewWebSocketConnection += async (timestamp,
-                                                                       csmsChannel,
-                                                                       newConnection,
-                                                                       networkingNodeId,
-                                                                       eventTrackingId,
-                                                                       sharedSubprotocols,
-                                                                       cancellationToken) => {
-
-                // A new connection from the same networking node/charge box will replace the older one!
-                if (!reachableChargeBoxes.TryAdd(networkingNodeId, new Tuple<ICentralSystemChannel, DateTime>(csmsChannel as OCPPv1_6.CS.ICentralSystemChannel, timestamp)))
-                     reachableChargeBoxes[networkingNodeId]      = new Tuple<ICentralSystemChannel, DateTime>(csmsChannel as OCPPv1_6.CS.ICentralSystemChannel, timestamp);
-
-
-                var onNewWebSocketConnection = OnNewWebSocketConnection;
-                if (onNewWebSocketConnection is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onNewWebSocketConnection.GetInvocationList().
-                                               OfType <OnCSMSNewWebSocketConnectionDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              csmsChannel,
-                                                                              newConnection,
-                                                                              networkingNodeId,
-                                                                              eventTrackingId,
-                                                                              sharedSubprotocols,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnNewWebSocketConnection),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnCloseMessageReceived
-
-            centralSystemServer.OnCSMSCloseMessageReceived += async (timestamp,
-                                                                     csmsChannel,
-                                                                     connection,
-                                                                     networkingNodeId,
-                                                                     eventTrackingId,
-                                                                     statusCode,
-                                                                     reason,
-                                                                     cancellationToken) => {
-
-                var onCloseMessageReceived = OnCloseMessageReceived;
-                if (onCloseMessageReceived is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onCloseMessageReceived.GetInvocationList().
-                                               OfType <OnCSMSCloseMessageReceivedDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              csmsChannel,
-                                                                              connection,
-                                                                              networkingNodeId,
-                                                                              eventTrackingId,
-                                                                              statusCode,
-                                                                              reason,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnCloseMessageReceived),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnTCPConnectionClosed
-
-            centralSystemServer.OnCSMSTCPConnectionClosed += async (timestamp,
-                                                                    csmsChannel,
-                                                                    connection,
-                                                                    networkingNodeId,
-                                                                    eventTrackingId,
-                                                                    reason,
-                                                                    cancellationToken) => {
-
-                var onTCPConnectionClosed = OnTCPConnectionClosed;
-                if (onTCPConnectionClosed is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onTCPConnectionClosed.GetInvocationList().
-                                               OfType <OnCSMSTCPConnectionClosedDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              centralSystemServer,
-                                                                              connection,
-                                                                              networkingNodeId,
-                                                                              eventTrackingId,
-                                                                              reason,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnTCPConnectionClosed),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnServerStopped
-
-            centralSystemServer.OnServerStopped += async (timestamp,
-                                                          server,
-                                                          eventTrackingId,
-                                                          reason,
-                                                          cancellationToken) => {
-
-                var onServerStopped = OnServerStopped;
-                if (onServerStopped is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onServerStopped.GetInvocationList().
-                                                 OfType <OnServerStoppedDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                timestamp,
-                                                                                server,
-                                                                                eventTrackingId,
-                                                                                reason,
-                                                                                cancellationToken
-                                                                            )).
-                                                 ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnServerStopped),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            // (Generic) Error Handling
-
-            #endregion
-
-
-            #region OnJSONMessageRequestReceived
-
-            centralSystemServer.OnJSONMessageRequestReceived += async (timestamp,
-                                                                       webSocketServer,
-                                                                       webSocketConnection,
-                                                                       networkingNodeId,
-                                                                       networkPath,
-                                                                       eventTrackingId,
-                                                                       requestTimestamp,
-                                                                       requestMessage,
-                                                                       cancellationToken) => {
-
-                var onJSONMessageRequestReceived = OnJSONMessageRequestReceived;
-                if (onJSONMessageRequestReceived is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONMessageRequestReceived.GetInvocationList().
-                                               OfType <OnWebSocketJSONMessageRequestDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              webSocketConnection,
-                                                                              networkingNodeId,
-                                                                              networkPath,
-                                                                              eventTrackingId,
-                                                                              requestTimestamp,
-                                                                              requestMessage,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnJSONMessageRequestReceived),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnJSONMessageResponseSent
-
-            centralSystemServer.OnJSONMessageResponseSent += async (timestamp,
-                                                                    webSocketServer,
-                                                                    webSocketConnection,
-                                                                    networkingNodeId,
-                                                                    networkPath,
-                                                                    eventTrackingId,
-                                                                    requestTimestamp,
-                                                                    jsonRequestMessage,
-                                                                    binaryRequestMessage,
-                                                                    responseTimestamp,
-                                                                    responseMessage,
-                                                                    cancellationToken) => {
-
-                var onJSONMessageResponseSent = OnJSONMessageResponseSent;
-                if (onJSONMessageResponseSent is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONMessageResponseSent.GetInvocationList().
-                                               OfType <OnWebSocketJSONMessageResponseDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              webSocketConnection,
-                                                                              networkingNodeId,
-                                                                              networkPath,
-                                                                              eventTrackingId,
-                                                                              requestTimestamp,
-                                                                              jsonRequestMessage,
-                                                                              binaryRequestMessage,
-                                                                              responseTimestamp,
-                                                                              responseMessage,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnJSONMessageResponseSent),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnJSONErrorResponseSent
-
-            centralSystemServer.OnJSONErrorResponseSent += async (timestamp,
-                                                                  webSocketServer,
-                                                                  webSocketConnection,
-                                                                  eventTrackingId,
-                                                                  requestTimestamp,
-                                                                  jsonRequestMessage,
-                                                                  binaryRequestMessage,
-                                                                  responseTimestamp,
-                                                                  responseMessage,
-                                                                  cancellationToken) => {
-
-                var onJSONErrorResponseSent = OnJSONErrorResponseSent;
-                if (onJSONErrorResponseSent is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
-                                               OfType <OnWebSocketTextErrorResponseDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              webSocketConnection,
-                                                                              eventTrackingId,
-                                                                              requestTimestamp,
-                                                                              jsonRequestMessage,
-                                                                              binaryRequestMessage,
-                                                                              responseTimestamp,
-                                                                              responseMessage,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnJSONErrorResponseSent),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-
-            #region OnJSONMessageRequestSent
-
-            centralSystemServer.OnJSONMessageRequestSent += async (timestamp,
-                                                                   webSocketServer,
-                                                                   webSocketConnection,
-                                                                   networkingNodeId,
-                                                                   networkPath,
-                                                                   eventTrackingId,
-                                                                   requestTimestamp,
-                                                                   requestMessage,
-                                                                   cancellationToken) => {
-
-                var onJSONMessageRequestSent = OnJSONMessageRequestSent;
-                if (onJSONMessageRequestSent is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
-                                               OfType <OnWebSocketJSONMessageRequestDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              webSocketConnection,
-                                                                              networkingNodeId,
-                                                                              networkPath,
-                                                                              eventTrackingId,
-                                                                              requestTimestamp,
-                                                                              requestMessage,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnJSONMessageRequestSent),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnJSONMessageResponseReceived
-
-            centralSystemServer.OnJSONMessageResponseReceived += async (timestamp,
-                                                                        webSocketServer,
-                                                                        webSocketConnection,
-                                                                        networkingNodeId,
-                                                                        networkPath,
-                                                                        eventTrackingId,
-                                                                        requestTimestamp,
-                                                                        jsonRequestMessage,
-                                                                        binaryRequestMessage,
-                                                                        responseTimestamp,
-                                                                        responseMessage,
-                                                                        cancellationToken) => {
-
-                var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
-                if (onJSONMessageResponseReceived is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
-                                               OfType <OnWebSocketJSONMessageResponseDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              webSocketConnection,
-                                                                              networkingNodeId,
-                                                                              networkPath,
-                                                                              eventTrackingId,
-                                                                              requestTimestamp,
-                                                                              jsonRequestMessage,
-                                                                              binaryRequestMessage,
-                                                                              responseTimestamp,
-                                                                              responseMessage,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnJSONMessageResponseReceived),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-            #region OnJSONErrorResponseReceived
-
-            centralSystemServer.OnJSONErrorResponseReceived += async (timestamp,
-                                                                      webSocketServer,
-                                                                      webSocketConnection,
-                                                                      eventTrackingId,
-                                                                      requestTimestamp,
-                                                                      jsonRequestMessage,
-                                                                      binaryRequestMessage,
-                                                                      responseTimestamp,
-                                                                      responseMessage,
-                                                                      cancellationToken) => {
-
-                var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
-                if (onJSONErrorResponseReceived is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
-                                               OfType <OnWebSocketTextErrorResponseDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              timestamp,
-                                                                              webSocketServer,
-                                                                              webSocketConnection,
-                                                                              eventTrackingId,
-                                                                              requestTimestamp,
-                                                                              jsonRequestMessage,
-                                                                              binaryRequestMessage,
-                                                                              responseTimestamp,
-                                                                              responseMessage,
-                                                                              cancellationToken
-                                                                          )).
-                                               ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnJSONErrorResponseReceived),
-                                  e
-                              );
-                    }
-                }
-
-            };
-
-            #endregion
-
-
-            Attach(centralSystemServer);
-
-
-            if (AutoStart)
-                centralSystemServer.Start();
-
-            return centralSystemServer;
-
-        }
+        ///// <summary>
+        ///// Create a new central system for testing using HTTP/WebSocket.
+        ///// </summary>
+        ///// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
+        ///// <param name="IPAddress">An IP address to listen on.</param>
+        ///// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        ///// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        ///// 
+        ///// <param name="DNSClient">An optional DNS client to use.</param>
+        ///// <param name="AutoStart">Start the server immediately.</param>
+        //public CentralSystemWSServer AttachWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServiceName,
+        //                                                    IIPAddress?  IPAddress                    = null,
+        //                                                    IPPort?      TCPPort                      = null,
+        //                                                    I18NString?  Description                  = null,
+
+        //                                                    Boolean      DisableWebSocketPings        = false,
+        //                                                    TimeSpan?    WebSocketPingEvery           = null,
+        //                                                    TimeSpan?    SlowNetworkSimulationDelay   = null,
+
+        //                                                    DNSClient?   DNSClient                    = null,
+        //                                                    Boolean      AutoStart                    = false)
+        //{
+
+        //    var centralSystemServer = new CentralSystemWSServer(
+
+        //                                  NetworkingNode_Id.Parse(CentralSystemId.ToString()),
+
+        //                                  HTTPServerName,
+        //                                  IPAddress,
+        //                                  TCPPort,
+        //                                  Description,
+
+        //                                  RequireAuthentication,
+        //                                  DisableWebSocketPings,
+        //                                  WebSocketPingEvery,
+        //                                  SlowNetworkSimulationDelay,
+
+        //                                  DNSClient: DNSClient ?? this.DNSClient,
+        //                                  AutoStart: false
+
+        //                              );
+
+        //    #region WebSocket related
+
+        //    #region OnServerStarted
+
+        //    centralSystemServer.OnServerStarted += async (timestamp,
+        //                                                  webSocketServer,
+        //                                                  eventTrackingId,
+        //                                                  cancellationToken) => {
+
+        //        var onServerStarted = OnServerStarted;
+        //        if (onServerStarted is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onServerStarted.GetInvocationList().
+        //                                       OfType <OnServerStartedDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      eventTrackingId,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnServerStarted),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnNewTCPConnection
+
+        //    centralSystemServer.OnNewTCPConnection += async (timestamp,
+        //                                                     webSocketServer,
+        //                                                     newTCPConnection,
+        //                                                     eventTrackingId,
+        //                                                     cancellationToken) => {
+
+        //        var onNewTCPConnection = OnNewTCPConnection;
+        //        if (onNewTCPConnection is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onNewTCPConnection.GetInvocationList().
+        //                                       OfType <OnNewTCPConnectionDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      newTCPConnection,
+        //                                                                      eventTrackingId,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnNewTCPConnection),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    // Failed (Charging Station) Authentication
+
+        //    #region OnNewWebSocketConnection
+
+        //    centralSystemServer.OnCSMSNewWebSocketConnection += async (timestamp,
+        //                                                               csmsChannel,
+        //                                                               newConnection,
+        //                                                               networkingNodeId,
+        //                                                               eventTrackingId,
+        //                                                               sharedSubprotocols,
+        //                                                               cancellationToken) => {
+
+        //        // A new connection from the same networking node/charge box will replace the older one!
+        //        if (!reachableChargeBoxes.TryAdd(networkingNodeId, new Tuple<ICentralSystemChannel, DateTime>(csmsChannel as OCPPv1_6.CS.ICentralSystemChannel, timestamp)))
+        //             reachableChargeBoxes[networkingNodeId]      = new Tuple<ICentralSystemChannel, DateTime>(csmsChannel as OCPPv1_6.CS.ICentralSystemChannel, timestamp);
+
+
+        //        var onNewWebSocketConnection = OnNewWebSocketConnection;
+        //        if (onNewWebSocketConnection is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onNewWebSocketConnection.GetInvocationList().
+        //                                       OfType <OnCSMSNewWebSocketConnectionDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      csmsChannel,
+        //                                                                      newConnection,
+        //                                                                      networkingNodeId,
+        //                                                                      eventTrackingId,
+        //                                                                      sharedSubprotocols,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnNewWebSocketConnection),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnCloseMessageReceived
+
+        //    centralSystemServer.OnCSMSCloseMessageReceived += async (timestamp,
+        //                                                             csmsChannel,
+        //                                                             connection,
+        //                                                             networkingNodeId,
+        //                                                             eventTrackingId,
+        //                                                             statusCode,
+        //                                                             reason,
+        //                                                             cancellationToken) => {
+
+        //        var onCloseMessageReceived = OnCloseMessageReceived;
+        //        if (onCloseMessageReceived is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onCloseMessageReceived.GetInvocationList().
+        //                                       OfType <OnCSMSCloseMessageReceivedDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      csmsChannel,
+        //                                                                      connection,
+        //                                                                      networkingNodeId,
+        //                                                                      eventTrackingId,
+        //                                                                      statusCode,
+        //                                                                      reason,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnCloseMessageReceived),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnTCPConnectionClosed
+
+        //    centralSystemServer.OnCSMSTCPConnectionClosed += async (timestamp,
+        //                                                            csmsChannel,
+        //                                                            connection,
+        //                                                            networkingNodeId,
+        //                                                            eventTrackingId,
+        //                                                            reason,
+        //                                                            cancellationToken) => {
+
+        //        var onTCPConnectionClosed = OnTCPConnectionClosed;
+        //        if (onTCPConnectionClosed is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onTCPConnectionClosed.GetInvocationList().
+        //                                       OfType <OnCSMSTCPConnectionClosedDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      centralSystemServer,
+        //                                                                      connection,
+        //                                                                      networkingNodeId,
+        //                                                                      eventTrackingId,
+        //                                                                      reason,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnTCPConnectionClosed),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnServerStopped
+
+        //    centralSystemServer.OnServerStopped += async (timestamp,
+        //                                                  server,
+        //                                                  eventTrackingId,
+        //                                                  reason,
+        //                                                  cancellationToken) => {
+
+        //        var onServerStopped = OnServerStopped;
+        //        if (onServerStopped is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onServerStopped.GetInvocationList().
+        //                                         OfType <OnServerStoppedDelegate>().
+        //                                         Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                        timestamp,
+        //                                                                        server,
+        //                                                                        eventTrackingId,
+        //                                                                        reason,
+        //                                                                        cancellationToken
+        //                                                                    )).
+        //                                         ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnServerStopped),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    // (Generic) Error Handling
+
+        //    #endregion
+
+
+        //    #region OnJSONMessageRequestReceived
+
+        //    centralSystemServer.OnJSONMessageRequestReceived += async (timestamp,
+        //                                                               webSocketServer,
+        //                                                               webSocketConnection,
+        //                                                               networkingNodeId,
+        //                                                               networkPath,
+        //                                                               eventTrackingId,
+        //                                                               requestTimestamp,
+        //                                                               requestMessage,
+        //                                                               cancellationToken) => {
+
+        //        var onJSONMessageRequestReceived = OnJSONMessageRequestReceived;
+        //        if (onJSONMessageRequestReceived is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onJSONMessageRequestReceived.GetInvocationList().
+        //                                       OfType <OnWebSocketJSONMessageRequestDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      webSocketConnection,
+        //                                                                      networkingNodeId,
+        //                                                                      networkPath,
+        //                                                                      eventTrackingId,
+        //                                                                      requestTimestamp,
+        //                                                                      requestMessage,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnJSONMessageRequestReceived),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnJSONMessageResponseSent
+
+        //    centralSystemServer.OnJSONMessageResponseSent += async (timestamp,
+        //                                                            webSocketServer,
+        //                                                            webSocketConnection,
+        //                                                            networkingNodeId,
+        //                                                            networkPath,
+        //                                                            eventTrackingId,
+        //                                                            requestTimestamp,
+        //                                                            jsonRequestMessage,
+        //                                                            binaryRequestMessage,
+        //                                                            responseTimestamp,
+        //                                                            responseMessage,
+        //                                                            cancellationToken) => {
+
+        //        var onJSONMessageResponseSent = OnJSONMessageResponseSent;
+        //        if (onJSONMessageResponseSent is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onJSONMessageResponseSent.GetInvocationList().
+        //                                       OfType <OnWebSocketJSONMessageResponseDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      webSocketConnection,
+        //                                                                      networkingNodeId,
+        //                                                                      networkPath,
+        //                                                                      eventTrackingId,
+        //                                                                      requestTimestamp,
+        //                                                                      jsonRequestMessage,
+        //                                                                      binaryRequestMessage,
+        //                                                                      responseTimestamp,
+        //                                                                      responseMessage,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnJSONMessageResponseSent),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnJSONErrorResponseSent
+
+        //    centralSystemServer.OnJSONErrorResponseSent += async (timestamp,
+        //                                                          webSocketServer,
+        //                                                          webSocketConnection,
+        //                                                          eventTrackingId,
+        //                                                          requestTimestamp,
+        //                                                          jsonRequestMessage,
+        //                                                          binaryRequestMessage,
+        //                                                          responseTimestamp,
+        //                                                          responseMessage,
+        //                                                          cancellationToken) => {
+
+        //        var onJSONErrorResponseSent = OnJSONErrorResponseSent;
+        //        if (onJSONErrorResponseSent is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
+        //                                       OfType <OnWebSocketTextErrorResponseDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      webSocketConnection,
+        //                                                                      eventTrackingId,
+        //                                                                      requestTimestamp,
+        //                                                                      jsonRequestMessage,
+        //                                                                      binaryRequestMessage,
+        //                                                                      responseTimestamp,
+        //                                                                      responseMessage,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnJSONErrorResponseSent),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+
+        //    #region OnJSONMessageRequestSent
+
+        //    centralSystemServer.OnJSONMessageRequestSent += async (timestamp,
+        //                                                           webSocketServer,
+        //                                                           webSocketConnection,
+        //                                                           networkingNodeId,
+        //                                                           networkPath,
+        //                                                           eventTrackingId,
+        //                                                           requestTimestamp,
+        //                                                           requestMessage,
+        //                                                           cancellationToken) => {
+
+        //        var onJSONMessageRequestSent = OnJSONMessageRequestSent;
+        //        if (onJSONMessageRequestSent is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
+        //                                       OfType <OnWebSocketJSONMessageRequestDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      webSocketConnection,
+        //                                                                      networkingNodeId,
+        //                                                                      networkPath,
+        //                                                                      eventTrackingId,
+        //                                                                      requestTimestamp,
+        //                                                                      requestMessage,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnJSONMessageRequestSent),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnJSONMessageResponseReceived
+
+        //    centralSystemServer.OnJSONMessageResponseReceived += async (timestamp,
+        //                                                                webSocketServer,
+        //                                                                webSocketConnection,
+        //                                                                networkingNodeId,
+        //                                                                networkPath,
+        //                                                                eventTrackingId,
+        //                                                                requestTimestamp,
+        //                                                                jsonRequestMessage,
+        //                                                                binaryRequestMessage,
+        //                                                                responseTimestamp,
+        //                                                                responseMessage,
+        //                                                                cancellationToken) => {
+
+        //        var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
+        //        if (onJSONMessageResponseReceived is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
+        //                                       OfType <OnWebSocketJSONMessageResponseDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      webSocketConnection,
+        //                                                                      networkingNodeId,
+        //                                                                      networkPath,
+        //                                                                      eventTrackingId,
+        //                                                                      requestTimestamp,
+        //                                                                      jsonRequestMessage,
+        //                                                                      binaryRequestMessage,
+        //                                                                      responseTimestamp,
+        //                                                                      responseMessage,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnJSONMessageResponseReceived),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnJSONErrorResponseReceived
+
+        //    centralSystemServer.OnJSONErrorResponseReceived += async (timestamp,
+        //                                                              webSocketServer,
+        //                                                              webSocketConnection,
+        //                                                              eventTrackingId,
+        //                                                              requestTimestamp,
+        //                                                              jsonRequestMessage,
+        //                                                              binaryRequestMessage,
+        //                                                              responseTimestamp,
+        //                                                              responseMessage,
+        //                                                              cancellationToken) => {
+
+        //        var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
+        //        if (onJSONErrorResponseReceived is not null)
+        //        {
+        //            try
+        //            {
+
+        //                await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
+        //                                       OfType <OnWebSocketTextErrorResponseDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      timestamp,
+        //                                                                      webSocketServer,
+        //                                                                      webSocketConnection,
+        //                                                                      eventTrackingId,
+        //                                                                      requestTimestamp,
+        //                                                                      jsonRequestMessage,
+        //                                                                      binaryRequestMessage,
+        //                                                                      responseTimestamp,
+        //                                                                      responseMessage,
+        //                                                                      cancellationToken
+        //                                                                  )).
+        //                                       ToArray());
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnJSONErrorResponseReceived),
+        //                          e
+        //                      );
+        //            }
+        //        }
+
+        //    };
+
+        //    #endregion
+
+
+        //    Attach(centralSystemServer);
+
+
+        //    if (AutoStart)
+        //        centralSystemServer.Start();
+
+        //    return centralSystemServer;
+
+        //}
 
         #endregion
 
         #region Attach(CentralSystemServer)
 
-        public void Attach(ICentralSystemChannel CentralSystemServer)
-        {
-
-            centralSystemServers.Add(CentralSystemServer);
+        //public void Attach(ICentralSystemChannel CentralSystemServer)
+        //{
+
+        //    centralSystemServers.Add(CentralSystemServer);
 
-
-            // Wire events...
-
-            #region OnBootNotification
-
-            CentralSystemServer.OnBootNotification += async (LogTimestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             cancellationToken) => {
-
-                #region Send OnBootNotificationRequest event
-
-                var startTime      = Timestamp.Now;
+
+        //    // Wire events...
+
+        //    #region OnBootNotification
+
+        //    CentralSystemServer.OnBootNotification += async (LogTimestamp,
+        //                                                     sender,
+        //                                                     connection,
+        //                                                     request,
+        //                                                     cancellationToken) => {
+
+        //        #region Send OnBootNotificationRequest event
+
+        //        var startTime      = Timestamp.Now;
 
-                var requestLogger  = OnBootNotificationRequest;
-                if (requestLogger is not null)
-                {
-                    try
-                    {
+        //        var requestLogger  = OnBootNotificationRequest;
+        //        if (requestLogger is not null)
+        //        {
+        //            try
+        //            {
 
-                        await Task.WhenAll(requestLogger.GetInvocationList().
-                                               OfType <OnBootNotificationRequestDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              startTime,
-                                                                              this,
-                                                                              connection,
-                                                                              request
-                                                                          )).
-                                               ToArray());
+        //                await Task.WhenAll(requestLogger.GetInvocationList().
+        //                                       OfType <OnBootNotificationRequestDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      startTime,
+        //                                                                      this,
+        //                                                                      connection,
+        //                                                                      request
+        //                                                                  )).
+        //                                       ToArray());
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnBootNotificationRequest),
-                                  e
-                              );
-                    }
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnBootNotificationRequest),
+        //                          e
+        //                      );
+        //            }
 
-                }
+        //        }
 
-                #endregion
+        //        #endregion
 
 
-                Console.WriteLine("OnBootNotification: " + request.DestinationId             + ", " +
-                                                           request.ChargePointVendor       + ", " +
-                                                           request.ChargePointModel        + ", " +
-                                                           request.ChargePointSerialNumber + ", " +
-                                                           request.ChargeBoxSerialNumber);
+        //        Console.WriteLine("OnBootNotification: " + request.DestinationId             + ", " +
+        //                                                   request.ChargePointVendor       + ", " +
+        //                                                   request.ChargePointModel        + ", " +
+        //                                                   request.ChargePointSerialNumber + ", " +
+        //                                                   request.ChargeBoxSerialNumber);
 
 
-                //await AddChargeBoxIfNotExists(new ChargeBox(request.NetworkingNodeId,
-                //                                            1,
-                //                                            request.ChargePointVendor,
-                //                                            request.ChargePointModel,
-                //                                            null,
-                //                                            request.ChargePointSerialNumber,
-                //                                            request.ChargeBoxSerialNumber,
-                //                                            request.FirmwareVersion,
-                //                                            request.Iccid,
-                //                                            request.IMSI,
-                //                                            request.MeterType,
-                //                                            request.MeterSerialNumber));
+        //        //await AddChargeBoxIfNotExists(new ChargeBox(request.NetworkingNodeId,
+        //        //                                            1,
+        //        //                                            request.ChargePointVendor,
+        //        //                                            request.ChargePointModel,
+        //        //                                            null,
+        //        //                                            request.ChargePointSerialNumber,
+        //        //                                            request.ChargeBoxSerialNumber,
+        //        //                                            request.FirmwareVersion,
+        //        //                                            request.Iccid,
+        //        //                                            request.IMSI,
+        //        //                                            request.MeterType,
+        //        //                                            request.MeterSerialNumber));
 
 
-                await Task.Delay(100, cancellationToken);
+        //        await Task.Delay(100, cancellationToken);
 
 
-                var response = new BootNotificationResponse(Request:            request,
-                                                            Status:             RegistrationStatus.Accepted,
-                                                            CurrentTime:        Timestamp.Now,
-                                                            HeartbeatInterval:  TimeSpan.FromMinutes(5));
+        //        var response = new BootNotificationResponse(Request:            request,
+        //                                                    Status:             RegistrationStatus.Accepted,
+        //                                                    CurrentTime:        Timestamp.Now,
+        //                                                    HeartbeatInterval:  TimeSpan.FromMinutes(5));
 
 
-                #region Send OnBootNotificationResponse event
+        //        #region Send OnBootNotificationResponse event
 
-                var responseLogger = OnBootNotificationResponse;
-                if (responseLogger is not null)
-                {
-                    try
-                    {
+        //        var responseLogger = OnBootNotificationResponse;
+        //        if (responseLogger is not null)
+        //        {
+        //            try
+        //            {
 
-                        var responseTime = Timestamp.Now;
+        //                var responseTime = Timestamp.Now;
 
-                        await Task.WhenAll(responseLogger.GetInvocationList().
-                                               OfType <OnBootNotificationResponseDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              responseTime,
-                                                                              this,
-                                                                              connection,
-                                                                              request,
-                                                                              response,
-                                                                              responseTime - startTime
-                                                                          )).
-                                               ToArray());
+        //                await Task.WhenAll(responseLogger.GetInvocationList().
+        //                                       OfType <OnBootNotificationResponseDelegate>().
+        //                                       Select (loggingDelegate => loggingDelegate.Invoke(
+        //                                                                      responseTime,
+        //                                                                      this,
+        //                                                                      connection,
+        //                                                                      request,
+        //                                                                      response,
+        //                                                                      responseTime - startTime
+        //                                                                  )).
+        //                                       ToArray());
 
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestCentralSystem),
-                                  nameof(OnBootNotificationResponse),
-                                  e
-                              );
-                    }
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                await HandleErrors(
+        //                          nameof(TestCentralSystem),
+        //                          nameof(OnBootNotificationResponse),
+        //                          e
+        //                      );
+        //            }
 
-                }
+        //        }
 
-                #endregion
+        //        #endregion
 
-                return response;
+        //        return response;
 
-            };
+        //    };
 
-            #endregion
+        //    #endregion
 
-            #region OnHeartbeat
+        //    #region OnHeartbeat
 
-            CentralSystemServer.OnHeartbeat += async (LogTimestamp,
-                                                      Sender,
-                                                      connection,
-                                                      Request,
-                                                      CancellationToken) => {
+        //    CentralSystemServer.OnHeartbeat += async (LogTimestamp,
+        //                                              Sender,
+        //                                              connection,
+        //                                              Request,
+        //                                              CancellationToken) => {
 
-                #region Send OnHeartbeatRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnHeartbeatRequest?.Invoke(startTime,
-                                               this,
-                                               connection,
-                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnHeartbeat: " + Request.DestinationId);
-
-
-                await Task.Delay(100, CancellationToken);
-
-
-                var response = new HeartbeatResponse(Request:      Request,
-                                                     CurrentTime:  Timestamp.Now);
-
-
-                #region Send OnHeartbeatResponse event
-
-                try
-                {
-
-                    OnHeartbeatResponse?.Invoke(Timestamp.Now,
-                                                this,
-                                                connection,
-                                                Request,
-                                                response,
-                                                Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnDiagnosticsStatusNotification
-
-            CentralSystemServer.OnDiagnosticsStatusNotification += async (LogTimestamp,
-                                                                          Sender,
-                                                                          connection,
-                                                                          Request,
-                                                                          CancellationToken) => {
-
-                #region Send OnDiagnosticsStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
-                                                                   this,
-                                                                   connection,
-                                                                   Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.Status);
-
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new DiagnosticsStatusNotificationResponse(Request);
-
-
-                #region Send OnDiagnosticsStatusResponse event
-
-                try
-                {
-
-                    OnDiagnosticsStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    connection,
-                                                                    Request,
-                                                                    response,
-                                                                    Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnFirmwareStatusNotification
-
-            CentralSystemServer.OnFirmwareStatusNotification += async (LogTimestamp,
-                                                                       Sender,
-                                                                       connection,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnFirmwareStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnFirmwareStatus: " + Request.Status);
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new FirmwareStatusNotificationResponse(Request);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-
-            #region OnAuthorize
-
-            CentralSystemServer.OnAuthorize += async (LogTimestamp,
-                                                      Sender,
-                                                      connection,
-                                                      Request,
-                                                      CancellationToken) => {
-
-                #region Send OnAuthorizeRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnAuthorizeRequest?.Invoke(startTime,
-                                               this,
-                                               connection,
-                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAuthorizeRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnAuthorize: " + Request.DestinationId + ", " +
-                                                    Request.IdTag);
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new AuthorizeResponse(
-                                   Request:    Request,
-                                   IdTagInfo:  new IdTagInfo(
-                                                   Status:      AuthorizationStatus.Accepted,
-                                                   ExpiryDate:  Timestamp.Now.AddDays(3)
-                                               )
-                               );
-
-
-                #region Send OnAuthorizeResponse event
-
-                try
-                {
-
-                    OnAuthorizeResponse?.Invoke(Timestamp.Now,
-                                                this,
-                                                connection,
-                                                Request,
-                                                response,
-                                                Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAuthorizeResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnStartTransaction
-
-            CentralSystemServer.OnStartTransaction += async (LogTimestamp,
-                                                             Sender,
-                                                             connection,
-                                                             Request,
-                                                             CancellationToken) => {
-
-                #region Send OnStartTransactionRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnStartTransactionRequest?.Invoke(startTime,
-                                                      this,
-                                                      connection,
-                                                      Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStartTransactionRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnStartTransaction: " + Request.DestinationId + ", " +
-                                                           Request.ConnectorId + ", " +
-                                                           Request.IdTag + ", " +
-                                                           Request.StartTimestamp + ", " +
-                                                           Request.MeterStart + ", " +
-                                                           Request.ReservationId ?? "-");
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new StartTransactionResponse(Request:        Request,
-                                                            TransactionId:  Transaction_Id.NewRandom,
-                                                            IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                                          ExpiryDate:  Timestamp.Now.AddDays(3)));
-
-                var key = Request.DestinationId + "*" + Request.ConnectorId;
-
-                if (TransactionIds.ContainsKey(key))
-                    TransactionIds[key] = response.TransactionId;
-                else
-                    TransactionIds.Add(key, response.TransactionId);
-
-
-                #region Send OnStartTransactionResponse event
-
-                try
-                {
-
-                    OnStartTransactionResponse?.Invoke(Timestamp.Now,
-                                                       this,
-                                                       connection,
-                                                       Request,
-                                                       response,
-                                                       Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStartTransactionResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnStatusNotification
-
-            CentralSystemServer.OnStatusNotification += async (LogTimestamp,
-                                                               Sender,
-                                                               connection,
-                                                               Request,
-                                                               CancellationToken) => {
-
-                #region Send OnStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnStatusNotificationRequest?.Invoke(startTime,
-                                                        this,
-                                                        connection,
-                                                        Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnStatusNotification: " + Request.ConnectorId     + ", " +
-                                                             Request.Status          + ", " +
-                                                             Request.ErrorCode       + ", " +
-                                                             Request.Info            + ", " +
-                                                             Request.StatusTimestamp + ", " +
-                                                             Request.VendorId        + ", " +
-                                                             Request.VendorErrorCode);
-
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new StatusNotificationResponse(Request);
-
-
-                #region Send OnStatusNotificationResponse event
-
-                try
-                {
-
-                    OnStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                         this,
-                                                         connection,
-                                                         Request,
-                                                         response,
-                                                         Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnMeterValues
-
-            CentralSystemServer.OnMeterValues += async (LogTimestamp,
-                                                        Sender,
-                                                        connection,
-                                                        Request,
-                                                        CancellationToken) => {
-
-                #region Send OnMeterValuesRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnMeterValuesRequest?.Invoke(startTime,
-                                                 this,
-                                                 connection,
-                                                 Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnMeterValuesRequest));
-                }
-
-                                                            #endregion
-
-
-                Console.WriteLine("OnMeterValues: " + Request.ConnectorId + ", " +
-                                                      Request.TransactionId);
-
-                Console.WriteLine(Request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
-                                          meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
-
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new MeterValuesResponse(Request);
-
-
-                #region Send OnMeterValuesResponse event
-
-                try
-                {
-
-                    OnMeterValuesResponse?.Invoke(Timestamp.Now,
-                                                  this,
-                                                  connection,
-                                                  Request,
-                                                  response,
-                                                  Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnMeterValuesResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnStopTransaction
-
-            CentralSystemServer.OnStopTransaction += async (LogTimestamp,
-                                                            Sender,
-                                                            connection,
-                                                            Request,
-                                                            CancellationToken) => {
-
-                #region Send OnStopTransactionRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnStopTransactionRequest?.Invoke(startTime,
-                                                     this,
-                                                     connection,
-                                                     Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStopTransactionRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnStopTransaction: " + Request.TransactionId + ", " +
-                                                          Request.IdTag + ", " +
-                                                          Request.StopTimestamp.ToIso8601() + ", " +
-                                                          Request.MeterStop + ", " +
-                                                          Request.Reason);
-
-                Console.WriteLine(Request.TransactionData.SafeSelect(transactionData => transactionData.Timestamp.ToIso8601() +
-                                          transactionData.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new StopTransactionResponse(Request:    Request,
-                                                           IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                                     ExpiryDate:  Timestamp.Now.AddDays(3)));
-
-                var kvp = TransactionIds.Where(trid => trid.Value == Request.TransactionId).ToArray();
-                if (kvp.SafeAny())
-                    TransactionIds.Remove(kvp.First().Key);
-
-
-                #region Send OnStopTransactionResponse event
-
-                try
-                {
-
-                    OnStopTransactionResponse?.Invoke(Timestamp.Now,
-                                                      this,
-                                                      connection,
-                                                      Request,
-                                                      response,
-                                                      Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStopTransactionResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-
-            #region OnIncomingDataTransfer
-
-            CentralSystemServer.OnIncomingDataTransfer += async (LogTimestamp,
-                                                                 Sender,
-                                                                 connection,
-                                                                 request,
-                                                                 CancellationToken) => {
-
-                #region Send OnIncomingDataRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnIncomingDataTransferRequest?.Invoke(startTime,
-                                                          this,
-                                                          connection,
-                                                          request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingDataTransferRequest));
-                }
-
-                #endregion
-
-
-                // VendorId
-                // MessageId
-                // Data
-
-                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
-                                                        request.MessageId + ", " +
-                                                        request.Data);
-
-
-                var responseData = request.Data;
-
-                if (request.Data is not null)
-                {
-
-                    if      (request.Data.Type == JTokenType.String)
-                        responseData = request.Data.ToString().Reverse();
-
-                    else if (request.Data.Type == JTokenType.Object) {
-
-                        var responseObject = new JObject();
-
-                        foreach (var property in (request.Data as JObject)!)
-                        {
-                            if (property.Value?.Type == JTokenType.String)
-                                responseObject.Add(property.Key,
-                                                   property.Value.ToString().Reverse());
-                        }
-
-                        responseData = responseObject;
-
-                    }
-
-                    else if (request.Data.Type == JTokenType.Array) {
-
-                        var responseArray = new JArray();
-
-                        foreach (var element in (request.Data as JArray)!)
-                        {
-                            if (element?.Type == JTokenType.String)
-                                responseArray.Add(element.ToString().Reverse());
-                        }
-
-                        responseData = responseArray;
-
-                    }
-
-                }
-
-
-                var response = !SignaturePolicy.VerifyRequestMessage(
-                                   request,
-                                   request.ToJSON(
-                                       CustomIncomingDataTransferRequestSerializer,
-                                       CustomSignatureSerializer,
-                                       CustomCustomDataSerializer
-                                   ),
-                                   out var errorResponse
-                               )
-
-                                   ? new DataTransferResponse(
-                                         Request:      request,
-                                         Result:       Result.SignatureError(
-                                                           $"Invalid signature(s): {errorResponse}"
-                                                       )
-                                     )
-
-                                   : request.VendorId == Vendor_Id.GraphDefined
-
-                                         ? new (
-                                               Request:      request,
-                                               Status:       DataTransferStatus.Accepted,
-                                               Data:         responseData,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                           )
-
-                                         : new DataTransferResponse(
-                                               Request:      request,
-                                               Status:       DataTransferStatus.Rejected,
-                                               Data:         null,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                         );
-
-                SignaturePolicy.SignResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomIncomingDataTransferResponseSerializer,
-                        null,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse2);
-
-
-                #region Send OnIncomingDataResponse event
-
-                try
-                {
-
-                    OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                                           this,
-                                                           connection,
-                                                           request,
-                                                           response,
-                                                           Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingDataTransferResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-
-            // Security extensions
-
-            #region OnSecurityEventNotification
-
-            CentralSystemServer.OnSecurityEventNotification += async (LogTimestamp,
-                                                                       Sender,
-                                                                       connection,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnSecurityEventNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSecurityEventNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecurityEventNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnSecurityEventNotification: " );
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new SecurityEventNotificationResponse(Request);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecurityEventNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnLogStatusNotification
-
-            CentralSystemServer.OnLogStatusNotification += async (LogTimestamp,
-                                                                       Sender,
-                                                                       connection,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnLogStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnLogStatusNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnLogStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnLogStatusNotification: " + Request.Status);
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new LogStatusNotificationResponse(Request);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnLogStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnSignCertificate
-
-            CentralSystemServer.OnSignCertificate += async (LogTimestamp,
-                                                                       Sender,
-                                                                       connection,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnSignCertificateRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSignCertificateRequest?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignCertificateRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnSignCertificate: " );
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new SignCertificateResponse(Request, GenericStatus.Accepted);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnSignCertificateResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignCertificateResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnSignedFirmwareStatusNotification
-
-            CentralSystemServer.OnSignedFirmwareStatusNotification += async (LogTimestamp,
-                                                                       Sender,
-                                                                       connection,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnSignedFirmwareStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSignedFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnSignedFirmwareStatusNotification: " + Request.Status);
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new SignedFirmwareStatusNotificationResponse(Request);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnSignedFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-
-            // Binary Data Streams Extensions
-
-            #region OnIncomingBinaryDataTransfer
-
-        //    CentralSystemServer.OnIncomingBinaryDataTransfer += async (timestamp,
-        //                                                               sender,
-        //                                                               connection,
-        //                                                               request,
-        //                                                               cancellationToken) => {
-
-        //        #region Send OnIncomingBinaryDataTransfer event
+        //        #region Send OnHeartbeatRequest event
 
         //        var startTime = Timestamp.Now;
 
         //        try
         //        {
 
-        //            OnBinaryDataTransferRequestReceived?.Invoke(startTime,
-        //                                                        this,
-        //                                                        connection,
-        //                                                        request);
+        //            OnHeartbeatRequest?.Invoke(startTime,
+        //                                       this,
+        //                                       connection,
+        //                                       Request);
 
         //        }
         //        catch (Exception e)
         //        {
-        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequestReceived));
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnHeartbeat: " + Request.DestinationId);
+
+
+        //        await Task.Delay(100, CancellationToken);
+
+
+        //        var response = new HeartbeatResponse(Request:      Request,
+        //                                             CurrentTime:  Timestamp.Now);
+
+
+        //        #region Send OnHeartbeatResponse event
+
+        //        try
+        //        {
+
+        //            OnHeartbeatResponse?.Invoke(Timestamp.Now,
+        //                                        this,
+        //                                        connection,
+        //                                        Request,
+        //                                        response,
+        //                                        Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnDiagnosticsStatusNotification
+
+        //    CentralSystemServer.OnDiagnosticsStatusNotification += async (LogTimestamp,
+        //                                                                  Sender,
+        //                                                                  connection,
+        //                                                                  Request,
+        //                                                                  CancellationToken) => {
+
+        //        #region Send OnDiagnosticsStatusNotificationRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
+        //                                                           this,
+        //                                                           connection,
+        //                                                           Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.Status);
+
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new DiagnosticsStatusNotificationResponse(Request);
+
+
+        //        #region Send OnDiagnosticsStatusResponse event
+
+        //        try
+        //        {
+
+        //            OnDiagnosticsStatusNotificationResponse?.Invoke(Timestamp.Now,
+        //                                                            this,
+        //                                                            connection,
+        //                                                            Request,
+        //                                                            response,
+        //                                                            Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnFirmwareStatusNotification
+
+        //    CentralSystemServer.OnFirmwareStatusNotification += async (LogTimestamp,
+        //                                                               Sender,
+        //                                                               connection,
+        //                                                               Request,
+        //                                                               CancellationToken) => {
+
+        //        #region Send OnFirmwareStatusNotificationRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+        //                                                        this,
+        //                                                        connection,
+        //                                                        Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnFirmwareStatus: " + Request.Status);
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new FirmwareStatusNotificationResponse(Request);
+
+
+        //        #region Send OnFirmwareStatusResponse event
+
+        //        try
+        //        {
+
+        //            OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+        //                                                         this,
+        //                                                         connection,
+        //                                                         Request,
+        //                                                         response,
+        //                                                         Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+
+        //    #region OnAuthorize
+
+        //    CentralSystemServer.OnAuthorize += async (LogTimestamp,
+        //                                              Sender,
+        //                                              connection,
+        //                                              Request,
+        //                                              CancellationToken) => {
+
+        //        #region Send OnAuthorizeRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnAuthorizeRequest?.Invoke(startTime,
+        //                                       this,
+        //                                       connection,
+        //                                       Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAuthorizeRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnAuthorize: " + Request.DestinationId + ", " +
+        //                                            Request.IdTag);
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new AuthorizeResponse(
+        //                           Request:    Request,
+        //                           IdTagInfo:  new IdTagInfo(
+        //                                           Status:      AuthorizationStatus.Accepted,
+        //                                           ExpiryDate:  Timestamp.Now.AddDays(3)
+        //                                       )
+        //                       );
+
+
+        //        #region Send OnAuthorizeResponse event
+
+        //        try
+        //        {
+
+        //            OnAuthorizeResponse?.Invoke(Timestamp.Now,
+        //                                        this,
+        //                                        connection,
+        //                                        Request,
+        //                                        response,
+        //                                        Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAuthorizeResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnStartTransaction
+
+        //    CentralSystemServer.OnStartTransaction += async (LogTimestamp,
+        //                                                     Sender,
+        //                                                     connection,
+        //                                                     Request,
+        //                                                     CancellationToken) => {
+
+        //        #region Send OnStartTransactionRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnStartTransactionRequest?.Invoke(startTime,
+        //                                              this,
+        //                                              connection,
+        //                                              Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStartTransactionRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnStartTransaction: " + Request.DestinationId + ", " +
+        //                                                   Request.ConnectorId + ", " +
+        //                                                   Request.IdTag + ", " +
+        //                                                   Request.StartTimestamp + ", " +
+        //                                                   Request.MeterStart + ", " +
+        //                                                   Request.ReservationId ?? "-");
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new StartTransactionResponse(Request:        Request,
+        //                                                    TransactionId:  Transaction_Id.NewRandom,
+        //                                                    IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
+        //                                                                                  ExpiryDate:  Timestamp.Now.AddDays(3)));
+
+        //        var key = Request.DestinationId + "*" + Request.ConnectorId;
+
+        //        if (TransactionIds.ContainsKey(key))
+        //            TransactionIds[key] = response.TransactionId;
+        //        else
+        //            TransactionIds.Add(key, response.TransactionId);
+
+
+        //        #region Send OnStartTransactionResponse event
+
+        //        try
+        //        {
+
+        //            OnStartTransactionResponse?.Invoke(Timestamp.Now,
+        //                                               this,
+        //                                               connection,
+        //                                               Request,
+        //                                               response,
+        //                                               Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStartTransactionResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnStatusNotification
+
+        //    CentralSystemServer.OnStatusNotification += async (LogTimestamp,
+        //                                                       Sender,
+        //                                                       connection,
+        //                                                       Request,
+        //                                                       CancellationToken) => {
+
+        //        #region Send OnStatusNotificationRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnStatusNotificationRequest?.Invoke(startTime,
+        //                                                this,
+        //                                                connection,
+        //                                                Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStatusNotificationRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnStatusNotification: " + Request.ConnectorId     + ", " +
+        //                                                     Request.Status          + ", " +
+        //                                                     Request.ErrorCode       + ", " +
+        //                                                     Request.Info            + ", " +
+        //                                                     Request.StatusTimestamp + ", " +
+        //                                                     Request.VendorId        + ", " +
+        //                                                     Request.VendorErrorCode);
+
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new StatusNotificationResponse(Request);
+
+
+        //        #region Send OnStatusNotificationResponse event
+
+        //        try
+        //        {
+
+        //            OnStatusNotificationResponse?.Invoke(Timestamp.Now,
+        //                                                 this,
+        //                                                 connection,
+        //                                                 Request,
+        //                                                 response,
+        //                                                 Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStatusNotificationResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnMeterValues
+
+        //    CentralSystemServer.OnMeterValues += async (LogTimestamp,
+        //                                                Sender,
+        //                                                connection,
+        //                                                Request,
+        //                                                CancellationToken) => {
+
+        //        #region Send OnMeterValuesRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnMeterValuesRequest?.Invoke(startTime,
+        //                                         this,
+        //                                         connection,
+        //                                         Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnMeterValuesRequest));
+        //        }
+
+        //                                                    #endregion
+
+
+        //        Console.WriteLine("OnMeterValues: " + Request.ConnectorId + ", " +
+        //                                              Request.TransactionId);
+
+        //        Console.WriteLine(Request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
+        //                                  meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
+
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new MeterValuesResponse(Request);
+
+
+        //        #region Send OnMeterValuesResponse event
+
+        //        try
+        //        {
+
+        //            OnMeterValuesResponse?.Invoke(Timestamp.Now,
+        //                                          this,
+        //                                          connection,
+        //                                          Request,
+        //                                          response,
+        //                                          Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnMeterValuesResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnStopTransaction
+
+        //    CentralSystemServer.OnStopTransaction += async (LogTimestamp,
+        //                                                    Sender,
+        //                                                    connection,
+        //                                                    Request,
+        //                                                    CancellationToken) => {
+
+        //        #region Send OnStopTransactionRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnStopTransactionRequest?.Invoke(startTime,
+        //                                             this,
+        //                                             connection,
+        //                                             Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStopTransactionRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnStopTransaction: " + Request.TransactionId + ", " +
+        //                                                  Request.IdTag + ", " +
+        //                                                  Request.StopTimestamp.ToIso8601() + ", " +
+        //                                                  Request.MeterStop + ", " +
+        //                                                  Request.Reason);
+
+        //        Console.WriteLine(Request.TransactionData.SafeSelect(transactionData => transactionData.Timestamp.ToIso8601() +
+        //                                  transactionData.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new StopTransactionResponse(Request:    Request,
+        //                                                   IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
+        //                                                                             ExpiryDate:  Timestamp.Now.AddDays(3)));
+
+        //        var kvp = TransactionIds.Where(trid => trid.Value == Request.TransactionId).ToArray();
+        //        if (kvp.SafeAny())
+        //            TransactionIds.Remove(kvp.First().Key);
+
+
+        //        #region Send OnStopTransactionResponse event
+
+        //        try
+        //        {
+
+        //            OnStopTransactionResponse?.Invoke(Timestamp.Now,
+        //                                              this,
+        //                                              connection,
+        //                                              Request,
+        //                                              response,
+        //                                              Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnStopTransactionResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+
+        //    #region OnIncomingDataTransfer
+
+        //    CentralSystemServer.OnIncomingDataTransfer += async (LogTimestamp,
+        //                                                         Sender,
+        //                                                         connection,
+        //                                                         request,
+        //                                                         CancellationToken) => {
+
+        //        #region Send OnIncomingDataRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnIncomingDataTransferRequest?.Invoke(startTime,
+        //                                                  this,
+        //                                                  connection,
+        //                                                  request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingDataTransferRequest));
         //        }
 
         //        #endregion
@@ -3061,32 +2656,64 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //        // VendorId
         //        // MessageId
-        //        // BinaryData
+        //        // Data
 
-        //        DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
-        //                                                      request.MessageId + ", " +
-        //                                                      request.Data?.ToUTF8String() ?? "-");
+        //        DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
+        //                                                request.MessageId + ", " +
+        //                                                request.Data);
 
 
-        //        var responseBinaryData = Array.Empty<byte>();
+        //        var responseData = request.Data;
 
         //        if (request.Data is not null)
         //        {
-        //            responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
+
+        //            if      (request.Data.Type == JTokenType.String)
+        //                responseData = request.Data.ToString().Reverse();
+
+        //            else if (request.Data.Type == JTokenType.Object) {
+
+        //                var responseObject = new JObject();
+
+        //                foreach (var property in (request.Data as JObject)!)
+        //                {
+        //                    if (property.Value?.Type == JTokenType.String)
+        //                        responseObject.Add(property.Key,
+        //                                           property.Value.ToString().Reverse());
+        //                }
+
+        //                responseData = responseObject;
+
+        //            }
+
+        //            else if (request.Data.Type == JTokenType.Array) {
+
+        //                var responseArray = new JArray();
+
+        //                foreach (var element in (request.Data as JArray)!)
+        //                {
+        //                    if (element?.Type == JTokenType.String)
+        //                        responseArray.Add(element.ToString().Reverse());
+        //                }
+
+        //                responseData = responseArray;
+
+        //            }
+
         //        }
 
 
         //        var response = !SignaturePolicy.VerifyRequestMessage(
         //                           request,
-        //                           request.ToBinary(
-        //                               CustomIncomingBinaryDataTransferRequestSerializer,
-        //                               CustomBinarySignatureSerializer,
-        //                               IncludeSignatures: false
+        //                           request.ToJSON(
+        //                               CustomIncomingDataTransferRequestSerializer,
+        //                               CustomSignatureSerializer,
+        //                               CustomCustomDataSerializer
         //                           ),
         //                           out var errorResponse
         //                       )
 
-        //                           ? new BinaryDataTransferResponse(
+        //                           ? new DataTransferResponse(
         //                                 Request:      request,
         //                                 Result:       Result.SignatureError(
         //                                                   $"Invalid signature(s): {errorResponse}"
@@ -3096,46 +2723,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //                           : request.VendorId == Vendor_Id.GraphDefined
 
         //                                 ? new (
-        //                                       Request:                request,
-        //                                       Status:                 BinaryDataTransferStatus.Accepted,
-        //                                       AdditionalStatusInfo:   null,
-        //                                       Data:                   responseBinaryData
+        //                                       Request:      request,
+        //                                       Status:       DataTransferStatus.Accepted,
+        //                                       Data:         responseData,
+        //                                       StatusInfo:   null,
+        //                                       CustomData:   null
         //                                   )
 
-        //                                 : new BinaryDataTransferResponse(
-        //                                       Request:                request,
-        //                                       Status:                 BinaryDataTransferStatus.Rejected,
-        //                                       AdditionalStatusInfo:   null,
-        //                                       Data:                   responseBinaryData
-        //                                   );
+        //                                 : new DataTransferResponse(
+        //                                       Request:      request,
+        //                                       Status:       DataTransferStatus.Rejected,
+        //                                       Data:         null,
+        //                                       StatusInfo:   null,
+        //                                       CustomData:   null
+        //                                 );
 
         //        SignaturePolicy.SignResponseMessage(
         //            response,
-        //            response.ToBinary(
-        //                CustomIncomingBinaryDataTransferResponseSerializer,
-        //                null, //CustomStatusInfoSerializer,
-        //                CustomBinarySignatureSerializer,
-        //                IncludeSignatures: false
+        //            response.ToJSON(
+        //                CustomIncomingDataTransferResponseSerializer,
+        //                null,
+        //                CustomSignatureSerializer,
+        //                CustomCustomDataSerializer
         //            ),
         //            out var errorResponse2);
 
 
-        //        #region Send OnIncomingBinaryDataTransferResponse event
+        //        #region Send OnIncomingDataResponse event
 
         //        try
         //        {
 
-        //            OnBinaryDataTransferResponseSent?.Invoke(Timestamp.Now,
-        //                                                         this,
-        //                                                         connection,
-        //                                                         request,
-        //                                                         response,
-        //                                                         Timestamp.Now - startTime);
+        //            OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+        //                                                   this,
+        //                                                   connection,
+        //                                                   request,
+        //                                                   response,
+        //                                                   Timestamp.Now - startTime);
 
         //        }
         //        catch (Exception e)
         //        {
-        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponseSent));
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingDataTransferResponse));
         //        }
 
         //        #endregion
@@ -3144,36 +2773,406 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //    };
 
-            #endregion
+        //    #endregion
 
-        }
+
+        //    // Security extensions
+
+        //    #region OnSecurityEventNotification
+
+        //    CentralSystemServer.OnSecurityEventNotification += async (LogTimestamp,
+        //                                                               Sender,
+        //                                                               connection,
+        //                                                               Request,
+        //                                                               CancellationToken) => {
+
+        //        #region Send OnSecurityEventNotificationRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnSecurityEventNotificationRequest?.Invoke(startTime,
+        //                                                        this,
+        //                                                        connection,
+        //                                                        Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecurityEventNotificationRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnSecurityEventNotification: " );
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new SecurityEventNotificationResponse(Request);
+
+
+        //        #region Send OnFirmwareStatusResponse event
+
+        //        try
+        //        {
+
+        //            OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+        //                                                         this,
+        //                                                         connection,
+        //                                                         Request,
+        //                                                         response,
+        //                                                         Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecurityEventNotificationResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnLogStatusNotification
+
+        //    CentralSystemServer.OnLogStatusNotification += async (LogTimestamp,
+        //                                                               Sender,
+        //                                                               connection,
+        //                                                               Request,
+        //                                                               CancellationToken) => {
+
+        //        #region Send OnLogStatusNotificationRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnLogStatusNotificationRequest?.Invoke(startTime,
+        //                                                        this,
+        //                                                        connection,
+        //                                                        Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnLogStatusNotificationRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnLogStatusNotification: " + Request.Status);
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new LogStatusNotificationResponse(Request);
+
+
+        //        #region Send OnFirmwareStatusResponse event
+
+        //        try
+        //        {
+
+        //            OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+        //                                                         this,
+        //                                                         connection,
+        //                                                         Request,
+        //                                                         response,
+        //                                                         Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnLogStatusNotificationResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnSignCertificate
+
+        //    CentralSystemServer.OnSignCertificate += async (LogTimestamp,
+        //                                                               Sender,
+        //                                                               connection,
+        //                                                               Request,
+        //                                                               CancellationToken) => {
+
+        //        #region Send OnSignCertificateRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnSignCertificateRequest?.Invoke(startTime,
+        //                                                        this,
+        //                                                        connection,
+        //                                                        Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignCertificateRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnSignCertificate: " );
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new SignCertificateResponse(Request, GenericStatus.Accepted);
+
+
+        //        #region Send OnFirmwareStatusResponse event
+
+        //        try
+        //        {
+
+        //            OnSignCertificateResponse?.Invoke(Timestamp.Now,
+        //                                                         this,
+        //                                                         connection,
+        //                                                         Request,
+        //                                                         response,
+        //                                                         Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignCertificateResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+        //    #region OnSignedFirmwareStatusNotification
+
+        //    CentralSystemServer.OnSignedFirmwareStatusNotification += async (LogTimestamp,
+        //                                                               Sender,
+        //                                                               connection,
+        //                                                               Request,
+        //                                                               CancellationToken) => {
+
+        //        #region Send OnSignedFirmwareStatusNotificationRequest event
+
+        //        var startTime = Timestamp.Now;
+
+        //        try
+        //        {
+
+        //            OnSignedFirmwareStatusNotificationRequest?.Invoke(startTime,
+        //                                                        this,
+        //                                                        connection,
+        //                                                        Request);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
+        //        }
+
+        //        #endregion
+
+
+        //        Console.WriteLine("OnSignedFirmwareStatusNotification: " + Request.Status);
+
+        //        await Task.Delay(100, CancellationToken);
+
+        //        var response = new SignedFirmwareStatusNotificationResponse(Request);
+
+
+        //        #region Send OnFirmwareStatusResponse event
+
+        //        try
+        //        {
+
+        //            OnSignedFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+        //                                                         this,
+        //                                                         connection,
+        //                                                         Request,
+        //                                                         response,
+        //                                                         Timestamp.Now - startTime);
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
+        //        }
+
+        //        #endregion
+
+        //        return response;
+
+        //    };
+
+        //    #endregion
+
+
+        //    // Binary Data Streams Extensions
+
+        //    #region OnIncomingBinaryDataTransfer
+
+        ////    CentralSystemServer.OnIncomingBinaryDataTransfer += async (timestamp,
+        ////                                                               sender,
+        ////                                                               connection,
+        ////                                                               request,
+        ////                                                               cancellationToken) => {
+
+        ////        #region Send OnIncomingBinaryDataTransfer event
+
+        ////        var startTime = Timestamp.Now;
+
+        ////        try
+        ////        {
+
+        ////            OnBinaryDataTransferRequestReceived?.Invoke(startTime,
+        ////                                                        this,
+        ////                                                        connection,
+        ////                                                        request);
+
+        ////        }
+        ////        catch (Exception e)
+        ////        {
+        ////            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequestReceived));
+        ////        }
+
+        ////        #endregion
+
+
+        ////        // VendorId
+        ////        // MessageId
+        ////        // BinaryData
+
+        ////        DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
+        ////                                                      request.MessageId + ", " +
+        ////                                                      request.Data?.ToUTF8String() ?? "-");
+
+
+        ////        var responseBinaryData = Array.Empty<byte>();
+
+        ////        if (request.Data is not null)
+        ////        {
+        ////            responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
+        ////        }
+
+
+        ////        var response = !SignaturePolicy.VerifyRequestMessage(
+        ////                           request,
+        ////                           request.ToBinary(
+        ////                               CustomIncomingBinaryDataTransferRequestSerializer,
+        ////                               CustomBinarySignatureSerializer,
+        ////                               IncludeSignatures: false
+        ////                           ),
+        ////                           out var errorResponse
+        ////                       )
+
+        ////                           ? new BinaryDataTransferResponse(
+        ////                                 Request:      request,
+        ////                                 Result:       Result.SignatureError(
+        ////                                                   $"Invalid signature(s): {errorResponse}"
+        ////                                               )
+        ////                             )
+
+        ////                           : request.VendorId == Vendor_Id.GraphDefined
+
+        ////                                 ? new (
+        ////                                       Request:                request,
+        ////                                       Status:                 BinaryDataTransferStatus.Accepted,
+        ////                                       AdditionalStatusInfo:   null,
+        ////                                       Data:                   responseBinaryData
+        ////                                   )
+
+        ////                                 : new BinaryDataTransferResponse(
+        ////                                       Request:                request,
+        ////                                       Status:                 BinaryDataTransferStatus.Rejected,
+        ////                                       AdditionalStatusInfo:   null,
+        ////                                       Data:                   responseBinaryData
+        ////                                   );
+
+        ////        SignaturePolicy.SignResponseMessage(
+        ////            response,
+        ////            response.ToBinary(
+        ////                CustomIncomingBinaryDataTransferResponseSerializer,
+        ////                null, //CustomStatusInfoSerializer,
+        ////                CustomBinarySignatureSerializer,
+        ////                IncludeSignatures: false
+        ////            ),
+        ////            out var errorResponse2);
+
+
+        ////        #region Send OnIncomingBinaryDataTransferResponse event
+
+        ////        try
+        ////        {
+
+        ////            OnBinaryDataTransferResponseSent?.Invoke(Timestamp.Now,
+        ////                                                         this,
+        ////                                                         connection,
+        ////                                                         request,
+        ////                                                         response,
+        ////                                                         Timestamp.Now - startTime);
+
+        ////        }
+        ////        catch (Exception e)
+        ////        {
+        ////            DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponseSent));
+        ////        }
+
+        ////        #endregion
+
+        ////        return response;
+
+        ////    };
+
+        //    #endregion
+
+        //}
 
         #endregion
 
 
         #region AddHTTPBasicAuth(NetworkingNodeId, Password)
 
-        /// <summary>
-        /// Add the given HTTP Basic Authentication password for the given charge box.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the charge box.</param>
-        /// <param name="Password">The password of the charge box.</param>
-        public void AddHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
-                                     String             Password)
-        {
+        ///// <summary>
+        ///// Add the given HTTP Basic Authentication password for the given charge box.
+        ///// </summary>
+        ///// <param name="NetworkingNodeId">The unique identification of the charge box.</param>
+        ///// <param name="Password">The password of the charge box.</param>
+        //public void AddHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
+        //                             String             Password)
+        //{
 
-            foreach (var centralSystemServer in centralSystemServers)
-            {
-                if (centralSystemServer is CentralSystemWSServer centralSystemWSServer)
-                {
+        //    foreach (var centralSystemServer in centralSystemServers)
+        //    {
+        //        if (centralSystemServer is CentralSystemWSServer centralSystemWSServer)
+        //        {
 
-                    //centralSystemWSServer.AddHTTPBasicAuth(NetworkingNodeId,
-                    //                                       Password);
+        //            //centralSystemWSServer.AddHTTPBasicAuth(NetworkingNodeId,
+        //            //                                       Password);
 
-                }
-            }
+        //        }
+        //    }
 
-        }
+        //}
 
         #endregion
 
@@ -5152,25 +5151,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (private) NextRequestId
 
-        private Request_Id NextRequestId
-        {
-            get
-            {
+        //private Request_Id NextRequestId
+        //{
+        //    get
+        //    {
 
-                Interlocked.Increment(ref internalRequestId);
+        //        Interlocked.Increment(ref internalRequestId);
 
-                return Request_Id.Parse(internalRequestId.ToString());
+        //        return Request_Id.Parse(internalRequestId.ToString());
 
-            }
-        }
+        //    }
+        //}
 
         public CentralSystem_Id Id => throw new NotImplementedException();
 
-        Request_Id ICentralSystem.NextRequestId => throw new NotImplementedException();
+    //    Request_Id ICentralSystem.NextRequestId => throw new NotImplementedException();
 
         public IEnumerable<ICSMSChannel> CSMSChannels => throw new NotImplementedException();
 
-        public NetworkingNode_Id ChargeBoxIdentity => throw new NotImplementedException();
+   //     public NetworkingNode_Id ChargeBoxIdentity => throw new NotImplementedException();
 
         public string From => throw new NotImplementedException();
 
@@ -5179,2445 +5178,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region Reset                       (Request)
-
-        /// <summary>
-        /// Reset the given charge box.
-        /// </summary>
-        /// <param name="Request">A Reset request.</param>
-        public async Task<CP.ResetResponse> Reset(ResetRequest Request)
-        {
-
-            #region Send OnResetRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnResetRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnResetRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomResetRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.Reset(Request)
-
-                                      : new CP.ResetResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ResetResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomResetResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnResetResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnResetResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnResetResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ChangeAvailability          (Request)
-
-        /// <summary>
-        /// ChangeAvailability the given charge box.
-        /// </summary>
-        /// <param name="Request">A ChangeAvailability request.</param>
-        public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
-        {
-
-            #region Send OnChangeAvailabilityRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnChangeAvailabilityRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeAvailabilityRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomChangeAvailabilityRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ChangeAvailability(Request)
-
-                                      : new CP.ChangeAvailabilityResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ChangeAvailabilityResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomChangeAvailabilityResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnChangeAvailabilityResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnChangeAvailabilityResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeAvailabilityResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetConfiguration            (Request)
-
-        /// <summary>
-        /// GetConfiguration the given charge box.
-        /// </summary>
-        /// <param name="Request">A GetConfiguration request.</param>
-        public async Task<CP.GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
-        {
-
-            #region Send OnGetConfigurationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetConfigurationRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetConfigurationRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetConfigurationRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetConfiguration(Request)
-
-                                      : new CP.GetConfigurationResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.GetConfigurationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetConfigurationResponseSerializer,
-                    CustomConfigurationKeySerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetConfigurationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetConfigurationResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetConfigurationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ChangeConfiguration         (Request)
-
-        /// <summary>
-        /// ChangeConfiguration the given charge box.
-        /// </summary>
-        /// <param name="Request">A ChangeConfiguration request.</param>
-        public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
-        {
-
-            #region Send OnChangeConfigurationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnChangeConfigurationRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeConfigurationRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomChangeConfigurationRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ChangeConfiguration(Request)
-
-                                      : new CP.ChangeConfigurationResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ChangeConfigurationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomChangeConfigurationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnChangeConfigurationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnChangeConfigurationResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeConfigurationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region DataTransfer                (Request)
-
-        /// <summary>
-        /// DataTransfer the given charge box.
-        /// </summary>
-        /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
-        {
-
-            #region Send OnDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDataTransferRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomDataTransferRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.DataTransfer(Request)
-
-                                      : new CP.DataTransferResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.DataTransferResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomDataTransferResponseSerializer,
-                    null,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetDiagnostics              (Request)
-
-        /// <summary>
-        /// GetDiagnostics the given charge box.
-        /// </summary>
-        /// <param name="Request">A GetDiagnostics request.</param>
-        public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
-        {
-
-            #region Send OnGetDiagnosticsRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetDiagnosticsRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetDiagnosticsRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetDiagnosticsRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetDiagnostics(Request)
-
-                                      : new CP.GetDiagnosticsResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.GetDiagnosticsResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetDiagnosticsResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetDiagnosticsResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetDiagnosticsResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetDiagnosticsResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region TriggerMessage              (Request)
-
-        /// <summary>
-        /// TriggerMessage the given charge box.
-        /// </summary>
-        /// <param name="Request">A TriggerMessage request.</param>
-        public async Task<CP.TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
-        {
-
-            #region Send OnTriggerMessageRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnTriggerMessageRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnTriggerMessageRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomTriggerMessageRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.TriggerMessage(Request)
-
-                                      : new CP.TriggerMessageResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.TriggerMessageResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomTriggerMessageResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnTriggerMessageResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnTriggerMessageResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnTriggerMessageResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region UpdateFirmware              (Request)
-
-        /// <summary>
-        /// UpdateFirmware the given charge box.
-        /// </summary>
-        /// <param name="Request">A UpdateFirmware request.</param>
-        public async Task<CP.UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
-        {
-
-            #region Send OnUpdateFirmwareRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUpdateFirmwareRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateFirmwareRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomUpdateFirmwareRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.UpdateFirmware(Request)
-
-                                      : new CP.UpdateFirmwareResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.UpdateFirmwareResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomUpdateFirmwareResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnUpdateFirmwareResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUpdateFirmwareResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateFirmwareResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region ReserveNow                  (Request)
-
-        /// <summary>
-        /// ReserveNow the given charge box.
-        /// </summary>
-        /// <param name="Request">A ReserveNow request.</param>
-        public async Task<CP.ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
-        {
-
-            #region Send OnReserveNowRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReserveNowRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnReserveNowRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomReserveNowRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ReserveNow(Request)
-
-                                      : new CP.ReserveNowResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ReserveNowResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomReserveNowResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnReserveNowResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReserveNowResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnReserveNowResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region CancelReservation           (Request)
-
-        /// <summary>
-        /// CancelReservation the given charge box.
-        /// </summary>
-        /// <param name="Request">A CancelReservation request.</param>
-        public async Task<CP.CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
-        {
-
-            #region Send OnCancelReservationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCancelReservationRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCancelReservationRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomCancelReservationRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.CancelReservation(Request)
-
-                                      : new CP.CancelReservationResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.CancelReservationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomCancelReservationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnCancelReservationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCancelReservationResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCancelReservationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region RemoteStartTransaction      (Request)
-
-        /// <summary>
-        /// RemoteStartTransaction the given charge box.
-        /// </summary>
-        /// <param name="Request">A RemoteStartTransaction request.</param>
-        public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
-        {
-
-            #region Send OnRemoteStartTransactionRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnRemoteStartTransactionRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStartTransactionRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomRemoteStartTransactionRequestSerializer,
-                                          CustomChargingProfileSerializer,
-                                          CustomChargingScheduleSerializer,
-                                          CustomChargingSchedulePeriodSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.RemoteStartTransaction(Request)
-
-                                      : new CP.RemoteStartTransactionResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.RemoteStartTransactionResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomRemoteStartTransactionResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnRemoteStartTransactionResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnRemoteStartTransactionResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStartTransactionResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region RemoteStopTransaction       (Request)
-
-        /// <summary>
-        /// RemoteStopTransaction the given charge box.
-        /// </summary>
-        /// <param name="Request">A RemoteStopTransaction request.</param>
-        public async Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
-        {
-
-            #region Send OnRemoteStopTransactionRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnRemoteStopTransactionRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStopTransactionRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomRemoteStopTransactionRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.RemoteStopTransaction(Request)
-
-                                      : new CP.RemoteStopTransactionResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.RemoteStopTransactionResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomRemoteStopTransactionResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnRemoteStopTransactionResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnRemoteStopTransactionResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStopTransactionResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SetChargingProfile          (Request)
-
-        /// <summary>
-        /// SetChargingProfile the given charge box.
-        /// </summary>
-        /// <param name="Request">A SetChargingProfile request.</param>
-        public async Task<CP.SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
-        {
-
-            #region Send OnSetChargingProfileRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSetChargingProfileRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSetChargingProfileRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomSetChargingProfileRequestSerializer,
-                                          CustomChargingProfileSerializer,
-                                          CustomChargingScheduleSerializer,
-                                          CustomChargingSchedulePeriodSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.SetChargingProfile(Request)
-
-                                      : new CP.SetChargingProfileResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.SetChargingProfileResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomSetChargingProfileResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnSetChargingProfileResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSetChargingProfileResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSetChargingProfileResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ClearChargingProfile        (Request)
-
-        /// <summary>
-        /// ClearChargingProfile the given charge box.
-        /// </summary>
-        /// <param name="Request">A ClearChargingProfile request.</param>
-        public async Task<CP.ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
-        {
-
-            #region Send OnClearChargingProfileRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearChargingProfileRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearChargingProfileRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomClearChargingProfileRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ClearChargingProfile(Request)
-
-                                      : new CP.ClearChargingProfileResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ClearChargingProfileResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomClearChargingProfileResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnClearChargingProfileResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearChargingProfileResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearChargingProfileResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetCompositeSchedule        (Request)
-
-        /// <summary>
-        /// GetCompositeSchedule the given charge box.
-        /// </summary>
-        /// <param name="Request">A GetCompositeSchedule request.</param>
-        public async Task<CP.GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
-        {
-
-            #region Send OnGetCompositeScheduleRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetCompositeScheduleRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetCompositeScheduleRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetCompositeSchedule(Request)
-
-                                      : new CP.GetCompositeScheduleResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.GetCompositeScheduleResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetCompositeScheduleResponseSerializer,
-                    CustomChargingScheduleSerializer,
-                    CustomChargingSchedulePeriodSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetCompositeScheduleResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCompositeScheduleResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetCompositeScheduleResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region UnlockConnector             (Request)
-
-        /// <summary>
-        /// UnlockConnector the given charge box.
-        /// </summary>
-        /// <param name="Request">A UnlockConnector request.</param>
-        public async Task<CP.UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
-        {
-
-            #region Send OnUnlockConnectorRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUnlockConnectorRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUnlockConnectorRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomUnlockConnectorRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.UnlockConnector(Request)
-
-                                      : new CP.UnlockConnectorResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.UnlockConnectorResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomUnlockConnectorResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnUnlockConnectorResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUnlockConnectorResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUnlockConnectorResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region GetLocalListVersion         (Request)
-
-        /// <summary>
-        /// GetLocalListVersion the given charge box.
-        /// </summary>
-        /// <param name="Request">A GetLocalListVersion request.</param>
-        public async Task<CP.GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
-        {
-
-            #region Send OnGetLocalListVersionRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLocalListVersionRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLocalListVersionRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetLocalListVersionRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetLocalListVersion(Request)
-
-                                      : new CP.GetLocalListVersionResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.GetLocalListVersionResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetLocalListVersionResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetLocalListVersionResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLocalListVersionResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLocalListVersionResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendLocalList               (Request)
-
-        /// <summary>
-        /// SendLocalList the given charge box.
-        /// </summary>
-        /// <param name="Request">A SendLocalList request.</param>
-        public async Task<CP.SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
-        {
-
-            #region Send OnSendLocalListRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSendLocalListRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendLocalListRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomSendLocalListRequestSerializer,
-                                          CustomAuthorizationDataSerializer,
-                                          CustomIdTagInfoSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.SendLocalList(Request)
-
-                                      : new CP.SendLocalListResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.SendLocalListResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomSendLocalListResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnSendLocalListResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSendLocalListResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendLocalListResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ClearCache                  (Request)
-
-        /// <summary>
-        /// ClearCache the given charge box.
-        /// </summary>
-        /// <param name="Request">A ClearCache request.</param>
-        public async Task<CP.ClearCacheResponse> ClearCache(ClearCacheRequest Request)
-        {
-
-            #region Send OnClearCacheRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearCacheRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearCacheRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomClearCacheRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ClearCache(Request)
-
-                                      : new CP.ClearCacheResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ClearCacheResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomClearCacheResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnClearCacheResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearCacheResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearCacheResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        // Security extensions
-
-        #region CertificateSigned           (Request)
-
-        /// <summary>
-        /// CertificateSigned the given charge box.
-        /// </summary>
-        /// <param name="Request">A CertificateSigned request.</param>
-        public async Task<CP.CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
-        {
-
-            #region Send OnCertificateSignedRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCertificateSignedRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCertificateSignedRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomCertificateSignedRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.CertificateSigned(Request)
-
-                                      : new CP.CertificateSignedResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.CertificateSignedResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomCertificateSignedResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnCertificateSignedResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCertificateSignedResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCertificateSignedResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region DeleteCertificate           (Request)
-
-        /// <summary>
-        /// DeleteCertificate the given charge box.
-        /// </summary>
-        /// <param name="Request">A DeleteCertificate request.</param>
-        public async Task<CP.DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
-        {
-
-            #region Send OnDeleteCertificateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDeleteCertificateRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteCertificateRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomDeleteCertificateRequestSerializer,
-                                          CustomCertificateHashDataSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.DeleteCertificate(Request)
-
-                                      : new CP.DeleteCertificateResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.DeleteCertificateResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomDeleteCertificateResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnDeleteCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDeleteCertificateResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ExtendedTriggerMessage      (Request)
-
-        /// <summary>
-        /// ExtendedTriggerMessage the given charge box.
-        /// </summary>
-        /// <param name="Request">A ExtendedTriggerMessage request.</param>
-        public async Task<CP.ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
-        {
-
-            #region Send OnExtendedTriggerMessageRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnExtendedTriggerMessageRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnExtendedTriggerMessageRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomExtendedTriggerMessageRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.ExtendedTriggerMessage(Request)
-
-                                      : new CP.ExtendedTriggerMessageResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.ExtendedTriggerMessageResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomExtendedTriggerMessageResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnExtendedTriggerMessageResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnExtendedTriggerMessageResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnExtendedTriggerMessageResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetInstalledCertificateIds  (Request)
-
-        /// <summary>
-        /// GetInstalledCertificateIds the given charge box.
-        /// </summary>
-        /// <param name="Request">A GetInstalledCertificateIds request.</param>
-        public async Task<CP.GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
-        {
-
-            #region Send OnGetInstalledCertificateIdsRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetInstalledCertificateIdsRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetInstalledCertificateIdsRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
-
-                                      : new CP.GetInstalledCertificateIdsResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.GetInstalledCertificateIdsResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetInstalledCertificateIdsResponseSerializer,
-                    CustomCertificateHashDataSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetInstalledCertificateIdsResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetInstalledCertificateIdsResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetLog                      (Request)
-
-        /// <summary>
-        /// GetLog the given charge box.
-        /// </summary>
-        /// <param name="Request">A GetLog request.</param>
-        public async Task<CP.GetLogResponse> GetLog(GetLogRequest Request)
-        {
-
-            #region Send OnGetLogRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLogRequest?.Invoke(startTime,
-                                        this,
-                                        Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLogRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomGetLogRequestSerializer,
-                                          CustomLogParametersSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.GetLog(Request)
-
-                                      : new CP.GetLogResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.GetLogResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetLogResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetLogResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLogResponse?.Invoke(endTime,
-                                         this,
-                                         Request,
-                                         response,
-                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLogResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region InstallCertificate          (Request)
-
-        /// <summary>
-        /// InstallCertificate the given charge box.
-        /// </summary>
-        /// <param name="Request">A InstallCertificate request.</param>
-        public async Task<CP.InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
-        {
-
-            #region Send OnInstallCertificateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnInstallCertificateRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnInstallCertificateRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomInstallCertificateRequestSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.InstallCertificate(Request)
-
-                                      : new CP.InstallCertificateResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.InstallCertificateResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomInstallCertificateResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnInstallCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnInstallCertificateResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnInstallCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SignedUpdateFirmware        (Request)
-
-        /// <summary>
-        /// SignedUpdateFirmware the given charge box.
-        /// </summary>
-        /// <param name="Request">A SignedUpdateFirmware request.</param>
-        public async Task<CP.SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
-        {
-
-            #region Send OnSignedUpdateFirmwareRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSignedUpdateFirmwareRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedUpdateFirmwareRequest));
-            }
-
-            #endregion
-
-
-            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-                                centralSystem is not null
-
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomSignedUpdateFirmwareRequestSerializer,
-                                          CustomFirmwareImageSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
-
-                                      ? await centralSystem.Item1.SignedUpdateFirmware(Request)
-
-                                      : new CP.SignedUpdateFirmwareResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
-
-                                : new CP.SignedUpdateFirmwareResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charge box!")
-                                  );
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomSignedUpdateFirmwareResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnSignedUpdateFirmwareResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSignedUpdateFirmwareResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedUpdateFirmwareResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region BinaryDataTransfer          (Request)
+        //#region Reset                       (Request)
 
         ///// <summary>
-        ///// Transfer the given data to the given charging station.
+        ///// Reset the given charge box.
         ///// </summary>
-        ///// <param name="Request">A BinaryDataTransfer request.</param>
-        //public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        ///// <param name="Request">A Reset request.</param>
+        //public async Task<CP.ResetResponse> Reset(ResetRequest Request)
         //{
 
-        //    #region Send OnBinaryDataTransferRequest event
+        //    #region Send OnResetRequest event
 
         //    var startTime = Timestamp.Now;
 
         //    try
         //    {
 
-        //        OnBinaryDataTransferRequest?.Invoke(startTime,
-        //                                            this,
-        //                                            Request);
+        //        OnResetRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
         //    }
         //    catch (Exception e)
         //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequest));
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnResetRequest));
         //    }
 
         //    #endregion
@@ -7628,56 +5211,55 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //                        ? SignaturePolicy.SignRequestMessage(
         //                              Request,
-        //                              Request.ToBinary(
-        //                                  CustomBinaryDataTransferRequestSerializer,
-        //                                  CustomBinarySignatureSerializer,
-        //                                  IncludeSignatures: false
+        //                              Request.ToJSON(
+        //                                  CustomResetRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
         //                              ),
         //                              out var errorResponse
         //                          )
 
-        //                              ? await centralSystem.Item1.BinaryDataTransfer(Request)
+        //                              ? await centralSystem.Item1.Reset(Request)
 
-        //                              : new BinaryDataTransferResponse(
+        //                              : new CP.ResetResponse(
         //                                    Request,
         //                                    Result.SignatureError(errorResponse)
         //                                )
 
-        //                        : new BinaryDataTransferResponse(
+        //                        : new CP.ResetResponse(
         //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                              Result.Server("Unknown or unreachable charge box!")
         //                          );
 
 
         //    SignaturePolicy.VerifyResponseMessage(
         //        response,
-        //        response.ToBinary(
-        //            CustomBinaryDataTransferResponseSerializer,
-        //            null, // CustomStatusInfoSerializer
-        //            CustomBinarySignatureSerializer,
-        //            IncludeSignatures: false
+        //        response.ToJSON(
+        //            CustomResetResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
         //        ),
         //        out errorResponse
         //    );
 
 
-        //    #region Send OnBinaryDataTransferResponse event
+        //    #region Send OnResetResponse event
 
         //    var endTime = Timestamp.Now;
 
         //    try
         //    {
 
-        //        OnBinaryDataTransferResponse?.Invoke(endTime,
-        //                                       this,
-        //                                       Request,
-        //                                       response,
-        //                                       endTime - startTime);
+        //        OnResetResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
 
         //    }
         //    catch (Exception e)
         //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponse));
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnResetResponse));
         //    }
 
         //    #endregion
@@ -7686,31 +5268,2167 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //}
 
-        #endregion
+        //#endregion
 
-        #region GetFile                     (Request)
+        //#region ChangeAvailability          (Request)
 
         ///// <summary>
-        ///// Request the given file from the charging station.
+        ///// ChangeAvailability the given charge box.
         ///// </summary>
-        ///// <param name="Request">A GetFile request.</param>
-        //public async Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request)
+        ///// <param name="Request">A ChangeAvailability request.</param>
+        //public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         //{
 
-        //    #region Send OnGetFileRequest event
+        //    #region Send OnChangeAvailabilityRequest event
 
         //    var startTime = Timestamp.Now;
 
         //    try
         //    {
 
-        //        OnGetFileRequest?.Invoke(startTime,
+        //        OnChangeAvailabilityRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeAvailabilityRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomChangeAvailabilityRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ChangeAvailability(Request)
+
+        //                              : new CP.ChangeAvailabilityResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.ChangeAvailabilityResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomChangeAvailabilityResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnChangeAvailabilityResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnChangeAvailabilityResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeAvailabilityResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region GetConfiguration            (Request)
+
+        ///// <summary>
+        ///// GetConfiguration the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A GetConfiguration request.</param>
+        //public async Task<CP.GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
+        //{
+
+        //    #region Send OnGetConfigurationRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetConfigurationRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetConfigurationRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetConfigurationRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetConfiguration(Request)
+
+        //                              : new CP.GetConfigurationResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.GetConfigurationResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomGetConfigurationResponseSerializer,
+        //            CustomConfigurationKeySerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnGetConfigurationResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetConfigurationResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetConfigurationResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region ChangeConfiguration         (Request)
+
+        ///// <summary>
+        ///// ChangeConfiguration the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A ChangeConfiguration request.</param>
+        //public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
+        //{
+
+        //    #region Send OnChangeConfigurationRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnChangeConfigurationRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeConfigurationRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomChangeConfigurationRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ChangeConfiguration(Request)
+
+        //                              : new CP.ChangeConfigurationResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.ChangeConfigurationResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomChangeConfigurationResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnChangeConfigurationResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnChangeConfigurationResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeConfigurationResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region DataTransfer                (Request)
+
+        ///// <summary>
+        ///// DataTransfer the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A DataTransfer request.</param>
+        //public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
+        //{
+
+        //    #region Send OnDataTransferRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnDataTransferRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDataTransferRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomDataTransferRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.DataTransfer(Request)
+
+        //                              : new CP.DataTransferResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.DataTransferResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomDataTransferResponseSerializer,
+        //            null,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnDataTransferResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnDataTransferResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDataTransferResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region GetDiagnostics              (Request)
+
+        ///// <summary>
+        ///// GetDiagnostics the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A GetDiagnostics request.</param>
+        //public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
+        //{
+
+        //    #region Send OnGetDiagnosticsRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetDiagnosticsRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetDiagnosticsRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetDiagnosticsRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetDiagnostics(Request)
+
+        //                              : new CP.GetDiagnosticsResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.GetDiagnosticsResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomGetDiagnosticsResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnGetDiagnosticsResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetDiagnosticsResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetDiagnosticsResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region TriggerMessage              (Request)
+
+        ///// <summary>
+        ///// TriggerMessage the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A TriggerMessage request.</param>
+        //public async Task<CP.TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
+        //{
+
+        //    #region Send OnTriggerMessageRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnTriggerMessageRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnTriggerMessageRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomTriggerMessageRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.TriggerMessage(Request)
+
+        //                              : new CP.TriggerMessageResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.TriggerMessageResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomTriggerMessageResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnTriggerMessageResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnTriggerMessageResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnTriggerMessageResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region UpdateFirmware              (Request)
+
+        ///// <summary>
+        ///// UpdateFirmware the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A UpdateFirmware request.</param>
+        //public async Task<CP.UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
+        //{
+
+        //    #region Send OnUpdateFirmwareRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnUpdateFirmwareRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateFirmwareRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomUpdateFirmwareRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.UpdateFirmware(Request)
+
+        //                              : new CP.UpdateFirmwareResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.UpdateFirmwareResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomUpdateFirmwareResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnUpdateFirmwareResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnUpdateFirmwareResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateFirmwareResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+
+        //#region ReserveNow                  (Request)
+
+        ///// <summary>
+        ///// ReserveNow the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A ReserveNow request.</param>
+        //public async Task<CP.ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
+        //{
+
+        //    #region Send OnReserveNowRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnReserveNowRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnReserveNowRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomReserveNowRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ReserveNow(Request)
+
+        //                              : new CP.ReserveNowResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.ReserveNowResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomReserveNowResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnReserveNowResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnReserveNowResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnReserveNowResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region CancelReservation           (Request)
+
+        ///// <summary>
+        ///// CancelReservation the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A CancelReservation request.</param>
+        //public async Task<CP.CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
+        //{
+
+        //    #region Send OnCancelReservationRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnCancelReservationRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCancelReservationRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomCancelReservationRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.CancelReservation(Request)
+
+        //                              : new CP.CancelReservationResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.CancelReservationResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomCancelReservationResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnCancelReservationResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnCancelReservationResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCancelReservationResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region RemoteStartTransaction      (Request)
+
+        ///// <summary>
+        ///// RemoteStartTransaction the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A RemoteStartTransaction request.</param>
+        //public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
+        //{
+
+        //    #region Send OnRemoteStartTransactionRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnRemoteStartTransactionRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStartTransactionRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomRemoteStartTransactionRequestSerializer,
+        //                                  CustomChargingProfileSerializer,
+        //                                  CustomChargingScheduleSerializer,
+        //                                  CustomChargingSchedulePeriodSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.RemoteStartTransaction(Request)
+
+        //                              : new CP.RemoteStartTransactionResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.RemoteStartTransactionResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomRemoteStartTransactionResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnRemoteStartTransactionResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnRemoteStartTransactionResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStartTransactionResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region RemoteStopTransaction       (Request)
+
+        ///// <summary>
+        ///// RemoteStopTransaction the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A RemoteStopTransaction request.</param>
+        //public async Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
+        //{
+
+        //    #region Send OnRemoteStopTransactionRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnRemoteStopTransactionRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStopTransactionRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomRemoteStopTransactionRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.RemoteStopTransaction(Request)
+
+        //                              : new CP.RemoteStopTransactionResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.RemoteStopTransactionResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomRemoteStopTransactionResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnRemoteStopTransactionResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnRemoteStopTransactionResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStopTransactionResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region SetChargingProfile          (Request)
+
+        ///// <summary>
+        ///// SetChargingProfile the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A SetChargingProfile request.</param>
+        //public async Task<CP.SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
+        //{
+
+        //    #region Send OnSetChargingProfileRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnSetChargingProfileRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSetChargingProfileRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomSetChargingProfileRequestSerializer,
+        //                                  CustomChargingProfileSerializer,
+        //                                  CustomChargingScheduleSerializer,
+        //                                  CustomChargingSchedulePeriodSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.SetChargingProfile(Request)
+
+        //                              : new CP.SetChargingProfileResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.SetChargingProfileResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomSetChargingProfileResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnSetChargingProfileResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnSetChargingProfileResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSetChargingProfileResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region ClearChargingProfile        (Request)
+
+        ///// <summary>
+        ///// ClearChargingProfile the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A ClearChargingProfile request.</param>
+        //public async Task<CP.ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
+        //{
+
+        //    #region Send OnClearChargingProfileRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnClearChargingProfileRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearChargingProfileRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomClearChargingProfileRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ClearChargingProfile(Request)
+
+        //                              : new CP.ClearChargingProfileResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.ClearChargingProfileResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomClearChargingProfileResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnClearChargingProfileResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnClearChargingProfileResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearChargingProfileResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region GetCompositeSchedule        (Request)
+
+        ///// <summary>
+        ///// GetCompositeSchedule the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A GetCompositeSchedule request.</param>
+        //public async Task<CP.GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
+        //{
+
+        //    #region Send OnGetCompositeScheduleRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetCompositeScheduleRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetCompositeScheduleRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetCompositeScheduleRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetCompositeSchedule(Request)
+
+        //                              : new CP.GetCompositeScheduleResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.GetCompositeScheduleResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomGetCompositeScheduleResponseSerializer,
+        //            CustomChargingScheduleSerializer,
+        //            CustomChargingSchedulePeriodSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnGetCompositeScheduleResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetCompositeScheduleResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetCompositeScheduleResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region UnlockConnector             (Request)
+
+        ///// <summary>
+        ///// UnlockConnector the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A UnlockConnector request.</param>
+        //public async Task<CP.UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
+        //{
+
+        //    #region Send OnUnlockConnectorRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnUnlockConnectorRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUnlockConnectorRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomUnlockConnectorRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.UnlockConnector(Request)
+
+        //                              : new CP.UnlockConnectorResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.UnlockConnectorResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomUnlockConnectorResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnUnlockConnectorResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnUnlockConnectorResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUnlockConnectorResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+
+        //#region GetLocalListVersion         (Request)
+
+        ///// <summary>
+        ///// GetLocalListVersion the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A GetLocalListVersion request.</param>
+        //public async Task<CP.GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
+        //{
+
+        //    #region Send OnGetLocalListVersionRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetLocalListVersionRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLocalListVersionRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetLocalListVersionRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetLocalListVersion(Request)
+
+        //                              : new CP.GetLocalListVersionResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.GetLocalListVersionResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomGetLocalListVersionResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnGetLocalListVersionResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetLocalListVersionResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLocalListVersionResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region SendLocalList               (Request)
+
+        ///// <summary>
+        ///// SendLocalList the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A SendLocalList request.</param>
+        //public async Task<CP.SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
+        //{
+
+        //    #region Send OnSendLocalListRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnSendLocalListRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendLocalListRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomSendLocalListRequestSerializer,
+        //                                  CustomAuthorizationDataSerializer,
+        //                                  CustomIdTagInfoSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.SendLocalList(Request)
+
+        //                              : new CP.SendLocalListResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.SendLocalListResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomSendLocalListResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnSendLocalListResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnSendLocalListResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendLocalListResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region ClearCache                  (Request)
+
+        ///// <summary>
+        ///// ClearCache the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A ClearCache request.</param>
+        //public async Task<CP.ClearCacheResponse> ClearCache(ClearCacheRequest Request)
+        //{
+
+        //    #region Send OnClearCacheRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnClearCacheRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearCacheRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomClearCacheRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ClearCache(Request)
+
+        //                              : new CP.ClearCacheResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.ClearCacheResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomClearCacheResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnClearCacheResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnClearCacheResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearCacheResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+
+        //// Security extensions
+
+        //#region CertificateSigned           (Request)
+
+        ///// <summary>
+        ///// CertificateSigned the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A CertificateSigned request.</param>
+        //public async Task<CP.CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
+        //{
+
+        //    #region Send OnCertificateSignedRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnCertificateSignedRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCertificateSignedRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomCertificateSignedRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.CertificateSigned(Request)
+
+        //                              : new CP.CertificateSignedResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.CertificateSignedResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomCertificateSignedResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnCertificateSignedResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnCertificateSignedResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCertificateSignedResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region DeleteCertificate           (Request)
+
+        ///// <summary>
+        ///// DeleteCertificate the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A DeleteCertificate request.</param>
+        //public async Task<CP.DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
+        //{
+
+        //    #region Send OnDeleteCertificateRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnDeleteCertificateRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteCertificateRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomDeleteCertificateRequestSerializer,
+        //                                  CustomCertificateHashDataSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.DeleteCertificate(Request)
+
+        //                              : new CP.DeleteCertificateResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.DeleteCertificateResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomDeleteCertificateResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnDeleteCertificateResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnDeleteCertificateResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteCertificateResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region ExtendedTriggerMessage      (Request)
+
+        ///// <summary>
+        ///// ExtendedTriggerMessage the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A ExtendedTriggerMessage request.</param>
+        //public async Task<CP.ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
+        //{
+
+        //    #region Send OnExtendedTriggerMessageRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnExtendedTriggerMessageRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnExtendedTriggerMessageRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomExtendedTriggerMessageRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.ExtendedTriggerMessage(Request)
+
+        //                              : new CP.ExtendedTriggerMessageResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.ExtendedTriggerMessageResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomExtendedTriggerMessageResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnExtendedTriggerMessageResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnExtendedTriggerMessageResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnExtendedTriggerMessageResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region GetInstalledCertificateIds  (Request)
+
+        ///// <summary>
+        ///// GetInstalledCertificateIds the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A GetInstalledCertificateIds request.</param>
+        //public async Task<CP.GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
+        //{
+
+        //    #region Send OnGetInstalledCertificateIdsRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetInstalledCertificateIdsRequestSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
+
+        //                              : new CP.GetInstalledCertificateIdsResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.GetInstalledCertificateIdsResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomGetInstalledCertificateIdsResponseSerializer,
+        //            CustomCertificateHashDataSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnGetInstalledCertificateIdsResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region GetLog                      (Request)
+
+        ///// <summary>
+        ///// GetLog the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A GetLog request.</param>
+        //public async Task<CP.GetLogResponse> GetLog(GetLogRequest Request)
+        //{
+
+        //    #region Send OnGetLogRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetLogRequest?.Invoke(startTime,
+        //                                this,
+        //                                Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLogRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        //                        centralSystem is not null
+
+        //                        ? SignaturePolicy.SignRequestMessage(
+        //                              Request,
+        //                              Request.ToJSON(
+        //                                  CustomGetLogRequestSerializer,
+        //                                  CustomLogParametersSerializer,
+        //                                  CustomSignatureSerializer,
+        //                                  CustomCustomDataSerializer
+        //                              ),
+        //                              out var errorResponse
+        //                          )
+
+        //                              ? await centralSystem.Item1.GetLog(Request)
+
+        //                              : new CP.GetLogResponse(
+        //                                    Request,
+        //                                    Result.SignatureError(errorResponse)
+        //                                )
+
+        //                        : new CP.GetLogResponse(
+        //                              Request,
+        //                              Result.Server("Unknown or unreachable charge box!")
+        //                          );
+
+
+        //    SignaturePolicy.VerifyResponseMessage(
+        //        response,
+        //        response.ToJSON(
+        //            CustomGetLogResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
+        //        ),
+        //        out errorResponse
+        //    );
+
+
+        //    #region Send OnGetLogResponse event
+
+        //    var endTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnGetLogResponse?.Invoke(endTime,
         //                                 this,
-        //                                 Request);
+        //                                 Request,
+        //                                 response,
+        //                                 endTime - startTime);
+
         //    }
         //    catch (Exception e)
         //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileRequest));
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLogResponse));
+        //    }
+
+        //    #endregion
+
+        //    return response;
+
+        //}
+
+        //#endregion
+
+        //#region InstallCertificate          (Request)
+
+        ///// <summary>
+        ///// InstallCertificate the given charge box.
+        ///// </summary>
+        ///// <param name="Request">A InstallCertificate request.</param>
+        //public async Task<CP.InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
+        //{
+
+        //    #region Send OnInstallCertificateRequest event
+
+        //    var startTime = Timestamp.Now;
+
+        //    try
+        //    {
+
+        //        OnInstallCertificateRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnInstallCertificateRequest));
         //    }
 
         //    #endregion
@@ -7722,147 +7440,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //                        ? SignaturePolicy.SignRequestMessage(
         //                              Request,
         //                              Request.ToJSON(
-        //                                  CustomGetFileRequestSerializer,
+        //                                  CustomInstallCertificateRequestSerializer,
         //                                  CustomSignatureSerializer,
         //                                  CustomCustomDataSerializer
         //                              ),
         //                              out var errorResponse
         //                          )
 
-        //                              ? await centralSystem.Item1.GetFile(Request)
+        //                              ? await centralSystem.Item1.InstallCertificate(Request)
 
-        //                              : new OCPP.CS.GetFileResponse(
+        //                              : new CP.InstallCertificateResponse(
         //                                    Request,
         //                                    Result.SignatureError(errorResponse)
         //                                )
 
-        //                        : new OCPP.CS.GetFileResponse(
+        //                        : new CP.InstallCertificateResponse(
         //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
-
-
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToBinary(
-        //            CustomGetFileResponseSerializer,
-        //            null, // CustomStatusInfoSerializer
-        //            CustomBinarySignatureSerializer,
-        //            IncludeSignatures: false
-        //        ),
-        //        out errorResponse
-        //    );
-
-
-        //    #region Send OnGetFileResponse event
-
-        //    var endTime = Timestamp.Now;
-
-        //    try
-        //    {
-
-        //        OnGetFileResponse?.Invoke(endTime,
-        //                                  this,
-        //                                  Request,
-        //                                  response,
-        //                                  endTime - startTime);
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileResponse));
-        //    }
-
-        //    #endregion
-
-        //    return response;
-
-        //}
-
-        #endregion
-
-        #region SendFile                    (Request)
-
-        ///// <summary>
-        ///// Request the given file from the charging station.
-        ///// </summary>
-        ///// <param name="Request">A SendFile request.</param>
-        //public async Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request)
-        //{
-
-        //    #region Send OnSendFileRequest event
-
-        //    var startTime = Timestamp.Now;
-
-        //    try
-        //    {
-
-        //        OnSendFileRequest?.Invoke(startTime,
-        //                                  this,
-        //                                  Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileRequest));
-        //    }
-
-        //    #endregion
-
-
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
-
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToBinary(
-        //                                  CustomSendFileRequestSerializer,
-        //                                  CustomBinarySignatureSerializer,
-        //                                  IncludeSignatures: false
-        //                              ),
-        //                              out var errorResponse
-        //                          )
-
-        //                              ? await centralSystem.Item1.SendFile(Request)
-
-        //                              : new OCPP.CS.SendFileResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
-
-        //                        : new OCPP.CS.SendFileResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                              Result.Server("Unknown or unreachable charge box!")
         //                          );
 
 
         //    SignaturePolicy.VerifyResponseMessage(
         //        response,
         //        response.ToJSON(
-        //            CustomSendFileResponseSerializer,
-        //            CustomStatusInfoSerializer,
-        //            CustomSignatureSerializer
+        //            CustomInstallCertificateResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
         //        ),
         //        out errorResponse
         //    );
 
 
-        //    #region Send OnSendFileResponse event
+        //    #region Send OnInstallCertificateResponse event
 
         //    var endTime = Timestamp.Now;
 
         //    try
         //    {
 
-        //        OnSendFileResponse?.Invoke(endTime,
-        //                                   this,
-        //                                   Request,
-        //                                   response,
-        //                                   endTime - startTime);
+        //        OnInstallCertificateResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
 
         //    }
         //    catch (Exception e)
         //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileResponse));
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnInstallCertificateResponse));
         //    }
 
         //    #endregion
@@ -7871,31 +7496,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //}
 
-        #endregion
+        //#endregion
 
-        #region DeleteFile                  (Request)
+        //#region SignedUpdateFirmware        (Request)
 
         ///// <summary>
-        ///// Delete the given file from the charging station.
+        ///// SignedUpdateFirmware the given charge box.
         ///// </summary>
-        ///// <param name="Request">A DeleteFile request.</param>
-        //public async Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
+        ///// <param name="Request">A SignedUpdateFirmware request.</param>
+        //public async Task<CP.SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
         //{
 
-        //    #region Send OnDeleteFileRequest event
+        //    #region Send OnSignedUpdateFirmwareRequest event
 
         //    var startTime = Timestamp.Now;
 
         //    try
         //    {
 
-        //        OnDeleteFileRequest?.Invoke(startTime,
-        //                                    this,
-        //                                    Request);
+        //        OnSignedUpdateFirmwareRequest?.Invoke(startTime,
+        //                               this,
+        //                               Request);
         //    }
         //    catch (Exception e)
         //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileRequest));
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedUpdateFirmwareRequest));
         //    }
 
         //    #endregion
@@ -7907,54 +7532,55 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //                        ? SignaturePolicy.SignRequestMessage(
         //                              Request,
         //                              Request.ToJSON(
-        //                                  CustomDeleteFileRequestSerializer,
+        //                                  CustomSignedUpdateFirmwareRequestSerializer,
+        //                                  CustomFirmwareImageSerializer,
         //                                  CustomSignatureSerializer,
         //                                  CustomCustomDataSerializer
         //                              ),
         //                              out var errorResponse
         //                          )
 
-        //                              ? await centralSystem.Item1.DeleteFile(Request)
+        //                              ? await centralSystem.Item1.SignedUpdateFirmware(Request)
 
-        //                              : new OCPP.CS.DeleteFileResponse(
+        //                              : new CP.SignedUpdateFirmwareResponse(
         //                                    Request,
         //                                    Result.SignatureError(errorResponse)
         //                                )
 
-        //                        : new OCPP.CS.DeleteFileResponse(
+        //                        : new CP.SignedUpdateFirmwareResponse(
         //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
+        //                              Result.Server("Unknown or unreachable charge box!")
         //                          );
 
 
         //    SignaturePolicy.VerifyResponseMessage(
         //        response,
         //        response.ToJSON(
-        //            CustomDeleteFileResponseSerializer,
-        //            CustomStatusInfoSerializer,
-        //            CustomSignatureSerializer
+        //            CustomSignedUpdateFirmwareResponseSerializer,
+        //            CustomSignatureSerializer,
+        //            CustomCustomDataSerializer
         //        ),
         //        out errorResponse
         //    );
 
 
-        //    #region Send OnDeleteFileResponse event
+        //    #region Send OnSignedUpdateFirmwareResponse event
 
         //    var endTime = Timestamp.Now;
 
         //    try
         //    {
 
-        //        OnDeleteFileResponse?.Invoke(endTime,
-        //                                     this,
-        //                                     Request,
-        //                                     response,
-        //                                     endTime - startTime);
+        //        OnSignedUpdateFirmwareResponse?.Invoke(endTime,
+        //                                this,
+        //                                Request,
+        //                                response,
+        //                                endTime - startTime);
 
         //    }
         //    catch (Exception e)
         //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileResponse));
+        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedUpdateFirmwareResponse));
         //    }
 
         //    #endregion
@@ -7963,779 +7589,1152 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //}
 
-        #endregion
+        //#endregion
 
-        #region ListDirectory               (Request)
 
-        ///// <summary>
-        ///// Delete the given file from the charging station.
-        ///// </summary>
-        ///// <param name="Request">A ListDirectory request.</param>
-        //public async Task<OCPP.CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
-        //{
+        //// Binary Data Streams Extensions
 
-        //    #region Send OnListDirectoryRequest event
+        //#region BinaryDataTransfer          (Request)
 
-        //    var startTime = Timestamp.Now;
+        /////// <summary>
+        /////// Transfer the given data to the given charging station.
+        /////// </summary>
+        /////// <param name="Request">A BinaryDataTransfer request.</param>
+        ////public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        ////{
 
-        //    try
-        //    {
+        ////    #region Send OnBinaryDataTransferRequest event
 
-        //        OnListDirectoryRequest?.Invoke(startTime,
-        //                                       this,
-        //                                       Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryRequest));
-        //    }
+        ////    var startTime = Timestamp.Now;
 
-        //    #endregion
+        ////    try
+        ////    {
 
+        ////        OnBinaryDataTransferRequest?.Invoke(startTime,
+        ////                                            this,
+        ////                                            Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequest));
+        ////    }
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////    #endregion
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  CustomListDirectoryRequestSerializer,
-        //                                  CustomSignatureSerializer,
-        //                                  CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
 
-        //                              ? await centralSystem.Item1.ListDirectory(Request)
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        //                              : new OCPP.CS.ListDirectoryResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToBinary(
+        ////                                  CustomBinaryDataTransferRequestSerializer,
+        ////                                  CustomBinarySignatureSerializer,
+        ////                                  IncludeSignatures: false
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        //                        : new OCPP.CS.ListDirectoryResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        ////                              ? await centralSystem.Item1.BinaryDataTransfer(Request)
 
+        ////                              : new BinaryDataTransferResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            CustomListDirectoryResponseSerializer,
-        //            CustomStatusInfoSerializer,
-        //            CustomSignatureSerializer
-        //        ),
-        //        out errorResponse
-        //    );
+        ////                        : new BinaryDataTransferResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
 
-        //    #region Send OnListDirectoryResponse event
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToBinary(
+        ////            CustomBinaryDataTransferResponseSerializer,
+        ////            null, // CustomStatusInfoSerializer
+        ////            CustomBinarySignatureSerializer,
+        ////            IncludeSignatures: false
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
-        //    var endTime = Timestamp.Now;
 
-        //    try
-        //    {
+        ////    #region Send OnBinaryDataTransferResponse event
 
-        //        OnListDirectoryResponse?.Invoke(endTime,
-        //                                        this,
-        //                                        Request,
-        //                                        response,
-        //                                        endTime - startTime);
+        ////    var endTime = Timestamp.Now;
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryResponse));
-        //    }
+        ////    try
+        ////    {
 
-        //    #endregion
+        ////        OnBinaryDataTransferResponse?.Invoke(endTime,
+        ////                                       this,
+        ////                                       Request,
+        ////                                       response,
+        ////                                       endTime - startTime);
 
-        //    return response;
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponse));
+        ////    }
 
-        //}
+        ////    #endregion
 
-        #endregion
+        ////    return response;
 
+        ////}
 
+        //#endregion
 
-        // E2E Security Extensions
+        //#region GetFile                     (Request)
 
-        #region AddSignaturePolicy          (Request)
+        /////// <summary>
+        /////// Request the given file from the charging station.
+        /////// </summary>
+        /////// <param name="Request">A GetFile request.</param>
+        ////public async Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request)
+        ////{
 
-        ///// <summary>
-        ///// Add a signature policy.
-        ///// </summary>
-        ///// <param name="Request">An AddSignaturePolicy request.</param>
-        //public async Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
-        //{
+        ////    #region Send OnGetFileRequest event
 
-        //    #region Send OnAddSignaturePolicyRequest event
+        ////    var startTime = Timestamp.Now;
 
-        //    var startTime = Timestamp.Now;
+        ////    try
+        ////    {
 
-        //    try
-        //    {
+        ////        OnGetFileRequest?.Invoke(startTime,
+        ////                                 this,
+        ////                                 Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileRequest));
+        ////    }
 
-        //        OnAddSignaturePolicyRequest?.Invoke(startTime,
-        //                                            this,
-        //                                            Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyRequest));
-        //    }
+        ////    #endregion
 
-        //    #endregion
 
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  CustomGetFileRequestSerializer,
+        ////                                  CustomSignatureSerializer,
+        ////                                  CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  //CustomAddSignaturePolicyRequestSerializer,
-        //                                  //CustomMessageInfoSerializer,
-        //                                  //CustomMessageContentSerializer,
-        //                                  //CustomComponentSerializer,
-        //                                  //CustomEVSESerializer,
-        //                                  //CustomSignatureSerializer,
-        //                                  //CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
-
-        //                              ? await centralSystem.Item1.AddSignaturePolicy(Request)
-
-        //                              : new OCPP.CS.AddSignaturePolicyResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
-
-        //                        : new OCPP.CS.AddSignaturePolicyResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
-
-
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            //CustomAddSignaturePolicyResponseSerializer,
-        //            //CustomStatusInfoSerializer,
-        //            //CustomSignatureSerializer,
-        //            //CustomCustomDataSerializer
-        //        ),
-        //        out errorResponse
-        //    );
-
-
-        //    #region Send OnAddSignaturePolicyResponse event
-
-        //    var endTime = Timestamp.Now;
-
-        //    try
-        //    {
-
-        //        OnAddSignaturePolicyResponse?.Invoke(endTime,
-        //                                            this,
-        //                                            Request,
-        //                                            response,
-        //                                            endTime - startTime);
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyResponse));
-        //    }
-
-        //    #endregion
+        ////                              ? await centralSystem.Item1.GetFile(Request)
 
-        //    return response;
+        ////                              : new OCPP.CS.GetFileResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //}
+        ////                        : new OCPP.CS.GetFileResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
-        #endregion
 
-        #region UpdateSignaturePolicy       (Request)
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToBinary(
+        ////            CustomGetFileResponseSerializer,
+        ////            null, // CustomStatusInfoSerializer
+        ////            CustomBinarySignatureSerializer,
+        ////            IncludeSignatures: false
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
-        ///// <summary>
-        ///// Set a display message.
-        ///// </summary>
-        ///// <param name="Request">A UpdateSignaturePolicy request.</param>
-        //public async Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
-        //{
 
-        //    #region Send OnUpdateSignaturePolicyRequest event
+        ////    #region Send OnGetFileResponse event
 
-        //    var startTime = Timestamp.Now;
+        ////    var endTime = Timestamp.Now;
 
-        //    try
-        //    {
+        ////    try
+        ////    {
 
-        //        OnUpdateSignaturePolicyRequest?.Invoke(startTime,
-        //                                           this,
-        //                                           Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyRequest));
-        //    }
+        ////        OnGetFileResponse?.Invoke(endTime,
+        ////                                  this,
+        ////                                  Request,
+        ////                                  response,
+        ////                                  endTime - startTime);
 
-        //    #endregion
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileResponse));
+        ////    }
 
+        ////    #endregion
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////    return response;
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  //CustomUpdateSignaturePolicyRequestSerializer,
-        //                                  //CustomMessageInfoSerializer,
-        //                                  //CustomMessageContentSerializer,
-        //                                  //CustomComponentSerializer,
-        //                                  //CustomEVSESerializer,
-        //                                  //CustomSignatureSerializer,
-        //                                  //CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
+        ////}
 
-        //                              ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
-
-        //                              : new OCPP.CS.UpdateSignaturePolicyResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
-
-        //                        : new OCPP.CS.UpdateSignaturePolicyResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        //#endregion
 
+        //#region SendFile                    (Request)
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            //CustomUpdateSignaturePolicyResponseSerializer,
-        //            //CustomStatusInfoSerializer,
-        //            //CustomSignatureSerializer,
-        //            //CustomCustomDataSerializer
-        //        ),
-        //        out errorResponse
-        //    );
-
+        /////// <summary>
+        /////// Request the given file from the charging station.
+        /////// </summary>
+        /////// <param name="Request">A SendFile request.</param>
+        ////public async Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request)
+        ////{
 
-        //    #region Send OnUpdateSignaturePolicyResponse event
+        ////    #region Send OnSendFileRequest event
 
-        //    var endTime = Timestamp.Now;
+        ////    var startTime = Timestamp.Now;
 
-        //    try
-        //    {
+        ////    try
+        ////    {
 
-        //        OnUpdateSignaturePolicyResponse?.Invoke(endTime,
-        //                                            this,
-        //                                            Request,
-        //                                            response,
-        //                                            endTime - startTime);
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyResponse));
-        //    }
+        ////        OnSendFileRequest?.Invoke(startTime,
+        ////                                  this,
+        ////                                  Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileRequest));
+        ////    }
 
-        //    #endregion
+        ////    #endregion
 
-        //    return response;
 
-        //}
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        #endregion
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToBinary(
+        ////                                  CustomSendFileRequestSerializer,
+        ////                                  CustomBinarySignatureSerializer,
+        ////                                  IncludeSignatures: false
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        #region DeleteSignaturePolicy       (Request)
+        ////                              ? await centralSystem.Item1.SendFile(Request)
 
-        ///// <summary>
-        ///// Set a display message.
-        ///// </summary>
-        ///// <param name="Request">A DeleteSignaturePolicy request.</param>
-        //public async Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
-        //{
+        ////                              : new OCPP.CS.SendFileResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //    #region Send OnDeleteSignaturePolicyRequest event
+        ////                        : new OCPP.CS.SendFileResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
-        //    var startTime = Timestamp.Now;
 
-        //    try
-        //    {
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            CustomSendFileResponseSerializer,
+        ////            CustomStatusInfoSerializer,
+        ////            CustomSignatureSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
-        //        OnDeleteSignaturePolicyRequest?.Invoke(startTime,
-        //                                           this,
-        //                                           Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyRequest));
-        //    }
 
-        //    #endregion
+        ////    #region Send OnSendFileResponse event
 
+        ////    var endTime = Timestamp.Now;
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////    try
+        ////    {
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  //CustomDeleteSignaturePolicyRequestSerializer,
-        //                                  //CustomMessageInfoSerializer,
-        //                                  //CustomMessageContentSerializer,
-        //                                  //CustomComponentSerializer,
-        //                                  //CustomEVSESerializer,
-        //                                  //CustomSignatureSerializer,
-        //                                  //CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
+        ////        OnSendFileResponse?.Invoke(endTime,
+        ////                                   this,
+        ////                                   Request,
+        ////                                   response,
+        ////                                   endTime - startTime);
 
-        //                              ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileResponse));
+        ////    }
 
-        //                              : new OCPP.CS.DeleteSignaturePolicyResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
+        ////    #endregion
 
-        //                        : new OCPP.CS.DeleteSignaturePolicyResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        ////    return response;
 
+        ////}
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            //CustomDeleteSignaturePolicyResponseSerializer,
-        //            //CustomStatusInfoSerializer,
-        //            //CustomSignatureSerializer,
-        //            //CustomCustomDataSerializer
-        //        ),
-        //        out errorResponse
-        //    );
+        //#endregion
 
+        //#region DeleteFile                  (Request)
 
-        //    #region Send OnDeleteSignaturePolicyResponse event
+        /////// <summary>
+        /////// Delete the given file from the charging station.
+        /////// </summary>
+        /////// <param name="Request">A DeleteFile request.</param>
+        ////public async Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
+        ////{
 
-        //    var endTime = Timestamp.Now;
+        ////    #region Send OnDeleteFileRequest event
 
-        //    try
-        //    {
+        ////    var startTime = Timestamp.Now;
 
-        //        OnDeleteSignaturePolicyResponse?.Invoke(endTime,
-        //                                            this,
-        //                                            Request,
-        //                                            response,
-        //                                            endTime - startTime);
+        ////    try
+        ////    {
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyResponse));
-        //    }
+        ////        OnDeleteFileRequest?.Invoke(startTime,
+        ////                                    this,
+        ////                                    Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileRequest));
+        ////    }
 
-        //    #endregion
+        ////    #endregion
 
-        //    return response;
 
-        //}
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        #endregion
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  CustomDeleteFileRequestSerializer,
+        ////                                  CustomSignatureSerializer,
+        ////                                  CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        #region AddUserRole                 (Request)
+        ////                              ? await centralSystem.Item1.DeleteFile(Request)
 
-        ///// <summary>
-        ///// Set a display message.
-        ///// </summary>
-        ///// <param name="Request">A AddUserRole request.</param>
-        //public async Task<OCPP.CS.AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
-        //{
+        ////                              : new OCPP.CS.DeleteFileResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //    #region Send OnAddUserRoleRequest event
+        ////                        : new OCPP.CS.DeleteFileResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
-        //    var startTime = Timestamp.Now;
 
-        //    try
-        //    {
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            CustomDeleteFileResponseSerializer,
+        ////            CustomStatusInfoSerializer,
+        ////            CustomSignatureSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
-        //        OnAddUserRoleRequest?.Invoke(startTime,
-        //                                           this,
-        //                                           Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleRequest));
-        //    }
 
-        //    #endregion
+        ////    #region Send OnDeleteFileResponse event
 
+        ////    var endTime = Timestamp.Now;
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////    try
+        ////    {
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  //CustomAddUserRoleRequestSerializer,
-        //                                  //CustomMessageInfoSerializer,
-        //                                  //CustomMessageContentSerializer,
-        //                                  //CustomComponentSerializer,
-        //                                  //CustomEVSESerializer,
-        //                                  //CustomSignatureSerializer,
-        //                                  //CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
+        ////        OnDeleteFileResponse?.Invoke(endTime,
+        ////                                     this,
+        ////                                     Request,
+        ////                                     response,
+        ////                                     endTime - startTime);
 
-        //                              ? await centralSystem.Item1.AddUserRole(Request)
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileResponse));
+        ////    }
 
-        //                              : new OCPP.CS.AddUserRoleResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
+        ////    #endregion
 
-        //                        : new OCPP.CS.AddUserRoleResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        ////    return response;
 
+        ////}
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            //CustomAddUserRoleResponseSerializer,
-        //            //CustomStatusInfoSerializer,
-        //            //CustomSignatureSerializer,
-        //            //CustomCustomDataSerializer
-        //        ),
-        //        out errorResponse
-        //    );
+        //#endregion
 
+        //#region ListDirectory               (Request)
 
-        //    #region Send OnAddUserRoleResponse event
+        /////// <summary>
+        /////// Delete the given file from the charging station.
+        /////// </summary>
+        /////// <param name="Request">A ListDirectory request.</param>
+        ////public async Task<OCPP.CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+        ////{
 
-        //    var endTime = Timestamp.Now;
+        ////    #region Send OnListDirectoryRequest event
 
-        //    try
-        //    {
+        ////    var startTime = Timestamp.Now;
 
-        //        OnAddUserRoleResponse?.Invoke(endTime,
-        //                                            this,
-        //                                            Request,
-        //                                            response,
-        //                                            endTime - startTime);
+        ////    try
+        ////    {
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleResponse));
-        //    }
+        ////        OnListDirectoryRequest?.Invoke(startTime,
+        ////                                       this,
+        ////                                       Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryRequest));
+        ////    }
 
-        //    #endregion
+        ////    #endregion
 
-        //    return response;
 
-        //}
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        #endregion
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  CustomListDirectoryRequestSerializer,
+        ////                                  CustomSignatureSerializer,
+        ////                                  CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        #region UpdateUserRole              (Request)
+        ////                              ? await centralSystem.Item1.ListDirectory(Request)
 
-        ///// <summary>
-        ///// Set a display message.
-        ///// </summary>
-        ///// <param name="Request">A UpdateUserRole request.</param>
-        //public async Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
-        //{
+        ////                              : new OCPP.CS.ListDirectoryResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //    #region Send OnUpdateUserRoleRequest event
+        ////                        : new OCPP.CS.ListDirectoryResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
-        //    var startTime = Timestamp.Now;
 
-        //    try
-        //    {
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            CustomListDirectoryResponseSerializer,
+        ////            CustomStatusInfoSerializer,
+        ////            CustomSignatureSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
-        //        OnUpdateUserRoleRequest?.Invoke(startTime,
-        //                                           this,
-        //                                           Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleRequest));
-        //    }
 
-        //    #endregion
+        ////    #region Send OnListDirectoryResponse event
 
+        ////    var endTime = Timestamp.Now;
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////    try
+        ////    {
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  //CustomUpdateUserRoleRequestSerializer,
-        //                                  //CustomMessageInfoSerializer,
-        //                                  //CustomMessageContentSerializer,
-        //                                  //CustomComponentSerializer,
-        //                                  //CustomEVSESerializer,
-        //                                  //CustomSignatureSerializer,
-        //                                  //CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
+        ////        OnListDirectoryResponse?.Invoke(endTime,
+        ////                                        this,
+        ////                                        Request,
+        ////                                        response,
+        ////                                        endTime - startTime);
 
-        //                              ? await centralSystem.Item1.UpdateUserRole(Request)
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryResponse));
+        ////    }
 
-        //                              : new OCPP.CS.UpdateUserRoleResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
+        ////    #endregion
 
-        //                        : new OCPP.CS.UpdateUserRoleResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        ////    return response;
 
+        ////}
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            //CustomUpdateUserRoleResponseSerializer,
-        //            //CustomStatusInfoSerializer,
-        //            //CustomSignatureSerializer,
-        //            //CustomCustomDataSerializer
-        //        ),
-        //        out errorResponse
-        //    );
+        //#endregion
 
 
-        //    #region Send OnUpdateUserRoleResponse event
 
-        //    var endTime = Timestamp.Now;
+        //// E2E Security Extensions
 
-        //    try
-        //    {
+        //#region AddSignaturePolicy          (Request)
 
-        //        OnUpdateUserRoleResponse?.Invoke(endTime,
-        //                                            this,
-        //                                            Request,
-        //                                            response,
-        //                                            endTime - startTime);
+        /////// <summary>
+        /////// Add a signature policy.
+        /////// </summary>
+        /////// <param name="Request">An AddSignaturePolicy request.</param>
+        ////public async Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
+        ////{
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleResponse));
-        //    }
+        ////    #region Send OnAddSignaturePolicyRequest event
 
-        //    #endregion
+        ////    var startTime = Timestamp.Now;
 
-        //    return response;
+        ////    try
+        ////    {
 
-        //}
+        ////        OnAddSignaturePolicyRequest?.Invoke(startTime,
+        ////                                            this,
+        ////                                            Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyRequest));
+        ////    }
 
-        #endregion
+        ////    #endregion
 
-        #region DeleteUserRole              (Request)
 
-        ///// <summary>
-        ///// Set a display message.
-        ///// </summary>
-        ///// <param name="Request">A DeleteUserRole request.</param>
-        //public async Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
-        //{
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        //    #region Send OnDeleteUserRoleRequest event
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  //CustomAddSignaturePolicyRequestSerializer,
+        ////                                  //CustomMessageInfoSerializer,
+        ////                                  //CustomMessageContentSerializer,
+        ////                                  //CustomComponentSerializer,
+        ////                                  //CustomEVSESerializer,
+        ////                                  //CustomSignatureSerializer,
+        ////                                  //CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        //    var startTime = Timestamp.Now;
+        ////                              ? await centralSystem.Item1.AddSignaturePolicy(Request)
 
-        //    try
-        //    {
+        ////                              : new OCPP.CS.AddSignaturePolicyResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //        OnDeleteUserRoleRequest?.Invoke(startTime,
-        //                                           this,
-        //                                           Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleRequest));
-        //    }
+        ////                        : new OCPP.CS.AddSignaturePolicyResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
-        //    #endregion
 
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            //CustomAddSignaturePolicyResponseSerializer,
+        ////            //CustomStatusInfoSerializer,
+        ////            //CustomSignatureSerializer,
+        ////            //CustomCustomDataSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToJSON(
-        //                                  //CustomDeleteUserRoleRequestSerializer,
-        //                                  //CustomMessageInfoSerializer,
-        //                                  //CustomMessageContentSerializer,
-        //                                  //CustomComponentSerializer,
-        //                                  //CustomEVSESerializer,
-        //                                  //CustomSignatureSerializer,
-        //                                  //CustomCustomDataSerializer
-        //                              ),
-        //                              out var errorResponse
-        //                          )
+        ////    #region Send OnAddSignaturePolicyResponse event
 
-        //                              ? await centralSystem.Item1.DeleteUserRole(Request)
+        ////    var endTime = Timestamp.Now;
 
-        //                              : new OCPP.CS.DeleteUserRoleResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
+        ////    try
+        ////    {
 
-        //                        : new OCPP.CS.DeleteUserRoleResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        ////        OnAddSignaturePolicyResponse?.Invoke(endTime,
+        ////                                            this,
+        ////                                            Request,
+        ////                                            response,
+        ////                                            endTime - startTime);
 
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyResponse));
+        ////    }
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToJSON(
-        //            //CustomDeleteUserRoleResponseSerializer,
-        //            //CustomStatusInfoSerializer,
-        //            //CustomSignatureSerializer,
-        //            //CustomCustomDataSerializer
-        //        ),
-        //        out errorResponse
-        //    );
+        ////    #endregion
 
+        ////    return response;
 
-        //    #region Send OnDeleteUserRoleResponse event
+        ////}
 
-        //    var endTime = Timestamp.Now;
+        //#endregion
 
-        //    try
-        //    {
+        //#region UpdateSignaturePolicy       (Request)
 
-        //        OnDeleteUserRoleResponse?.Invoke(endTime,
-        //                                            this,
-        //                                            Request,
-        //                                            response,
-        //                                            endTime - startTime);
+        /////// <summary>
+        /////// Set a display message.
+        /////// </summary>
+        /////// <param name="Request">A UpdateSignaturePolicy request.</param>
+        ////public async Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
+        ////{
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleResponse));
-        //    }
+        ////    #region Send OnUpdateSignaturePolicyRequest event
 
-        //    #endregion
+        ////    var startTime = Timestamp.Now;
 
-        //    return response;
+        ////    try
+        ////    {
 
-        //}
+        ////        OnUpdateSignaturePolicyRequest?.Invoke(startTime,
+        ////                                           this,
+        ////                                           Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyRequest));
+        ////    }
 
-        #endregion
+        ////    #endregion
 
 
-        #region SecureDataTransfer          (Request)
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
 
-        ///// <summary>
-        ///// Transfer the given data to the given charging station.
-        ///// </summary>
-        ///// <param name="Request">A SecureDataTransfer request.</param>
-        //public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
-        //{
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  //CustomUpdateSignaturePolicyRequestSerializer,
+        ////                                  //CustomMessageInfoSerializer,
+        ////                                  //CustomMessageContentSerializer,
+        ////                                  //CustomComponentSerializer,
+        ////                                  //CustomEVSESerializer,
+        ////                                  //CustomSignatureSerializer,
+        ////                                  //CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
 
-        //    #region Send OnSecureDataTransferRequest event
+        ////                              ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
 
-        //    var startTime = Timestamp.Now;
+        ////                              : new OCPP.CS.UpdateSignaturePolicyResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
 
-        //    try
-        //    {
+        ////                        : new OCPP.CS.UpdateSignaturePolicyResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
 
-        //        OnSecureDataTransferRequest?.Invoke(startTime,
-        //                                            this,
-        //                                            Request);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferRequest));
-        //    }
 
-        //    #endregion
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            //CustomUpdateSignaturePolicyResponseSerializer,
+        ////            //CustomStatusInfoSerializer,
+        ////            //CustomSignatureSerializer,
+        ////            //CustomCustomDataSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
 
 
-        //    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
-        //                        centralSystem is not null
+        ////    #region Send OnUpdateSignaturePolicyResponse event
 
-        //                        ? SignaturePolicy.SignRequestMessage(
-        //                              Request,
-        //                              Request.ToBinary(
-        //                                  CustomSecureDataTransferRequestSerializer,
-        //                                  CustomBinarySignatureSerializer,
-        //                                  IncludeSignatures: false
-        //                              ),
-        //                              out var errorResponse
-        //                          )
+        ////    var endTime = Timestamp.Now;
 
-        //                              ? await centralSystem.Item1.SecureDataTransfer(Request)
+        ////    try
+        ////    {
 
-        //                              : new SecureDataTransferResponse(
-        //                                    Request,
-        //                                    Result.SignatureError(errorResponse)
-        //                                )
+        ////        OnUpdateSignaturePolicyResponse?.Invoke(endTime,
+        ////                                            this,
+        ////                                            Request,
+        ////                                            response,
+        ////                                            endTime - startTime);
 
-        //                        : new SecureDataTransferResponse(
-        //                              Request,
-        //                              Result.UnknownOrUnreachable(Request.DestinationId)
-        //                          );
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyResponse));
+        ////    }
 
+        ////    #endregion
 
-        //    SignaturePolicy.VerifyResponseMessage(
-        //        response,
-        //        response.ToBinary(
-        //            CustomSecureDataTransferResponseSerializer,
-        //            // CustomStatusInfoSerializer
-        //            CustomBinarySignatureSerializer,
-        //            IncludeSignatures: false
-        //        ),
-        //        out errorResponse
-        //    );
+        ////    return response;
 
+        ////}
 
-        //    #region Send OnSecureDataTransferResponse event
+        //#endregion
 
-        //    var endTime = Timestamp.Now;
+        //#region DeleteSignaturePolicy       (Request)
 
-        //    try
-        //    {
+        /////// <summary>
+        /////// Set a display message.
+        /////// </summary>
+        /////// <param name="Request">A DeleteSignaturePolicy request.</param>
+        ////public async Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
+        ////{
 
-        //        OnSecureDataTransferResponse?.Invoke(endTime,
-        //                                       this,
-        //                                       Request,
-        //                                       response,
-        //                                       endTime - startTime);
+        ////    #region Send OnDeleteSignaturePolicyRequest event
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferResponse));
-        //    }
+        ////    var startTime = Timestamp.Now;
 
-        //    #endregion
+        ////    try
+        ////    {
 
-        //    return response;
+        ////        OnDeleteSignaturePolicyRequest?.Invoke(startTime,
+        ////                                           this,
+        ////                                           Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyRequest));
+        ////    }
 
-        //}
+        ////    #endregion
 
-        #endregion
+
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
+
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  //CustomDeleteSignaturePolicyRequestSerializer,
+        ////                                  //CustomMessageInfoSerializer,
+        ////                                  //CustomMessageContentSerializer,
+        ////                                  //CustomComponentSerializer,
+        ////                                  //CustomEVSESerializer,
+        ////                                  //CustomSignatureSerializer,
+        ////                                  //CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
+
+        ////                              ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+
+        ////                              : new OCPP.CS.DeleteSignaturePolicyResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
+
+        ////                        : new OCPP.CS.DeleteSignaturePolicyResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
+
+
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            //CustomDeleteSignaturePolicyResponseSerializer,
+        ////            //CustomStatusInfoSerializer,
+        ////            //CustomSignatureSerializer,
+        ////            //CustomCustomDataSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
+
+
+        ////    #region Send OnDeleteSignaturePolicyResponse event
+
+        ////    var endTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnDeleteSignaturePolicyResponse?.Invoke(endTime,
+        ////                                            this,
+        ////                                            Request,
+        ////                                            response,
+        ////                                            endTime - startTime);
+
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyResponse));
+        ////    }
+
+        ////    #endregion
+
+        ////    return response;
+
+        ////}
+
+        //#endregion
+
+        //#region AddUserRole                 (Request)
+
+        /////// <summary>
+        /////// Set a display message.
+        /////// </summary>
+        /////// <param name="Request">A AddUserRole request.</param>
+        ////public async Task<OCPP.CS.AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
+        ////{
+
+        ////    #region Send OnAddUserRoleRequest event
+
+        ////    var startTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnAddUserRoleRequest?.Invoke(startTime,
+        ////                                           this,
+        ////                                           Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleRequest));
+        ////    }
+
+        ////    #endregion
+
+
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
+
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  //CustomAddUserRoleRequestSerializer,
+        ////                                  //CustomMessageInfoSerializer,
+        ////                                  //CustomMessageContentSerializer,
+        ////                                  //CustomComponentSerializer,
+        ////                                  //CustomEVSESerializer,
+        ////                                  //CustomSignatureSerializer,
+        ////                                  //CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
+
+        ////                              ? await centralSystem.Item1.AddUserRole(Request)
+
+        ////                              : new OCPP.CS.AddUserRoleResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
+
+        ////                        : new OCPP.CS.AddUserRoleResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
+
+
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            //CustomAddUserRoleResponseSerializer,
+        ////            //CustomStatusInfoSerializer,
+        ////            //CustomSignatureSerializer,
+        ////            //CustomCustomDataSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
+
+
+        ////    #region Send OnAddUserRoleResponse event
+
+        ////    var endTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnAddUserRoleResponse?.Invoke(endTime,
+        ////                                            this,
+        ////                                            Request,
+        ////                                            response,
+        ////                                            endTime - startTime);
+
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleResponse));
+        ////    }
+
+        ////    #endregion
+
+        ////    return response;
+
+        ////}
+
+        //#endregion
+
+        //#region UpdateUserRole              (Request)
+
+        /////// <summary>
+        /////// Set a display message.
+        /////// </summary>
+        /////// <param name="Request">A UpdateUserRole request.</param>
+        ////public async Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
+        ////{
+
+        ////    #region Send OnUpdateUserRoleRequest event
+
+        ////    var startTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnUpdateUserRoleRequest?.Invoke(startTime,
+        ////                                           this,
+        ////                                           Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleRequest));
+        ////    }
+
+        ////    #endregion
+
+
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
+
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  //CustomUpdateUserRoleRequestSerializer,
+        ////                                  //CustomMessageInfoSerializer,
+        ////                                  //CustomMessageContentSerializer,
+        ////                                  //CustomComponentSerializer,
+        ////                                  //CustomEVSESerializer,
+        ////                                  //CustomSignatureSerializer,
+        ////                                  //CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
+
+        ////                              ? await centralSystem.Item1.UpdateUserRole(Request)
+
+        ////                              : new OCPP.CS.UpdateUserRoleResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
+
+        ////                        : new OCPP.CS.UpdateUserRoleResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
+
+
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            //CustomUpdateUserRoleResponseSerializer,
+        ////            //CustomStatusInfoSerializer,
+        ////            //CustomSignatureSerializer,
+        ////            //CustomCustomDataSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
+
+
+        ////    #region Send OnUpdateUserRoleResponse event
+
+        ////    var endTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnUpdateUserRoleResponse?.Invoke(endTime,
+        ////                                            this,
+        ////                                            Request,
+        ////                                            response,
+        ////                                            endTime - startTime);
+
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleResponse));
+        ////    }
+
+        ////    #endregion
+
+        ////    return response;
+
+        ////}
+
+        //#endregion
+
+        //#region DeleteUserRole              (Request)
+
+        /////// <summary>
+        /////// Set a display message.
+        /////// </summary>
+        /////// <param name="Request">A DeleteUserRole request.</param>
+        ////public async Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
+        ////{
+
+        ////    #region Send OnDeleteUserRoleRequest event
+
+        ////    var startTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnDeleteUserRoleRequest?.Invoke(startTime,
+        ////                                           this,
+        ////                                           Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleRequest));
+        ////    }
+
+        ////    #endregion
+
+
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
+
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToJSON(
+        ////                                  //CustomDeleteUserRoleRequestSerializer,
+        ////                                  //CustomMessageInfoSerializer,
+        ////                                  //CustomMessageContentSerializer,
+        ////                                  //CustomComponentSerializer,
+        ////                                  //CustomEVSESerializer,
+        ////                                  //CustomSignatureSerializer,
+        ////                                  //CustomCustomDataSerializer
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
+
+        ////                              ? await centralSystem.Item1.DeleteUserRole(Request)
+
+        ////                              : new OCPP.CS.DeleteUserRoleResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
+
+        ////                        : new OCPP.CS.DeleteUserRoleResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
+
+
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToJSON(
+        ////            //CustomDeleteUserRoleResponseSerializer,
+        ////            //CustomStatusInfoSerializer,
+        ////            //CustomSignatureSerializer,
+        ////            //CustomCustomDataSerializer
+        ////        ),
+        ////        out errorResponse
+        ////    );
+
+
+        ////    #region Send OnDeleteUserRoleResponse event
+
+        ////    var endTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnDeleteUserRoleResponse?.Invoke(endTime,
+        ////                                            this,
+        ////                                            Request,
+        ////                                            response,
+        ////                                            endTime - startTime);
+
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleResponse));
+        ////    }
+
+        ////    #endregion
+
+        ////    return response;
+
+        ////}
+
+        //#endregion
+
+
+        //#region SecureDataTransfer          (Request)
+
+        /////// <summary>
+        /////// Transfer the given data to the given charging station.
+        /////// </summary>
+        /////// <param name="Request">A SecureDataTransfer request.</param>
+        ////public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
+        ////{
+
+        ////    #region Send OnSecureDataTransferRequest event
+
+        ////    var startTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnSecureDataTransferRequest?.Invoke(startTime,
+        ////                                            this,
+        ////                                            Request);
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferRequest));
+        ////    }
+
+        ////    #endregion
+
+
+        ////    var response  = reachableChargeBoxes.TryGetValue(Request.DestinationId, out var centralSystem) &&
+        ////                        centralSystem is not null
+
+        ////                        ? SignaturePolicy.SignRequestMessage(
+        ////                              Request,
+        ////                              Request.ToBinary(
+        ////                                  CustomSecureDataTransferRequestSerializer,
+        ////                                  CustomBinarySignatureSerializer,
+        ////                                  IncludeSignatures: false
+        ////                              ),
+        ////                              out var errorResponse
+        ////                          )
+
+        ////                              ? await centralSystem.Item1.SecureDataTransfer(Request)
+
+        ////                              : new SecureDataTransferResponse(
+        ////                                    Request,
+        ////                                    Result.SignatureError(errorResponse)
+        ////                                )
+
+        ////                        : new SecureDataTransferResponse(
+        ////                              Request,
+        ////                              Result.UnknownOrUnreachable(Request.DestinationId)
+        ////                          );
+
+
+        ////    SignaturePolicy.VerifyResponseMessage(
+        ////        response,
+        ////        response.ToBinary(
+        ////            CustomSecureDataTransferResponseSerializer,
+        ////            // CustomStatusInfoSerializer
+        ////            CustomBinarySignatureSerializer,
+        ////            IncludeSignatures: false
+        ////        ),
+        ////        out errorResponse
+        ////    );
+
+
+        ////    #region Send OnSecureDataTransferResponse event
+
+        ////    var endTime = Timestamp.Now;
+
+        ////    try
+        ////    {
+
+        ////        OnSecureDataTransferResponse?.Invoke(endTime,
+        ////                                       this,
+        ////                                       Request,
+        ////                                       response,
+        ////                                       endTime - startTime);
+
+        ////    }
+        ////    catch (Exception e)
+        ////    {
+        ////        DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferResponse));
+        ////    }
+
+        ////    #endregion
+
+        ////    return response;
+
+        ////}
+
+        //#endregion
 
         #endregion
 
@@ -8752,29 +8751,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    Boolean  Wait      = true)
         {
 
-            var centralSystemServersCopy = centralSystemServers.ToArray();
-            if (centralSystemServersCopy.Length > 0)
-            {
-                try
-                {
+            //var centralSystemServersCopy = centralSystemServers.ToArray();
+            //if (centralSystemServersCopy.Length > 0)
+            //{
+            //    try
+            //    {
 
-                    await Task.WhenAll(centralSystemServers.
-                                           Select(centralSystemServer => centralSystemServer.Shutdown(
-                                                                             Message,
-                                                                             Wait
-                                                                         )).
-                                           ToArray());
+            //        await Task.WhenAll(centralSystemServers.
+            //                               Select(centralSystemServer => centralSystemServer.Shutdown(
+            //                                                                 Message,
+            //                                                                 Wait
+            //                                                             )).
+            //                               ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(TestCentralSystem),
-                              nameof(Shutdown),
-                              e
-                          );
-                }
-            }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        await HandleErrors(
+            //                  nameof(TestCentralSystem),
+            //                  nameof(Shutdown),
+            //                  e
+            //              );
+            //    }
+            //}
 
         }
 

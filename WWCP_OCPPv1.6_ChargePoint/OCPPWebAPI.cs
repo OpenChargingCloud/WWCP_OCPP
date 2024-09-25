@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                  ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                  Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                 Connection                 = "close",
+                                                 Connection                 = ConnectionType.Close,
                                                  Vary                       = "Accept"
                                              }.AsImmutable);
 
