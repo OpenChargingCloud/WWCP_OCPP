@@ -531,7 +531,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToString() ?? "-"}";
+            => String.Concat(
+
+                   $"'{VendorId}'",
+
+                   MessageId.IsNotNullOrEmpty()
+                       ? $" / '{MessageId}'"
+                       : "",
+
+                   Data is not null
+                       ? $" => '{Data}'"
+                       : ""
+
+               );
 
         #endregion
 

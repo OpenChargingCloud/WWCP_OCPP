@@ -295,22 +295,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a GetCompositeSchedule response.
         /// </summary>
         /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest  Request,
-                                                         XElement                        XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static GetCompositeScheduleResponse Parse(GetCompositeScheduleRequest  Request,
+                                                         XElement                     XML,
+                                                         SourceRouting                Destination,
+                                                         NetworkPath                  NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var getCompositeScheduleResponse,
-                         out var errorResponse) &&
-                getCompositeScheduleResponse is not null)
+                         out var errorResponse))
             {
                 return getCompositeScheduleResponse;
             }
@@ -322,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetCompositeScheduleResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCompositeSchedule response.
@@ -366,19 +371,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out GetCompositeScheduleResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out GetCompositeScheduleResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a GetCompositeSchedule response.
         /// </summary>
         /// <param name="Request">The GetCompositeSchedule request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="GetCompositeScheduleResponse">The parsed GetCompositeSchedule response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.GetCompositeScheduleRequest     Request,
-                                       XElement                           XML,
-                                       out GetCompositeScheduleResponse?  GetCompositeScheduleResponse,
-                                       out String?                        ErrorResponse)
+        public static Boolean TryParse(GetCompositeScheduleRequest                             Request,
+                                       XElement                                                XML,
+                                       SourceRouting                                           Destination,
+                                       NetworkPath                                             NetworkPath,
+                                       [NotNullWhen(true)]  out GetCompositeScheduleResponse?  GetCompositeScheduleResponse,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse)
         {
 
             try
@@ -417,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetCompositeScheduleResponse, out ErrorResponse, CustomGetCompositeScheduleResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out GetCompositeScheduleResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetCompositeSchedule response.

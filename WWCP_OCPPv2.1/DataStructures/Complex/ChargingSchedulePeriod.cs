@@ -341,8 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingSchedulePeriod,
                          out var errorResponse,
-                         CustomChargingSchedulePeriodParser) &&
-                chargingSchedulePeriod is not null)
+                         CustomChargingSchedulePeriodParser))
             {
                 return chargingSchedulePeriod;
             }

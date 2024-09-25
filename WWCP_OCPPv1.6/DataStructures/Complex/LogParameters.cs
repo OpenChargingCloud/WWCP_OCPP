@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -116,9 +118,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="LogParameters">The parsed log parameters.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out LogParameters?  LogParameters,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out LogParameters?  LogParameters,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
 
             => TryParse(JSON,
                         out LogParameters,
@@ -134,8 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomLogParametersParser">An optional delegate to parse custom LogParameterss.</param>
         public static Boolean TryParse(JObject                                      JSON,
-                                       out LogParameters?                           LogParameters,
-                                       out String?                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out LogParameters?      LogParameters,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
                                        CustomJObjectParserDelegate<LogParameters>?  CustomLogParametersParser)
         {
 
@@ -184,9 +186,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                LogParameters = new LogParameters(RemoteLocation,
-                                                  OldestTimestamp,
-                                                  LatestTimestamp);
+                LogParameters = new LogParameters(
+                                    RemoteLocation,
+                                    OldestTimestamp,
+                                    LatestTimestamp
+                                );
 
                 if (CustomLogParametersParser is not null)
                     LogParameters = CustomLogParametersParser(JSON,
@@ -217,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("remoteLocation",         RemoteLocation.       ToString()),
+                                 new JProperty("remoteLocation",   RemoteLocation.       ToString()),
 
                            OldestTimestamp.HasValue
                                ? new JProperty("remoteLocation",   OldestTimestamp.Value.ToIso8601())
@@ -348,9 +352,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RemoteLocation,
-                             OldestTimestamp.HasValue ? ", > " + OldestTimestamp.Value.ToIso8601() : "",
-                             LatestTimestamp.HasValue ? ", < " + LatestTimestamp.Value.ToIso8601() : "");
+            => String.Concat(
+                   RemoteLocation,
+                   OldestTimestamp.HasValue ? $", > {OldestTimestamp.Value.ToIso8601()}" : "",
+                   LatestTimestamp.HasValue ? $", < {LatestTimestamp.Value.ToIso8601()}" : ""
+               );
 
         #endregion
 

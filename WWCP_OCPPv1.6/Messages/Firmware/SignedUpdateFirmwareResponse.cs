@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomSignedUpdateFirmwareResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a signed update firmware response.
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out SignedUpdateFirmwareResponse, out ErrorResponse, CustomSignedUpdateFirmwareResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out SignedUpdateFirmwareResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a signed update firmware response.

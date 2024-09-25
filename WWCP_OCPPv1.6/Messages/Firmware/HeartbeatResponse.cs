@@ -171,19 +171,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a Heartbeat response.
         /// </summary>
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         public static HeartbeatResponse Parse(HeartbeatRequest  Request,
-                                              XElement          XML)
+                                              XElement          XML,
+                                              SourceRouting     Destination,
+                                              NetworkPath       NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var heartbeatResponse,
                          out var errorResponse))
             {
@@ -197,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomHeartbeatResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a Heartbeat response.
@@ -241,17 +247,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out HeartbeatResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out HeartbeatResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a Heartbeat response.
         /// </summary>
         /// <param name="Request">The Heartbeat request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="HeartbeatResponse">The parsed Heartbeat response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.HeartbeatRequest                          Request,
+        public static Boolean TryParse(HeartbeatRequest                             Request,
                                        XElement                                     XML,
+                                       SourceRouting                                Destination,
+                                       NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatResponse?  HeartbeatResponse,
                                        [NotNullWhen(false)] out String?             ErrorResponse)
         {
@@ -282,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out HeartbeatResponse, out ErrorResponse, CustomHeartbeatResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out HeartbeatResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Heartbeat response.

@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The security event notification request.
+    /// The SecurityEventNotification request.
     /// </summary>
     [SecurityExtensions]
     public class SecurityEventNotificationRequest : ARequest<SecurityEventNotificationRequest>,
@@ -77,15 +80,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new security event notification request.
+        /// Create a new SecurityEventNotification request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// 
         /// <param name="Type">Type of the security event.</param>
         /// <param name="Timestamp">The timestamp of the security event.</param>
         /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -93,26 +98,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SecurityEventNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
-                                                SecurityEvent                 Type,
-                                                DateTime                      Timestamp,
-                                                String?                       TechInfo            = null,
+        public SecurityEventNotificationRequest(SourceRouting            Destination,
+                                                SecurityEvent            Type,
+                                                DateTime                 Timestamp,
+                                                String?                  TechInfo              = null,
 
-                                                IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                                IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                                IEnumerable<Signature>?  Signatures          = null,
+                                                IEnumerable<KeyPair>?    SignKeys              = null,
+                                                IEnumerable<SignInfo>?   SignInfos             = null,
+                                                IEnumerable<Signature>?  Signatures            = null,
 
-                                                CustomData?                   CustomData          = null,
+                                                CustomData?              CustomData            = null,
 
-                                                Request_Id?                   RequestId           = null,
-                                                DateTime?                     RequestTimestamp    = null,
-                                                TimeSpan?                     RequestTimeout      = null,
-                                                EventTracking_Id?             EventTrackingId     = null,
-                                                NetworkPath?                  NetworkPath         = null,
-                                                CancellationToken             CancellationToken   = default)
+                                                Request_Id?              RequestId             = null,
+                                                DateTime?                RequestTimestamp      = null,
+                                                TimeSpan?                RequestTimeout        = null,
+                                                EventTracking_Id?        EventTrackingId       = null,
+                                                NetworkPath?             NetworkPath           = null,
+                                                SerializationFormats?    SerializationFormat   = null,
+                                                CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(SecurityEventNotificationRequest)[..^7],
 
                    SignKeys,
@@ -126,6 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -133,6 +141,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.Type       = Type;
             this.Timestamp  = Timestamp;
             this.TechInfo   = TechInfo;
+
+            unchecked
+            {
+
+                hashCode = this.Type.     GetHashCode()       * 7 ^
+                           this.Timestamp.GetHashCode()       * 5 ^
+                          (this.TechInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.          GetHashCode();
+
+            }
 
         }
 
@@ -168,88 +186,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSecurityEventNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a security event notification request.
+        /// Parse the given JSON representation of a SecurityEventNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSecurityEventNotificationRequestParser">An optional delegate to parse custom security event notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom SecurityEventNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static SecurityEventNotificationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             NetworkingNode_Id                                               NetworkingNodeId,
+                                                             SourceRouting                                                   Destination,
                                                              NetworkPath                                                     NetworkPath,
-                                                             CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null)
+                                                             DateTime?                                                       RequestTimestamp                               = null,
+                                                             TimeSpan?                                                       RequestTimeout                                 = null,
+                                                             EventTracking_Id?                                               EventTrackingId                                = null,
+                                                             CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null,
+                                                             CustomJObjectParserDelegate<Signature>?                         CustomSignatureParser                          = null,
+                                                             CustomJObjectParserDelegate<CustomData>?                        CustomCustomDataParser                         = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var securityEventNotificationRequest,
                          out var errorResponse,
-                         CustomSecurityEventNotificationRequestParser) &&
-                securityEventNotificationRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomSecurityEventNotificationRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return securityEventNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a security event notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SecurityEventNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SecurityEventNotificationRequest, OnException = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SecurityEventNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a security event notification request.
+        /// Try to parse the given JSON representation of a SecurityEventNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SecurityEventNotificationRequest">The parsed security event notification request.</param>
+        /// <param name="SecurityEventNotificationRequest">The parsed SecurityEventNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                JSON,
-                                       Request_Id                             RequestId,
-                                       NetworkingNode_Id                      NetworkingNodeId,
-                                       NetworkPath                            NetworkPath,
-                                       out SecurityEventNotificationRequest?  SecurityEventNotificationRequest,
-                                       out String?                            ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SecurityEventNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a security event notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SecurityEventNotificationRequest">The parsed security event notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecurityEventNotificationRequestParser">An optional delegate to parse custom security event notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom SecurityEventNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       NetworkingNode_Id                                               NetworkingNodeId,
+                                       SourceRouting                                                   Destination,
                                        NetworkPath                                                     NetworkPath,
-                                       out SecurityEventNotificationRequest?                           SecurityEventNotificationRequest,
-                                       out String?                                                     ErrorResponse,
-                                       CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser)
+                                       [NotNullWhen(true)]  out SecurityEventNotificationRequest?      SecurityEventNotificationRequest,
+                                       [NotNullWhen(false)] out String?                                ErrorResponse,
+                                       DateTime?                                                       RequestTimestamp                               = null,
+                                       TimeSpan?                                                       RequestTimeout                                 = null,
+                                       EventTracking_Id?                                               EventTrackingId                                = null,
+                                       CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                         CustomSignatureParser                          = null,
+                                       CustomJObjectParserDelegate<CustomData>?                        CustomCustomDataParser                         = null)
         {
 
             try
@@ -319,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
 
-                                                       NetworkingNodeId,
+                                                       Destination,
                                                        SecurityEvent,
                                                        Timestamp,
                                                        TechInfo,
@@ -331,9 +346,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                        CustomData,
 
                                                        RequestId,
-                                                       null,
-                                                       null,
-                                                       null,
+                                                       RequestTimestamp,
+                                                       RequestTimeout,
+                                                       EventTrackingId,
                                                        NetworkPath
 
                                                    );
@@ -348,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 SecurityEventNotificationRequest  = null;
-                ErrorResponse                     = "The given JSON representation of a security event notification request is invalid: " + e.Message;
+                ErrorResponse                     = "The given JSON representation of a SecurityEventNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -361,11 +376,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSecurityEventNotificationSerializer">A delegate to serialize custom security event notification requests.</param>
+        /// <param name="CustomSecurityEventNotificationSerializer">A delegate to serialize custom SecurityEventNotification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                  = null)
         {
 
@@ -404,10 +419,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (SecurityEventNotificationRequest1, SecurityEventNotificationRequest2)
 
         /// <summary>
-        /// Compares two security event notification requests for equality.
+        /// Compares two SecurityEventNotification requests for equality.
         /// </summary>
-        /// <param name="SecurityEventNotificationRequest1">A security event notification request.</param>
-        /// <param name="SecurityEventNotificationRequest2">Another security event notification request.</param>
+        /// <param name="SecurityEventNotificationRequest1">A SecurityEventNotification request.</param>
+        /// <param name="SecurityEventNotificationRequest2">Another SecurityEventNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SecurityEventNotificationRequest? SecurityEventNotificationRequest1,
                                            SecurityEventNotificationRequest? SecurityEventNotificationRequest2)
@@ -430,10 +445,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (SecurityEventNotificationRequest1, SecurityEventNotificationRequest2)
 
         /// <summary>
-        /// Compares two security event notification requests for inequality.
+        /// Compares two SecurityEventNotification requests for inequality.
         /// </summary>
-        /// <param name="SecurityEventNotificationRequest1">A security event notification request.</param>
-        /// <param name="SecurityEventNotificationRequest2">Another security event notification request.</param>
+        /// <param name="SecurityEventNotificationRequest1">A SecurityEventNotification request.</param>
+        /// <param name="SecurityEventNotificationRequest2">Another SecurityEventNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SecurityEventNotificationRequest? SecurityEventNotificationRequest1,
                                            SecurityEventNotificationRequest? SecurityEventNotificationRequest2)
@@ -449,9 +464,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two security event notification requests for equality.
+        /// Compares two SecurityEventNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A security event notification request to compare with.</param>
+        /// <param name="Object">A SecurityEventNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SecurityEventNotificationRequest securityEventNotificationRequest &&
@@ -462,9 +477,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(SecurityEventNotificationRequest)
 
         /// <summary>
-        /// Compares two security event notification requests for equality.
+        /// Compares two SecurityEventNotification requests for equality.
         /// </summary>
-        /// <param name="SecurityEventNotificationRequest">A security event notification request to compare with.</param>
+        /// <param name="SecurityEventNotificationRequest">A SecurityEventNotification request to compare with.</param>
         public override Boolean Equals(SecurityEventNotificationRequest? SecurityEventNotificationRequest)
 
             => SecurityEventNotificationRequest is not null &&
@@ -483,24 +498,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Type.     GetHashCode()       * 7 ^
-                       Timestamp.GetHashCode()       * 5 ^
-
-                      (TechInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -511,9 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Type,
-                             " @ ",
-                             Timestamp.ToIso8601());
+            => $"{Type} @ {Timestamp.ToIso8601()}";
 
         #endregion
 

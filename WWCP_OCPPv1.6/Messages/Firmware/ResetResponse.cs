@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A reset response.
+    /// A Reset response.
     /// </summary>
     public class ResetResponse : AResponse<ResetRequest,
                                            ResetResponse>,
@@ -176,19 +176,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a reset response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static ResetResponse Parse(ResetRequest  Request,
-                                          XElement      XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static ResetResponse Parse(ResetRequest   Request,
+                                          XElement       XML,
+                                          SourceRouting  Destination,
+                                          NetworkPath    NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var resetResponse,
                          out var errorResponse))
             {
@@ -202,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomResetResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a Reset response.
@@ -246,17 +252,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out ResetResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out ResetResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a reset response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResetResponse">The parsed Reset response.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(ResetRequest                             Request,
                                        XElement                                 XML,
+                                       SourceRouting                            Destination,
+                                       NetworkPath                              NetworkPath,
                                        [NotNullWhen(true)]  out ResetResponse?  ResetResponse,
                                        [NotNullWhen(false)] out String?         ErrorResponse)
         {
@@ -288,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ResetResponse, out ErrorResponse, CustomResetResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out ResetResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Reset response.
@@ -423,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>?  CustomResetResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>? CustomSignatureSerializer       = null,
+                              CustomJObjectSerializerDelegate<Signature>?      CustomSignatureSerializer       = null,
                               CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
         {
 

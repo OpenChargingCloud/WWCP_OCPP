@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -70,7 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Status">The status of the diagnostics upload.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -78,24 +83,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DiagnosticsStatusNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
-                                                    DiagnosticsStatus             Status,
+        public DiagnosticsStatusNotificationRequest(SourceRouting            Destination,
+                                                    DiagnosticsStatus        Status,
 
-                                                    IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                                    IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                                    IEnumerable<Signature>?  Signatures          = null,
+                                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                                    IEnumerable<Signature>?  Signatures            = null,
 
-                                                    CustomData?                   CustomData          = null,
+                                                    CustomData?              CustomData            = null,
 
-                                                    Request_Id?                   RequestId           = null,
-                                                    DateTime?                     RequestTimestamp    = null,
-                                                    TimeSpan?                     RequestTimeout      = null,
-                                                    EventTracking_Id?             EventTrackingId     = null,
-                                                    NetworkPath?                  NetworkPath         = null,
-                                                    CancellationToken             CancellationToken   = default)
+                                                    Request_Id?              RequestId             = null,
+                                                    DateTime?                RequestTimestamp      = null,
+                                                    TimeSpan?                RequestTimeout        = null,
+                                                    EventTracking_Id?        EventTrackingId       = null,
+                                                    NetworkPath?             NetworkPath           = null,
+                                                    SerializationFormats?    SerializationFormat   = null,
+                                                    CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(DiagnosticsStatusNotificationRequest)[..^7],
 
                    SignKeys,
@@ -109,11 +116,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.Status = Status;
+
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.       GetHashCode();
+
+            }
 
         }
 
@@ -166,94 +182,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a diagnostics status notification request.
+        /// Parse the given XML representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        public static DiagnosticsStatusNotificationRequest Parse(XElement           XML,
-                                                                 Request_Id         RequestId,
-                                                                 NetworkingNode_Id  NetworkingNodeId)
+        public static DiagnosticsStatusNotificationRequest Parse(XElement       XML,
+                                                                 Request_Id     RequestId,
+                                                                 SourceRouting  Destination,
+                                                                 NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
+                         NetworkPath,
                          out var diagnosticsStatusNotificationRequest,
-                         out var errorResponse) &&
-                diagnosticsStatusNotificationRequest is not null)
+                         out var errorResponse))
             {
                 return diagnosticsStatusNotificationRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a diagnostics status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a DiagnosticsStatusNotification request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDiagnosticsStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a diagnostics status notification request.
+        /// Parse the given JSON representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDiagnosticsStatusNotificationRequestParser">An optional delegate to parse custom DiagnosticsStatusNotification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationRequestParser">A delegate to parse custom DiagnosticsStatusNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static DiagnosticsStatusNotificationRequest Parse(JObject                                                             JSON,
                                                                  Request_Id                                                          RequestId,
-                                                                 NetworkingNode_Id                                                   NetworkingNodeId,
+                                                                 SourceRouting                                                       Destination,
                                                                  NetworkPath                                                         NetworkPath,
-                                                                 CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?  CustomDiagnosticsStatusNotificationRequestParser   = null)
+                                                                 DateTime?                                                           RequestTimestamp                                   = null,
+                                                                 TimeSpan?                                                           RequestTimeout                                     = null,
+                                                                 EventTracking_Id?                                                   EventTrackingId                                    = null,
+                                                                 CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?  CustomDiagnosticsStatusNotificationRequestParser   = null,
+                                                                 CustomJObjectParserDelegate<Signature>?                             CustomSignatureParser                              = null,
+                                                                 CustomJObjectParserDelegate<CustomData>?                            CustomCustomDataParser                             = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var diagnosticsStatusNotificationRequest,
                          out var errorResponse,
-                         CustomDiagnosticsStatusNotificationRequestParser) &&
-                diagnosticsStatusNotificationRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomDiagnosticsStatusNotificationRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return diagnosticsStatusNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a diagnostics status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DiagnosticsStatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out DiagnosticsStatusNotificationRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out DiagnosticsStatusNotificationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a diagnostics status notification request.
+        /// Try to parse the given XML representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                                   XML,
-                                       Request_Id                                 RequestId,
-                                       NetworkingNode_Id                          NetworkingNodeId,
-                                       out DiagnosticsStatusNotificationRequest?  DiagnosticsStatusNotificationRequest,
-                                       out String?                                ErrorResponse)
+        public static Boolean TryParse(XElement                                                        XML,
+                                       Request_Id                                                      RequestId,
+                                       SourceRouting                                                   Destination,
+                                       NetworkPath                                                     NetworkPath,
+                                       [NotNullWhen(true)]  out DiagnosticsStatusNotificationRequest?  DiagnosticsStatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                                ErrorResponse)
         {
 
             try
             {
 
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
-                                                           NetworkingNodeId,
+                                                           Destination,
                                                            XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
                                                                               DiagnosticsStatusExtensions.Parse),
                                                            RequestId: RequestId
@@ -266,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 DiagnosticsStatusNotificationRequest  = null;
-                ErrorResponse                         = "The given XML representation of a diagnostics status notification request is invalid: " + e.Message;
+                ErrorResponse                         = "The given XML representation of a DiagnosticsStatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -274,12 +306,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DiagnosticsStatusNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DiagnosticsStatusNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a diagnostics status notification request.
+        /// Try to parse the given JSON representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -287,39 +317,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                    JSON,
-                                       Request_Id                                 RequestId,
-                                       NetworkingNode_Id                          NetworkingNodeId,
-                                       NetworkPath                                NetworkPath,
-                                       out DiagnosticsStatusNotificationRequest?  DiagnosticsStatusNotificationRequest,
-                                       out String?                                ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out DiagnosticsStatusNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a diagnostics status notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDiagnosticsStatusNotificationRequestParser">An optional delegate to parse custom DiagnosticsStatusNotification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationRequestParser">A delegate to parse custom DiagnosticsStatusNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                             JSON,
                                        Request_Id                                                          RequestId,
-                                       NetworkingNode_Id                                                   NetworkingNodeId,
+                                       SourceRouting                                                       Destination,
                                        NetworkPath                                                         NetworkPath,
-                                       out DiagnosticsStatusNotificationRequest?                           DiagnosticsStatusNotificationRequest,
-                                       out String?                                                         ErrorResponse,
-                                       CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?  CustomDiagnosticsStatusNotificationRequestParser)
+                                       [NotNullWhen(true)]  out DiagnosticsStatusNotificationRequest?      DiagnosticsStatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                                    ErrorResponse,
+                                       DateTime?                                                           RequestTimestamp                                   = null,
+                                       TimeSpan?                                                           RequestTimeout                                     = null,
+                                       EventTracking_Id?                                                   EventTrackingId                                    = null,
+                                       CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?  CustomDiagnosticsStatusNotificationRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                             CustomSignatureParser                              = null,
+                                       CustomJObjectParserDelegate<CustomData>?                            CustomCustomDataParser                             = null)
         {
 
             try
@@ -371,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
 
-                                                           NetworkingNodeId,
+                                                           Destination,
                                                            DiagnosticsStatus,
 
                                                            null,
@@ -381,9 +396,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                            CustomData,
 
                                                            RequestId,
-                                                           null,
-                                                           null,
-                                                           null,
+                                                           RequestTimestamp,
+                                                           RequestTimeout,
+                                                           EventTrackingId,
                                                            NetworkPath
 
                                                        );
@@ -398,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 DiagnosticsStatusNotificationRequest  = null;
-                ErrorResponse                         = "The given JSON representation of a diagnostics status notification request is invalid: " + e.Message;
+                ErrorResponse                         = "The given JSON representation of a DiagnosticsStatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -428,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest>?  CustomDiagnosticsStatusNotificationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                              = null,
+                              CustomJObjectSerializerDelegate<Signature>?                             CustomSignatureSerializer                              = null,
                               CustomJObjectSerializerDelegate<CustomData>?                            CustomCustomDataSerializer                             = null)
         {
 
@@ -506,9 +521,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two diagnostics status notification requests for equality.
+        /// Compares two DiagnosticsStatusNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A diagnostics status notification request to compare with.</param>
+        /// <param name="Object">A DiagnosticsStatusNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest &&
@@ -519,9 +534,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(DiagnosticsStatusNotificationRequest)
 
         /// <summary>
-        /// Compares two diagnostics status notification requests for equality.
+        /// Compares two DiagnosticsStatusNotification requests for equality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request to compare with.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">A DiagnosticsStatusNotification request to compare with.</param>
         public override Boolean Equals(DiagnosticsStatusNotificationRequest? DiagnosticsStatusNotificationRequest)
 
             => DiagnosticsStatusNotificationRequest is not null &&
@@ -536,20 +551,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.GetHashCode() * 3 ^
-                       base.  GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

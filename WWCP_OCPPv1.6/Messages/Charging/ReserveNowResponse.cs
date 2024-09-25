@@ -180,22 +180,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a ReserveNow response.
         /// </summary>
         /// <param name="Request">The ReserveNow request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
-                                               XElement              XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static ReserveNowResponse Parse(ReserveNowRequest  Request,
+                                               XElement           XML,
+                                               SourceRouting      Destination,
+                                               NetworkPath        NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var reserveNowResponse,
-                         out var errorResponse) &&
-                reserveNowResponse is not null)
+                         out var errorResponse))
             {
                 return reserveNowResponse;
             }
@@ -207,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomReserveNowResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ReserveNow response.
@@ -251,19 +256,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out ReserveNowResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out ReserveNowResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a ReserveNow response.
         /// </summary>
         /// <param name="Request">The ReserveNow request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="ReserveNowResponse">The parsed ReserveNow response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.ReserveNowRequest     Request,
-                                       XElement                 XML,
-                                       out ReserveNowResponse?  ReserveNowResponse,
-                                       out String?              ErrorResponse)
+        public static Boolean TryParse(ReserveNowRequest                             Request,
+                                       XElement                                      XML,
+                                       SourceRouting                                 Destination,
+                                       NetworkPath                                   NetworkPath,
+                                       [NotNullWhen(true)]  out ReserveNowResponse?  ReserveNowResponse,
+                                       [NotNullWhen(false)] out String?              ErrorResponse)
         {
 
             try
@@ -293,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ReserveNowResponse, out ErrorResponse, CustomReserveNowResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out ReserveNowResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ReserveNow response.

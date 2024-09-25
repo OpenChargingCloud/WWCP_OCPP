@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
@@ -179,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static SOAPHeader Parse(XElement              SOAPHeaderXML,
-                                       OnExceptionDelegate?  OnException = null)
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(SOAPHeaderXML,
@@ -204,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static SOAPHeader Parse(String                SOAPHeaderText,
-                                       OnExceptionDelegate?  OnException = null)
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(SOAPHeaderText,
@@ -229,9 +230,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              SOAPHeaderXML,
-                                       out SOAPHeader?       SOAPHeader,
-                                       OnExceptionDelegate?  OnException  = null)
+        public static Boolean TryParse(XElement                             SOAPHeaderXML,
+                                       [NotNullWhen(true)] out SOAPHeader?  SOAPHeader,
+                                       OnExceptionDelegate?                 OnException  = null)
         {
 
             try
@@ -275,9 +276,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                SOAPHeaderText,
-                                       out SOAPHeader?       SOAPHeader,
-                                       OnExceptionDelegate?  OnException  = null)
+        public static Boolean TryParse(String                               SOAPHeaderText,
+                                       [NotNullWhen(true)] out SOAPHeader?  SOAPHeader,
+                                       OnExceptionDelegate?                 OnException  = null)
         {
 
             try

@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The log status notification request.
+    /// The LogStatusNotification request.
     /// </summary>
     [SecurityExtensions]
     public class LogStatusNotificationRequest : ARequest<LogStatusNotificationRequest>,
@@ -61,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public UploadLogStatus  Status          { get; }
 
         /// <summary>
-        /// The request id that was provided in the GetLog.req that started this log upload.
+        /// The optional request id that was provided in the GetLog request that started this log upload.
         /// </summary>
         [Optional]
         public Int32?           LogRequestId    { get; }
@@ -71,14 +74,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new log status notification request.
+        /// Create a new LogStatusNotification request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// 
         /// <param name="Status">The status of the log upload.</param>
-        /// <param name="LogRquestId">The request id that was provided in the GetLog.req that started this log upload.</param>
+        /// <param name="LogRquestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -86,26 +91,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public LogStatusNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
+        public LogStatusNotificationRequest(SourceRouting            Destination,
+                                            UploadLogStatus          Status,
+                                            Int32?                   LogRquestId           = null,
 
-                                            UploadLogStatus               Status,
-                                            Int32?                        LogRquestId         = null,
+                                            IEnumerable<KeyPair>?    SignKeys              = null,
+                                            IEnumerable<SignInfo>?   SignInfos             = null,
+                                            IEnumerable<Signature>?  Signatures            = null,
 
-                                            IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                            IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                            IEnumerable<Signature>?  Signatures          = null,
+                                            CustomData?              CustomData            = null,
 
-                                            CustomData?                   CustomData          = null,
+                                            Request_Id?              RequestId             = null,
+                                            DateTime?                RequestTimestamp      = null,
+                                            TimeSpan?                RequestTimeout        = null,
+                                            EventTracking_Id?        EventTrackingId       = null,
+                                            NetworkPath?             NetworkPath           = null,
+                                            SerializationFormats?    SerializationFormat   = null,
+                                            CancellationToken        CancellationToken     = default)
 
-                                            Request_Id?                   RequestId           = null,
-                                            DateTime?                     RequestTimestamp    = null,
-                                            TimeSpan?                     RequestTimeout      = null,
-                                            EventTracking_Id?             EventTrackingId     = null,
-                                            NetworkPath?                  NetworkPath         = null,
-                                            CancellationToken             CancellationToken   = default)
-
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(LogStatusNotificationRequest)[..^7],
 
                    SignKeys,
@@ -119,12 +125,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.Status        = Status;
             this.LogRequestId  = LogRquestId;
+
+            unchecked
+            {
+
+                hashCode = this.Status.       GetHashCode()       * 5 ^
+                          (this.LogRequestId?.GetHashCode() ?? 0) * 3 ^
+                           base.              GetHashCode();
+
+            }
 
         }
 
@@ -168,88 +184,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomLogStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a log status notification request.
+        /// Parse the given JSON representation of a LogStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomLogStatusNotificationRequestParser">An optional delegate to parse custom log status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom LogStatusNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static LogStatusNotificationRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         SourceRouting                                               Destination,
                                                          NetworkPath                                                 NetworkPath,
-                                                         CustomJObjectParserDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestParser   = null)
+                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         TimeSpan?                                                   RequestTimeout                             = null,
+                                                         EventTracking_Id?                                           EventTrackingId                            = null,
+                                                         CustomJObjectParserDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestParser   = null,
+                                                         CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                                         CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var logStatusNotificationRequest,
                          out var errorResponse,
-                         CustomLogStatusNotificationRequestParser) &&
-                logStatusNotificationRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomLogStatusNotificationRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return logStatusNotificationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a log status notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a LogStatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, out LogStatusNotificationRequest, OnException = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out LogStatusNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a log status notification request.
+        /// Try to parse the given JSON representation of a LogStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
+        /// <param name="LogStatusNotificationRequest">The parsed LogStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       Request_Id                         RequestId,
-                                       NetworkingNode_Id                  NetworkingNodeId,
-                                       NetworkPath                        NetworkPath,
-                                       out LogStatusNotificationRequest?  LogStatusNotificationRequest,
-                                       out String?                        ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out LogStatusNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a log status notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomLogStatusNotificationRequestParser">An optional delegate to parse custom log status notification requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom LogStatusNotification requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                 NetworkPath,
-                                       out LogStatusNotificationRequest?                           LogStatusNotificationRequest,
-                                       out String?                                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestParser)
+                                       [NotNullWhen(true)]  out LogStatusNotificationRequest?      LogStatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
+                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       TimeSpan?                                                   RequestTimeout                             = null,
+                                       EventTracking_Id?                                           EventTrackingId                            = null,
+                                       CustomJObjectParserDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
+                                       CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
         {
 
             try
@@ -313,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 LogStatusNotificationRequest = new LogStatusNotificationRequest(
 
-                                                   NetworkingNodeId,
+                                                   Destination,
                                                    Status,
                                                    LogRequestId,
 
@@ -324,9 +337,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    CustomData,
 
                                                    RequestId,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
                                                    NetworkPath
 
                                                );
@@ -341,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 LogStatusNotificationRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a log status notification request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a LogStatusNotification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -354,11 +367,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomLogStatusNotificationSerializer">A delegate to serialize custom log status notification requests.</param>
+        /// <param name="CustomLogStatusNotificationSerializer">A delegate to serialize custom LogStatusNotification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer               = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer               = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer              = null)
         {
 
@@ -395,10 +408,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (LogStatusNotificationRequest1, LogStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two log status notification requests for equality.
+        /// Compares two LogStatusNotification requests for equality.
         /// </summary>
-        /// <param name="LogStatusNotificationRequest1">A log status notification request.</param>
-        /// <param name="LogStatusNotificationRequest2">Another log status notification request.</param>
+        /// <param name="LogStatusNotificationRequest1">A LogStatusNotification request.</param>
+        /// <param name="LogStatusNotificationRequest2">Another LogStatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (LogStatusNotificationRequest? LogStatusNotificationRequest1,
                                            LogStatusNotificationRequest? LogStatusNotificationRequest2)
@@ -421,10 +434,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (LogStatusNotificationRequest1, LogStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two log status notification requests for inequality.
+        /// Compares two LogStatusNotification requests for inequality.
         /// </summary>
-        /// <param name="LogStatusNotificationRequest1">A log status notification request.</param>
-        /// <param name="LogStatusNotificationRequest2">Another log status notification request.</param>
+        /// <param name="LogStatusNotificationRequest1">A LogStatusNotification request.</param>
+        /// <param name="LogStatusNotificationRequest2">Another LogStatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (LogStatusNotificationRequest? LogStatusNotificationRequest1,
                                            LogStatusNotificationRequest? LogStatusNotificationRequest2)
@@ -440,9 +453,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two log status notification requests for equality.
+        /// Compares two LogStatusNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A log status notification request to compare with.</param>
+        /// <param name="Object">A LogStatusNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is LogStatusNotificationRequest logStatusNotificationRequest &&
@@ -453,9 +466,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(LogStatusNotificationRequest)
 
         /// <summary>
-        /// Compares two log status notification requests for equality.
+        /// Compares two LogStatusNotification requests for equality.
         /// </summary>
-        /// <param name="LogStatusNotificationRequest">A log status notification request to compare with.</param>
+        /// <param name="LogStatusNotificationRequest">A LogStatusNotification request to compare with.</param>
         public override Boolean Equals(LogStatusNotificationRequest? LogStatusNotificationRequest)
 
             => LogStatusNotificationRequest is not null &&
@@ -473,23 +486,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.       GetHashCode()       * 5 ^
-
-                      (LogRequestId?.GetHashCode() ?? 0) * 3 ^
-
-                       base.         GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -500,10 +503,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             LogRequestId.HasValue
-                                 ? " (" + LogRequestId + ")"
-                                 :  ""
+            => String.Concat(
+
+                   Status,
+
+                   LogRequestId.HasValue
+                       ? $" ({LogRequestId})"
+                       :  ""
+
                );
 
         #endregion

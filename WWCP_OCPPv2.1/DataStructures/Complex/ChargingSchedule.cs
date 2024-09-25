@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -274,9 +276,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out ChargingSchedule?  ChargingSchedule,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out ChargingSchedule?  ChargingSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingSchedule,
@@ -292,8 +294,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingScheduleParser">A delegate to parse custom charging schedules.</param>
         public static Boolean TryParse(JObject                                         JSON,
-                                       out ChargingSchedule?                           ChargingSchedule,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingSchedule?      ChargingSchedule,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingSchedule>?  CustomChargingScheduleParser)
         {
 
@@ -330,11 +332,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region ChargingSchedulePeriods    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("chargingSchedulePeriod",
-                                                "charging schedule periods",
-                                                ChargingSchedulePeriod.TryParse,
-                                                out HashSet<ChargingSchedulePeriod> ChargingSchedulePeriods,
-                                                out ErrorResponse))
+                if (!JSON.ParseMandatoryList("chargingSchedulePeriod",
+                                             "charging schedule periods",
+                                             ChargingSchedulePeriod.TryParse,
+                                             out List<ChargingSchedulePeriod> ChargingSchedulePeriods,
+                                             out ErrorResponse))
                 {
                     return false;
                 }

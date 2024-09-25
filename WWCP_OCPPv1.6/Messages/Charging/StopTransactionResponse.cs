@@ -206,22 +206,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a StopTransaction response.
         /// </summary>
         /// <param name="Request">The StopTransaction request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
-                                                    XElement                   XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
+                                                    XElement                XML,
+                                                    SourceRouting           Destination,
+                                                    NetworkPath             NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var stopTransactionResponse,
-                         out var errorResponse) &&
-                stopTransactionResponse is not null)
+                         out var errorResponse))
             {
                 return stopTransactionResponse;
             }
@@ -233,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomStopTransactionResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given text representation of a StopTransaction response.
@@ -277,19 +282,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out StopTransactionResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out StopTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a StopTransaction response.
         /// </summary>
         /// <param name="Request">The StopTransaction request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="StopTransactionResponse">The parsed StopTransaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.StopTransactionRequest     Request,
-                                       XElement                      XML,
-                                       out StopTransactionResponse?  StopTransactionResponse,
-                                       out String?                   ErrorResponse)
+        public static Boolean TryParse(StopTransactionRequest                             Request,
+                                       XElement                                           XML,
+                                       SourceRouting                                      Destination,
+                                       NetworkPath                                        NetworkPath,
+                                       [NotNullWhen(true)]  out StopTransactionResponse?  StopTransactionResponse,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse)
         {
 
             try
@@ -319,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out StopTransactionResponse, out ErrorResponse, CustomStopTransactionResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out StopTransactionResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given text representation of a StopTransaction response.

@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The extended trigger message request.
+    /// The ExtendedTriggerMessage request.
     /// </summary>
     [SecurityExtensions]
     public class ExtendedTriggerMessageRequest : ARequest<ExtendedTriggerMessageRequest>,
@@ -70,13 +73,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new extended trigger message request.
+        /// Create a new ExtendedTriggerMessage request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -84,25 +90,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ExtendedTriggerMessageRequest(NetworkingNode_Id             NetworkingNodeId,
-                                             MessageTrigger                RequestedMessage,
-                                             Connector_Id?                 ConnectorId         = null,
+        public ExtendedTriggerMessageRequest(SourceRouting            Destination,
+                                             MessageTrigger           RequestedMessage,
+                                             Connector_Id?            ConnectorId           = null,
 
-                                             IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                             IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                             IEnumerable<Signature>?  Signatures          = null,
+                                             IEnumerable<KeyPair>?    SignKeys              = null,
+                                             IEnumerable<SignInfo>?   SignInfos             = null,
+                                             IEnumerable<Signature>?  Signatures            = null,
 
-                                             CustomData?                   CustomData          = null,
+                                             CustomData?              CustomData            = null,
 
-                                             Request_Id?                   RequestId           = null,
-                                             DateTime?                     RequestTimestamp    = null,
-                                             TimeSpan?                     RequestTimeout      = null,
-                                             EventTracking_Id?             EventTrackingId     = null,
-                                             NetworkPath?                  NetworkPath         = null,
-                                             CancellationToken             CancellationToken   = default)
+                                             Request_Id?              RequestId             = null,
+                                             DateTime?                RequestTimestamp      = null,
+                                             TimeSpan?                RequestTimeout        = null,
+                                             EventTracking_Id?        EventTrackingId       = null,
+                                             NetworkPath?             NetworkPath           = null,
+                                             SerializationFormats?    SerializationFormat   = null,
+                                             CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(ExtendedTriggerMessageRequest)[..^7],
 
                    SignKeys,
@@ -116,12 +124,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
 
             this.RequestedMessage  = RequestedMessage;
             this.ConnectorId       = ConnectorId;
+
+            unchecked
+            {
+
+                hashCode = this.RequestedMessage.GetHashCode()       * 5 ^
+                          (this.ConnectorId?.    GetHashCode() ?? 0) * 3 ^
+                           base.                 GetHashCode();
+
+            }
 
         }
 
@@ -181,88 +199,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomExtendedTriggerMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of an extended trigger message request.
+        /// Parse the given JSON representation of an ExtendedTriggerMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomExtendedTriggerMessageRequestParser">An optional delegate to parse custom extended trigger message requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomExtendedTriggerMessageRequestParser">A delegate to parse custom ExtendedTriggerMessage requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static ExtendedTriggerMessageRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          NetworkingNode_Id                                            NetworkingNodeId,
+                                                          SourceRouting                                                Destination,
                                                           NetworkPath                                                  NetworkPath,
-                                                          CustomJObjectParserDelegate<ExtendedTriggerMessageRequest>?  CustomExtendedTriggerMessageRequestParser   = null)
+                                                          DateTime?                                                    RequestTimestamp                            = null,
+                                                          TimeSpan?                                                    RequestTimeout                              = null,
+                                                          EventTracking_Id?                                            EventTrackingId                             = null,
+                                                          CustomJObjectParserDelegate<ExtendedTriggerMessageRequest>?  CustomExtendedTriggerMessageRequestParser   = null,
+                                                          CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                                          CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var extendedTriggerMessageRequest,
                          out var errorResponse,
-                         CustomExtendedTriggerMessageRequestParser) &&
-                extendedTriggerMessageRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomExtendedTriggerMessageRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return extendedTriggerMessageRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an extended trigger message request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an ExtendedTriggerMessage request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ExtendedTriggerMessageRequest, out ErrorResponse, CustomExtendedTriggerMessageRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ExtendedTriggerMessageRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an extended trigger message request.
+        /// Try to parse the given JSON representation of an ExtendedTriggerMessage request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ExtendedTriggerMessageRequest">The parsed extended trigger message request.</param>
+        /// <param name="ExtendedTriggerMessageRequest">The parsed ExtendedTriggerMessage request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                             JSON,
-                                       Request_Id                          RequestId,
-                                       NetworkingNode_Id                   NetworkingNodeId,
-                                       NetworkPath                         NetworkPath,
-                                       out ExtendedTriggerMessageRequest?  ExtendedTriggerMessageRequest,
-                                       out String?                         ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out ExtendedTriggerMessageRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an extended trigger message request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ExtendedTriggerMessageRequest">The parsed trigger message request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomExtendedTriggerMessageRequestParser">An optional delegate to parse custom extended trigger message requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomExtendedTriggerMessageRequestParser">A delegate to parse custom ExtendedTriggerMessage requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       NetworkingNode_Id                                            NetworkingNodeId,
+                                       SourceRouting                                                Destination,
                                        NetworkPath                                                  NetworkPath,
-                                       out ExtendedTriggerMessageRequest?                           ExtendedTriggerMessageRequest,
-                                       out String?                                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<ExtendedTriggerMessageRequest>?  CustomExtendedTriggerMessageRequestParser)
+                                       [NotNullWhen(true)]  out ExtendedTriggerMessageRequest?      ExtendedTriggerMessageRequest,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
+                                       DateTime?                                                    RequestTimestamp                            = null,
+                                       TimeSpan?                                                    RequestTimeout                              = null,
+                                       EventTracking_Id?                                            EventTrackingId                             = null,
+                                       CustomJObjectParserDelegate<ExtendedTriggerMessageRequest>?  CustomExtendedTriggerMessageRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
+                                       CustomJObjectParserDelegate<CustomData>?                     CustomCustomDataParser                      = null)
         {
 
             try
@@ -328,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ExtendedTriggerMessageRequest = new ExtendedTriggerMessageRequest(
 
-                                                    NetworkingNodeId,
+                                                    Destination,
                                                     MessageExtendedTriggers,
                                                     ConnectorId,
 
@@ -339,9 +354,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                     CustomData,
 
                                                     RequestId,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
                                                     NetworkPath
 
                                                 );
@@ -356,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ExtendedTriggerMessageRequest  = null;
-                ErrorResponse                  = "The given JSON representation of an extended trigger message request is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of an ExtendedTriggerMessage request is invalid: " + e.Message;
                 return false;
             }
 
@@ -369,11 +384,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomExtendedTriggerMessageRequestSerializer">A delegate to serialize custom extended trigger message requests.</param>
+        /// <param name="CustomExtendedTriggerMessageRequestSerializer">A delegate to serialize custom ExtendedTriggerMessage requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?  CustomExtendedTriggerMessageRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                       = null,
+                              CustomJObjectSerializerDelegate<Signature>?                      CustomSignatureSerializer                       = null,
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
@@ -410,10 +425,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (ExtendedTriggerMessageRequest1, ExtendedTriggerMessageRequest2)
 
         /// <summary>
-        /// Compares two extended trigger message requests for equality.
+        /// Compares two ExtendedTriggerMessage requests for equality.
         /// </summary>
-        /// <param name="ExtendedTriggerMessageRequest1">A extended trigger message request.</param>
-        /// <param name="ExtendedTriggerMessageRequest2">Another extended trigger message request.</param>
+        /// <param name="ExtendedTriggerMessageRequest1">A ExtendedTriggerMessage request.</param>
+        /// <param name="ExtendedTriggerMessageRequest2">Another ExtendedTriggerMessage request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ExtendedTriggerMessageRequest? ExtendedTriggerMessageRequest1,
                                            ExtendedTriggerMessageRequest? ExtendedTriggerMessageRequest2)
@@ -436,10 +451,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (ExtendedTriggerMessageRequest1, ExtendedTriggerMessageRequest2)
 
         /// <summary>
-        /// Compares two extended trigger message requests for inequality.
+        /// Compares two ExtendedTriggerMessage requests for inequality.
         /// </summary>
-        /// <param name="ExtendedTriggerMessageRequest1">A extended trigger message request.</param>
-        /// <param name="ExtendedTriggerMessageRequest2">Another extended trigger message request.</param>
+        /// <param name="ExtendedTriggerMessageRequest1">A ExtendedTriggerMessage request.</param>
+        /// <param name="ExtendedTriggerMessageRequest2">Another ExtendedTriggerMessage request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ExtendedTriggerMessageRequest? ExtendedTriggerMessageRequest1,
                                            ExtendedTriggerMessageRequest? ExtendedTriggerMessageRequest2)
@@ -455,9 +470,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two extended trigger message requests for equality.
+        /// Compares two ExtendedTriggerMessage requests for equality.
         /// </summary>
-        /// <param name="Object">A extended trigger message request to compare with.</param>
+        /// <param name="Object">A ExtendedTriggerMessage request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ExtendedTriggerMessageRequest extendedTriggerMessageRequest &&
@@ -468,9 +483,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(ExtendedTriggerMessageRequest)
 
         /// <summary>
-        /// Compares two extended trigger message requests for equality.
+        /// Compares two ExtendedTriggerMessage requests for equality.
         /// </summary>
-        /// <param name="ExtendedTriggerMessageRequest">A extended trigger message request to compare with.</param>
+        /// <param name="ExtendedTriggerMessageRequest">A ExtendedTriggerMessage request to compare with.</param>
         public override Boolean Equals(ExtendedTriggerMessageRequest? ExtendedTriggerMessageRequest)
 
             => ExtendedTriggerMessageRequest is not null &&
@@ -488,21 +503,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return RequestedMessage.GetHashCode()       * 5 ^
-                      (ConnectorId?.    GetHashCode() ?? 0) * 3 ^
-                       base.            GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -513,11 +520,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RequestedMessage,
+            => String.Concat(
 
-                             ConnectorId.HasValue
-                                 ? " for " + ConnectorId
-                                 : "");
+                   RequestedMessage,
+
+                   ConnectorId.HasValue
+                       ? $" for {ConnectorId}"
+                       : ""
+
+               );
 
         #endregion
 

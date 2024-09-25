@@ -17,12 +17,15 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The get log request.
+    /// The GetLog request.
     /// </summary>
     [SecurityExtensions]
     public class GetLogRequest : ARequest<GetLogRequest>,
@@ -86,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get log request.
+        /// Create a new GetLog request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
@@ -95,7 +98,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -103,28 +109,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetLogRequest(NetworkingNode_Id             NetworkingNodeId,
-                             LogTypes                      LogType,
-                             Int32                         LogRequestId,
-                             LogParameters                 Log,
-                             Byte?                         Retries             = null,
-                             TimeSpan?                     RetryInterval       = null,
+        public GetLogRequest(SourceRouting            Destination,
+                             LogTypes                 LogType,
+                             Int32                    LogRequestId,
+                             LogParameters            Log,
+                             Byte?                    Retries               = null,
+                             TimeSpan?                RetryInterval         = null,
 
-                             IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                             IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                             IEnumerable<Signature>?  Signatures          = null,
+                             IEnumerable<KeyPair>?    SignKeys              = null,
+                             IEnumerable<SignInfo>?   SignInfos             = null,
+                             IEnumerable<Signature>?  Signatures            = null,
 
-                             CustomData?                   CustomData          = null,
+                             CustomData?              CustomData            = null,
 
-                             Request_Id?                   RequestId           = null,
-                             DateTime?                     RequestTimestamp    = null,
-                             TimeSpan?                     RequestTimeout      = null,
-                             EventTracking_Id?             EventTrackingId     = null,
-                             NetworkPath?                  NetworkPath         = null,
-                             CancellationToken             CancellationToken   = default)
+                             Request_Id?              RequestId             = null,
+                             DateTime?                RequestTimestamp      = null,
+                             TimeSpan?                RequestTimeout        = null,
+                             EventTracking_Id?        EventTrackingId       = null,
+                             NetworkPath?             NetworkPath           = null,
+                             SerializationFormats?    SerializationFormat   = null,
+                             CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(GetLogRequest)[..^7],
 
                    SignKeys,
@@ -138,6 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -147,6 +156,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.Log            = Log;
             this.Retries        = Retries;
             this.RetryInterval  = RetryInterval;
+
+            unchecked
+            {
+
+                hashCode = this.LogType.       GetHashCode()       * 13 ^
+                           this.LogRequestId.  GetHashCode()       * 11 ^
+                           this.Log.           GetHashCode()       *  7 ^
+                          (this.Retries?.      GetHashCode() ?? 0) *  5 ^
+                          (this.RetryInterval?.GetHashCode() ?? 0) *  3 ^
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -217,88 +238,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetLogRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a get log request.
+        /// Parse the given JSON representation of a GetLog request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetLogRequestParser">An optional delegate to parse custom get log requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static GetLogRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
-                                          NetworkingNode_Id                            NetworkingNodeId,
+                                          SourceRouting                                Destination,
                                           NetworkPath                                  NetworkPath,
-                                          CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser   = null)
+                                          DateTime?                                    RequestTimestamp            = null,
+                                          TimeSpan?                                    RequestTimeout              = null,
+                                          EventTracking_Id?                            EventTrackingId             = null,
+                                          CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser   = null,
+                                          CustomJObjectParserDelegate<Signature>?      CustomSignatureParser       = null,
+                                          CustomJObjectParserDelegate<CustomData>?     CustomCustomDataParser      = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var getLogRequest,
                          out var errorResponse,
-                         CustomGetLogRequestParser) &&
-                getLogRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomGetLogRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getLogRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get log request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetLog request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetLogRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get log request.
+        /// Try to parse the given JSON representation of a GetLog request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetLogRequest">The parsed get log request.</param>
+        /// <param name="GetLogRequest">The parsed GetLog request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       Request_Id          RequestId,
-                                       NetworkingNode_Id   NetworkingNodeId,
-                                       NetworkPath         NetworkPath,
-                                       out GetLogRequest?  GetLogRequest,
-                                       out String?         ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out GetLogRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a get log request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetLogRequest">The parsed get log request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLogRequestParser">An optional delegate to parse custom get log requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
-                                       NetworkingNode_Id                            NetworkingNodeId,
+                                       SourceRouting                                Destination,
                                        NetworkPath                                  NetworkPath,
-                                       out GetLogRequest?                           GetLogRequest,
-                                       out String?                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser)
+                                       [NotNullWhen(true)]  out GetLogRequest?      GetLogRequest,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
+                                       DateTime?                                    RequestTimestamp            = null,
+                                       TimeSpan?                                    RequestTimeout              = null,
+                                       EventTracking_Id?                            EventTrackingId             = null,
+                                       CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?      CustomSignatureParser       = null,
+                                       CustomJObjectParserDelegate<CustomData>?     CustomCustomDataParser      = null)
         {
 
             try
@@ -342,9 +360,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     return false;
                 }
 
-                if (Log is null)
-                    return false;
-
                 #endregion
 
                 #region Retries         [optional]
@@ -354,7 +369,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         out Byte? Retries,
                                         out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -363,15 +379,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseOptional("retryInterval",
                                         "retry interval",
-                                        out UInt32? RetryIntervalUInt32,
+                                        out TimeSpan? RetryInterval,
                                         out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
-
-                var RetryInterval = RetryIntervalUInt32.HasValue
-                                        ? TimeSpan.FromSeconds((double) RetryIntervalUInt32)
-                                        : new TimeSpan?();
 
                 #endregion
 
@@ -406,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 GetLogRequest = new GetLogRequest(
 
-                                    NetworkingNodeId,
+                                    Destination,
                                     LogType,
                                     LogRequestId,
                                     Log,
@@ -420,9 +433,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     CustomData,
 
                                     RequestId,
-                                    null,
-                                    null,
-                                    null,
+                                    RequestTimestamp,
+                                    RequestTimeout,
+                                    EventTrackingId,
                                     NetworkPath
 
                                 );
@@ -437,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 GetLogRequest  = null;
-                ErrorResponse  = "The given JSON representation of a get log request is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a GetLog request is invalid: " + e.Message;
                 return false;
             }
 
@@ -456,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>? CustomSignatureSerializer       = null,
+                              CustomJObjectSerializerDelegate<Signature>?      CustomSignatureSerializer       = null,
                               CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
         {
 
@@ -499,10 +512,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (GetLogRequest1, GetLogRequest2)
 
         /// <summary>
-        /// Compares two get log requests for equality.
+        /// Compares two GetLog requests for equality.
         /// </summary>
-        /// <param name="GetLogRequest1">A get log request.</param>
-        /// <param name="GetLogRequest2">Another get log request.</param>
+        /// <param name="GetLogRequest1">A GetLog request.</param>
+        /// <param name="GetLogRequest2">Another GetLog request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetLogRequest? GetLogRequest1,
                                            GetLogRequest? GetLogRequest2)
@@ -525,10 +538,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (GetLogRequest1, GetLogRequest2)
 
         /// <summary>
-        /// Compares two get log requests for inequality.
+        /// Compares two GetLog requests for inequality.
         /// </summary>
-        /// <param name="GetLogRequest1">A get log request.</param>
-        /// <param name="GetLogRequest2">Another get log request.</param>
+        /// <param name="GetLogRequest1">A GetLog request.</param>
+        /// <param name="GetLogRequest2">Another GetLog request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetLogRequest? GetLogRequest1,
                                            GetLogRequest? GetLogRequest2)
@@ -544,9 +557,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get log requests for equality.
+        /// Compares two GetLog requests for equality.
         /// </summary>
-        /// <param name="Object">A get log request to compare with.</param>
+        /// <param name="Object">A GetLog request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetLogRequest getLogRequest &&
@@ -557,9 +570,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(GetLogRequest)
 
         /// <summary>
-        /// Compares two get log requests for equality.
+        /// Compares two GetLog requests for equality.
         /// </summary>
-        /// <param name="GetLogRequest">A get log request to compare with.</param>
+        /// <param name="GetLogRequest">A GetLog request to compare with.</param>
         public override Boolean Equals(GetLogRequest? GetLogRequest)
 
             => GetLogRequest is not null &&
@@ -582,24 +595,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return LogType.       GetHashCode()       * 13 ^
-                       LogRequestId.  GetHashCode()       * 11 ^
-                       Log.           GetHashCode()       *  7 ^
-                      (Retries?.      GetHashCode() ?? 0) *  5 ^
-                      (RetryInterval?.GetHashCode() ?? 0) *  3 ^
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

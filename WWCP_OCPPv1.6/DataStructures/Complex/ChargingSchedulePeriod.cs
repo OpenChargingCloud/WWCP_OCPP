@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -74,6 +75,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.Limit         = Limit;
             this.NumberPhases  = NumberPhases;
 
+            unchecked
+            {
+
+                hashCode = this.StartPeriod.  GetHashCode() * 5 ^
+                           this.Limit.        GetHashCode() * 3 ^
+                          (this.NumberPhases?.GetHashCode() ?? 0);
+
+            }
+
         }
 
         #endregion
@@ -120,25 +130,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML,  OnException = null)
+        #region (static) Parse   (XML)
 
         /// <summary>
         /// Parse the given XML representation of a charging schedule period.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(XElement              XML,
-                                                   OnExceptionDelegate?  OnException   = null)
+        public static ChargingSchedulePeriod Parse(XElement XML)
         {
 
             if (TryParse(XML,
                          out var chargingSchedulePeriod,
-                         OnException))
+                         out var errorResponse))
             {
                 return chargingSchedulePeriod;
             }
 
-            throw new ArgumentException("The given XML representation of a charging schedule period is invalid: ", // + errorResponse,
+            throw new ArgumentException("The given XML representation of a charging schedule period is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -171,18 +179,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(XML,  out ChargingSchedulePeriod, OnException = null)
+        #region (static) TryParse(XML,  out ChargingSchedulePeriod, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a charging schedule period.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    XML,
-                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate?        OnException   = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                                         XML,
+                                       [NotNullWhen(true)]  out ChargingSchedulePeriod  ChargingSchedulePeriod,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -205,10 +215,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ChargingSchedulePeriod = default;
+                ChargingSchedulePeriod  = default;
+                ErrorResponse           = "The given JSON representation of a charging schedule period is invalid: " + e.Message;
                 return false;
 
             }
@@ -227,9 +235,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       out String?                 ErrorResponse)
+        public static Boolean TryParse(JObject                                          JSON,
+                                       [NotNullWhen(true)]  out ChargingSchedulePeriod  ChargingSchedulePeriod,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingSchedulePeriod,
@@ -246,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingSchedulePeriodParser">An optional delegate to parse custom CustomChargingSchedulePeriod JSON objects.</param>
         public static Boolean TryParse(JObject                                               JSON,
-                                       out ChargingSchedulePeriod                            ChargingSchedulePeriod,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingSchedulePeriod       ChargingSchedulePeriod,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodParser)
         {
 
@@ -260,13 +268,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.ParseMandatory("startPeriod",
                                          "start period",
-                                         out UInt32 startPeriod,
+                                         out TimeSpan StartPeriod,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var StartPeriod = TimeSpan.FromSeconds(startPeriod);
 
                 #endregion
 
@@ -296,9 +302,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                ChargingSchedulePeriod = new ChargingSchedulePeriod(StartPeriod,
-                                                                    Limit,
-                                                                    NumberPhases);
+                ChargingSchedulePeriod = new ChargingSchedulePeriod(
+                                             StartPeriod,
+                                             Limit,
+                                             NumberPhases
+                                         );
 
 
                 if (CustomChargingSchedulePeriodParser is not null)
@@ -349,11 +357,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("startPeriod",         (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
-                           new JProperty("limit",               Math.Round(Limit, 1)),
+                                 new JProperty("startPeriod",    (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
+                                 new JProperty("limit",          Math.Round(Limit, 1)),
 
                            NumberPhases.HasValue
-                               ? new JProperty("numberPhases",  NumberPhases)
+                               ? new JProperty("numberPhases",   NumberPhases)
                                : null
 
                        );
@@ -436,22 +444,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return StartPeriod.  GetHashCode() * 5 ^
-                       Limit.        GetHashCode() * 3 ^
-
-                      (NumberPhases?.GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

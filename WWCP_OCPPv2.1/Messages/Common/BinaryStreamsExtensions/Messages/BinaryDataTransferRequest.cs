@@ -577,14 +577,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             => String.Concat(
 
-                   VendorId,
+                   $"'{VendorId}'",
 
                    MessageId.IsNotNullOrEmpty()
-                        ? $" ({MessageId})"
-                        : "",
+                       ? $" / '{MessageId}'"
+                       : "",
 
                    Data?.Length > 0
-                       ? $": '{Data.ToBase64().SubstringMax(100)}' [{Data.Length} bytes]"
+                       ? $" => '{Data.ToBase64().SubstringMax(100)}' [{Data.Length} bytes]"
                        : ""
 
                 );

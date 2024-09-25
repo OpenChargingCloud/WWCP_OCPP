@@ -155,19 +155,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a ClearChargingProfile response.
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         public static ClearChargingProfileResponse Parse(ClearChargingProfileRequest  Request,
-                                                         XElement                     XML)
+                                                         XElement                     XML,
+                                                         SourceRouting                Destination,
+                                                         NetworkPath                  NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var clearChargingProfileResponse,
                          out var errorResponse))
             {
@@ -181,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomClearChargingProfileResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ClearChargingProfile response.
@@ -225,17 +231,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out ClearChargingProfileResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out ClearChargingProfileResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a ClearChargingProfile response.
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="ClearChargingProfileResponse">The parsed ClearChargingProfile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(ClearChargingProfileRequest                             Request,
                                        XElement                                                XML,
+                                       SourceRouting                                           Destination,
+                                       NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out ClearChargingProfileResponse?  ClearChargingProfileResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse)
         {
@@ -267,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ClearChargingProfileResponse, out ErrorResponse, CustomClearChargingProfileResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out ClearChargingProfileResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ClearChargingProfile response.

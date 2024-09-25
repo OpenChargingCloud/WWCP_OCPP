@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -101,7 +103,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Retries">The optional number of retries of a charge point for trying to upload the diagnostics before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -109,28 +114,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetDiagnosticsRequest(NetworkingNode_Id             NetworkingNodeId,
-                                     String                        Location,
-                                     DateTime?                     StartTime           = null,
-                                     DateTime?                     StopTime            = null,
-                                     Byte?                         Retries             = null,
-                                     TimeSpan?                     RetryInterval       = null,
+        public GetDiagnosticsRequest(SourceRouting            Destination,
+                                     String                   Location,
+                                     DateTime?                StartTime             = null,
+                                     DateTime?                StopTime              = null,
+                                     Byte?                    Retries               = null,
+                                     TimeSpan?                RetryInterval         = null,
 
-                                     IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                     IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
+                                     IEnumerable<KeyPair>?    SignKeys              = null,
+                                     IEnumerable<SignInfo>?   SignInfos             = null,
+                                     IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?                   CustomData          = null,
+                                     CustomData?              CustomData            = null,
 
-                                     Request_Id?                   RequestId           = null,
-                                     DateTime?                     RequestTimestamp    = null,
-                                     TimeSpan?                     RequestTimeout      = null,
-                                     EventTracking_Id?             EventTrackingId     = null,
-                                     NetworkPath?                  NetworkPath         = null,
-                                     CancellationToken             CancellationToken   = default)
+                                     Request_Id?              RequestId             = null,
+                                     DateTime?                RequestTimestamp      = null,
+                                     TimeSpan?                RequestTimeout        = null,
+                                     EventTracking_Id?        EventTrackingId       = null,
+                                     NetworkPath?             NetworkPath           = null,
+                                     SerializationFormats?    SerializationFormat   = null,
+                                     CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(GetDiagnosticsRequest)[..^7],
 
                    SignKeys,
@@ -144,6 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -162,6 +170,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.StopTime       = StopTime;
             this.Retries        = Retries;
             this.RetryInterval  = RetryInterval;
+
+
+            unchecked
+            {
+
+                hashCode = this.Location.      GetHashCode()       * 13 ^
+                          (this.StartTime?.    GetHashCode() ?? 0) * 11 ^
+                          (this.StopTime?.     GetHashCode() ?? 0) *  7 ^
+                          (this.Retries?.      GetHashCode() ?? 0) *  5 ^
+                          (this.RetryInterval?.GetHashCode() ?? 0) *  3 ^
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -236,66 +257,79 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a get diagnostics request.
+        /// Parse the given XML representation of a GetDiagnostics request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static GetDiagnosticsRequest Parse(XElement           XML,
-                                                  Request_Id         RequestId,
-                                                  NetworkingNode_Id  NetworkingNodeId,
-                                                  NetworkPath        NetworkPath)
+        public static GetDiagnosticsRequest Parse(XElement       XML,
+                                                  Request_Id     RequestId,
+                                                  SourceRouting  Destination,
+                                                  NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var getDiagnosticsRequest,
-                         out var errorResponse) &&
-                getDiagnosticsRequest is not null)
+                         out var errorResponse))
             {
                 return getDiagnosticsRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a get diagnostics request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a GetDiagnostics request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetDiagnosticsRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a get diagnostics request.
+        /// Parse the given JSON representation of a GetDiagnostics request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetDiagnosticsRequestParser">An optional delegate to parse custom GetDiagnostics requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDiagnosticsRequestParser">A delegate to parse custom GetDiagnostics requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static GetDiagnosticsRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  NetworkingNode_Id                                    NetworkingNodeId,
+                                                  SourceRouting                                        Destination,
                                                   NetworkPath                                          NetworkPath,
-                                                  CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null)
+                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  TimeSpan?                                            RequestTimeout                      = null,
+                                                  EventTracking_Id?                                    EventTrackingId                     = null,
+                                                  CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null,
+                                                  CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                                  CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var getDiagnosticsRequest,
                          out var errorResponse,
-                         CustomGetDiagnosticsRequestParser) &&
-                getDiagnosticsRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomGetDiagnosticsRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getDiagnosticsRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get diagnostics request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetDiagnostics request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -305,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out GetDiagnosticsRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a get diagnostics request.
+        /// Try to parse the given XML representation of a GetDiagnostics request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -313,12 +347,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                    XML,
-                                       Request_Id                  RequestId,
-                                       NetworkingNode_Id           NetworkingNodeId,
-                                       NetworkPath                 NetworkPath,
-                                       out GetDiagnosticsRequest?  GetDiagnosticsRequest,
-                                       out String?                 ErrorResponse)
+        public static Boolean TryParse(XElement                                         XML,
+                                       Request_Id                                       RequestId,
+                                       SourceRouting                                    Destination,
+                                       NetworkPath                                      NetworkPath,
+                                       [NotNullWhen(true)]  out GetDiagnosticsRequest?  GetDiagnosticsRequest,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
         {
 
             try
@@ -326,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 GetDiagnosticsRequest = new GetDiagnosticsRequest(
 
-                                            NetworkingNodeId,
+                                            Destination,
 
                                             XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "location"),
 
@@ -354,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 GetDiagnosticsRequest  = null;
-                ErrorResponse          = "The given XML representation of a get diagnostics request is invalid: " + e.Message;
+                ErrorResponse          = "The given XML representation of a GetDiagnostics request is invalid: " + e.Message;
                 return false;
             }
 
@@ -362,12 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetDiagnosticsRequest, out ErrorResponse, CustomGetDiagnosticsRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetDiagnosticsRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get diagnostics request.
+        /// Try to parse the given JSON representation of a GetDiagnostics request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -375,38 +407,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       Request_Id                  RequestId,
-                                       NetworkingNode_Id           NetworkingNodeId,
-                                       NetworkPath                 NetworkPath,
-                                       out GetDiagnosticsRequest?  GetDiagnosticsRequest,
-                                       out String?                 ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out GetDiagnosticsRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a get diagnostics request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDiagnosticsRequestParser">An optional delegate to parse custom GetDiagnostics requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDiagnosticsRequestParser">A delegate to parse custom GetDiagnostics requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       NetworkingNode_Id                                    NetworkingNodeId,
+                                       SourceRouting                                        Destination,
                                        NetworkPath                                          NetworkPath,
-                                       out GetDiagnosticsRequest?                           GetDiagnosticsRequest,
-                                       out String?                                          ErrorResponse,
-                                       CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser)
+                                       [NotNullWhen(true)]  out GetDiagnosticsRequest?      GetDiagnosticsRequest,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
+                                       DateTime?                                            RequestTimestamp                    = null,
+                                       TimeSpan?                                            RequestTimeout                      = null,
+                                       EventTracking_Id?                                    EventTrackingId                     = null,
+                                       CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?              CustomSignatureParser               = null,
+                                       CustomJObjectParserDelegate<CustomData>?             CustomCustomDataParser              = null)
         {
 
             try
@@ -509,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 GetDiagnosticsRequest = new GetDiagnosticsRequest(
 
-                                            NetworkingNodeId,
+                                            Destination,
                                             Location,
                                             StartTime,
                                             StopTime,
@@ -523,9 +541,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             CustomData,
 
                                             RequestId,
-                                            null,
-                                            null,
-                                            null,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
                                             NetworkPath
 
                                         );
@@ -540,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 GetDiagnosticsRequest  = null;
-                ErrorResponse          = "The given JSON representation of a get diagnostics request is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a GetDiagnostics request is invalid: " + e.Message;
                 return false;
             }
 
@@ -588,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?         CustomSignatureSerializer               = null,
+                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer               = null,
                               CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
@@ -682,9 +700,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get diagnostics requests for equality.
+        /// Compares two GetDiagnostics requests for equality.
         /// </summary>
-        /// <param name="Object">A get diagnostics request to compare with.</param>
+        /// <param name="Object">A GetDiagnostics request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetDiagnosticsRequest getDiagnosticsRequest &&
@@ -695,9 +713,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(GetDiagnosticsRequest)
 
         /// <summary>
-        /// Compares two get diagnostics requests for equality.
+        /// Compares two GetDiagnostics requests for equality.
         /// </summary>
-        /// <param name="GetDiagnosticsRequest">A get diagnostics request to compare with.</param>
+        /// <param name="GetDiagnosticsRequest">A GetDiagnostics request to compare with.</param>
         public override Boolean Equals(GetDiagnosticsRequest? GetDiagnosticsRequest)
 
             => GetDiagnosticsRequest is not null &&
@@ -724,26 +742,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Location.      GetHashCode()       * 13 ^
-
-                      (StartTime?.    GetHashCode() ?? 0) * 11 ^
-                      (StopTime?.     GetHashCode() ?? 0) *  7 ^
-                      (Retries?.      GetHashCode() ?? 0) *  5 ^
-                      (RetryInterval?.GetHashCode() ?? 0) *  3 ^
-
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -754,23 +759,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Location,
+            => String.Concat(
 
-                             StartTime.HasValue
-                                 ? ", from " + StartTime.Value.ToIso8601()
-                                 : "",
+                   Location,
 
-                             StopTime.HasValue
-                                 ? ", to "   + StopTime. Value.ToIso8601()
-                                 : "",
+                   StartTime.HasValue
+                       ? $", from {StartTime.Value.ToIso8601()}"
+                       : "",
 
-                             Retries.HasValue
-                                 ? ", " + Retries.Value + " retries"
-                                 : "",
+                   StopTime.HasValue
+                       ? $", to {StopTime. Value.ToIso8601()}"
+                       : "",
 
-                             RetryInterval.HasValue
-                                 ? ", retry interval " + RetryInterval.Value.TotalSeconds + " sec(s)"
-                                 : "");
+                   Retries.HasValue
+                       ? $", {Retries.Value} retries"
+                       : "",
+
+                   RetryInterval.HasValue
+                       ? $", retry interval {RetryInterval.Value.TotalSeconds} sec(s)"
+                       : ""
+
+               );
 
         #endregion
 

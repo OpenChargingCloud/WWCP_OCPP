@@ -143,19 +143,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of an UpdateFirmwareResponse.
         /// </summary>
         /// <param name="Request">The update firmware request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         public static UpdateFirmwareResponse Parse(UpdateFirmwareRequest  Request,
-                                                   XElement               XML)
+                                                   XElement               XML,
+                                                   SourceRouting          Destination,
+                                                   NetworkPath            NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var updateFirmwareResponse,
                          out var errorResponse))
             {
@@ -169,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomUpdateFirmwareResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an UpdateFirmwareResponse.
@@ -213,17 +219,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out UpdateFirmwareResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out UpdateFirmwareResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of an UpdateFirmwareResponse.
         /// </summary>
         /// <param name="Request">The update firmware request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
         /// <param name="UpdateFirmwareResponse">The parsed UpdateFirmwareResponse.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(UpdateFirmwareRequest                             Request,
                                        XElement                                          XML,
+                                       SourceRouting                                     Destination,
+                                       NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareResponse?  UpdateFirmwareResponse,
                                        [NotNullWhen(false)] out String?                  ErrorResponse)
         {
@@ -248,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out UpdateFirmwareResponse, out ErrorResponse, CustomUpdateFirmwareResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out UpdateFirmwareResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UpdateFirmwareResponse.

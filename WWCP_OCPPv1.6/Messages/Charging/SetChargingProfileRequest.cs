@@ -374,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetChargingProfileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SetChargingProfile request.
@@ -450,11 +450,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 Destination,
 
-                                                XML.MapValueOrFail  (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                     Connector_Id.Parse),
+                                                XML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                      Connector_Id.Parse),
 
-                                                XML.MapElementOrFail(OCPPNS.OCPPv1_6_CP + "csChargingProfiles",
-                                                                     ChargingProfile.Parse),
+                                                XML.MapElementOrFail2(OCPPNS.OCPPv1_6_CP + "csChargingProfiles",
+                                                                      ChargingProfile.Parse),
 
                                                 RequestId:    RequestId,
                                                 NetworkPath:  NetworkPath
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetChargingProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetChargingProfileRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetChargingProfile request.

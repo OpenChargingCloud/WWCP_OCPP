@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML,  OnException = null)
+        #region (static) Parse   (XML,  out ErrorResponse)
 
         /// <summary>
         /// Parse the given XML representation of a sampled value.
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(XML,  out SampledValue, OnException = null)
+        #region (static) TryParse(XML,  out SampledValue, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a sampled value.

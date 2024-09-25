@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUpdateFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an UpdateFirmware request.
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UpdateFirmware request.

@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomCertificateSignedRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a CertificateSigned request.
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out CertificateSignedRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out CertificateSignedRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a CertificateSigned request.

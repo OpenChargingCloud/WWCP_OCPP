@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an InstallCertificate response.
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out InstallCertificateResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an InstallCertificate response.

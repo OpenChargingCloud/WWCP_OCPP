@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSignCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SignCertificate request.
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SignCertificateRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SignCertificate request.

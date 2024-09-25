@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -31,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A get configuration response.
+    /// A GetConfiguration response.
     /// </summary>
-    public class GetConfigurationResponse : AResponse<CS.GetConfigurationRequest,
-                                                         GetConfigurationResponse>,
+    public class GetConfigurationResponse : AResponse<GetConfigurationRequest,
+                                                      GetConfigurationResponse>,
                                             IResponse
     {
 
@@ -69,75 +74,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region GetConfigurationResponse(Request, ConfigurationKeys, UnknownKeys)
-
         /// <summary>
-        /// Create a new get configuration response.
+        /// Create a new GetConfiguration response.
         /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="Request">The GetConfiguration request leading to this response.</param>
         /// <param name="ConfigurationKeys">An enumeration of (requested and) known configuration keys.</param>
         /// <param name="UnknownKeys">An enumeration of (requested but) unknown configuration keys.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public GetConfigurationResponse(CS.GetConfigurationRequest     Request,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public GetConfigurationResponse(GetConfigurationRequest        Request,
                                         IEnumerable<ConfigurationKey>  ConfigurationKeys,
                                         IEnumerable<String>            UnknownKeys,
 
-                                        DateTime?                      ResponseTimestamp   = null,
+                                        Result?                        Result                = null,
+                                        DateTime?                      ResponseTimestamp     = null,
 
-                                        IEnumerable<WWCP.KeyPair>?     SignKeys            = null,
-                                        IEnumerable<WWCP.SignInfo>?    SignInfos           = null,
-                                        IEnumerable<Signature>?   Signatures          = null,
+                                        SourceRouting?                 Destination           = null,
+                                        NetworkPath?                   NetworkPath           = null,
 
-                                        CustomData?                    CustomData          = null)
+                                        IEnumerable<KeyPair>?          SignKeys              = null,
+                                        IEnumerable<SignInfo>?         SignInfos             = null,
+                                        IEnumerable<Signature>?        Signatures            = null,
+
+                                        CustomData?                    CustomData            = null,
+
+                                        SerializationFormats?          SerializationFormat   = null,
+                                        CancellationToken              CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
-            this.ConfigurationKeys  = ConfigurationKeys ?? Array.Empty<ConfigurationKey>();
-            this.UnknownKeys        = UnknownKeys       ?? Array.Empty<String>();
+            this.ConfigurationKeys  = ConfigurationKeys ?? [];
+            this.UnknownKeys        = UnknownKeys       ?? [];
+
+            unchecked
+            {
+
+                hashCode = this.ConfigurationKeys.CalcHashCode() * 5 ^
+                           this.UnknownKeys.      CalcHashCode() * 3 ^
+                           base.                  GetHashCode();
+
+            }
 
         }
-
-        #endregion
-
-        #region GetConfigurationResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get configuration response.
-        /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetConfigurationResponse(CS.GetConfigurationRequest  Request,
-                                        Result                      Result)
-
-            : base(Request,
-                   Result)
-
-        {
-
-            this.ConfigurationKeys  = Array.Empty<ConfigurationKey>();
-            this.UnknownKeys        = Array.Empty<String>();
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -211,76 +217,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a get configuration response.
+        /// Parse the given XML representation of a GetConfiguration response.
         /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="Request">The GetConfiguration request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
-                                                     XElement                    XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static GetConfigurationResponse Parse(GetConfigurationRequest  Request,
+                                                     XElement                 XML,
+                                                     SourceRouting            Destination,
+                                                     NetworkPath              NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var getConfigurationResponse,
-                         out var errorResponse) &&
-                getConfigurationResponse is not null)
+                         out var errorResponse))
             {
                 return getConfigurationResponse;
             }
 
-            throw new ArgumentException("The given XML representation of a get configuration response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a GetConfiguration response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetConfigurationResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath,...)
 
         /// <summary>
-        /// Parse the given JSON representation of a get configuration response.
+        /// Parse the given JSON representation of a GetConfiguration response.
         /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="Request">The GetConfiguration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetConfigurationResponseParser">An optional delegate to parse custom get configuration responses.</param>
-        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetConfigurationResponseParser">An optional delegate to parse custom GetConfiguration responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static GetConfigurationResponse Parse(GetConfigurationRequest                                 Request,
                                                      JObject                                                 JSON,
-                                                     CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null)
+                                                     SourceRouting                                           Destination,
+                                                     NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null,
+                                                     CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                                     CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var getConfigurationResponse,
                          out var errorResponse,
-                         CustomGetConfigurationResponseParser) &&
-                getConfigurationResponse is not null)
+                         ResponseTimestamp,
+                         CustomGetConfigurationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getConfigurationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get configuration response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetConfiguration response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out GetConfigurationResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out GetConfigurationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a get configuration response.
+        /// Try to parse the given XML representation of a GetConfiguration response.
         /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="Request">The GetConfiguration request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="GetConfigurationResponse">The parsed GetConfiguration response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.GetConfigurationRequest     Request,
-                                       XElement                       XML,
-                                       out GetConfigurationResponse?  GetConfigurationResponse,
-                                       out String?                    ErrorResponse)
+        public static Boolean TryParse(GetConfigurationRequest                             Request,
+                                       XElement                                            XML,
+                                       SourceRouting                                       Destination,
+                                       NetworkPath                                         NetworkPath,
+                                       [NotNullWhen(true)]  out GetConfigurationResponse?  GetConfigurationResponse,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse)
         {
 
             try
@@ -304,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetConfigurationResponse  = null;
-                ErrorResponse             = "The given XML representation of a get configuration response is invalid: " + e.Message;
+                ErrorResponse             = "The given XML representation of a GetConfiguration response is invalid: " + e.Message;
                 return false;
             }
 
@@ -312,21 +341,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetConfigurationResponse, out ErrorResponse, CustomGetConfigurationResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out GetConfigurationResponse, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get configuration response.
+        /// Try to parse the given JSON representation of a GetConfiguration response.
         /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="Request">The GetConfiguration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="GetConfigurationResponse">The parsed GetConfiguration response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetConfigurationResponseParser">An optional delegate to parse custom get configuration responses.</param>
-        public static Boolean TryParse(CS.GetConfigurationRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetConfigurationResponseParser">An optional delegate to parse custom GetConfiguration responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(GetConfigurationRequest                                 Request,
                                        JObject                                                 JSON,
-                                       out GetConfigurationResponse?                           GetConfigurationResponse,
-                                       out String?                                             ErrorResponse,
-                                       CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null)
+                                       SourceRouting                                           Destination,
+                                       NetworkPath                                             NetworkPath,
+                                       [NotNullWhen(true)]  out GetConfigurationResponse?      GetConfigurationResponse,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
+                                       CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
         {
 
             try
@@ -395,7 +434,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                Request,
                                                ConfigurationKeys,
                                                UnknownKeys,
+
                                                null,
+                                               ResponseTimestamp,
+
+                                               Destination,
+                                               NetworkPath,
 
                                                null,
                                                null,
@@ -415,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetConfigurationResponse  = null;
-                ErrorResponse             = "The given JSON representation of a get configuration response is invalid: " + e.Message;
+                ErrorResponse             = "The given JSON representation of a GetConfiguration response is invalid: " + e.Message;
                 return false;
             }
 
@@ -444,13 +488,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetConfigurationResponseSerializer">A delegate to serialize custom get configuration responses.</param>
+        /// <param name="CustomGetConfigurationResponseSerializer">A delegate to serialize custom GetConfiguration responses.</param>
         /// <param name="CustomConfigurationKeySerializer">A delegate to serialize custom configuration keys.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<ConfigurationKey>?          CustomConfigurationKeySerializer           = null,
-                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
@@ -487,13 +531,107 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The get configuration request failed.
+        /// The GetConfiguration failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get configuration request leading to this response.</param>
-        public static GetConfigurationResponse Failed(CS.GetConfigurationRequest Request)
+        /// <param name="Request">The GetConfiguration request.</param>
+        public static GetConfigurationResponse RequestError(GetConfigurationRequest  Request,
+                                                            EventTracking_Id         EventTrackingId,
+                                                            ResultCode               ErrorCode,
+                                                            String?                  ErrorDescription    = null,
+                                                            JObject?                 ErrorDetails        = null,
+                                                            DateTime?                ResponseTimestamp   = null,
+
+                                                            SourceRouting?           Destination         = null,
+                                                            NetworkPath?             NetworkPath         = null,
+
+                                                            IEnumerable<KeyPair>?    SignKeys            = null,
+                                                            IEnumerable<SignInfo>?   SignInfos           = null,
+                                                            IEnumerable<Signature>?  Signatures          = null,
+
+                                                            CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   [],
+                   [],
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetConfiguration failed.
+        /// </summary>
+        /// <param name="Request">The GetConfiguration request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetConfigurationResponse FormationViolation(GetConfigurationRequest  Request,
+                                                                  String                   ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    [],
+                    [],
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetConfiguration failed.
+        /// </summary>
+        /// <param name="Request">The GetConfiguration request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetConfigurationResponse SignatureError(GetConfigurationRequest  Request,
+                                                              String                   ErrorDescription)
+
+            => new (Request,
+                    [],
+                    [],
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetConfiguration failed.
+        /// </summary>
+        /// <param name="Request">The GetConfiguration request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static GetConfigurationResponse Failed(GetConfigurationRequest  Request,
+                                                      String?                  Description   = null)
+
+            => new (Request,
+                    [],
+                    [],
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetConfiguration failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetConfiguration request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetConfigurationResponse ExceptionOccured(GetConfigurationRequest  Request,
+                                                                Exception                Exception)
+
+            => new (Request,
+                    [],
+                    [],
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -503,10 +641,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (GetConfigurationResponse1, GetConfigurationResponse2)
 
         /// <summary>
-        /// Compares two get configuration responses for equality.
+        /// Compares two GetConfiguration responses for equality.
         /// </summary>
-        /// <param name="GetConfigurationResponse1">A get configuration response.</param>
-        /// <param name="GetConfigurationResponse2">Another get configuration response.</param>
+        /// <param name="GetConfigurationResponse1">A GetConfiguration response.</param>
+        /// <param name="GetConfigurationResponse2">Another GetConfiguration response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetConfigurationResponse? GetConfigurationResponse1,
                                            GetConfigurationResponse? GetConfigurationResponse2)
@@ -529,10 +667,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (GetConfigurationResponse1, GetConfigurationResponse2)
 
         /// <summary>
-        /// Compares two get configuration responses for inequality.
+        /// Compares two GetConfiguration responses for inequality.
         /// </summary>
-        /// <param name="GetConfigurationResponse1">A get configuration response.</param>
-        /// <param name="GetConfigurationResponse2">Another get configuration response.</param>
+        /// <param name="GetConfigurationResponse1">A GetConfiguration response.</param>
+        /// <param name="GetConfigurationResponse2">Another GetConfiguration response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetConfigurationResponse? GetConfigurationResponse1,
                                            GetConfigurationResponse? GetConfigurationResponse2)
@@ -548,9 +686,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get configuration responses for equality.
+        /// Compares two GetConfiguration responses for equality.
         /// </summary>
-        /// <param name="Object">A get configuration response to compare with.</param>
+        /// <param name="Object">A GetConfiguration response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetConfigurationResponse getConfigurationResponse &&
@@ -561,9 +699,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(GetConfigurationResponse)
 
         /// <summary>
-        /// Compares two get configuration responses for equality.
+        /// Compares two GetConfiguration responses for equality.
         /// </summary>
-        /// <param name="GetConfigurationResponse">A get configuration response to compare with.</param>
+        /// <param name="GetConfigurationResponse">A GetConfiguration response to compare with.</param>
         public override Boolean Equals(GetConfigurationResponse? GetConfigurationResponse)
 
             => GetConfigurationResponse is not null &&
@@ -580,20 +718,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ConfigurationKeys.CalcHashCode() * 5 ^
-                       UnknownKeys.      GetHashCode()  * 3;
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -609,6 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                              UnknownKeys.      Count(), " unknown key(s)");
 
         #endregion
+
 
     }
 

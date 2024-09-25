@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -190,25 +191,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML,  OnException = null)
+        #region (static) Parse   (XML)
 
         /// <summary>
         /// Parse the given XML representation of a charging schedule.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedule Parse(XElement              XML,
-                                             OnExceptionDelegate?  OnException   = null)
+        public static ChargingSchedule Parse(XElement XML)
         {
 
             if (TryParse(XML,
                          out var chargingSchedule,
-                         OnException))
+                         out var errorResponse))
             {
                 return chargingSchedule;
             }
 
-            throw new ArgumentException("The given XML representation of an authorize request is invalid: ", // + errorResponse,
+            throw new ArgumentException("The given XML representation of an authorize request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -241,18 +241,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(XML,  out ChargingSchedule, OnException = null)
+        #region (static) TryParse(XML,  out ChargingSchedule, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a charging schedule.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement               XML,
-                                       out ChargingSchedule?  ChargingSchedule,
-                                       OnExceptionDelegate?   OnException   = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                                    XML,
+                                       [NotNullWhen(true)]  out ChargingSchedule?  ChargingSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -262,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        XML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
                                                                ChargingRateUnitsExtensions.Parse),
 
-                                       XML.MapElementsOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
+                                       XML.MapElementsOrFail2 (OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
                                                                ChargingSchedulePeriod.Parse),
 
                                        XML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "duration",
@@ -281,12 +283,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ChargingSchedule = null;
+                ChargingSchedule  = default;
+                ErrorResponse     = "The given JSON representation of a charging schedule is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -303,9 +302,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out ChargingSchedule?  ChargingSchedule,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out ChargingSchedule?  ChargingSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingSchedule,
@@ -321,8 +320,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingScheduleParser">An optional delegate to parse custom Authorize requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
-                                       out ChargingSchedule?                           ChargingSchedule,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingSchedule?      ChargingSchedule,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingSchedule>?  CustomChargingScheduleParser)
         {
 
@@ -346,10 +345,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingSchedulePeriods
 
-                if (!JSON.ParseMandatoryJSON("chargingSchedulePeriod",
+                if (!JSON.ParseMandatoryList("chargingSchedulePeriod",
                                              "charging schedule period",
                                              ChargingSchedulePeriod.TryParse,
-                                             out IEnumerable<ChargingSchedulePeriod> ChargingSchedulePeriods,
+                                             out List<ChargingSchedulePeriod> ChargingSchedulePeriods,
                                              out ErrorResponse))
                 {
                     return false;
@@ -397,11 +396,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                ChargingSchedule = new ChargingSchedule(ChargingRateUnit,
-                                                        ChargingSchedulePeriods,
-                                                        Duration,
-                                                        StartSchedule,
-                                                        MinChargingRate);
+                ChargingSchedule = new ChargingSchedule(
+                                       ChargingRateUnit,
+                                       ChargingSchedulePeriods,
+                                       Duration,
+                                       StartSchedule,
+                                       MinChargingRate
+                                   );
 
                 if (CustomChargingScheduleParser is not null)
                     ChargingSchedule = CustomChargingScheduleParser(JSON,
@@ -465,19 +466,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var json = JSONObject.Create(
 
                            Duration.HasValue
-                               ? new JProperty("duration",          (Int32) Math.Round(Duration.Value.TotalSeconds, 0))
+                               ? new JProperty("duration",                 (Int32) Math.Round(Duration.Value.TotalSeconds, 0))
                                : null,
 
                            StartSchedule.HasValue
-                               ? new JProperty("startSchedule",     StartSchedule.Value.ToIso8601())
+                               ? new JProperty("startSchedule",            StartSchedule.Value.ToIso8601())
                                : null,
 
-                           new JProperty("chargingRateUnit",        ChargingRateUnit.AsText()),
+                                 new JProperty("chargingRateUnit",         ChargingRateUnit.AsText()),
 
-                           new JProperty("chargingSchedulePeriod",  ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer))),
+                                 new JProperty("chargingSchedulePeriod",   ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer))),
 
                            MinChargingRate.HasValue
-                               ? new JProperty("minChargingRate",   MinChargingRate.Value.ToString("0.#"))
+                               ? new JProperty("minChargingRate",          MinChargingRate.Value.ToString("0.#"))
                                : null
 
                        );

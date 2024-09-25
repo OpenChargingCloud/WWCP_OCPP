@@ -17,11 +17,17 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -29,11 +35,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A get log response.
+    /// A GetLog response.
     /// </summary>
     [SecurityExtensions]
-    public class GetLogResponse : AResponse<CS.GetLogRequest,
-                                               GetLogResponse>,
+    public class GetLogResponse : AResponse<GetLogRequest,
+                                            GetLogResponse>,
                                   IResponse
     {
 
@@ -55,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the get log command.
+        /// The success or failure of the GetLog command.
         /// </summary>
         public LogStatus      Status      { get; }
 
@@ -69,70 +75,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region GetLogResponse(Request, Status, Filename = null)
-
         /// <summary>
-        /// Create a new get log response.
+        /// Create a new GetLog response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Status">The success or failure of the get log command.</param>
+        /// <param name="Status">The success or failure of the GetLog command.</param>
         /// <param name="Filename">The name of the log file that will be uploaded. This field is not present when no logging information is available.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public GetLogResponse(CS.GetLogRequest              Request,
-                              LogStatus                     Status,
-                              String?                       Filename            = null,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public GetLogResponse(GetLogRequest            Request,
+                              LogStatus                Status,
+                              String?                  Filename              = null,
 
-                              DateTime?                     ResponseTimestamp   = null,
+                              Result?                  Result                = null,
+                              DateTime?                ResponseTimestamp     = null,
 
-                              IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                              IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              SourceRouting?           Destination           = null,
+                              NetworkPath?             NetworkPath           = null,
 
-                              CustomData?                   CustomData          = null)
+                              IEnumerable<KeyPair>?    SignKeys              = null,
+                              IEnumerable<SignInfo>?   SignInfos             = null,
+                              IEnumerable<Signature>?  Signatures            = null,
+
+                              CustomData?              CustomData            = null,
+
+                              SerializationFormats?    SerializationFormat   = null,
+                              CancellationToken        CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status    = Status;
             this.Filename  = Filename;
 
+            unchecked
+            {
+
+                hashCode = this.Status.   GetHashCode()       * 5 ^
+                          (this.Filename?.GetHashCode() ?? 0) * 3 ^
+                           base.          GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region GetLogResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get log response.
-        /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetLogResponse(CS.GetLogRequest  Request,
-                              Result            Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -171,51 +183,75 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetLogResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a get log response.
+        /// Parse the given JSON representation of a GetLog response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The GetLog request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetLogResponseParser">An optional delegate to parse custom get log responses.</param>
-        public static GetLogResponse Parse(CS.GetLogRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetLogResponseParser">An optional delegate to parse custom GetLog responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static GetLogResponse Parse(GetLogRequest                                 Request,
                                            JObject                                       JSON,
-                                           CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
+                                           SourceRouting                                 Destination,
+                                           NetworkPath                                   NetworkPath,
+                                           DateTime?                                     ResponseTimestamp            = null,
+                                           CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null,
+                                           CustomJObjectParserDelegate<Signature>?       CustomSignatureParser        = null,
+                                           CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var getLogResponse,
                          out var errorResponse,
-                         CustomGetLogResponseParser) &&
-                getLogResponse is not null)
+                         ResponseTimestamp,
+                         CustomGetLogResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getLogResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get log response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetLog response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetLogResponse, out ErrorResponse, CustomGetLogResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out GetLogResponse, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get log response.
+        /// Try to parse the given JSON representation of a GetLog response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The GetLog request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetLogResponse">The parsed get log response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="GetLogResponse">The parsed GetLog response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLogResponseParser">An optional delegate to parse custom get log responses.</param>
-        public static Boolean TryParse(CS.GetLogRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetLogResponseParser">An optional delegate to parse custom GetLog responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(GetLogRequest                                 Request,
                                        JObject                                       JSON,
-                                       out GetLogResponse?                           GetLogResponse,
-                                       out String?                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
+                                       SourceRouting                                 Destination,
+                                       NetworkPath                                   NetworkPath,
+                                       [NotNullWhen(true)]  out GetLogResponse?      GetLogResponse,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
+                                       DateTime?                                     ResponseTimestamp            = null,
+                                       CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?       CustomSignatureParser        = null,
+                                       CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser       = null)
         {
 
             try
@@ -226,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                       "get log status",
+                                       "GetLog status",
                                        LogStatusExtensions.Parse,
                                        out LogStatus Status,
                                        out ErrorResponse))
@@ -276,7 +312,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                      Request,
                                      Status,
                                      Filename,
+
                                      null,
+                                     ResponseTimestamp,
+
+                                     Destination,
+                                     NetworkPath,
 
                                      null,
                                      null,
@@ -296,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetLogResponse  = null;
-                ErrorResponse   = "The given JSON representation of a get log response is invalid: " + e.Message;
+                ErrorResponse   = "The given JSON representation of a GetLog response is invalid: " + e.Message;
                 return false;
             }
 
@@ -309,11 +350,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetLogResponseSerializer">A delegate to serialize custom get log responses.</param>
+        /// <param name="CustomGetLogResponseSerializer">A delegate to serialize custom GetLog responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogResponse>?  CustomGetLogResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?  CustomSignatureSerializer        = null,
+                              CustomJObjectSerializerDelegate<Signature>?       CustomSignatureSerializer        = null,
                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
@@ -348,13 +389,103 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The get log command failed.
+        /// The GetLog failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get log request leading to this response.</param>
-        public static GetLogResponse Failed(CS.GetLogRequest Request)
+        /// <param name="Request">The GetLog request.</param>
+        public static GetLogResponse RequestError(GetLogRequest            Request,
+                                                  EventTracking_Id         EventTrackingId,
+                                                  ResultCode               ErrorCode,
+                                                  String?                  ErrorDescription    = null,
+                                                  JObject?                 ErrorDetails        = null,
+                                                  DateTime?                ResponseTimestamp   = null,
+
+                                                  SourceRouting?           Destination         = null,
+                                                  NetworkPath?             NetworkPath         = null,
+
+                                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                                  IEnumerable<Signature>?  Signatures          = null,
+
+                                                  CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   LogStatus.Rejected,
+                   null,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetLog failed.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetLogResponse FormationViolation(GetLogRequest  Request,
+                                                        String         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    LogStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetLog failed.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetLogResponse SignatureError(GetLogRequest  Request,
+                                                    String         ErrorDescription)
+
+            => new (Request,
+                    LogStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetLog failed.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static GetLogResponse Failed(GetLogRequest  Request,
+                                            String?        Description   = null)
+
+            => new (Request,
+                    LogStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetLog failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetLog request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetLogResponse ExceptionOccured(GetLogRequest  Request,
+                                                      Exception      Exception)
+
+            => new (Request,
+                    LogStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -364,10 +495,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (GetLogResponse1, GetLogResponse2)
 
         /// <summary>
-        /// Compares two get log responses for equality.
+        /// Compares two GetLog responses for equality.
         /// </summary>
-        /// <param name="GetLogResponse1">A get log response.</param>
-        /// <param name="GetLogResponse2">Another get log response.</param>
+        /// <param name="GetLogResponse1">A GetLog response.</param>
+        /// <param name="GetLogResponse2">Another GetLog response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetLogResponse? GetLogResponse1,
                                            GetLogResponse? GetLogResponse2)
@@ -390,10 +521,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (GetLogResponse1, GetLogResponse2)
 
         /// <summary>
-        /// Compares two get log responses for inequality.
+        /// Compares two GetLog responses for inequality.
         /// </summary>
-        /// <param name="GetLogResponse1">A get log response.</param>
-        /// <param name="GetLogResponse2">Another get log response.</param>
+        /// <param name="GetLogResponse1">A GetLog response.</param>
+        /// <param name="GetLogResponse2">Another GetLog response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetLogResponse? GetLogResponse1,
                                            GetLogResponse? GetLogResponse2)
@@ -409,9 +540,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get log responses for equality.
+        /// Compares two GetLog responses for equality.
         /// </summary>
-        /// <param name="Object">A get log response to compare with.</param>
+        /// <param name="Object">A GetLog response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetLogResponse getLogResponse &&
@@ -422,9 +553,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(GetLogResponse)
 
         /// <summary>
-        /// Compares two get log responses for equality.
+        /// Compares two GetLog responses for equality.
         /// </summary>
-        /// <param name="GetLogResponse">A get log response to compare with.</param>
+        /// <param name="GetLogResponse">A GetLog response to compare with.</param>
         public override Boolean Equals(GetLogResponse? GetLogResponse)
 
             => GetLogResponse is not null &&
@@ -440,20 +571,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.   GetHashCode() * 3 ^
-                      (Filename?.GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomRemoteStopTransactionRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a RemoteStopTransaction request.
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RemoteStopTransactionRequest, out ErrorResponse, CustomRemoteStopTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RemoteStopTransactionRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a RemoteStopTransaction request.

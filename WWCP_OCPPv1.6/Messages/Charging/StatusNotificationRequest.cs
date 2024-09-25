@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
+        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
         /// Parse the given XML representation of a StatusNotification request.
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a StatusNotification request.
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out StatusNotificationRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out StatusNotificationRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a StatusNotification request.
@@ -394,12 +394,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                        XML,
-                                       Request_Id                      RequestId,
-                                       SourceRouting                   Destination,
-                                       NetworkPath                     NetworkPath,
-                                       out StatusNotificationRequest?  StatusNotificationRequest,
-                                       out String?                     ErrorResponse)
+        public static Boolean TryParse(XElement                                             XML,
+                                       Request_Id                                           RequestId,
+                                       SourceRouting                                        Destination,
+                                       NetworkPath                                          NetworkPath,
+                                       [NotNullWhen(true)]  out StatusNotificationRequest?  StatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse)
         {
 
             try
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out CustomStatusNotificationRequestParser, out ErrorResponse)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out StatusNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a StatusNotification request.

@@ -17,11 +17,17 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -29,11 +35,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The extended trigger message response.
+    /// The ExtendedTriggerMessage response.
     /// </summary>
     [SecurityExtensions]
-    public class ExtendedTriggerMessageResponse : AResponse<CS.ExtendedTriggerMessageRequest,
-                                                               ExtendedTriggerMessageResponse>,
+    public class ExtendedTriggerMessageResponse : AResponse<ExtendedTriggerMessageRequest,
+                                                            ExtendedTriggerMessageResponse>,
                                                   IResponse
     {
 
@@ -55,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the extended trigger message command.
+        /// The success or failure of the ExtendedTriggerMessage command.
         /// </summary>
         public TriggerMessageStatus  Status    { get; }
 
@@ -63,67 +69,72 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region ExtendedTriggerMessageResponse(Request, Status)
-
         /// <summary>
-        /// Create a new extended trigger message response.
+        /// Create a new ExtendedTriggerMessage response.
         /// </summary>
         /// <param name="Request">The trigger message request leading to this response.</param>
         /// <param name="Status">The success or failure of the trigger message command.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public ExtendedTriggerMessageResponse(CS.ExtendedTriggerMessageRequest  Request,
-                                              TriggerMessageStatus              Status,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public ExtendedTriggerMessageResponse(ExtendedTriggerMessageRequest  Request,
+                                              TriggerMessageStatus           Status,
 
-                                              DateTime?                         ResponseTimestamp   = null,
+                                              Result?                        Result                = null,
+                                              DateTime?                      ResponseTimestamp     = null,
 
-                                              IEnumerable<WWCP.KeyPair>?        SignKeys            = null,
-                                              IEnumerable<WWCP.SignInfo>?       SignInfos           = null,
-                                              IEnumerable<Signature>?      Signatures          = null,
+                                              SourceRouting?                 Destination           = null,
+                                              NetworkPath?                   NetworkPath           = null,
 
-                                              CustomData?                       CustomData          = null)
+                                              IEnumerable<KeyPair>?          SignKeys              = null,
+                                              IEnumerable<SignInfo>?         SignInfos             = null,
+                                              IEnumerable<Signature>?        Signatures            = null,
+
+                                              CustomData?                    CustomData            = null,
+
+                                              SerializationFormats?          SerializationFormat   = null,
+                                              CancellationToken              CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.Status = Status;
 
+            unchecked
+            {
+
+                hashCode = this.Status.GetHashCode() * 3 ^
+                           base.       GetHashCode();
+
+            }
+
         }
-
-        #endregion
-
-        #region ExtendedTriggerMessageResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new extended trigger message response.
-        /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public ExtendedTriggerMessageResponse(CS.ExtendedTriggerMessageRequest  Request,
-                                              Result                            Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -166,51 +177,75 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomExtendedTriggerMessageResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of an extended trigger message response.
+        /// Parse the given JSON representation of an ExtendedTriggerMessage response.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
+        /// <param name="Request">The ExtendedTriggerMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomExtendedTriggerMessageResponseParser">An optional delegate to parse custom extended trigger message responses.</param>
-        public static ExtendedTriggerMessageResponse Parse(CS.ExtendedTriggerMessageRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomExtendedTriggerMessageResponseParser">An optional delegate to parse custom ExtendedTriggerMessage responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static ExtendedTriggerMessageResponse Parse(ExtendedTriggerMessageRequest                                 Request,
                                                            JObject                                                       JSON,
-                                                           CustomJObjectParserDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseParser   = null)
+                                                           SourceRouting                                                 Destination,
+                                                           NetworkPath                                                   NetworkPath,
+                                                           DateTime?                                                     ResponseTimestamp                            = null,
+                                                           CustomJObjectParserDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseParser   = null,
+                                                           CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                                           CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var extendedTriggerMessageResponse,
                          out var errorResponse,
-                         CustomExtendedTriggerMessageResponseParser) &&
-                extendedTriggerMessageResponse is not null)
+                         ResponseTimestamp,
+                         CustomExtendedTriggerMessageResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return extendedTriggerMessageResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an extended trigger message response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an ExtendedTriggerMessage response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ExtendedTriggerMessageResponse, out ErrorResponse, CustomExtendedTriggerMessageResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out ExtendedTriggerMessageResponse, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an extended trigger message response.
+        /// Try to parse the given JSON representation of an ExtendedTriggerMessage response.
         /// </summary>
-        /// <param name="Request">The trigger message request leading to this response.</param>
+        /// <param name="Request">The ExtendedTriggerMessage request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ExtendedTriggerMessageResponse">The parsed extended trigger message response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ExtendedTriggerMessageResponse">The parsed ExtendedTriggerMessage response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomExtendedTriggerMessageResponseParser">An optional delegate to parse custom extended trigger message responses.</param>
-        public static Boolean TryParse(CS.ExtendedTriggerMessageRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomExtendedTriggerMessageResponseParser">An optional delegate to parse custom ExtendedTriggerMessage responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(ExtendedTriggerMessageRequest                                 Request,
                                        JObject                                                       JSON,
-                                       out ExtendedTriggerMessageResponse?                           ExtendedTriggerMessageResponse,
-                                       out String?                                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseParser   = null)
+                                       SourceRouting                                                 Destination,
+                                       NetworkPath                                                   NetworkPath,
+                                       [NotNullWhen(true)]  out ExtendedTriggerMessageResponse?      ExtendedTriggerMessageResponse,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse,
+                                       DateTime?                                                     ResponseTimestamp                            = null,
+                                       CustomJObjectParserDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                       CustomSignatureParser                        = null,
+                                       CustomJObjectParserDelegate<CustomData>?                      CustomCustomDataParser                       = null)
         {
 
             try
@@ -218,12 +253,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 ExtendedTriggerMessageResponse = null;
 
-                #region ExtendedTriggerMessageStatus    [mandatory]
+                #region TriggerMessageStatus    [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "trigger message status",
                                        TriggerMessageStatusExtensions.Parse,
-                                       out TriggerMessageStatus ExtendedTriggerMessageStatus,
+                                       out TriggerMessageStatus TriggerMessageStatus,
                                        out ErrorResponse))
                 {
                     return false;
@@ -263,8 +298,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ExtendedTriggerMessageResponse = new ExtendedTriggerMessageResponse(
 
                                                      Request,
-                                                     ExtendedTriggerMessageStatus,
+                                                     TriggerMessageStatus,
+
                                                      null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
 
                                                      null,
                                                      null,
@@ -284,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 ExtendedTriggerMessageResponse  = null;
-                ErrorResponse                   = "The given JSON representation of an extended trigger message response is invalid: " + e.Message;
+                ErrorResponse                   = "The given JSON representation of an ExtendedTriggerMessage response is invalid: " + e.Message;
                 return false;
             }
 
@@ -297,11 +337,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomExtendedTriggerMessageResponseSerializer">A delegate to serialize custom extended trigger message responses.</param>
+        /// <param name="CustomExtendedTriggerMessageResponseSerializer">A delegate to serialize custom ExtendedTriggerMessage responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                        = null,
+                              CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
@@ -332,13 +372,102 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The extended trigger message command failed.
+        /// The ExtendedTriggerMessage failed because of a request error.
         /// </summary>
-        /// <param name="Request">The extended trigger message request leading to this response.</param>
-        public static ExtendedTriggerMessageResponse Failed(CS.ExtendedTriggerMessageRequest  Request)
+        /// <param name="Request">The ExtendedTriggerMessage request.</param>
+        public static ExtendedTriggerMessageResponse RequestError(ExtendedTriggerMessageRequest  Request,
+                                                                  EventTracking_Id               EventTrackingId,
+                                                                  ResultCode                     ErrorCode,
+                                                                  String?                        ErrorDescription    = null,
+                                                                  JObject?                       ErrorDetails        = null,
+                                                                  DateTime?                      ResponseTimestamp   = null,
+
+                                                                  SourceRouting?                 Destination         = null,
+                                                                  NetworkPath?                   NetworkPath         = null,
+
+                                                                  IEnumerable<KeyPair>?          SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?         SignInfos           = null,
+                                                                  IEnumerable<Signature>?        Signatures          = null,
+
+                                                                  CustomData?                    CustomData          = null)
+
+            => new (
+
+                   Request,
+                   TriggerMessageStatus.Rejected,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The ExtendedTriggerMessage failed.
+        /// </summary>
+        /// <param name="Request">The ExtendedTriggerMessage request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ExtendedTriggerMessageResponse FormationViolation(ExtendedTriggerMessageRequest  Request,
+                                                                        String                         ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    TriggerMessageStatus.Rejected,
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The ExtendedTriggerMessage failed.
+        /// </summary>
+        /// <param name="Request">The ExtendedTriggerMessage request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static ExtendedTriggerMessageResponse SignatureError(ExtendedTriggerMessageRequest  Request,
+                                                                    String                         ErrorDescription)
+
+            => new (Request,
+                    TriggerMessageStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The ExtendedTriggerMessage failed.
+        /// </summary>
+        /// <param name="Request">The ExtendedTriggerMessage request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static ExtendedTriggerMessageResponse Failed(ExtendedTriggerMessageRequest  Request,
+                                                            String?                        Description   = null)
+
+            => new (Request,
+                    TriggerMessageStatus.Rejected,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The ExtendedTriggerMessage failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The ExtendedTriggerMessage request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static ExtendedTriggerMessageResponse ExceptionOccured(ExtendedTriggerMessageRequest  Request,
+                                                                      Exception                      Exception)
+
+            => new (Request,
+                    TriggerMessageStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -348,10 +477,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (ExtendedTriggerMessageResponse1, ExtendedTriggerMessageResponse2)
 
         /// <summary>
-        /// Compares two extended trigger message responses for equality.
+        /// Compares two ExtendedTriggerMessage responses for equality.
         /// </summary>
-        /// <param name="ExtendedTriggerMessageResponse1">A extended trigger message response.</param>
-        /// <param name="ExtendedTriggerMessageResponse2">Another extended trigger message response.</param>
+        /// <param name="ExtendedTriggerMessageResponse1">A ExtendedTriggerMessage response.</param>
+        /// <param name="ExtendedTriggerMessageResponse2">Another ExtendedTriggerMessage response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ExtendedTriggerMessageResponse? ExtendedTriggerMessageResponse1,
                                            ExtendedTriggerMessageResponse? ExtendedTriggerMessageResponse2)
@@ -374,10 +503,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (ExtendedTriggerMessageResponse1, ExtendedTriggerMessageResponse2)
 
         /// <summary>
-        /// Compares two extended trigger message responses for inequality.
+        /// Compares two ExtendedTriggerMessage responses for inequality.
         /// </summary>
-        /// <param name="ExtendedTriggerMessageResponse1">A extended trigger message response.</param>
-        /// <param name="ExtendedTriggerMessageResponse2">Another extended trigger message response.</param>
+        /// <param name="ExtendedTriggerMessageResponse1">A ExtendedTriggerMessage response.</param>
+        /// <param name="ExtendedTriggerMessageResponse2">Another ExtendedTriggerMessage response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ExtendedTriggerMessageResponse?ExtendedTriggerMessageResponse1,
                                            ExtendedTriggerMessageResponse?ExtendedTriggerMessageResponse2)
@@ -393,9 +522,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two extended trigger message responses for equality.
+        /// Compares two ExtendedTriggerMessage responses for equality.
         /// </summary>
-        /// <param name="Object">An extended trigger message response to compare with.</param>
+        /// <param name="Object">An ExtendedTriggerMessage response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ExtendedTriggerMessageResponse extendedTriggerMessageResponse &&
@@ -406,9 +535,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(ExtendedTriggerMessageResponse)
 
         /// <summary>
-        /// Compares two extended trigger message responses for equality.
+        /// Compares two ExtendedTriggerMessage responses for equality.
         /// </summary>
-        /// <param name="ExtendedTriggerMessageResponse">An extended trigger message response to compare with.</param>
+        /// <param name="ExtendedTriggerMessageResponse">An ExtendedTriggerMessage response to compare with.</param>
         public override Boolean Equals(ExtendedTriggerMessageResponse? ExtendedTriggerMessageResponse)
 
             => ExtendedTriggerMessageResponse is not null &&
@@ -420,13 +549,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => Status.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

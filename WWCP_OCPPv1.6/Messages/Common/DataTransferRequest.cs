@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
-                   SerializationFormat,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -226,25 +226,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath, OnException = null)
+        #region (static) Parse   (XML, XMLNamespace, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given XML representation of a DataTransfer request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="XMLNamespace">The XML namespace to use.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferRequest Parse(XElement              XML,
-                                                XNamespace            XMLNamespace,
-                                                Request_Id            RequestId,
-                                                SourceRouting         Destination,
-                                                NetworkPath           NetworkPath,
-                                                NetworkingNode_Id     NetworkingNodeId,
-                                                DateTime?             RequestTimestamp   = null,
-                                                TimeSpan?             RequestTimeout     = null,
-                                                EventTracking_Id?     EventTrackingId    = null)
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        public static DataTransferRequest Parse(XElement           XML,
+                                                XNamespace         XMLNamespace,
+                                                Request_Id         RequestId,
+                                                SourceRouting      Destination,
+                                                NetworkPath        NetworkPath,
+                                                DateTime?          RequestTimestamp   = null,
+                                                TimeSpan?          RequestTimeout     = null,
+                                                EventTracking_Id?  EventTrackingId    = null)
         {
 
             if (TryParse(XML,
@@ -261,14 +263,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return dataTransferRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a DataTransfer request is invalid: ", // + errorResponse,
+            throw new ArgumentException("The given XML representation of a DataTransfer request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (JSON,              RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a DataTransfer request.
@@ -277,7 +279,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom DataTransfer requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 SourceRouting                                      Destination,
@@ -313,16 +320,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(XML, XMLNamespace, RequestId, Destination, NetworkPath, out DataTransferRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given XML representation of a DataTransfer request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="XMLNamespace">The XML namespace to use.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         public static Boolean TryParse(XElement                                       XML,
                                        XNamespace                                     XMLNamespace,
                                        Request_Id                                     RequestId,
@@ -362,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(JSON,              RequestId, Destination, NetworkPath, out DataTransferRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DataTransfer request.
@@ -373,7 +385,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom DataTransfer requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
                                        SourceRouting                                      Destination,
@@ -666,7 +683,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToString() ?? "-"}";
+            => String.Concat(
+
+                   $"'{VendorId}'",
+
+                   MessageId.IsNotNullOrEmpty()
+                       ? $" / '{MessageId}'"
+                       : "",
+
+                   Data is not null
+                       ? $" => '{Data}'"
+                       : ""
+
+               );
 
         #endregion
 

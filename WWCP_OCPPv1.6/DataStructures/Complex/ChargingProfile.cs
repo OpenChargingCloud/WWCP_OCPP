@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -295,25 +296,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML,  OnException = null)
+        #region (static) Parse   (XML)
 
         /// <summary>
         /// Parse the given XML representation of a charging profile.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingProfile Parse(XElement              XML,
-                                            OnExceptionDelegate?  OnException = null)
+        public static ChargingProfile Parse(XElement XML)
         {
 
             if (TryParse(XML,
                          out var chargingProfile,
-                         OnException))
+                         out var errorResponse))
             {
                 return chargingProfile;
             }
 
-            throw new ArgumentException("The given XML representation of a charging profile is invalid: ",// + errorResponse,
+            throw new ArgumentException("The given XML representation of a charging profile is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
@@ -346,18 +345,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(XML,  out ChargingProfile, OnException = null)
+        #region (static) TryParse(XML,  out ChargingProfile, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a charging profile.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              XML,
-                                       out ChargingProfile?  ChargingProfile,
-                                       OnExceptionDelegate?  OnException   = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                                   XML,
+                                       [NotNullWhen(true)]  out ChargingProfile?  ChargingProfile,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -376,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "chargingProfileKind",
                                                              ChargingProfileKindsExtensions.Parse),
 
-                                      XML.MapElementOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
+                                      XML.MapElementOrFail2 (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
                                                              ChargingSchedule.Parse),
 
                                       XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "transactionId",
@@ -398,12 +399,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ChargingProfile = null;
+                ChargingProfile  = default;
+                ErrorResponse    = "The given JSON representation of a charging profile is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -420,9 +418,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out ChargingProfile?  ChargingProfile,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ChargingProfile?  ChargingProfile,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingProfile,
@@ -438,8 +436,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingProfileParser">An optional delegate to parse custom charging profiles.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out ChargingProfile?                           ChargingProfile,
-                                       out String?                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingProfile?      ChargingProfile,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingProfile>?  CustomChargingProfileParser)
         {
 
@@ -505,8 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                              "charging schedule",
                                              OCPPv1_6.ChargingSchedule.TryParse,
                                              out ChargingSchedule? ChargingSchedule,
-                                             out ErrorResponse) ||
-                     ChargingSchedule is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -568,15 +565,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                ChargingProfile = new ChargingProfile(ChargingProfileId,
-                                                      StackLevel,
-                                                      ChargingProfilePurpose,
-                                                      ChargingProfileKind,
-                                                      ChargingSchedule,
-                                                      TransactionId,
-                                                      RecurrencyKind,
-                                                      ValidFrom,
-                                                      ValidTo);
+                ChargingProfile = new ChargingProfile(
+                                      ChargingProfileId,
+                                      StackLevel,
+                                      ChargingProfilePurpose,
+                                      ChargingProfileKind,
+                                      ChargingSchedule,
+                                      TransactionId,
+                                      RecurrencyKind,
+                                      ValidFrom,
+                                      ValidTo
+                                  );
 
                 if (CustomChargingProfileParser is not null)
                     ChargingProfile = CustomChargingProfileParser(JSON,

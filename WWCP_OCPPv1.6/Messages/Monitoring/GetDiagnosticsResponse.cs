@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -31,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A get diagnostics response.
+    /// A GetDiagnostics response.
     /// </summary>
-    public class GetDiagnosticsResponse : AResponse<CS.GetDiagnosticsRequest,
-                                                       GetDiagnosticsResponse>,
+    public class GetDiagnosticsResponse : AResponse<GetDiagnosticsRequest,
+                                                    GetDiagnosticsResponse>,
                                           IResponse
     {
 
@@ -71,71 +76,72 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region GetDiagnosticsResponse(Request, FileName = null)
-
         /// <summary>
-        /// Create a new get diagnostics response.
+        /// Create a new GetDiagnostics response.
         /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
         /// <param name="FileName">The name of the file with diagnostic information that will be uploaded. This field is not present when no diagnostic information is available.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public GetDiagnosticsResponse(CS.GetDiagnosticsRequest      Request,
-                                      String?                       FileName            = null,
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public GetDiagnosticsResponse(GetDiagnosticsRequest    Request,
+                                      String?                  FileName              = null,
 
-                                      DateTime?                     ResponseTimestamp   = null,
+                                      Result?                  Result                = null,
+                                      DateTime?                ResponseTimestamp     = null,
 
-                                      IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                      IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                      IEnumerable<Signature>?  Signatures          = null,
+                                      SourceRouting?           Destination           = null,
+                                      NetworkPath?             NetworkPath           = null,
 
-                                      CustomData?                   CustomData          = null)
+                                      IEnumerable<KeyPair>?    SignKeys              = null,
+                                      IEnumerable<SignInfo>?   SignInfos             = null,
+                                      IEnumerable<Signature>?  Signatures            = null,
+
+                                      CustomData?              CustomData            = null,
+
+                                      SerializationFormats?    SerializationFormat   = null,
+                                      CancellationToken        CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         {
 
             this.FileName = FileName ?? "";
 
-        }
+            unchecked
+            {
 
-        #endregion
+                hashCode = this.FileName.GetHashCode() * 3 ^
+                           base.         GetHashCode();
 
-        #region GetDiagnosticsResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get diagnostics response.
-        /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetDiagnosticsResponse(CS.GetDiagnosticsRequest  Request,
-                                      Result                    Result)
-
-            : base(Request,
-                   Result)
-
-        {
-
-            this.FileName = "";
+            }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -170,76 +176,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a get diagnostics response.
+        /// Parse the given XML representation of a GetDiagnostics response.
         /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
-                                                   XElement                  XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static GetDiagnosticsResponse Parse(GetDiagnosticsRequest  Request,
+                                                   XElement               XML,
+                                                   SourceRouting          Destination,
+                                                   NetworkPath            NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var getDiagnosticsResponse,
-                         out var errorResponse) &&
-                getDiagnosticsResponse is not null)
+                         out var errorResponse))
             {
                 return getDiagnosticsResponse;
             }
 
-            throw new ArgumentException("The given XML representation of a get diagnostics response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a GetDiagnostics response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetDiagnosticsResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a get diagnostics response.
+        /// Parse the given JSON representation of a GetDiagnostics response.
         /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetDiagnosticsResponseParser">An optional delegate to parse custom get diagnostics responses.</param>
-        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">An optional delegate to parse custom GetDiagnostics responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static GetDiagnosticsResponse Parse(GetDiagnosticsRequest                                 Request,
                                                    JObject                                               JSON,
-                                                   CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null)
+                                                   SourceRouting                                         Destination,
+                                                   NetworkPath                                           NetworkPath,
+                                                   DateTime?                                             ResponseTimestamp                    = null,
+                                                   CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null,
+                                                   CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                                   CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var getDiagnosticsResponse,
                          out var errorResponse,
-                         CustomGetDiagnosticsResponseParser) &&
-                getDiagnosticsResponse is not null)
+                         ResponseTimestamp,
+                         CustomGetDiagnosticsResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return getDiagnosticsResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get diagnostics response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetDiagnostics response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out GetDiagnosticsResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out GetDiagnosticsResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a get diagnostics response.
+        /// Try to parse the given XML representation of a GetDiagnostics response.
         /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="GetDiagnosticsResponse">The parsed GetDiagnostics response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.GetDiagnosticsRequest     Request,
-                                       XElement                     XML,
-                                       out GetDiagnosticsResponse?  GetDiagnosticsResponse,
-                                       out String?                  ErrorResponse)
+        public static Boolean TryParse(GetDiagnosticsRequest                             Request,
+                                       XElement                                          XML,
+                                       SourceRouting                                     Destination,
+                                       NetworkPath                                       NetworkPath,
+                                       [NotNullWhen(true)]  out GetDiagnosticsResponse?  GetDiagnosticsResponse,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse)
         {
 
             try
@@ -260,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetDiagnosticsResponse  = null;
-                ErrorResponse           = "The given JSON representation of a get diagnostics response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a GetDiagnostics response is invalid: " + e.Message;
                 return false;
             }
 
@@ -268,21 +297,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetDiagnosticsResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out GetDiagnosticsResponse, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get diagnostics response.
+        /// Try to parse the given JSON representation of a GetDiagnostics response.
         /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="GetDiagnosticsResponse">The parsed GetDiagnostics response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDiagnosticsResponseParser">An optional delegate to parse custom get diagnostics responses.</param>
-        public static Boolean TryParse(CS.GetDiagnosticsRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">An optional delegate to parse custom GetDiagnostics responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(GetDiagnosticsRequest                                 Request,
                                        JObject                                               JSON,
-                                       out GetDiagnosticsResponse?                           GetDiagnosticsResponse,
-                                       out String?                                           ErrorResponse,
-                                       CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null)
+                                       SourceRouting                                         Destination,
+                                       NetworkPath                                           NetworkPath,
+                                       [NotNullWhen(true)]  out GetDiagnosticsResponse?      GetDiagnosticsResponse,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
+                                       DateTime?                                             ResponseTimestamp                    = null,
+                                       CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
+                                       CustomJObjectParserDelegate<CustomData>?              CustomCustomDataParser               = null)
         {
 
             try
@@ -329,7 +368,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                              Request,
                                              FileName,
+
                                              null,
+                                             ResponseTimestamp,
+
+                                             Destination,
+                                             NetworkPath,
 
                                              null,
                                              null,
@@ -350,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 GetDiagnosticsResponse  = null;
-                ErrorResponse           = "The given JSON representation of a get diagnostics response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a GetDiagnostics response is invalid: " + e.Message;
                 return false;
             }
 
@@ -380,11 +424,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetDiagnosticsResponseSerializer">A delegate to serialize custom get diagnostics responses.</param>
+        /// <param name="CustomGetDiagnosticsResponseSerializer">A delegate to serialize custom GetDiagnostics responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer                = null,
+                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
@@ -417,13 +461,98 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Static methods
 
         /// <summary>
-        /// The get diagnostics command failed.
+        /// The GetDiagnostics failed because of a request error.
         /// </summary>
-        /// <param name="Request">The get diagnostics request leading to this response.</param>
-        public static GetDiagnosticsResponse Failed(CS.GetDiagnosticsRequest  Request)
+        /// <param name="Request">The GetDiagnostics request.</param>
+        public static GetDiagnosticsResponse RequestError(GetDiagnosticsRequest    Request,
+                                                          EventTracking_Id         EventTrackingId,
+                                                          ResultCode               ErrorCode,
+                                                          String?                  ErrorDescription    = null,
+                                                          JObject?                 ErrorDetails        = null,
+                                                          DateTime?                ResponseTimestamp   = null,
+
+                                                          SourceRouting?           Destination         = null,
+                                                          NetworkPath?             NetworkPath         = null,
+
+                                                          IEnumerable<KeyPair>?    SignKeys            = null,
+                                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                                          IEnumerable<Signature>?  Signatures          = null,
+
+                                                          CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   null,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The GetDiagnostics failed.
+        /// </summary>
+        /// <param name="Request">The GetDiagnostics request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetDiagnosticsResponse FormationViolation(GetDiagnosticsRequest  Request,
+                                                                String                 ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetDiagnostics failed.
+        /// </summary>
+        /// <param name="Request">The GetDiagnostics request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static GetDiagnosticsResponse SignatureError(GetDiagnosticsRequest  Request,
+                                                            String                 ErrorDescription)
+
+            => new (Request,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The GetDiagnostics failed.
+        /// </summary>
+        /// <param name="Request">The GetDiagnostics request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static GetDiagnosticsResponse Failed(GetDiagnosticsRequest  Request,
+                                                    String?                Description   = null)
+
+            => new (Request,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The GetDiagnostics failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The GetDiagnostics request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static GetDiagnosticsResponse ExceptionOccured(GetDiagnosticsRequest  Request,
+                                                              Exception              Exception)
+
+            => new (Request,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -433,10 +562,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (GetDiagnosticsResponse1, GetDiagnosticsResponse2)
 
         /// <summary>
-        /// Compares two get diagnostics responses for equality.
+        /// Compares two GetDiagnostics responses for equality.
         /// </summary>
-        /// <param name="GetDiagnosticsResponse1">A get diagnostics response.</param>
-        /// <param name="GetDiagnosticsResponse2">Another get diagnostics response.</param>
+        /// <param name="GetDiagnosticsResponse1">A GetDiagnostics response.</param>
+        /// <param name="GetDiagnosticsResponse2">Another GetDiagnostics response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetDiagnosticsResponse? GetDiagnosticsResponse1,
                                            GetDiagnosticsResponse? GetDiagnosticsResponse2)
@@ -459,10 +588,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (GetDiagnosticsResponse1, GetDiagnosticsResponse2)
 
         /// <summary>
-        /// Compares two get diagnostics responses for inequality.
+        /// Compares two GetDiagnostics responses for inequality.
         /// </summary>
-        /// <param name="GetDiagnosticsResponse1">A get diagnostics response.</param>
-        /// <param name="GetDiagnosticsResponse2">Another get diagnostics response.</param>
+        /// <param name="GetDiagnosticsResponse1">A GetDiagnostics response.</param>
+        /// <param name="GetDiagnosticsResponse2">Another GetDiagnostics response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetDiagnosticsResponse? GetDiagnosticsResponse1,
                                            GetDiagnosticsResponse? GetDiagnosticsResponse2)
@@ -478,9 +607,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get diagnostics responses for equality.
+        /// Compares two GetDiagnostics responses for equality.
         /// </summary>
-        /// <param name="Object">A get diagnostics response to compare with.</param>
+        /// <param name="Object">A GetDiagnostics response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetDiagnosticsResponse getDiagnosticsResponse &&
@@ -491,9 +620,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(GetDiagnosticsResponse)
 
         /// <summary>
-        /// Compares two get diagnostics responses for equality.
+        /// Compares two GetDiagnostics responses for equality.
         /// </summary>
-        /// <param name="GetDiagnosticsResponse">A get diagnostics response to compare with.</param>
+        /// <param name="GetDiagnosticsResponse">A GetDiagnostics response to compare with.</param>
         public override Boolean Equals(GetDiagnosticsResponse? GetDiagnosticsResponse)
 
             => GetDiagnosticsResponse is not null &&
@@ -505,13 +634,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => FileName.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

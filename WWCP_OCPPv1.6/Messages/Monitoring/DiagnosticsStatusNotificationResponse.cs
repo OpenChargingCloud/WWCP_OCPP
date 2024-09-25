@@ -18,12 +18,17 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -31,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A diagnostics status notification response.
+    /// A DiagnosticsStatusNotification response.
     /// </summary>
-    public class DiagnosticsStatusNotificationResponse : AResponse<CP.DiagnosticsStatusNotificationRequest,
+    public class DiagnosticsStatusNotificationResponse : AResponse<DiagnosticsStatusNotificationRequest,
                                                                    DiagnosticsStatusNotificationResponse>,
                                                          IResponse
     {
@@ -59,55 +64,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region DiagnosticsStatusNotificationResponse()
-
         /// <summary>
-        /// Create a new diagnostics status notification response.
+        /// Create a new DiagnosticsStatusNotification response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        public DiagnosticsStatusNotificationResponse(CP.DiagnosticsStatusNotificationRequest  Request,
+        /// 
+        /// <param name="Result">The machine-readable result code.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
+        /// 
+        /// <param name="Destination">The destination identification of the message within the overlay network.</param>
+        /// <param name="NetworkPath">The networking path of the message through the overlay network.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this response.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public DiagnosticsStatusNotificationResponse(DiagnosticsStatusNotificationRequest  Request,
 
-                                                     DateTime?                                ResponseTimestamp   = null,
+                                                     Result?                               Result                = null,
+                                                     DateTime?                             ResponseTimestamp     = null,
 
-                                                     IEnumerable<WWCP.KeyPair>?               SignKeys            = null,
-                                                     IEnumerable<WWCP.SignInfo>?              SignInfos           = null,
-                                                     IEnumerable<Signature>?             Signatures          = null,
+                                                     SourceRouting?                        Destination           = null,
+                                                     NetworkPath?                          NetworkPath           = null,
 
-                                                     CustomData?                              CustomData          = null)
+                                                     IEnumerable<KeyPair>?                 SignKeys              = null,
+                                                     IEnumerable<SignInfo>?                SignInfos             = null,
+                                                     IEnumerable<Signature>?               Signatures            = null,
+
+                                                     CustomData?                           CustomData            = null,
+
+                                                     SerializationFormats?                 SerializationFormat   = null,
+                                                     CancellationToken                     CancellationToken     = default)
 
             : base(Request,
-                   Result.OK(),
+                   Result ?? Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   Destination,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   CustomData)
+                   CustomData,
+
+                   SerializationFormat ?? SerializationFormats.JSON,
+                   CancellationToken)
 
         { }
-
-        #endregion
-
-        #region DiagnosticsStatusNotificationResponse(Result)
-
-        /// <summary>
-        /// Create a new diagnostics status notification response.
-        /// </summary>
-        /// <param name="Request">The diagnostics status notification request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public DiagnosticsStatusNotificationResponse(CP.DiagnosticsStatusNotificationRequest  Request,
-                                                     Result                                   Result)
-
-            : base(Request,
-                   Result)
-
-        { }
-
-        #endregion
 
         #endregion
 
@@ -133,76 +141,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, XML)
+        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a diagnostics status notification response.
+        /// Parse the given XML representation of a DiagnosticsStatusNotification response.
         /// </summary>
-        /// <param name="Request">The diagnostics status notification request leading to this response.</param>
+        /// <param name="Request">The DiagnosticsStatusNotification request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static DiagnosticsStatusNotificationResponse Parse(CP.DiagnosticsStatusNotificationRequest  Request,
-                                                                  XElement                                 XML)
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        public static DiagnosticsStatusNotificationResponse Parse(DiagnosticsStatusNotificationRequest  Request,
+                                                                  XElement                              XML,
+                                                                  SourceRouting                         Destination,
+                                                                  NetworkPath                           NetworkPath)
         {
 
             if (TryParse(Request,
                          XML,
+                         Destination,
+                         NetworkPath,
                          out var diagnosticsStatusNotificationResponse,
-                         out var errorResponse) &&
-                diagnosticsStatusNotificationResponse is not null)
+                         out var errorResponse))
             {
                 return diagnosticsStatusNotificationResponse;
             }
 
-            throw new ArgumentException("The given XML representation of a diagnostics status notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a DiagnosticsStatusNotification response is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomBootNotificationResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a diagnostics status notification response.
+        /// Parse the given JSON representation of a DiagnosticsStatusNotification response.
         /// </summary>
-        /// <param name="Request">The diagnostics status notification request leading to this response.</param>
+        /// <param name="Request">The DiagnosticsStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom diagnostics status notification responses.</param>
-        public static DiagnosticsStatusNotificationResponse Parse(CP.DiagnosticsStatusNotificationRequest                              Request,
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationResponseParser">An optional delegate to parse custom DiagnosticsStatusNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static DiagnosticsStatusNotificationResponse Parse(DiagnosticsStatusNotificationRequest                                 Request,
                                                                   JObject                                                              JSON,
-                                                                  CustomJObjectParserDelegate<DiagnosticsStatusNotificationResponse>?  CustomBootNotificationResponseParser   = null)
+                                                                  SourceRouting                                                        Destination,
+                                                                  NetworkPath                                                          NetworkPath,
+                                                                  DateTime?                                                            ResponseTimestamp                                   = null,
+                                                                  CustomJObjectParserDelegate<DiagnosticsStatusNotificationResponse>?  CustomDiagnosticsStatusNotificationResponseParser   = null,
+                                                                  CustomJObjectParserDelegate<Signature>?                              CustomSignatureParser                               = null,
+                                                                  CustomJObjectParserDelegate<CustomData>?                             CustomCustomDataParser                              = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         Destination,
+                         NetworkPath,
                          out var diagnosticsStatusNotificationResponse,
                          out var errorResponse,
-                         CustomBootNotificationResponseParser) &&
-                diagnosticsStatusNotificationResponse is not null)
+                         ResponseTimestamp,
+                         CustomDiagnosticsStatusNotificationResponseParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return diagnosticsStatusNotificationResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a diagnostics status notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DiagnosticsStatusNotification response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out DiagnosticsStatusNotificationResponse, out ErrorResponse)
+        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out DiagnosticsStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a diagnostics status notification response.
+        /// Try to parse the given XML representation of a DiagnosticsStatusNotification response.
         /// </summary>
-        /// <param name="Request">The diagnostics status notification request leading to this response.</param>
+        /// <param name="Request">The DiagnosticsStatusNotification request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse">The parsed DiagnosticsStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.DiagnosticsStatusNotificationRequest     Request,
-                                       XElement                                    XML,
-                                       out DiagnosticsStatusNotificationResponse?  DiagnosticsStatusNotificationResponse,
-                                       out String?                                 ErrorResponse)
+        public static Boolean TryParse(DiagnosticsStatusNotificationRequest                             Request,
+                                       XElement                                                         XML,
+                                       SourceRouting                                                    Destination,
+                                       NetworkPath                                                      NetworkPath,
+                                       [NotNullWhen(true)]  out DiagnosticsStatusNotificationResponse?  DiagnosticsStatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                                 ErrorResponse)
         {
 
             try
@@ -217,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 DiagnosticsStatusNotificationResponse  = null;
-                ErrorResponse                          = "The given XML representation of a diagnostics status notification response is invalid: " + e.Message;
+                ErrorResponse                          = "The given XML representation of a DiagnosticsStatusNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -225,21 +256,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out DiagnosticsStatusNotificationResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out DiagnosticsStatusNotificationResponse, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a diagnostics status notification response.
+        /// Try to parse the given JSON representation of a DiagnosticsStatusNotification response.
         /// </summary>
-        /// <param name="Request">The diagnostics status notification request leading to this response.</param>
+        /// <param name="Request">The DiagnosticsStatusNotification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the response.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse">The parsed DiagnosticsStatusNotification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom diagnostics status notification responses.</param>
-        public static Boolean TryParse(CP.DiagnosticsStatusNotificationRequest                              Request,
+        /// <param name="ResponseTimestamp">The timestamp of the response message creation.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationResponseParser">An optional delegate to parse custom DiagnosticsStatusNotification responses.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom data objects.</param>
+        public static Boolean TryParse(DiagnosticsStatusNotificationRequest                                 Request,
                                        JObject                                                              JSON,
-                                       out DiagnosticsStatusNotificationResponse?                           DiagnosticsStatusNotificationResponse,
-                                       out String?                                                          ErrorResponse,
-                                       CustomJObjectParserDelegate<DiagnosticsStatusNotificationResponse>?  CustomBootNotificationResponseParser   = null)
+                                       SourceRouting                                                        Destination,
+                                       NetworkPath                                                          NetworkPath,
+                                       [NotNullWhen(true)]  out DiagnosticsStatusNotificationResponse?      DiagnosticsStatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                                     ErrorResponse,
+                                       DateTime?                                                            ResponseTimestamp                                   = null,
+                                       CustomJObjectParserDelegate<DiagnosticsStatusNotificationResponse>?  CustomDiagnosticsStatusNotificationResponseParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                              CustomSignatureParser                               = null,
+                                       CustomJObjectParserDelegate<CustomData>?                             CustomCustomDataParser                              = null)
         {
 
             try
@@ -279,18 +320,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 DiagnosticsStatusNotificationResponse = new DiagnosticsStatusNotificationResponse(
 
                                                             Request,
+
                                                             null,
+                                                            ResponseTimestamp,
+
+                                                            Destination,
+                                                            NetworkPath,
 
                                                             null,
                                                             null,
                                                             Signatures,
 
                                                             CustomData
+
                                                         );
 
-                if (CustomBootNotificationResponseParser is not null)
-                    DiagnosticsStatusNotificationResponse = CustomBootNotificationResponseParser(JSON,
-                                                                                                 DiagnosticsStatusNotificationResponse);
+                if (CustomDiagnosticsStatusNotificationResponseParser is not null)
+                    DiagnosticsStatusNotificationResponse = CustomDiagnosticsStatusNotificationResponseParser(JSON,
+                                                                                                              DiagnosticsStatusNotificationResponse);
 
                 return true;
 
@@ -298,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 DiagnosticsStatusNotificationResponse  = null;
-                ErrorResponse                          = "The given JSON representation of a diagnostics status notification response is invalid: " + e.Message;
+                ErrorResponse                          = "The given JSON representation of a DiagnosticsStatusNotification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -326,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationResponse>?  CustomDiagnosticsStatusNotificationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                               = null,
+                              CustomJObjectSerializerDelegate<Signature>?                              CustomSignatureSerializer                               = null,
                               CustomJObjectSerializerDelegate<CustomData>?                             CustomCustomDataSerializer                              = null)
         {
 
@@ -338,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.                 ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -355,13 +402,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The diagnostics status notification request failed.
+        /// The DiagnosticsStatusNotification failed because of a request error.
         /// </summary>
-        /// <param name="Request">The diagnostics status notification request leading to this response.</param>
-        public static DiagnosticsStatusNotificationResponse Failed(CP.DiagnosticsStatusNotificationRequest Request)
+        /// <param name="Request">The DiagnosticsStatusNotification request.</param>
+        public static DiagnosticsStatusNotificationResponse RequestError(DiagnosticsStatusNotificationRequest  Request,
+                                                                         EventTracking_Id                      EventTrackingId,
+                                                                         ResultCode                            ErrorCode,
+                                                                         String?                               ErrorDescription    = null,
+                                                                         JObject?                              ErrorDetails        = null,
+                                                                         DateTime?                             ResponseTimestamp   = null,
+
+                                                                         SourceRouting?                        Destination         = null,
+                                                                         NetworkPath?                          NetworkPath         = null,
+
+                                                                         IEnumerable<KeyPair>?                 SignKeys            = null,
+                                                                         IEnumerable<SignInfo>?                SignInfos           = null,
+                                                                         IEnumerable<Signature>?               Signatures          = null,
+
+                                                                         CustomData?                           CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The DiagnosticsStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The DiagnosticsStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static DiagnosticsStatusNotificationResponse FormationViolation(DiagnosticsStatusNotificationRequest  Request,
+                                                                               String                                ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The DiagnosticsStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The DiagnosticsStatusNotification request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static DiagnosticsStatusNotificationResponse SignatureError(DiagnosticsStatusNotificationRequest  Request,
+                                                                           String                                ErrorDescription)
+
+            => new (Request,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The DiagnosticsStatusNotification failed.
+        /// </summary>
+        /// <param name="Request">The DiagnosticsStatusNotification request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static DiagnosticsStatusNotificationResponse Failed(DiagnosticsStatusNotificationRequest  Request,
+                                                                   String?                               Description   = null)
+
+            => new (Request,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The DiagnosticsStatusNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The DiagnosticsStatusNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static DiagnosticsStatusNotificationResponse ExceptionOccured(DiagnosticsStatusNotificationRequest  Request,
+                                                                             Exception                             Exception)
+
+            => new (Request,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -371,10 +502,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (DiagnosticsStatusNotificationResponse1, DiagnosticsStatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two diagnostics status notification responses for equality.
+        /// Compares two DiagnosticsStatusNotification responses for equality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationResponse1">A diagnostics status notification response.</param>
-        /// <param name="DiagnosticsStatusNotificationResponse2">Another diagnostics status notification response.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse1">A DiagnosticsStatusNotification response.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse2">Another DiagnosticsStatusNotification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DiagnosticsStatusNotificationResponse? DiagnosticsStatusNotificationResponse1,
                                            DiagnosticsStatusNotificationResponse? DiagnosticsStatusNotificationResponse2)
@@ -397,10 +528,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (DiagnosticsStatusNotificationResponse1, DiagnosticsStatusNotificationResponse2)
 
         /// <summary>
-        /// Compares two diagnostics status notification responses for inequality.
+        /// Compares two DiagnosticsStatusNotification responses for inequality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationResponse1">A diagnostics status notification response.</param>
-        /// <param name="DiagnosticsStatusNotificationResponse2">Another diagnostics status notification response.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse1">A DiagnosticsStatusNotification response.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse2">Another DiagnosticsStatusNotification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DiagnosticsStatusNotificationResponse? DiagnosticsStatusNotificationResponse1,
                                            DiagnosticsStatusNotificationResponse? DiagnosticsStatusNotificationResponse2)
@@ -429,9 +560,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(DiagnosticsStatusNotificationResponse)
 
         /// <summary>
-        /// Compares two diagnostics status notification responses for equality.
+        /// Compares two DiagnosticsStatusNotification responses for equality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationResponse">A diagnostics status notification response to compare with.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse">A DiagnosticsStatusNotification response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(DiagnosticsStatusNotificationResponse? DiagnosticsStatusNotificationResponse)
 

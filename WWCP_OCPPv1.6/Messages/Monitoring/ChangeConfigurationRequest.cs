@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -76,7 +78,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Key">The name of the configuration setting to change.</param>
         /// <param name="Value">The new value as string for the setting.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -84,25 +89,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ChangeConfigurationRequest(NetworkingNode_Id             NetworkingNodeId,
-                                          String                        Key,
-                                          String                        Value,
+        public ChangeConfigurationRequest(SourceRouting            Destination,
+                                          String                   Key,
+                                          String                   Value,
 
-                                          IEnumerable<WWCP.KeyPair>?    SignKeys            = null,
-                                          IEnumerable<WWCP.SignInfo>?   SignInfos           = null,
-                                          IEnumerable<Signature>?  Signatures          = null,
+                                          IEnumerable<KeyPair>?    SignKeys              = null,
+                                          IEnumerable<SignInfo>?   SignInfos             = null,
+                                          IEnumerable<Signature>?  Signatures            = null,
 
-                                          CustomData?                   CustomData          = null,
+                                          CustomData?              CustomData            = null,
 
-                                          Request_Id?                   RequestId           = null,
-                                          DateTime?                     RequestTimestamp    = null,
-                                          TimeSpan?                     RequestTimeout      = null,
-                                          EventTracking_Id?             EventTrackingId     = null,
-                                          NetworkPath?                  NetworkPath         = null,
-                                          CancellationToken             CancellationToken   = default)
+                                          Request_Id?              RequestId             = null,
+                                          DateTime?                RequestTimestamp      = null,
+                                          TimeSpan?                RequestTimeout        = null,
+                                          EventTracking_Id?        EventTrackingId       = null,
+                                          NetworkPath?             NetworkPath           = null,
+                                          SerializationFormats?    SerializationFormat   = null,
+                                          CancellationToken        CancellationToken     = default)
 
-            : base(NetworkingNodeId,
+            : base(Destination,
                    nameof(ChangeConfigurationRequest)[..^7],
 
                    SignKeys,
@@ -116,6 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RequestTimeout,
                    EventTrackingId,
                    NetworkPath,
+                   SerializationFormat ?? SerializationFormats.JSON,
                    CancellationToken)
 
         {
@@ -124,6 +132,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             this.Key    = Key ?? throw new ArgumentNullException(nameof(Key), "The given configuration key must not be null or empty!");
             this.Value  = Value;
+
+            unchecked
+            {
+
+                hashCode = this.Key.  GetHashCode() * 5 ^
+                           this.Value.GetHashCode() * 3 ^
+                           base.      GetHashCode();
+
+            }
 
         }
 
@@ -178,76 +195,89 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
 
         /// <summary>
-        /// Parse the given XML representation of a change configuration request.
+        /// Parse the given XML representation of a ChangeConfiguration request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        public static ChangeConfigurationRequest Parse(XElement           XML,
-                                                       Request_Id         RequestId,
-                                                       NetworkingNode_Id  NetworkingNodeId,
-                                                       NetworkPath        NetworkPath)
+        public static ChangeConfigurationRequest Parse(XElement       XML,
+                                                       Request_Id     RequestId,
+                                                       SourceRouting  Destination,
+                                                       NetworkPath    NetworkPath)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var changeConfigurationRequest,
-                         out var errorResponse) &&
-                changeConfigurationRequest is not null)
+                         out var errorResponse))
             {
                 return changeConfigurationRequest;
             }
 
-            throw new ArgumentException("The given XML representation of a change configuration request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a ChangeConfiguration request is invalid: " + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomChangeConfigurationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of a change configuration request.
+        /// Parse the given JSON representation of a ChangeConfiguration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomChangeConfigurationRequestParser">An optional delegate to parse custom ChangeConfiguration requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomChangeConfigurationRequestParser">A delegate to parse custom ChangeConfiguration requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static ChangeConfigurationRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                                       SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
-                                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser   = null)
+                                                       DateTime?                                                 RequestTimestamp                         = null,
+                                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser   = null,
+                                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         Destination,
                          NetworkPath,
                          out var changeConfigurationRequest,
                          out var errorResponse,
-                         CustomChangeConfigurationRequestParser) &&
-                changeConfigurationRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomChangeConfigurationRequestParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return changeConfigurationRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a change configuration request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ChangeConfiguration request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out ChangeConfigurationRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out ChangeConfigurationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given XML representation of a change configuration request.
+        /// Try to parse the given XML representation of a ChangeConfiguration request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -255,12 +285,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                         XML,
-                                       Request_Id                       RequestId,
-                                       NetworkingNode_Id                NetworkingNodeId,
-                                       NetworkPath                      NetworkPath,
-                                       out ChangeConfigurationRequest?  ChangeConfigurationRequest,
-                                       out String?                      ErrorResponse)
+        public static Boolean TryParse(XElement                                              XML,
+                                       Request_Id                                            RequestId,
+                                       SourceRouting                                         Destination,
+                                       NetworkPath                                           NetworkPath,
+                                       [NotNullWhen(true)]  out ChangeConfigurationRequest?  ChangeConfigurationRequest,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse)
         {
 
             try
@@ -268,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ChangeConfigurationRequest = new ChangeConfigurationRequest(
 
-                                                 NetworkingNodeId,
+                                                 Destination,
 
                                                  XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "key"),
                                                  XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "value"),
@@ -285,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ChangeConfigurationRequest  = null;
-                ErrorResponse               = "The given XML representation of a change configuration request is invalid: " + e.Message;
+                ErrorResponse               = "The given XML representation of a ChangeConfiguration request is invalid: " + e.Message;
                 return false;
             }
 
@@ -293,12 +323,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ChangeConfigurationRequest, out ErrorResponse, CustomChangeConfigurationRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ChangeConfigurationRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a change configuration request.
+        /// Try to parse the given JSON representation of a ChangeConfiguration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -306,39 +334,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                          JSON,
-                                       Request_Id                       RequestId,
-                                       NetworkingNode_Id                NetworkingNodeId,
-                                       NetworkPath                      NetworkPath,
-                                       out ChangeConfigurationRequest?  ChangeConfigurationRequest,
-                                       out String?                      ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out ChangeConfigurationRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a change configuration request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChangeConfigurationRequestParser">An optional delegate to parse custom ChangeConfiguration requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomChangeConfigurationRequestParser">A delegate to parse custom ChangeConfiguration requests.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                               NetworkPath,
-                                       out ChangeConfigurationRequest?                           ChangeConfigurationRequest,
-                                       out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser)
+                                       [NotNullWhen(true)]  out ChangeConfigurationRequest?      ChangeConfigurationRequest,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
+                                       DateTime?                                                 RequestTimestamp                         = null,
+                                       TimeSpan?                                                 RequestTimeout                           = null,
+                                       EventTracking_Id?                                         EventTrackingId                          = null,
+                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser   = null,
+                                       CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
+                                       CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
         {
 
             try
@@ -350,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryText("key",
                                              "configuration key",
-                                             out String Key,
+                                             out String? Key,
                                              out ErrorResponse))
                 {
                     return false;
@@ -362,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryText("value",
                                              "configuration value",
-                                             out String Value,
+                                             out String? Value,
                                              out ErrorResponse))
                 {
                     return false;
@@ -401,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ChangeConfigurationRequest = new ChangeConfigurationRequest(
 
-                                                 NetworkingNodeId,
+                                                 Destination,
                                                  Key,
                                                  Value,
 
@@ -412,9 +425,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  CustomData,
 
                                                  RequestId,
-                                                 null,
-                                                 null,
-                                                 null,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
                                                  NetworkPath
 
                                              );
@@ -429,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ChangeConfigurationRequest  = null;
-                ErrorResponse               = "The given JSON representation of a change configuration request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a ChangeConfiguration request is invalid: " + e.Message;
                 return false;
             }
 
@@ -462,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer                    = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
@@ -541,9 +554,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two change configuration requests for equality.
+        /// Compares two ChangeConfiguration requests for equality.
         /// </summary>
-        /// <param name="Object">A change configuration request to compare with.</param>
+        /// <param name="Object">A ChangeConfiguration request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChangeConfigurationRequest changeConfigurationRequest &&
@@ -554,9 +567,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(ChangeConfigurationRequest)
 
         /// <summary>
-        /// Compares two change configuration requests for equality.
+        /// Compares two ChangeConfiguration requests for equality.
         /// </summary>
-        /// <param name="ChangeConfigurationRequest">A change configuration request to compare with.</param>
+        /// <param name="ChangeConfigurationRequest">A ChangeConfiguration request to compare with.</param>
         public override Boolean Equals(ChangeConfigurationRequest? ChangeConfigurationRequest)
 
             => ChangeConfigurationRequest is not null &&
@@ -572,22 +585,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Key.  GetHashCode() * 5 ^
-                       Value.GetHashCode() * 3 ^
-
-                       base. GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
