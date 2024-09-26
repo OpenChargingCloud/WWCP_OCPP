@@ -79,16 +79,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;
                 var response   = await testCSMS01.Reset(
-                                           Destination:    SourceRouting.To( chargingStation1.Id),
-                                           ResetType:           resetType,
-                                           SignInfos:           new[] {
-                                                                    keyPair.ToSignInfo1(
-                                                                                Name:         "ahzf",
-                                                                                Description:   I18NString.Create("Just a test!"),
-                                                                                Timestamp:     now
-                                                                            )
-                                                                },
-                                           CustomData:          null
+                                           Destination:  SourceRouting.To(chargingStation1.Id),
+                                           ResetType:    resetType,
+                                           SignInfos:    [
+                                                             keyPair.ToSignInfo1(
+                                                                         Name:         "ahzf",
+                                                                         Description:   I18NString.Create("Just a test!"),
+                                                                         Timestamp:     now
+                                                                     )
+                                                         ],
+                                           CustomData:   null
                                        );
 
                 ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);

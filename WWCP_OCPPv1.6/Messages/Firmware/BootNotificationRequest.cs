@@ -125,7 +125,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
-        /// 
         /// <param name="ChargePointSerialNumber">The optional serial number of the charge point.</param>
         /// <param name="ChargeBoxSerialNumber">The optional serial number of the charge point.</param>
         /// <param name="FirmwareVersion">The optional firmware version of the charge point.</param>
@@ -138,7 +137,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -146,11 +148,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public BootNotificationRequest(SourceRouting            Destination,
                                        String                   ChargePointVendor,
                                        String                   ChargePointModel,
-
                                        String?                  ChargePointSerialNumber   = null,
                                        String?                  ChargeBoxSerialNumber     = null,
                                        String?                  FirmwareVersion           = null,

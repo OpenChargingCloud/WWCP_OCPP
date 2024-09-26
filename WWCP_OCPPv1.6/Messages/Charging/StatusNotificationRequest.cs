@@ -104,7 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="Status">The current status of the charge point.</param>
         /// <param name="ErrorCode">The error code reported by the charge point.</param>
-        /// 
         /// <param name="Info">Additional free format information related to the error.</param>
         /// <param name="StatusTimestamp">The time for which the status is reported.</param>
         /// <param name="VendorId">An optional identifier of a vendor-specific extension.</param>
@@ -127,7 +126,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          Connector_Id             ConnectorId,
                                          ChargePointStatus        Status,
                                          ChargePointErrorCodes    ErrorCode,
-
                                          String?                  Info                  = null,
                                          DateTime?                StatusTimestamp       = null,
                                          String?                  VendorId              = null,
@@ -169,7 +167,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ConnectorId      = ConnectorId;
             this.Status           = Status;
             this.ErrorCode        = ErrorCode;
-
             this.Info             = Info?.           Trim();
             this.StatusTimestamp  = StatusTimestamp;
             this.VendorId         = VendorId?.       Trim();

@@ -63,8 +63,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         protected static readonly  SemaphoreSlim                                                                                 ChargeBoxesSemaphore     = new (1, 1);
 
-        protected static readonly  TimeSpan                                                                                      SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
-
         public    static readonly  IPPort                                                                                        DefaultHTTPUploadPort    = IPPort.Parse(9901);
 
         private                    Int64                                                                                         internalRequestId        = 900000;
@@ -75,23 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Properties
 
-        /// <summary>
-        /// The unique identification of this central system.
-        /// </summary>
-    //    public CentralSystem_Id  Id    { get; }
-
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        //String IEventSender.Id
-        //    => Id.ToString();
-
-
         public UploadAPI  HTTPUploadAPI             { get; }
 
         public IPPort     HTTPUploadPort            { get; }
-
-        public DNSClient  DNSClient                 { get; }
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -1052,6 +1036,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
      //   CustomJObjectSerializerDelegate<DataTransferResponse>? CustomIncomingDataTransferResponseSerializer { get; set; }
 
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                 CustomDataTransferRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                CustomDataTransferResponseSerializer                    { get; set; }
 
 
         #region Messages CentralSystem <- Charge Box
@@ -1064,8 +1050,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<CP.GetConfigurationResponse>?            CustomGetConfigurationResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?             CustomChangeConfigurationRequestSerializer              { get; set; }
         public CustomJObjectSerializerDelegate<CP.ChangeConfigurationResponse>?         CustomChangeConfigurationResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DataTransferRequest>?                 CustomDataTransferRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<CP.DataTransferResponse>?                CustomDataTransferResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                  CustomGetDiagnosticsRequestSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<CP.GetDiagnosticsResponse>?              CustomGetDiagnosticsResponseSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                  CustomTriggerMessageRequestSerializer                   { get; set; }
@@ -1208,19 +1192,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new central system for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this central system.</param>
-        public TestCentralSystemNode(NetworkingNode_Id              Id,
-                                     String                         VendorName,
-                                     String                         Model,
-                                     String?                        SerialNumber                     = null,
-                                     String?                        SoftwareVersion                  = null,
-                                     I18NString?                    Description                      = null,
-                                     CustomData?                    CustomData                       = null,
+        public TestCentralSystemNode(NetworkingNode_Id  Id,
+                                     String             VendorName,
+                                     String             Model,
+                                     String?            SerialNumber            = null,
+                                     String?            SoftwareVersion         = null,
+                                     I18NString?        Description             = null,
+                                     CustomData?        CustomData              = null,
 
-                                     TimeSpan?              DefaultRequestTimeout   = null,
-                                     IPPort?                HTTPUploadPort          = null,
-                                     DNSClient?             DNSClient               = null,
+                                     TimeSpan?          DefaultRequestTimeout   = null,
+                                     IPPort?            HTTPUploadPort          = null,
+                                     DNSClient?         DNSClient               = null,
 
-                                     WWCP.SignaturePolicy?  SignaturePolicy         = null)
+                                     SignaturePolicy?   SignaturePolicy         = null)
 
             : base(Id,
                    VendorName,
@@ -1241,13 +1225,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             Directory.CreateDirectory("HTTPSSEs");
 
             this.TestAPI                = new HTTPExtAPI(
-                                              HTTPServerPort:        IPPort.Parse(3500),
-                                              HTTPServerName:        "GraphDefined OCPP v1.6 Test Central System",
-                                              HTTPServiceName:       "GraphDefined OCPP v1.6 Test Central System Service",
-                                              APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                              SMTPClient:            new NullMailer(),
-                                              DNSClient:             DNSClient,
-                                              AutoStart:             true
+                                              HTTPServerPort:         IPPort.Parse(3500),
+                                              HTTPServerName:         "GraphDefined OCPP v1.6 Test Central System",
+                                              HTTPServiceName:        "GraphDefined OCPP v1.6 Test Central System Service",
+                                              APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                              SMTPClient:             new NullMailer(),
+                                              DNSClient:              DNSClient,
+                                              AutoStart:              true
                                           );
 
             this.TestAPI.HTTPServer.AddAuth(request => {
@@ -1280,9 +1264,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                TestAPI.HTTPServer
                                            );
 
-            this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
-
-            this.signaturePolicies.Add(SignaturePolicy ?? new WWCP.SignaturePolicy());
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
         }
 

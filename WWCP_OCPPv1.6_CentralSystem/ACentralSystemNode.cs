@@ -37,6 +37,7 @@ using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -46,7 +47,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
     /// <summary>
     /// An abstract Charging Station Management System node.
     /// </summary>
-    public abstract class ACentralSystemNode : AOCPPNetworkingNode
+    public abstract class ACentralSystemNode : AOCPPNetworkingNode,
+                                               ICentralSystemNode
     {
 
         #region Data

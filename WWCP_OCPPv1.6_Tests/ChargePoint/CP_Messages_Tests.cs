@@ -38,13 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
     public class CP_Messages_Tests : AChargePointTests
     {
 
-        #region ChargePoint_SendBootNotifications_Test()
+        #region ChargePoint_SendBootNotifications_Test1()
 
         /// <summary>
         /// A test for sending boot notifications to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_SendBootNotifications_Test()
+        public async Task ChargePoint_SendBootNotifications_Test1()
         {
 
             Assert.Multiple(() => {
@@ -62,29 +62,115 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var bootNotificationRequests = new List<CP.BootNotificationRequest>();
+                var bootNotificationRequests = new List<BootNotificationRequest>();
 
-                testCentralSystem01.OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCentralSystem01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     bootNotificationRequests.Add(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
+
                 var response = await chargePoint1.SendBootNotification();
+
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                            Is.EqualTo(RegistrationStatus.Accepted));
+                    Assert.That(response.Result.ResultCode,                        Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                   Is.EqualTo(RegistrationStatus.Accepted));
 
-                    Assert.That(bootNotificationRequests.Count,                             Is.EqualTo(1));
-                    Assert.That(bootNotificationRequests.First().DestinationId,          Is.EqualTo(chargePoint1.Id));
-                    Assert.That(bootNotificationRequests.First().ChargePointVendor,         Is.EqualTo(chargePoint1.ChargePointVendor));
-                    Assert.That(bootNotificationRequests.First().ChargePointSerialNumber,   Is.EqualTo(chargePoint1.ChargePointSerialNumber));
-                    Assert.That(bootNotificationRequests.First().ChargeBoxSerialNumber,     Is.EqualTo(chargePoint1.ChargeBoxSerialNumber));
-                    Assert.That(bootNotificationRequests.First().Iccid,                     Is.EqualTo(chargePoint1.Iccid));
-                    Assert.That(bootNotificationRequests.First().IMSI,                      Is.EqualTo(chargePoint1.IMSI));
-                    Assert.That(bootNotificationRequests.First().MeterType,                 Is.EqualTo(chargePoint1.MeterType));
-                    Assert.That(bootNotificationRequests.First().MeterSerialNumber,         Is.EqualTo(chargePoint1.MeterSerialNumber));
+                    Assert.That(bootNotificationRequests.Count,                    Is.EqualTo(1));
+                    var bootNotificationRequest = bootNotificationRequests.First();
+
+                    Assert.That(bootNotificationRequest.DestinationId,             Is.EqualTo(chargePoint1.Id));
+                    Assert.That(bootNotificationRequest.ChargePointVendor,         Is.EqualTo(chargePoint1.ChargePointVendor));
+                    Assert.That(bootNotificationRequest.ChargePointModel,          Is.EqualTo(chargePoint1.ChargePointModel));
+                    Assert.That(bootNotificationRequest.ChargePointSerialNumber,   Is.EqualTo(chargePoint1.ChargePointSerialNumber));
+                    Assert.That(bootNotificationRequest.ChargeBoxSerialNumber,     Is.EqualTo(chargePoint1.ChargeBoxSerialNumber));
+                    Assert.That(bootNotificationRequest.Iccid,                     Is.EqualTo(chargePoint1.Iccid));
+                    Assert.That(bootNotificationRequest.IMSI,                      Is.EqualTo(chargePoint1.IMSI));
+                    Assert.That(bootNotificationRequest.MeterType,                 Is.EqualTo(chargePoint1.MeterType));
+                    Assert.That(bootNotificationRequest.MeterSerialNumber,         Is.EqualTo(chargePoint1.MeterSerialNumber));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargePoint_SendBootNotifications_Test2()
+
+        /// <summary>
+        /// A test for sending boot notifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SendBootNotifications_Test2()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var bootNotificationRequests = new List<BootNotificationRequest>();
+
+                testCentralSystem01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
+                    bootNotificationRequests.Add(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+
+                var chargePointVendor        = "GraphDefined OEM #2";
+                var chargePointModel         = "VCP.2";
+                var chargePointSerialNumber  = "SN-CP0002";
+                var chargeBoxSerialNumber    = "SN-CB0002";
+                var firmwareVersion          = "v0.2";
+                var iccid                    = "0002";
+                var imsi                     = "2222";
+                var meterType                = "Virtual Energy Meter Type2";
+                var meterSerialNumber        = "SN-EN0002";
+
+                var response = await chargePoint1.SendBootNotification(
+                                         ChargePointVendor:        chargePointVendor,
+                                         ChargePointModel:         chargePointModel,
+                                         ChargePointSerialNumber:  chargePointSerialNumber,
+                                         ChargeBoxSerialNumber:    chargeBoxSerialNumber,
+                                         FirmwareVersion:          firmwareVersion,
+                                         Iccid:                    iccid,
+                                         IMSI:                     imsi,
+                                         MeterType:                meterType,
+                                         MeterSerialNumber:        meterSerialNumber
+                                     );
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                        Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                   Is.EqualTo(RegistrationStatus.Accepted));
+
+                    Assert.That(bootNotificationRequests.Count,                    Is.EqualTo(1));
+                    var bootNotificationRequest = bootNotificationRequests.First();
+
+                    //Assert.That(bootNotificationRequests.First().DestinationId,             Is.EqualTo(chargePoint1.Id));
+                    Assert.That(bootNotificationRequest.ChargePointVendor,         Is.EqualTo(chargePointVendor));
+                    Assert.That(bootNotificationRequest.ChargePointModel,          Is.EqualTo(chargePointModel));
+                    Assert.That(bootNotificationRequest.ChargePointSerialNumber,   Is.EqualTo(chargePointSerialNumber));
+                    Assert.That(bootNotificationRequest.ChargeBoxSerialNumber,     Is.EqualTo(chargeBoxSerialNumber));
+                    Assert.That(bootNotificationRequest.Iccid,                     Is.EqualTo(iccid));
+                    Assert.That(bootNotificationRequest.IMSI,                      Is.EqualTo(imsi));
+                    Assert.That(bootNotificationRequest.MeterType,                 Is.EqualTo(meterType));
+                    Assert.That(bootNotificationRequest.MeterSerialNumber,         Is.EqualTo(meterSerialNumber));
 
                 });
 
@@ -118,9 +204,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var heartbeatRequests = new List<CP.HeartbeatRequest>();
+                var heartbeatRequests = new List<HeartbeatRequest>();
 
-                testCentralSystem01.OnHeartbeatRequest += (timestamp, sender, connection, heartbeatRequest) => {
+                testCentralSystem01.OCPP.IN.OnHeartbeatRequestReceived += (timestamp, sender, connection, heartbeatRequest, ct) => {
                     heartbeatRequests.Add(heartbeatRequest);
                     return Task.CompletedTask;
                 };
@@ -129,11 +215,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,       Is.EqualTo(ResultCode.OK));
                     Assert.That(Timestamp.Now - response.CurrentTime < TimeSpan.FromSeconds(10));
 
-                    Assert.That(heartbeatRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(heartbeatRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(heartbeatRequests.Count,          Is.EqualTo(1));
+                    var heartbeatRequest = heartbeatRequests.First();
+
+                    Assert.That(heartbeatRequest.DestinationId,   Is.EqualTo(chargePoint1.Id));
 
                 });
 
@@ -167,9 +255,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var diagnosticsStatusNotifications = new List<CP.DiagnosticsStatusNotificationRequest>();
+                var diagnosticsStatusNotifications = new List<DiagnosticsStatusNotificationRequest>();
 
-                testCentralSystem01.OnDiagnosticsStatusNotificationRequest += (timestamp, sender, connection, diagnosticsStatusNotification) => {
+                testCentralSystem01.OCPP.IN.OnDiagnosticsStatusNotificationRequestReceived += (timestamp, sender, connection, diagnosticsStatusNotification, ct) => {
                     diagnosticsStatusNotifications.Add(diagnosticsStatusNotification);
                     return Task.CompletedTask;
                 };
@@ -177,16 +265,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var status    = DiagnosticsStatus.Uploaded;
 
                 var response  = await chargePoint1.SendDiagnosticsStatusNotification(
-                                          Status:   status
+                                          DiagnosticsStatus:  status
                                       );
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,                    Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(diagnosticsStatusNotifications.Count,                      Is.EqualTo(1));
-                    Assert.That(diagnosticsStatusNotifications.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
-                    Assert.That(diagnosticsStatusNotifications.First().Status,             Is.EqualTo(status));
+                    Assert.That(diagnosticsStatusNotifications.Count,          Is.EqualTo(1));
+                    var diagnosticsStatusNotification = diagnosticsStatusNotifications.First();
+
+                    Assert.That(diagnosticsStatusNotification.DestinationId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(diagnosticsStatusNotification.Status,          Is.EqualTo(status));
 
                 });
 
@@ -220,9 +310,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var firmwareStatusNotifications = new List<CP.FirmwareStatusNotificationRequest>();
+                var firmwareStatusNotifications = new List<FirmwareStatusNotificationRequest>();
 
-                testCentralSystem01.OnFirmwareStatusNotificationRequest += (timestamp, sender, connection, firmwareStatusNotification) => {
+                testCentralSystem01.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotification, ct) => {
                     firmwareStatusNotifications.Add(firmwareStatusNotification);
                     return Task.CompletedTask;
                 };
@@ -230,16 +320,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var status    = FirmwareStatus.Installed;
 
                 var response  = await chargePoint1.SendFirmwareStatusNotification(
-                                          Status:   status
+                                          FirmwareStatus:  status
                                       );
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,                 Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(firmwareStatusNotifications.Count,                      Is.EqualTo(1));
-                    Assert.That(firmwareStatusNotifications.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
-                    Assert.That(firmwareStatusNotifications.First().Status,             Is.EqualTo(status));
+                    Assert.That(firmwareStatusNotifications.Count,          Is.EqualTo(1));
+                    var firmwareStatusNotification = firmwareStatusNotifications.First();
+
+                    Assert.That(firmwareStatusNotification.DestinationId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(firmwareStatusNotification.Status,          Is.EqualTo(status));
 
                 });
 
@@ -274,9 +366,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var authorizeRequests = new List<CP.AuthorizeRequest>();
+                var authorizeRequests = new List<AuthorizeRequest>();
 
-                testCentralSystem01.OnAuthorizeRequest += (timestamp, sender, connection, authorizeRequest) => {
+                testCentralSystem01.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest, ct) => {
                     authorizeRequests.Add(authorizeRequest);
                     return Task.CompletedTask;
                 };
@@ -286,12 +378,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.IdTagInfo.Status,                    Is.EqualTo(AuthorizationStatus.Accepted));
+                    Assert.That(response.Result.ResultCode,       Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo.Status,        Is.EqualTo(AuthorizationStatus.Accepted));
 
-                    Assert.That(authorizeRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(authorizeRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
-                    Assert.That(authorizeRequests.First().IdTag,              Is.EqualTo(idToken));
+                    Assert.That(authorizeRequests.Count,          Is.EqualTo(1));
+                    var authorizeRequest = authorizeRequests.First();
+
+                    Assert.That(authorizeRequest.DestinationId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(authorizeRequest.IdTag,           Is.EqualTo(idToken));
 
                 });
 
@@ -325,9 +419,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var startTransactionRequests = new List<CP.StartTransactionRequest>();
+                var startTransactionRequests = new List<StartTransactionRequest>();
 
-                testCentralSystem01.OnStartTransactionRequest += (timestamp, sender, connection, startTransactionRequest) => {
+                testCentralSystem01.OCPP.IN.OnStartTransactionRequestReceived += (timestamp, sender, connection, startTransactionRequest, ct) => {
                     startTransactionRequests.Add(startTransactionRequest);
                     return Task.CompletedTask;
                 };
@@ -348,18 +442,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                    Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.IdTagInfo.Status,                                     Is.EqualTo(AuthorizationStatus.Accepted));
-                    Assert.That(response.TransactionId,                                        Is.Not.Null);
+                    Assert.That(response.Result.ResultCode,                           Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo.Status,                            Is.EqualTo(AuthorizationStatus.Accepted));
+                    Assert.That(response.TransactionId,                               Is.Not.Null);
 
-                    Assert.That(startTransactionRequests.Count,                                Is.EqualTo(1));
-                    Assert.That(startTransactionRequests.First().DestinationId,             Is.EqualTo(chargePoint1.Id));
-                    Assert.That(startTransactionRequests.First().IdTag,                        Is.EqualTo(idToken));
-                    Assert.That(startTransactionRequests.First().ConnectorId,                  Is.EqualTo(connectorId));
-                    Assert.That(startTransactionRequests.First().IdTag,                        Is.EqualTo(idToken));
-                    Assert.That(startTransactionRequests.First().StartTimestamp.ToIso8601(),   Is.EqualTo(startTimestamp.ToIso8601()));
-                    Assert.That(startTransactionRequests.First().MeterStart,                   Is.EqualTo(meterStart));
-                    Assert.That(startTransactionRequests.First().ReservationId,                Is.EqualTo(reservationId));
+                    Assert.That(startTransactionRequests.Count,                       Is.EqualTo(1));
+                    var startTransactionRequest = startTransactionRequests.First();
+
+                    Assert.That(startTransactionRequest.DestinationId,                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(startTransactionRequest.IdTag,                        Is.EqualTo(idToken));
+                    Assert.That(startTransactionRequest.ConnectorId,                  Is.EqualTo(connectorId));
+                    Assert.That(startTransactionRequest.IdTag,                        Is.EqualTo(idToken));
+                    Assert.That(startTransactionRequest.StartTimestamp.ToIso8601(),   Is.EqualTo(startTimestamp.ToIso8601()));
+                    Assert.That(startTransactionRequest.MeterStart,                   Is.EqualTo(meterStart));
+                    Assert.That(startTransactionRequest.ReservationId,                Is.EqualTo(reservationId));
 
                 });
 
@@ -393,9 +489,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var statusNotificationRequests = new List<CP.StatusNotificationRequest>();
+                var statusNotificationRequests = new List<StatusNotificationRequest>();
 
-                testCentralSystem01.OnStatusNotificationRequest += (timestamp, sender, connection, statusNotificationRequest) => {
+                testCentralSystem01.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp, sender, connection, statusNotificationRequest, ct) => {
                     statusNotificationRequests.Add(statusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -420,17 +516,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                        Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(statusNotificationRequests.Count,                                  Is.EqualTo(1));
-                    Assert.That(statusNotificationRequests.First().DestinationId,               Is.EqualTo(chargePoint1.Id));
-                    Assert.That(statusNotificationRequests.First().ConnectorId,                    Is.EqualTo(connectorId));
-                    Assert.That(statusNotificationRequests.First().Status,                         Is.EqualTo(status));
-                    Assert.That(statusNotificationRequests.First().ErrorCode,                      Is.EqualTo(errorCode));
-                    Assert.That(statusNotificationRequests.First().Info,                           Is.EqualTo(info));
-                    Assert.That(statusNotificationRequests.First().StatusTimestamp?.ToIso8601(),   Is.EqualTo(statusTimestamp.ToIso8601()));
-                    Assert.That(statusNotificationRequests.First().VendorId,                       Is.EqualTo(vendorId));
-                    Assert.That(statusNotificationRequests.First().VendorErrorCode,                Is.EqualTo(vendorErrorCode));
+                    Assert.That(statusNotificationRequests.Count,                         Is.EqualTo(1));
+                    var statusNotificationRequest = statusNotificationRequests.First();
+
+                    Assert.That(statusNotificationRequest.DestinationId,                  Is.EqualTo(chargePoint1.Id));
+                    Assert.That(statusNotificationRequest.ConnectorId,                    Is.EqualTo(connectorId));
+                    Assert.That(statusNotificationRequest.Status,                         Is.EqualTo(status));
+                    Assert.That(statusNotificationRequest.ErrorCode,                      Is.EqualTo(errorCode));
+                    Assert.That(statusNotificationRequest.Info,                           Is.EqualTo(info));
+                    Assert.That(statusNotificationRequest.StatusTimestamp?.ToIso8601(),   Is.EqualTo(statusTimestamp.ToIso8601()));
+                    Assert.That(statusNotificationRequest.VendorId,                       Is.EqualTo(vendorId));
+                    Assert.That(statusNotificationRequest.VendorErrorCode,                Is.EqualTo(vendorErrorCode));
 
                 });
 
@@ -464,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var meterValuesRequests = new List<CP.MeterValuesRequest>();
+                var meterValuesRequests = new List<MeterValuesRequest>();
 
-                testCentralSystem01.OnMeterValuesRequest += (timestamp, sender, connection, meterValuesRequest) => {
+                testCentralSystem01.OCPP.IN.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest, ct) => {
                     meterValuesRequests.Add(meterValuesRequest);
                     return Task.CompletedTask;
                 };
@@ -475,7 +573,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var meterValues     = new[] {
                                           new MeterValue(
                                               Timestamp.Now - TimeSpan.FromMinutes(5),
-                                              new[] {
+                                              [
                                                   new SampledValue(
                                                       "001",
                                                       ReadingContexts.TransactionBegin,
@@ -494,11 +592,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                       Locations.Outlet,
                                                       UnitsOfMeasure.kW
                                                   )
-                                              }
+                                              ]
                                           ),
                                           new MeterValue(
                                               Timestamp.Now,
-                                              new[] {
+                                              [
                                                   new SampledValue(
                                                       "002",
                                                       ReadingContexts.TransactionEnd,
@@ -517,7 +615,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                       Locations.Outlet,
                                                       UnitsOfMeasure.kW
                                                   )
-                                              }
+                                              ]
                                           )
                                       };
                 var transactionId   = Transaction_Id.NewRandom;
@@ -533,7 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(response.Result.ResultCode,                                                                  Is.EqualTo(ResultCode.OK));
 
                     Assert.That(meterValuesRequests.Count,                                                                   Is.EqualTo(1));
-                    Assert.That(meterValuesRequests.First().DestinationId,                                                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(meterValuesRequests.First().DestinationId,                                                   Is.EqualTo(chargePoint1.Id));
                     Assert.That(meterValuesRequests.First().ConnectorId,                                                     Is.EqualTo(connectorId));
                     Assert.That(meterValuesRequests.First().TransactionId,                                                   Is.EqualTo(transactionId));
 
@@ -612,9 +710,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var stopTransactionRequests = new List<CP.StopTransactionRequest>();
+                var stopTransactionRequests = new List<StopTransactionRequest>();
 
-                testCentralSystem01.OnStopTransactionRequest += (timestamp, sender, connection, stopTransactionRequest) => {
+                testCentralSystem01.OCPP.IN.OnStopTransactionRequestReceived += (timestamp, sender, connection, stopTransactionRequest, ct) => {
                     stopTransactionRequests.Add(stopTransactionRequest);
                     return Task.CompletedTask;
                 };
@@ -627,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var transactionData  = new[] {
                                            new MeterValue(
                                                Timestamp.Now - TimeSpan.FromMinutes(5),
-                                               new[] {
+                                               [
                                                    new SampledValue(
                                                        "001",
                                                        ReadingContexts.TransactionBegin,
@@ -646,11 +744,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                        Locations.Outlet,
                                                        UnitsOfMeasure.kW
                                                    )
-                                               }
+                                               ]
                                            ),
                                            new MeterValue(
                                                Timestamp.Now,
-                                               new[] {
+                                               [
                                                    new SampledValue(
                                                        "002",
                                                        ReadingContexts.TransactionEnd,
@@ -669,7 +767,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                        Locations.Outlet,
                                                        UnitsOfMeasure.kW
                                                    )
-                                               }
+                                               ]
                                            )
                                        };
 
@@ -689,7 +787,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(response.IdTagInfo?.Status,                                                                          Is.EqualTo(AuthorizationStatus.Accepted));
 
                     Assert.That(stopTransactionRequests.Count,                                                                       Is.EqualTo(1));
-                    Assert.That(stopTransactionRequests.First().DestinationId,                                                    Is.EqualTo(chargePoint1.Id));
+                    Assert.That(stopTransactionRequests.First().DestinationId,                                                       Is.EqualTo(chargePoint1.Id));
 
                     Assert.That(stopTransactionRequests.First().TransactionId,                                                       Is.EqualTo(transactionId));
                     Assert.That(stopTransactionRequests.First().StopTimestamp.ToIso8601(),                                           Is.EqualTo(stopTimestamp.ToIso8601()));
@@ -774,7 +872,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                testCentralSystem01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.Add(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -798,7 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(response.Data?.ToString(),                       Is.EqualTo(data.Reverse()));
 
                     Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationId,      Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.ToString(),   Is.EqualTo(data));
@@ -837,7 +935,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                testCentralSystem01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.Add(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -866,7 +964,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),            Is.EqualTo(data["key"]?.Value<String>()));
 
                     Assert.That(dataTransferRequests.Count,                                   Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().DestinationId,                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationId,                   Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,                        Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,                       Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,                      Is.EqualTo(JTokenType.Object));
@@ -906,7 +1004,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                testCentralSystem01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.Add(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -932,7 +1030,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(response.Data?[0]?.Value<String>()?.Reverse(),            Is.EqualTo(data[0]?.Value<String>()));
 
                     Assert.That(dataTransferRequests.Count,                               Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().DestinationId,            Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationId,               Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,                    Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,                   Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,                  Is.EqualTo(JTokenType.Array));
