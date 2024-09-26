@@ -178,8 +178,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           InternalBufferSize,
 
                                           SecWebSocketProtocols ?? [
-                                                                      "ocpp2.0.1",
-                                                                       Version.WebSocketSubProtocolId
+                                                                       Version.WebSocketSubProtocolId,
+                                                                      "ocpp2.0.1"
                                                                    ],
                                           NetworkingMode,
 

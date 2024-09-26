@@ -25,7 +25,6 @@ using NUnit.Framework.Legacy;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint;
 

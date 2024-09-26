@@ -22,6 +22,7 @@ using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -36,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
         #region Data
 
-        protected TestChargePoint? chargePoint1;
-        protected TestChargePoint? chargePoint2;
-        protected TestChargePoint? chargePoint3;
+        protected TestChargePointNode? chargePoint1;
+        protected TestChargePointNode? chargePoint2;
+        protected TestChargePointNode? chargePoint3;
 
         #endregion
 
@@ -51,8 +52,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
             base.SetupEachTest();
 
-            chargePoint1  = new TestChargePoint(
-                                ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("GD001"),
+            chargePoint1  = new TestChargePointNode(
+                                ChargeBoxId:              NetworkingNode_Id.Parse("GD001"),
                                 ChargePointVendor:        "GraphDefined OEM #1",
                                 ChargePointModel:         "VCP.1",
                                 NumberOfConnectors:       2,
@@ -74,8 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
             ClassicAssert.IsNotNull(chargePoint1);
 
-            chargePoint2  = new TestChargePoint(
-                                ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("CP002"),
+            chargePoint2  = new TestChargePointNode(
+                                ChargeBoxId:              NetworkingNode_Id.Parse("CP002"),
                                 ChargePointVendor:        "GraphDefined OEM #2",
                                 ChargePointModel:         "VCP.2",
                                 NumberOfConnectors:       2,
@@ -95,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
             ClassicAssert.IsNotNull(chargePoint2);
 
-            chargePoint3  = new TestChargePoint(
-                                ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("CP003"),
+            chargePoint3  = new TestChargePointNode(
+                                ChargeBoxId:              NetworkingNode_Id.Parse("CP003"),
                                 ChargePointVendor:        "GraphDefined OEM #3",
                                 ChargePointModel:         "VCP.3",
                                 NumberOfConnectors:       4,

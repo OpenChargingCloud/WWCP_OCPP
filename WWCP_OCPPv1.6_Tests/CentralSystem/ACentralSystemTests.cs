@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -39,8 +41,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
         #region Data
 
-        protected TestCentralSystem?      testCentralSystem01;
-        protected CentralSystemWSServer?  testBackendWebSockets01;
+        protected TestCentralSystemNode?  testCentralSystem01;
+        protected OCPPWebSocketServer?    testBackendWebSockets01;
 
         #endregion
 
@@ -63,9 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Timestamp.Reset();
 
-            testCentralSystem01      = new TestCentralSystem(
-                                           CentralSystemId:        CentralSystem_Id.Parse("OCPPTest01"),
-                                           RequireAuthentication:  false,
+            testCentralSystem01      = new TestCentralSystemNode(
+                                           Id:                     NetworkingNode_Id.Parse("OCPPTest01"),
+                                           VendorName:             "GraphDefined",
+                                           Model:                  "CSSimulator1",
                                            HTTPUploadPort:         IPPort.Parse(9100),
                                            DNSClient:              new DNSClient(
                                                                        SearchForIPv6DNSServers: false,
@@ -75,14 +78,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             ClassicAssert.IsNotNull(testCentralSystem01);
 
-            testBackendWebSockets01  = testCentralSystem01.AttachWebSocketService(
+            testBackendWebSockets01  = testCentralSystem01.AttachWebSocketServer(
                                            TCPPort:    IPPort.Parse(9101),
                                            AutoStart:  true
                                        );
 
             ClassicAssert.IsNotNull(testBackendWebSockets01);
 
-            testCentralSystem01.AddHTTPBasicAuth(OCPP.NetworkingNode_Id.Parse("test01"), "1234abcd");
+            testCentralSystem01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
 
         }
 

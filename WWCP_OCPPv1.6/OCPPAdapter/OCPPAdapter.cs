@@ -34,6 +34,8 @@ using System.Diagnostics.CodeAnalysis;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -152,7 +154,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //public CustomJObjectSerializerDelegate<CP.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
         //public CustomJObjectSerializerDelegate<CP.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<CP.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        //public CustomJObjectSerializerDelegate<   DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
         public CustomJObjectSerializerDelegate<CP.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
         //public CustomJObjectSerializerDelegate<CP.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -264,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //public CustomJObjectSerializerDelegate<CS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-        //public CustomJObjectSerializerDelegate<     DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        
 
         public CustomJObjectSerializerDelegate<CS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
@@ -348,6 +349,118 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //public CustomJObjectSerializerDelegate<CS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
 
         #endregion
+
+
+
+        public CustomJObjectParserDelegate<DataTransferRequest>?                                     CustomDataTransferRequestParser                              { get; set; }
+        public CustomJObjectParserDelegate<DataTransferResponse>?                                    CustomDataTransferResponseParser                             { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomDataTransferResponseSerializer                         { get; set; }
+
+
+        public CustomJObjectParserDelegate<FirmwareImage>?                                               CustomFirmwareImageParser                                        { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareImage>?                                           CustomFirmwareImageSerializer                                    { get; set; }
+
+
+        public CustomJObjectParserDelegate<SignedUpdateFirmwareRequest>?                           CustomSignedUpdateFirmwareRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?                       CustomSignedUpdateFirmwareRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<SignedUpdateFirmwareResponse>?                          CustomSignedUpdateFirmwareResponseParser                   { get; set; }
+        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareResponse>?                      CustomSignedUpdateFirmwareResponseSerializer               { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<RemoteStartTransactionRequest>?                           CustomRemoteStartTransactionRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?                       CustomRemoteStartTransactionRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<RemoteStartTransactionResponse>?                          CustomRemoteStartTransactionResponseParser                   { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionResponse>?                      CustomRemoteStartTransactionResponseSerializer               { get; set; }
+
+
+        public CustomJObjectParserDelegate<IdTagInfo>?                                               CustomIdTagInfoParser                                        { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                                           CustomIdTagInfoSerializer                                    { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<RemoteStopTransactionRequest>?                            CustomRemoteStopTransactionRequestParser                     { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?                        CustomRemoteStopTransactionRequestSerializer                 { get; set; }
+
+        public CustomJObjectParserDelegate<RemoteStopTransactionResponse>?                           CustomRemoteStopTransactionResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionResponse>?                       CustomRemoteStopTransactionResponseSerializer                { get; set; }
+
+
+        public CustomJObjectParserDelegate<StartTransactionRequest>?                           CustomStartTransactionRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<StartTransactionRequest>?                       CustomStartTransactionRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<StartTransactionResponse>?                           CustomStartTransactionResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<StartTransactionResponse>?                       CustomStartTransactionResponseSerializer                { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<StopTransactionRequest>?                           CustomStopTransactionRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<StopTransactionRequest>?                       CustomStopTransactionRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<StopTransactionResponse>?                           CustomStopTransactionResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<StopTransactionResponse>?                       CustomStopTransactionResponseSerializer                { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?                           CustomSignedFirmwareStatusNotificationRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationRequest>?                       CustomSignedFirmwareStatusNotificationRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<SignedFirmwareStatusNotificationResponse>?                           CustomSignedFirmwareStatusNotificationResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationResponse>?                       CustomSignedFirmwareStatusNotificationResponseSerializer                { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<GetDiagnosticsRequest>?                           CustomGetDiagnosticsRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                       CustomGetDiagnosticsRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<GetDiagnosticsResponse>?                           CustomGetDiagnosticsResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetDiagnosticsResponse>?                       CustomGetDiagnosticsResponseSerializer                { get; set; }
+
+
+
+
+        public CustomJObjectParserDelegate<ChangeConfigurationRequest>?                           CustomChangeConfigurationRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?                       CustomChangeConfigurationRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<ChangeConfigurationResponse>?                           CustomChangeConfigurationResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeConfigurationResponse>?                       CustomChangeConfigurationResponseSerializer                { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<GetConfigurationRequest>?                           CustomGetConfigurationRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?                       CustomGetConfigurationRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<GetConfigurationResponse>?                           CustomGetConfigurationResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetConfigurationResponse>?                       CustomGetConfigurationResponseSerializer                { get; set; }
+
+
+        public CustomJObjectParserDelegate<ConfigurationKey>? CustomConfigurationKeyParser { get; set; }
+        public CustomJObjectSerializerDelegate<ConfigurationKey>? CustomConfigurationKeySerializer { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?                           CustomDiagnosticsStatusNotificationRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest>?                       CustomDiagnosticsStatusNotificationRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationResponse>?                           CustomDiagnosticsStatusNotificationResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationResponse>?                       CustomDiagnosticsStatusNotificationResponseSerializer                { get; set; }
+
+
+
+        public CustomJObjectParserDelegate<ExtendedTriggerMessageRequest>?                           CustomExtendedTriggerMessageRequestParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?                       CustomExtendedTriggerMessageRequestSerializer                { get; set; }
+
+        public CustomJObjectParserDelegate<ExtendedTriggerMessageResponse>?                           CustomExtendedTriggerMessageResponseParser                    { get; set; }
+        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageResponse>?                       CustomExtendedTriggerMessageResponseSerializer                { get; set; }
+
+
+
+
+
+
 
 
         //public CustomJObjectSerializerDelegate<MessageTransferMessage>?                              CustomMessageTransferMessageSerializer                       { get; set; }
@@ -747,8 +860,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
-        //public CustomJObjectParserDelegate<DataTransferRequest>?                                       CustomDataTransferRequestParser                          { get; set; }
-        //public CustomJObjectParserDelegate<DataTransferResponse>?                                      CustomDataTransferResponseParser                         { get; set; }
 
 
         //public CustomJObjectParserDelegate<MessageTransferMessage>?                                    CustomMessageTransferMessageParser                       { get; set; }

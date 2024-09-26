@@ -349,13 +349,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToJSON(CustomIdTagInfoResponseSerializer = null)
+        #region ToJSON(CustomIdTagInfoSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTagInfo>? CustomIdTagInfoResponseSerializer = null)
+        /// <param name="CustomIdTagInfoSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTagInfo>? CustomIdTagInfoSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -372,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomIdTagInfoResponseSerializer is not null
-                       ? CustomIdTagInfoResponseSerializer(this, json)
+            return CustomIdTagInfoSerializer is not null
+                       ? CustomIdTagInfoSerializer(this, json)
                        : json;
 
         }

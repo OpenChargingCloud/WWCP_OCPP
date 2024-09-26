@@ -32,6 +32,9 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics.CodeAnalysis;
+using cloud.charging.open.protocols.OCPPv1_6.CentralSystem;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -41,8 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A central system for testing.
     /// </summary>
-    public class TestCentralSystem : ICentralSystemService,
-                                     IEventSender
+    public class TestCentralSystemNode : ACentralSystemNode,
+                                         ICentralSystemService,
+                                         IEventSender
     {
 
         #region Data
@@ -74,13 +78,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The unique identification of this central system.
         /// </summary>
-        public CentralSystem_Id  CentralSystemId    { get; }
+    //    public CentralSystem_Id  Id    { get; }
 
         /// <summary>
         /// The sender identification.
         /// </summary>
-        String IEventSender.Id
-            => CentralSystemId.ToString();
+        //String IEventSender.Id
+        //    => Id.ToString();
 
 
         public UploadAPI  HTTPUploadAPI             { get; }
@@ -88,11 +92,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public IPPort     HTTPUploadPort            { get; }
 
         public DNSClient  DNSClient                 { get; }
-
-        /// <summary>
-        /// Require a HTTP Basic Authentication of all charging boxes.
-        /// </summary>
-        public Boolean    RequireAuthentication     { get; }
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -1208,22 +1207,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Create a new central system for testing.
         /// </summary>
-        /// <param name="CentralSystemId">The unique identification of this central system.</param>
-        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public TestCentralSystem(CentralSystem_Id       CentralSystemId,
-                                 Boolean                RequireAuthentication   = true,
-                                 TimeSpan?              DefaultRequestTimeout   = null,
-                                 IPPort?                HTTPUploadPort          = null,
-                                 DNSClient?             DNSClient               = null,
+        /// <param name="Id">The unique identification of this central system.</param>
+        public TestCentralSystemNode(NetworkingNode_Id              Id,
+                                     String                         VendorName,
+                                     String                         Model,
+                                     String?                        SerialNumber                     = null,
+                                     String?                        SoftwareVersion                  = null,
+                                     I18NString?                    Description                      = null,
+                                     CustomData?                    CustomData                       = null,
 
-                                 WWCP.SignaturePolicy?  SignaturePolicy         = null)
+                                     TimeSpan?              DefaultRequestTimeout   = null,
+                                     IPPort?                HTTPUploadPort          = null,
+                                     DNSClient?             DNSClient               = null,
+
+                                     WWCP.SignaturePolicy?  SignaturePolicy         = null)
+
+            : base(Id,
+                   VendorName,
+                   Model,
+                   SerialNumber,
+                   SoftwareVersion,
+                   Description,
+                   CustomData)
+
         {
 
-            if (CentralSystemId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(CentralSystemId), "The given central system identification must not be null or empty!");
+            if (Id.IsNullOrEmpty)
+                throw new ArgumentNullException(nameof(Id), "The given central system identification must not be null or empty!");
 
-            this.CentralSystemId        = CentralSystemId;
-            this.RequireAuthentication  = RequireAuthentication;
             this.DefaultRequestTimeout  = DefaultRequestTimeout ?? defaultRequestTimeout;
             this.HTTPUploadPort         = HTTPUploadPort        ?? DefaultHTTPUploadPort;
 
@@ -1350,7 +1361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //    var centralSystemServer = new CentralSystemWSServer(
 
-        //                                  NetworkingNode_Id.Parse(CentralSystemId.ToString()),
+        //                                  NetworkingNode_Id.Parse(Id.ToString()),
 
         //                                  HTTPServerName,
         //                                  IPAddress,
@@ -3804,7 +3815,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -3813,7 +3824,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            $"ChargeBox identification '{ChargeBox.Id}' already exists!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -3863,7 +3874,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return AddChargeBoxResult.Success(
                        ChargeBox,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -3909,7 +3920,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargeBox,
                                e,
                                eventTrackingId,
-                               CentralSystemId,
+                               Id,
                                this
                            );
 
@@ -3930,7 +3941,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        ChargeBox,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -3967,7 +3978,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -3975,7 +3986,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return AddChargeBoxResult.NoOperation(
                            chargeBoxes[ChargeBox.Id],
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4025,7 +4036,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return AddChargeBoxResult.Success(
                        ChargeBox,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4071,7 +4082,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargeBox,
                                e,
                                eventTrackingId,
-                               CentralSystemId,
+                               Id,
                                this
                            );
 
@@ -4092,7 +4103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        ChargeBox,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4131,7 +4142,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4191,7 +4202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return AddOrUpdateChargeBoxResult.Added(
                            ChargeBox,
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4217,7 +4228,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return AddOrUpdateChargeBoxResult.Updated(
                        ChargeBox,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4266,7 +4277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargeBox,
                                e,
                                eventTrackingId,
-                               CentralSystemId,
+                               Id,
                                this
                            );
 
@@ -4286,7 +4297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        ChargeBox,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4343,7 +4354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            $"The given chargeBox '{ChargeBox.Id}' does not exists in this API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4352,7 +4363,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4388,7 +4399,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return UpdateChargeBoxResult.Success(
                        ChargeBox,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4434,7 +4445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargeBox,
                                e,
                                eventTrackingId,
-                               CentralSystemId,
+                               Id,
                                this
                            );
 
@@ -4454,7 +4465,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        ChargeBox,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4490,7 +4501,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            $"The given chargeBox '{ChargeBox.Id}' does not exists in this API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4499,7 +4510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox is not attached to this API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4508,7 +4519,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given update delegate must not be null!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4546,7 +4557,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return UpdateChargeBoxResult.Success(
                        ChargeBox,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4595,7 +4606,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargeBox,
                                e,
                                eventTrackingId,
-                               CentralSystemId,
+                               Id,
                                this
                            );
 
@@ -4615,7 +4626,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        ChargeBox,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4691,7 +4702,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox is not attached to this API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4700,7 +4711,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            ChargeBox,
                            "The given chargeBox does not exists in this API!".ToI18NString(),
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this
                        );
 
@@ -4711,7 +4722,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return DeleteChargeBoxResult.CanNotBeRemoved(
                            ChargeBox,
                            eventTrackingId,
-                           CentralSystemId,
+                           Id,
                            this,
                            veto
                        );
@@ -4769,7 +4780,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return DeleteChargeBoxResult.Success(
                        ChargeBox,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -4815,7 +4826,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargeBox,
                                e,
                                eventTrackingId,
-                               CentralSystemId,
+                               Id,
                                this
                            );
 
@@ -4836,7 +4847,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        ChargeBox,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
-                       CentralSystemId,
+                       Id,
                        this
                    );
 
@@ -5162,8 +5173,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //    }
         //}
-
-        public CentralSystem_Id Id => throw new NotImplementedException();
 
     //    Request_Id ICentralSystem.NextRequestId => throw new NotImplementedException();
 

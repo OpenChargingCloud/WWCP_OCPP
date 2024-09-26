@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public HTTPEventSource<JObject>                   EventLog            { get; }
 
 
-        public TestCentralSystem                          CentralSystem       { get; }
+        public TestCentralSystemNode                          CentralSystem       { get; }
 
         #endregion
 
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public OCPPWebAPI(TestCentralSystem                           TestCentralSystem,
+        public OCPPWebAPI(TestCentralSystemNode                           TestCentralSystem,
                           HTTPServer                                  HTTPServer,
                           HTTPPath?                                   URLPathPrefix   = null,
                           HTTPPath?                                   BasePath        = null,

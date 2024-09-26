@@ -389,12 +389,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Static methods
 
         /// <summary>
-        /// The MeterValues request failed.
+        /// The MeterValues failed because of a request error.
         /// </summary>
-        public static MeterValuesResponse Failed(CP.MeterValuesRequest Request)
+        /// <param name="Request">The MeterValues request.</param>
+        public static MeterValuesResponse RequestError(MeterValuesRequest       Request,
+                                                       EventTracking_Id         EventTrackingId,
+                                                       ResultCode               ErrorCode,
+                                                       String?                  ErrorDescription    = null,
+                                                       JObject?                 ErrorDetails        = null,
+                                                       DateTime?                ResponseTimestamp   = null,
+
+                                                       SourceRouting?           Destination         = null,
+                                                       NetworkPath?             NetworkPath         = null,
+
+                                                       IEnumerable<KeyPair>?    SignKeys            = null,
+                                                       IEnumerable<SignInfo>?   SignInfos           = null,
+                                                       IEnumerable<Signature>?  Signatures          = null,
+
+                                                       CustomData?              CustomData          = null)
+
+            => new (
+
+                   Request,
+                   Result.FromErrorResponse(
+                       ErrorCode,
+                       ErrorDescription,
+                       ErrorDetails
+                   ),
+                   ResponseTimestamp,
+
+                   Destination,
+                   NetworkPath,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData
+
+               );
+
+
+        /// <summary>
+        /// The MeterValues failed.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static MeterValuesResponse FormationViolation(MeterValuesRequest  Request,
+                                                             String              ErrorDescription)
 
             => new (Request,
-                    Result.Server());
+                    Result:  Result.FormationViolation(
+                                 $"Invalid data format: {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The MeterValues failed.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="ErrorDescription">An optional error description.</param>
+        public static MeterValuesResponse SignatureError(MeterValuesRequest  Request,
+                                                         String              ErrorDescription)
+
+            => new (Request,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
+
+
+        /// <summary>
+        /// The MeterValues failed.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="Description">An optional error description.</param>
+        public static MeterValuesResponse Failed(MeterValuesRequest  Request,
+                                                 String?             Description   = null)
+
+            => new (Request,
+                    Result:  Result.Server(Description));
+
+
+        /// <summary>
+        /// The MeterValues failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The MeterValues request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static MeterValuesResponse ExceptionOccured(MeterValuesRequest  Request,
+                                                           Exception           Exception)
+
+            => new (Request,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

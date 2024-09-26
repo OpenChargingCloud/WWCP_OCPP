@@ -65,12 +65,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var resetRequests = new List<ResetRequest>();
 
-                chargePoint1.OnResetRequest += async (timestamp, sender, connection, resetRequest) => {
+                chargePoint1.OCPP.IN.OnResetRequestReceived += async (timestamp, sender, connection, resetRequest, ct) => {
                     resetRequests.Add(resetRequest);
                 };
 
-                var resetType  = ResetTypes.Hard;
-                var response   = await testCentralSystem01.Reset(
+                var resetType  = ResetType.Hard;
+                var response   = await testCentralSystem01.OCPP.OUT.Reset(
                                            NetworkingNodeId:   chargePoint1.Id,
                                            ResetType:          resetType
                                        );
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Status,                          Is.EqualTo(ResetStatus.Accepted));
 
                     Assert.That(resetRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(resetRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(resetRequests.First().DestinationId,      Is.EqualTo(chargePoint1.Id));
                     Assert.That(resetRequests.First().ResetType,          Is.EqualTo(resetType));
 
                 });

@@ -619,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?              CustomChargingScheduleSerializer               = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodSerializer         = null,
-                              CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                      = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
