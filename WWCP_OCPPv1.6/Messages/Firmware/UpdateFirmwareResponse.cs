@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class UpdateFirmwareResponse : AResponse<UpdateFirmwareRequest,
                                                     UpdateFirmwareResponse>,
-                                          IResponse
+                                          IResponse<Result>
     {
 
         #region Data

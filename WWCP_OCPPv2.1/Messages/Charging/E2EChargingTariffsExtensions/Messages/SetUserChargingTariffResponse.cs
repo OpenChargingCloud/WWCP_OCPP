@@ -23,7 +23,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -36,8 +38,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A set user charging tariff response.
     /// </summary>
-    public class SetUserChargingTariffResponse : AResponse<CSMS.SetUserChargingTariffRequest,
-                                                                SetUserChargingTariffResponse>,
+    public class SetUserChargingTariffResponse : AResponse<SetUserChargingTariffRequest,
+                                                           SetUserChargingTariffResponse>,
                                                  IResponse<Result>
     {
 

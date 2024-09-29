@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class GetConfigurationResponse : AResponse<GetConfigurationRequest,
                                                       GetConfigurationResponse>,
-                                            IResponse
+                                            IResponse<Result>
     {
 
         #region Data

@@ -34,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A general OCPP result.
     /// </summary>
-    public class Result : IEquatable<Result>
+    public class Result : IEquatable<Result>,
+                          WWCP.IResult
     {
 
         #region Properties
@@ -321,6 +322,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => Result is not null &&
 
                ResultCode. Equals(Result.ResultCode) &&
+
+             ((Description is     null && Result.Description is     null) ||
+              (Description is not null && Result.Description is not null && String.Equals(Description, Result.Description, StringComparison.OrdinalIgnoreCase)));
+
+        #endregion
+
+        #region Equals(IResult)
+
+        /// <summary>
+        /// Compares two results for equality.
+        /// </summary>
+        /// <param name="Result">A result to compare with.</param>
+        public Boolean Equals(WWCP.IResult? Result)
+
+            => Result is not null &&
+
+               //ResultCode. Equals(Result.ResultCode) &&
 
              ((Description is     null && Result.Description is     null) ||
               (Description is not null && Result.Description is not null && String.Equals(Description, Result.Description, StringComparison.OrdinalIgnoreCase)));

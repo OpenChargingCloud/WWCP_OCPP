@@ -226,11 +226,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         /// <summary>
-        /// The optional multi-language charging station description.
-        /// </summary>
-        public I18NString?              Description                 { get; }
-
-        /// <summary>
         /// The optional serial number of the charge point.
         /// </summary>
         public String?                  ChargePointSerialNumber     { get; }
@@ -711,7 +706,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.ChargePointVendor        = ChargePointVendor;
             this.ChargePointModel         = ChargePointModel;
 
-            this.Description              = Description;
             this.ChargePointSerialNumber  = ChargePointSerialNumber;
             //this.ChargingStationSerialNumber    = ChargingStationSerialNumber;
             this.FirmwareVersion          = FirmwareVersion;

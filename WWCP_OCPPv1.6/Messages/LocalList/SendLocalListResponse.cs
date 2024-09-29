@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class SendLocalListResponse : AResponse<SendLocalListRequest,
                                                    SendLocalListResponse>,
-                                         IResponse
+                                         IResponse<Result>
     {
 
         #region Data

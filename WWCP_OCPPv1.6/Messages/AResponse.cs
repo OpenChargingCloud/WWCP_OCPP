@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     public abstract class AResponse<TRequest, TResponse> : AResponse<TResponse>
 
         where TRequest  : class, IRequest
-        where TResponse : class, IResponse
+        where TResponse : class, IResponse<Result>
 
     {
 
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     public abstract class AResponse<TResponse> : ACustomSignableData,
                                                  IEquatable<TResponse>
 
-        where TResponse : class, IResponse
+        where TResponse : class, IResponse<Result>
 
     {
 

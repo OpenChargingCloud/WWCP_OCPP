@@ -25,7 +25,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -35,8 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The NotifyCRL response.
     /// </summary>
-    public class NotifyCRLResponse : AResponse<CSMS.NotifyCRLRequest,
-                                                    NotifyCRLResponse>,
+    public class NotifyCRLResponse : AResponse<NotifyCRLRequest,
+                                               NotifyCRLResponse>,
                                      IResponse<Result>
     {
 

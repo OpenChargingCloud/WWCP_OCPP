@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     [SecurityExtensions]
     public class ExtendedTriggerMessageResponse : AResponse<ExtendedTriggerMessageRequest,
                                                             ExtendedTriggerMessageResponse>,
-                                                  IResponse
+                                                  IResponse<Result>
     {
 
         #region Data

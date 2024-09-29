@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// </summary>
     public class DataTransferResponse : AResponse<DataTransferRequest,
                                                   DataTransferResponse>,
-                                        IResponse
+                                        IResponse<Result>
     {
 
         #region Data

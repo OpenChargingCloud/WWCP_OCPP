@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     public class BootNotificationResponse : AResponse<BootNotificationRequest,
                                                       BootNotificationResponse>,
-                                            IResponse
+                                            IResponse<Result>
     {
 
         #region Data

@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     [SecurityExtensions]
     public class InstallCertificateResponse : AResponse<InstallCertificateRequest,
                                                         InstallCertificateResponse>,
-                                              IResponse
+                                              IResponse<Result>
     {
 
         #region Data

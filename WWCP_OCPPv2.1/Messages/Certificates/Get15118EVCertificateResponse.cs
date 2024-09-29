@@ -25,7 +25,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -35,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The Get15118EVCertificate response.
     /// </summary>
-    public class Get15118EVCertificateResponse : AResponse<CS.Get15118EVCertificateRequest,
+    public class Get15118EVCertificateResponse : AResponse<Get15118EVCertificateRequest,
                                                            Get15118EVCertificateResponse>,
                                                  IResponse<Result>
     {

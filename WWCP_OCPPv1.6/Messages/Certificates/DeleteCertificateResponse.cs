@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     [SecurityExtensions]
     public class DeleteCertificateResponse : AResponse<DeleteCertificateRequest,
                                                        DeleteCertificateResponse>,
-                                             IResponse
+                                             IResponse<Result>
     {
 
         #region Data

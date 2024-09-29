@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class CancelReservationResponse : AResponse<CancelReservationRequest,
                                                        CancelReservationResponse>,
-                                             IResponse
+                                             IResponse<Result>
     {
 
         #region Data

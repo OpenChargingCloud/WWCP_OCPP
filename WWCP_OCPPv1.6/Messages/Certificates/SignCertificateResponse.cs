@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     [SecurityExtensions]
     public class SignCertificateResponse : AResponse<SignCertificateRequest,
                                                      SignCertificateResponse>,
-                                           IResponse
+                                           IResponse<Result>
     {
 
         #region Data

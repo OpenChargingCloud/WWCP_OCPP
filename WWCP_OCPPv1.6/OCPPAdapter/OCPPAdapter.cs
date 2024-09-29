@@ -356,8 +356,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomDataTransferResponseSerializer                         { get; set; }
 
 
-        public CustomJObjectParserDelegate<FirmwareImage>?                                               CustomFirmwareImageParser                                        { get; set; }
-        public CustomJObjectSerializerDelegate<FirmwareImage>?                                           CustomFirmwareImageSerializer                                    { get; set; }
+        public CustomBinaryParserDelegate<BinaryDataTransferRequest>?                                CustomBinaryDataTransferRequestParser                        { get; set; }
+        public CustomBinaryParserDelegate<BinaryDataTransferResponse>?                               CustomBinaryDataTransferResponseParser                       { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?                            CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomBinaryDataTransferResponseSerializer                   { get; set; }
+
+
+        public CustomJObjectParserDelegate<FirmwareImage>?                                           CustomFirmwareImageParser                                    { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareImage>?                                       CustomFirmwareImageSerializer                                { get; set; }
 
 
         public CustomJObjectParserDelegate<SignedUpdateFirmwareRequest>?                           CustomSignedUpdateFirmwareRequestParser                    { get; set; }

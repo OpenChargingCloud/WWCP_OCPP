@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     public class DiagnosticsStatusNotificationResponse : AResponse<DiagnosticsStatusNotificationRequest,
                                                                    DiagnosticsStatusNotificationResponse>,
-                                                         IResponse
+                                                         IResponse<Result>
     {
 
         #region Data

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -33,8 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A AdjustPeriodicEventStream response.
     /// </summary>
-    public class AdjustPeriodicEventStreamResponse : AResponse<CSMS.AdjustPeriodicEventStreamRequest,
-                                                                    AdjustPeriodicEventStreamResponse>,
+    public class AdjustPeriodicEventStreamResponse : AResponse<AdjustPeriodicEventStreamRequest,
+                                                               AdjustPeriodicEventStreamResponse>,
                                                      IResponse<Result>
     {
 

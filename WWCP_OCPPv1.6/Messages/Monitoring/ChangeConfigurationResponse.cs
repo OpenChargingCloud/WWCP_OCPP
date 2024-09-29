@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A ChangeConfiguration response.
     /// </summary>
-    public class ChangeConfigurationResponse : AResponse<CS.ChangeConfigurationRequest,
-                                                            ChangeConfigurationResponse>,
-                                               IResponse
+    public class ChangeConfigurationResponse : AResponse<ChangeConfigurationRequest,
+                                                         ChangeConfigurationResponse>,
+                                               IResponse<Result>
     {
 
         #region Data

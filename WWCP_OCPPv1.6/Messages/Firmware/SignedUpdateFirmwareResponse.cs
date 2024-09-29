@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     [SecurityExtensions]
     public class SignedUpdateFirmwareResponse : AResponse<SignedUpdateFirmwareRequest,
                                                           SignedUpdateFirmwareResponse>,
-                                                IResponse
+                                                IResponse<Result>
     {
 
         #region Data
