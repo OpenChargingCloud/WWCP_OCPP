@@ -1,25 +1,21 @@
 # WWCP OCPP
 
-This software libraries will allow the communication between World Wide Charging Protocol (WWCP) entities and entities implementing the _Open Charge Point Protocol Version 1.6/2.0.1/2.1_, which is defined by the [_Open Charge Alliance (OCA)_](https://www.openchargealliance.org). The focus of the *Open Charge Point Protocol* are all the communication aspects between e-mobility *charging stations*, *local nodes* and *Charging Station Operator Systems/Backends (CSMS)*.
-
-This software also allows you to build standalone OCPP micro services and use case specific gateways between OCPP and your internal microservice architecture.
-
-For more details on the *Open Charge Point Protocol* please visit https://www.openchargealliance.org.
-
+This software libraries allow you to build _Open Charge Point Protocol_ services and use case specific gateways between OCPP and the World Wide Charging Protocol (WWCP), e.g. for *EV roaming*. The focus of the *Open Charge Point Protocol* as defined by the [_Open Charge Alliance (OCA)_](https://www.openchargealliance.org) is the communication between e-mobility *charging stations (charge points)*, *Local Controllers* and *Charging Station Operator Systems (CSMS)*.
 
 ## Versions
 
-- **OCPP v2.1** is a based on an internal OCA specification (Draft 2 v0.44) and currently under development. This version is tested regularly at *Open Charge Alliance Plugfests*.
+- **OCPP v2.1** is a based on the public OCA specification (DRAFT 2024-09-01) and currently under development. This version is tested regularly at *Open Charge Alliance Plugfests*.
 
-- **OCPP v2.0.1** is fully implemented and at least one tests exists for every charging station or CSMS message. This versions is not longer actively maintained and justs remains to reflect data structure changes within different OCPP version. **Please use version v2.1. instead.**
+- **OCPP v2.0.1** is provided via OCPP v2.1, as this version is backward compatible to v2.0.1.
 
 - **OCPP v1.6** and the **Security Whitepaper** extensions are fully implemented and at least one tests exists for every charging station or CSMS message. This version was also tested on multiple *Open Charge Alliance Plugfests*.
 
-- **OCPP v1.5** is no longer maintained. If you still need this version please send us an e-mail.
+- **OCPP v1.5** is no longer maintained. If you still need support for this version please send us an e-mail.
+
 
 ## Implementation Details and Differences
 
-The official protocol specifications of [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md) and [OCPP v2.1](WWCP_OCPPv2.1/README.md) have unfortunatelly still many protocol design flaws and security issues which are still not addressed properly by the *Open Charge Alliance Technical Working Group (TWG)*. Therefore this implementation provides a rich set of vendor extentions, called [OCPP CSE](OCPP_CSE), and further work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods.
+The official protocol specifications of [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md) and [OCPP v2.1](WWCP_OCPPv2.1/README.md) have unfortunatelly still many protocol design flaws and security issues which are still not addressed completely by the *Open Charge Alliance Technical Working Group (TWG)*. Therefore this implementation provides a rich set of vendor extentions, called [OCPP CSE](OCPP_CSE), and further work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods.
 
 
 #### End-to-End Cyber Security
