@@ -187,6 +187,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Data
 
+        protected        readonly  ConcurrentDictionary<IdToken, IdTokenInfo>                                    idTokens                     = [];
+
         private          readonly  HashSet<SignaturePolicy>                                                      signaturePolicies            = [];
 
         //private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
@@ -2432,6 +2434,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
         #endregion
+
+        #endregion
+
+
+
+        #region RegisterToken (IdTag, IdTagInfo)
+
+        /// <summary>
+        /// Register the given identification tag.
+        /// </summary>
+        /// <param name="IdTag">The identification tag.</param>
+        /// <param name="IdTagInfo">The identification tag information.</param>
+        public virtual Task<Boolean> RegisterToken(IdToken      IdToken,
+                                                   IdTokenInfo  IdTokenInfo)
+
+            => Task.FromResult(
+                   idTokens.TryAdd(
+                       IdToken,
+                       IdTokenInfo
+                   )
+               );
+
+        #endregion
+
+        #region RemoveToken   (IdTag)
+
+        /// <summary>
+        /// Remove the given identification tag.
+        /// </summary>
+        /// <param name="IdTag">The identification tag.</param>
+        public virtual Task<Boolean> RemoveToken(IdToken IdToken)
+
+            => Task.FromResult(
+                   idTokens.TryRemove(IdToken, out _)
+               );
 
         #endregion
 

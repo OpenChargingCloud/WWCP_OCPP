@@ -525,7 +525,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region Static
+        #region Static defaults
+
+        /// <summary>
+        /// Identifier is allowed for charging.
+        /// </summary>
+        public static IdTokenInfo Accepted
+            => new (AuthorizationStatus.Accepted);
+
+        /// <summary>
+        /// Identifier has been blocked. Not allowed for charging.
+        /// </summary>
+        public static IdTokenInfo Blocked
+            => new(AuthorizationStatus.Blocked);
+
+        /// <summary>
+        /// Identifier is already involved in another transaction
+        /// and multiple transactions are not allowed.
+        /// </summary>
+        public static IdTokenInfo ConcurrentTx
+            => new(AuthorizationStatus.ConcurrentTx);
+
+        /// <summary>
+        /// Identifier has expired. Not allowed for charging.
+        /// </summary>
+        public static IdTokenInfo Expired
+            => new(AuthorizationStatus.Expired);
+
+        /// <summary>
+        /// Identifier is unknown. Not allowed for charging.
+        /// </summary>
+        public static IdTokenInfo Invalid
+            => new(AuthorizationStatus.Invalid);
+
 
         public static IdTokenInfo Error(AuthorizationStatus? Status = null)
             => new (Status ?? AuthorizationStatus.Error);

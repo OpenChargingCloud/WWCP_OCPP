@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         {
 
-            NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS;
+            NextHopNetworkingNodeId ??= NetworkingNode_Id.CentralSystem;
 
             #region Create new OCPP WebSocket client
 
@@ -354,14 +354,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                                           this,
 
-                                          HTTPServiceName,
+                                          HTTPServiceName       ?? "GraphDefined OCPP v1.6 WebSocket Service",
                                           IPAddress,
                                           TCPPort,
                                           Description,
 
                                           RequireAuthentication,
                                           SecWebSocketProtocols ?? [
-                                                                      "ocpp2.0.1",
                                                                        Version.WebSocketSubProtocolId
                                                                    ],
                                           DisableWebSocketPings,

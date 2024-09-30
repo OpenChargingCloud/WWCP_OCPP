@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             case WebSocketServerConnection:
                                 jsonRequestMessage = jsonRequestMessage.ChangeNetworking(
-                                                         SourceRouting.To(NetworkingNode_Id.CSMS),
+                                                         SourceRouting.To(NetworkingNode_Id.CentralSystem),
                                                          jsonRequestMessage.NetworkPath.Append(sourceNodeId.Value)
                                                      );
                                 break;
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             case WebSocketServerConnection:
                                 jsonSendMessage = jsonSendMessage.ChangeNetworking(
-                                                      SourceRouting.To(NetworkingNode_Id.CSMS),
+                                                      SourceRouting.To(NetworkingNode_Id.CentralSystem),
                                                       jsonSendMessage.NetworkPath.Append(sourceNodeId.Value)
                                                   );
                                 break;
@@ -742,7 +742,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             case WebSocketServerConnection:
                                 binaryRequestMessage = binaryRequestMessage.ChangeNetworking(
-                                                           SourceRouting.To(NetworkingNode_Id.CSMS),
+                                                           SourceRouting.To(NetworkingNode_Id.CentralSystem),
                                                            binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
                                                        );
                                 break;

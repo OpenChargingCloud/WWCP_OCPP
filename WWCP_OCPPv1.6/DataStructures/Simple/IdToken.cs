@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -60,7 +61,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The internal identification token.
         /// </summary>
-        private readonly String InternalId;
+        private        readonly String  InternalId;
+
+        private static readonly Regex   rfid_UIDPattern    = new Regex(@"^([A-F0-9]{8}|[A-F0-9]{14}|[A-F0-9]{20})$");
+        private static readonly Regex   rfid4_UIDPattern   = new Regex(@"^([A-F0-9]{8})$");
+        private static readonly Regex   rfid7_UIDPattern   = new Regex(@"^([A-F0-9]{14})$");
+        private static readonly Regex   rfid10_UIDPattern  = new Regex(@"^([A-F0-9]{20})$");
 
         #endregion
 
@@ -112,7 +118,122 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text)
+
+        #region (static) NewRandomRFID4()
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID4()
+
+            => new (RandomExtensions.RandomBytes(4).ToHexString().ToUpper());
+
+        #endregion
+
+        #region (static) NewRandomRFID7()
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID7()
+
+            => new (RandomExtensions.RandomBytes(7).ToHexString().ToUpper());
+
+        #endregion
+
+        #region (static) NewRandomRFID10()
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID10()
+
+            => new (RandomExtensions.RandomBytes(10).ToHexString().ToUpper());
+
+        #endregion
+
+
+        #region (static) TryParseRFID   (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given RFID UID.
+        /// </summary>
+        /// <param name="UID">The RFID UID as hex values.</param>
+        public static IdToken? TryParseRFID(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid_UIDPattern.IsMatch(uid)
+                       ? new(uid)
+                       : null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID4  (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given 4 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The 4 byte RFID UID as hex values.</param>
+        public static IdToken? TryParseRFID4(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid4_UIDPattern.IsMatch(uid)
+                       ? new(uid)
+                       : null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID7  (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given 7 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The 7 byte RFID UID as hex values.</param>
+        public static IdToken? TryParseRFID7(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid7_UIDPattern.IsMatch(uid)
+                       ? new(uid)
+                       : null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID10 (UID)
+
+        /// <summary>
+        /// Create a new identification token based on the given 10 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The 10 byteRFID UID as hex values.</param>
+        public static IdToken? TryParseRFID10(String UID)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return rfid10_UIDPattern.IsMatch(uid)
+                       ? new(uid)
+                       : null;
+
+        }
+
+        #endregion
+
+
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as an identification token.
@@ -131,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
         /// Try to parse the given text as an identification token.
@@ -149,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(Text, out IdToken)
+        #region (static) TryParse (Text, out IdToken)
 
         /// <summary>
         /// Try to parse the given text as an identification token.

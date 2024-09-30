@@ -418,36 +418,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     request,
                                     cancellationToken) => {
 
-                DebugX.Log("OnAuthorize: " + request.DestinationId + ", " +
-                                             request.IdToken);
-
                 // IdToken
                 // Certificate
                 // ISO15118CertificateHashData
 
-                return !request.IdToken.Value.StartsWith("aa")
+                return Task.FromResult(
+                           idTokens.TryGetValue(request.IdToken, out var idTokenInfo)
 
-                           ? Task.FromResult(
-                                 new AuthorizeResponse(
+                               ? new AuthorizeResponse(
                                      Request:             request,
-                                     IdTokenInfo:         new IdTokenInfo(
-                                                              Status:                AuthorizationStatus.Accepted,
-                                                              CacheExpiryDateTime:   Timestamp.Now.AddDays(3)
-                                                          ),
-                                     CertificateStatus:   AuthorizeCertificateStatus.Accepted,
+                                     IdTokenInfo:         idTokenInfo,
+                                     CertificateStatus:   null,
                                      CustomData:          null
                                  )
-                             )
 
-                           : Task.FromResult(
-                                   new AuthorizeResponse(
-                                       Request:       request,
-                                       IdTokenInfo:   new IdTokenInfo(
-                                                          Status:   AuthorizationStatus.Invalid
-                                                      ),
-                                       CustomData:    null
-                                   )
-                               );
+                               : new AuthorizeResponse(
+                                     Request:             request,
+                                     IdTokenInfo:         new IdTokenInfo(
+                                                              Status:               AuthorizationStatus.Invalid,
+                                                              CacheExpiryDateTime:  Timestamp.Now.AddMinutes(15)
+                                                          ),
+                                     CustomData:          null
+                                 )
+
+                       );
 
             };
 
@@ -1501,6 +1495,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
         #endregion
+
+
+        public void EnableLogging()
+        {
+
+            #region OnAuthorizeResponseSent
+
+            this.OCPP.OUT.OnAuthorizeResponseSent += static (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime,
+                                                             sentMessageResult,
+                                                             cancellationToken) => {
+
+                                                                 if (request is not null)
+                                                                     DebugX.Log($"OnAuthorize: {request.DestinationId}, {request.IdToken} => {response.IdTokenInfo.Status}");
+
+                                                                 return Task.CompletedTask;
+
+                                                             };
+
+            #endregion
+
+        }
 
     }
 

@@ -63,13 +63,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public IdToken                       IdToken                        { get; }
 
         /// <summary>
-        /// The optional X.509 certificated presented by the electric vehicle/user (PEM format) 5500
+        /// The optional X.509 certificated presented by the electric vehicle/user (PEM format).
+        /// [max 5500]
         /// </summary>
         [Optional]
         public Certificate?                  Certificate                    { get; }
 
         /// <summary>
-        /// Optional information to verify the electric vehicle/user contract certificate via OCSP. [0...4]
+        /// Optional information to verify the electric vehicle/user contract certificate via OCSP.
+        /// [0...4]
         /// </summary>
         [Optional]
         public IEnumerable<OCSPRequestData>  ISO15118CertificateHashData    { get; }

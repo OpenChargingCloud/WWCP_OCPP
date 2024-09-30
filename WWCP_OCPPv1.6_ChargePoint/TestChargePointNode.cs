@@ -27,13 +27,15 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using cloud.charging.open.protocols.WWCP;
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using System.Configuration;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 #endregion
 
@@ -44,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// A charge point for testing.
     /// </summary>
     public class TestChargePointNode : AChargePointNode,
-                                   IEventSender
+                                       IChargePointNode
     {
 
         #region Data
@@ -133,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Controlled by the central system!
 
-        private readonly Dictionary<Connector_Id, ChargePointConnector> connectors;
+        private readonly Dictionary<Connector_Id, ChargePointConnector> connectors = [];
 
         public IEnumerable<ChargePointConnector> Connectors
             => connectors.Values;
@@ -717,32 +719,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargePointNode(NetworkingNode_Id     ChargeBoxId,
-                               Byte                  NumberOfConnectors,
-                               String                ChargePointVendor,
-                               String                ChargePointModel,
+        public TestChargePointNode(NetworkingNode_Id  ChargeBoxId,
+                                   Byte               NumberOfConnectors,
+                                   String             ChargePointVendor,
+                                   String             ChargePointModel,
 
-                               I18NString?           Description               = null,
-                               String?               ChargePointSerialNumber   = null,
-                               String?               ChargeBoxSerialNumber     = null,
-                               String?               FirmwareVersion           = null,
-                               String?               Iccid                     = null,
-                               String?               IMSI                      = null,
-                               String?               MeterType                 = null,
-                               String?               MeterSerialNumber         = null,
-                               String?               MeterPublicKey            = null,
+                                   I18NString?        Description                    = null,
+                                   String?            ChargePointSerialNumber        = null,
+                                   String?            ChargeBoxSerialNumber          = null,
+                                   String?            FirmwareVersion                = null,
+                                   String?            Iccid                          = null,
+                                   String?            IMSI                           = null,
+                                   String?            MeterType                      = null,
+                                   String?            MeterSerialNumber              = null,
+                                   String?            MeterPublicKey                 = null,
 
-                               Boolean               DisableSendHeartbeats     = false,
-                               TimeSpan?             SendHeartbeatEvery        = null,
+                                   TimeSpan?          DefaultRequestTimeout          = null,
 
-                               Boolean               DisableMaintenanceTasks   = false,
-                               TimeSpan?             MaintenanceEvery          = null,
+                                   SignaturePolicy?   SignaturePolicy                = null,
+                                   SignaturePolicy?   ForwardingSignaturePolicy      = null,
 
-                               TimeSpan?             DefaultRequestTimeout     = null,
-                               IHTTPAuthentication?  HTTPAuthentication        = null,
-                               DNSClient?            DNSClient                 = null,
+                                   Boolean            HTTPAPI_Disabled               = false,
+                                   IPPort?            HTTPAPI_Port                   = null,
+                                   String?            HTTPAPI_ServerName             = null,
+                                   String?            HTTPAPI_ServiceName            = null,
+                                   EMailAddress?      HTTPAPI_RobotEMailAddress      = null,
+                                   String?            HTTPAPI_RobotGPGPassphrase     = null,
+                                   Boolean            HTTPAPI_EventLoggingDisabled   = false,
 
-                               SignaturePolicy?      SignaturePolicy           = null)
+                                   //WebAPI?            WebAPI                         = null,
+                                   Boolean            WebAPI_Disabled                = false,
+                                   HTTPPath?          WebAPI_Path                    = null,
+
+                                   Boolean            DisableSendHeartbeats          = false,
+                                   TimeSpan?          SendHeartbeatsEvery            = null,
+
+                                   Boolean            DisableMaintenanceTasks        = false,
+                                   TimeSpan?          MaintenanceEvery               = null,
+
+                                   CustomData?        CustomData                     = null,
+                                   DNSClient?         DNSClient                      = null)
 
             : base(ChargeBoxId,
                    ChargePointVendor,
@@ -757,24 +773,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    MeterSerialNumber,
 
                    DefaultRequestTimeout,
-                   SignaturePolicy,
-                   null,  //ForwardingSignaturePolicy,
 
-                   false, //HTTPAPI_Disabled
-                   null,  //HTTPAPI_Port
-                   null,  //HTTPAPI_ServerName
-                   null,  //HTTPAPI_ServiceName
-                   null,  //HTTPAPI_RobotEMailAddress
-                   null,  //HTTPAPI_RobotGPGPassphrase
-                   false, //HTTPAPI_EventLoggingDisabled
+                   SignaturePolicy,
+                   ForwardingSignaturePolicy,
+
+                   HTTPAPI_Disabled,
+                   HTTPAPI_Port,
+                   HTTPAPI_ServerName,
+                   HTTPAPI_ServiceName,
+                   HTTPAPI_RobotEMailAddress,
+                   HTTPAPI_RobotGPGPassphrase,
+                   HTTPAPI_EventLoggingDisabled,
+
+                   //null,//WebAPI,
+                   WebAPI_Disabled,
+                   WebAPI_Path,
 
                    DisableSendHeartbeats,
-                   null,  //SendHeartbeatsEvery,
+                   SendHeartbeatsEvery,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   null,  //CustomData,
+                   CustomData,
                    DNSClient)
 
         {
@@ -789,7 +810,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 throw new ArgumentNullException(nameof(ChargePointModel),   "The given charge point model must not be null or empty!");
 
 
-            this.connectors               = new Dictionary<Connector_Id, ChargePointConnector>();
             for (var i = 1; i <= NumberOfConnectors; i++)
             {
                 this.connectors.Add(Connector_Id.Parse(i.ToString()),
@@ -933,88 +953,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ConnectWebSocket(...)
-
-        public async Task<HTTPResponse?> ConnectWebSocket(URL                                                             RemoteURL,
-                                                          HTTPHostname?                                                   VirtualHostname              = null,
-                                                          String?                                                         Description                  = null,
-                                                          Boolean?                                                        PreferIPv4                   = null,
-                                                          RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
-                                                          LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                                          X509Certificate?                                                ClientCert                   = null,
-                                                          SslProtocols?                                                   TLSProtocol                  = null,
-                                                          String?                                                         HTTPUserAgent                = null,
-                                                          IHTTPAuthentication?                                            HTTPAuthentication           = null,
-                                                          TimeSpan?                                                       RequestTimeout               = null,
-                                                          TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
-                                                          UInt16?                                                         MaxNumberOfRetries           = null,
-                                                          UInt32?                                                         InternalBufferSize           = null,
-
-                                                          IEnumerable<String>?                                            SecWebSocketProtocols        = null,
-
-                                                          Boolean                                                         DisableMaintenanceTasks      = false,
-                                                          TimeSpan?                                                       MaintenanceEvery             = null,
-                                                          Boolean                                                         DisableWebSocketPings        = false,
-                                                          TimeSpan?                                                       WebSocketPingEvery           = null,
-                                                          TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
-
-                                                          String?                                                         LoggingPath                  = null,
-                                                          String?                                                         LoggingContext               = null,
-                                                          LogfileCreatorDelegate?                                         LogfileCreator               = null,
-                                                          HTTPClientLogger?                                               HTTPLogger                   = null,
-                                                          DNSClient?                                                      DNSClient                    = null)
-
-        {
-
-            //var chargePointWSClient   = new ChargePointWSClient(
-
-            //                                Id,
-
-            //                                RemoteURL,
-            //                                VirtualHostname,
-            //                                Description,
-            //                                PreferIPv4,
-            //                                RemoteCertificateValidator,
-            //                                LocalCertificateSelector,
-            //                                ClientCert,
-            //                                TLSProtocol,
-            //                                HTTPUserAgent,
-            //                                HTTPAuthentication ?? this.HTTPAuthentication,
-            //                                RequestTimeout,
-            //                                TransmissionRetryDelay,
-            //                                MaxNumberOfRetries,
-            //                                InternalBufferSize,
-
-            //                                SecWebSocketProtocols ?? [ Version.WebSocketSubProtocolId ],
-
-            //                                DisableMaintenanceTasks,
-            //                                MaintenanceEvery,
-            //                                DisableWebSocketPings,
-            //                                WebSocketPingEvery,
-            //                                SlowNetworkSimulationDelay,
-
-            //                                LoggingPath,
-            //                                LoggingContext,
-            //                                LogfileCreator,
-            //                                HTTPLogger,
-            //                                DNSClient ?? this.DNSClient
-
-            //                            );
-
-            //this.CPClient  = chargePointWSClient;
-
-            //WireEvents(chargePointWSClient);
-
-            //var response = await chargePointWSClient.Connect();
-
-            //return response.Item2;
-
-
-            return null;
-
-        }
-
-        #endregion
 
         #region WireEvents(CPServer)
 
@@ -3799,7 +3737,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
 
         #endregion

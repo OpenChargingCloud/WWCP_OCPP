@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
             if (testBackendWebSockets01 is not null)
             {
 
-                var response1 = chargePoint1.ConnectWebSocket(URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id)).Result;
+                var response1 = chargePoint1.ConnectOCPPWebSocketClient(URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id)).Result;
 
                 ClassicAssert.IsNotNull(response1);
 

@@ -22,8 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -43,12 +44,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAuthorizeRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               AuthorizeRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnAuthorizeRequestSentDelegate(DateTime                Timestamp,
+                                                        IEventSender            Sender,
+                                                        IWebSocketConnection?   Connection,
+                                                        AuthorizeRequest        Request,
+                                                        SentMessageResults      SentMessageResult,
+                                                        CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -64,14 +65,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAuthorizeResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               AuthorizeRequest    Request,
-                                               AuthorizeResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnAuthorizeResponseSentDelegate(DateTime                Timestamp,
+                                        IEventSender            Sender,
+                                        IWebSocketConnection?   Connection,
+                                        AuthorizeRequest?       Request,
+                                        AuthorizeResponse       Response,
+                                        TimeSpan                Runtime,
+                                        SentMessageResults      SentMessageResult,
+                                        CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -88,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnAuthorizeRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   AuthorizeRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                            IEventSender                   Sender,
+                                            IWebSocketConnection?          Connection,
+                                            AuthorizeRequest?              Request,
+                                            OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                            TimeSpan?                      Runtime,
+                                            SentMessageResults             SentMessageResult,
+                                            CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnAuthorizeResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    AuthorizeRequest?        Request,
-                                                    AuthorizeResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                             IEventSender                    Sender,
+                                             IWebSocketConnection?           Connection,
+                                             AuthorizeRequest?               Request,
+                                             AuthorizeResponse?              Response,
+                                             OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                             TimeSpan?                       Runtime,
+                                             SentMessageResults              SentMessageResult,
+                                             CancellationToken               CancellationToken);
 
     #endregion
 
@@ -478,14 +479,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnAuthorizeResponseSentDelegate?  OnAuthorizeResponseSent;
 
-        public Task SendOnAuthorizeResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       AuthorizeRequest    Request,
-                                                       AuthorizeResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnAuthorizeResponseSent(DateTime               Timestamp,
+                                                IEventSender           Sender,
+                                                IWebSocketConnection?  Connection,
+                                                AuthorizeRequest       Request,
+                                                AuthorizeResponse      Response,
+                                                TimeSpan               Runtime,
+                                                SentMessageResults     SentMessageResult,
+                                                CancellationToken      CancellationToken = default)
 
             => LogEvent(
                    OnAuthorizeResponseSent,
@@ -512,13 +513,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnAuthorizeRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           AuthorizeRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                    IEventSender                  Sender,
+                                                    IWebSocketConnection?         Connection,
+                                                    AuthorizeRequest?             Request,
+                                                    OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                    TimeSpan                      Runtime,
+                                                    SentMessageResults            SentMessageResult,
+                                                    CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnAuthorizeRequestErrorSent,
@@ -545,14 +546,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnAuthorizeResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            AuthorizeRequest?       Request,
-                                                            AuthorizeResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                     IEventSender                   Sender,
+                                                     IWebSocketConnection?          Connection,
+                                                     AuthorizeRequest?              Request,
+                                                     AuthorizeResponse?             Response,
+                                                     OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                     TimeSpan                       Runtime,
+                                                     SentMessageResults             SentMessageResult,
+                                                     CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnAuthorizeResponseErrorSent,

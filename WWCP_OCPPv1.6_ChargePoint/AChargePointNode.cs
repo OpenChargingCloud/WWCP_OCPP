@@ -669,8 +669,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 Boolean                            HTTPAPI_EventLoggingDisabled   = false,
 
                                 //WebAPI?                            WebAPI                         = null,
-                                //Boolean                            WebAPI_Disabled                = false,
-                                //HTTPPath?                          WebAPI_Path                    = null,
+                                Boolean                            WebAPI_Disabled                = false,
+                                HTTPPath?                          WebAPI_Path                    = null,
 
                                 Boolean                            DisableSendHeartbeats          = false,
                                 TimeSpan?                          SendHeartbeatsEvery            = null,
@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                    SecWebSocketProtocols,
                    NetworkingMode,
-                   NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS,
+                   NextHopNetworkingNodeId ??= NetworkingNode_Id.CentralSystem,
                    RoutingNetworkingNodeIds,
 
                    DisableWebSocketPings,

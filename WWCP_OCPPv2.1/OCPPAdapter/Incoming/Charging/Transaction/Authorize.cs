@@ -23,12 +23,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.WWCP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -169,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (AuthorizeRequest.TryParse(JSONRequest,
                                               RequestId,
-                                          Destination,
+                                              Destination,
                                               NetworkPath,
                                               out var request,
                                               out var errorResponse,
@@ -255,8 +256,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     ocppResponse = OCPP_Response.JSONResponse(
                                        EventTrackingId,
-                                       SourceRouting.To(NetworkPath.Source),
-                                       NetworkPath.From(parentNetworkingNode.Id),
+                                       response.Destination.IsNotNullOrEmpty
+                                           ? response.Destination
+                                           : SourceRouting.To(NetworkPath.Source),
+                                       response.NetworkPath.IsNotNullOrEmpty
+                                           ? response.NetworkPath
+                                           : NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
                                            parentNetworkingNode.OCPP.CustomAuthorizeResponseSerializer,

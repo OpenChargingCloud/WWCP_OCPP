@@ -381,6 +381,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        #region Static defaults
+
+        /// <summary>
+        /// Identifier is allowed for charging.
+        /// </summary>
+        public static IdTagInfo Accepted
+            => new(AuthorizationStatus.Accepted);
+
+        /// <summary>
+        /// Identifier has been blocked. Not allowed for charging.
+        /// </summary>
+        public static IdTagInfo Blocked
+            => new(AuthorizationStatus.Blocked);
+
+        /// <summary>
+        /// Identifier has expired. Not allowed for charging.
+        /// </summary>
+        public static IdTagInfo Expired
+            => new(AuthorizationStatus.Expired);
+
+        /// <summary>
+        /// Identifier is unknown. Not allowed for charging.
+        /// </summary>
+        public static IdTagInfo Invalid
+            => new(AuthorizationStatus.Invalid);
+
+        /// <summary>
+        /// Identifier is already involved in another transaction
+        /// and multiple transactions are not allowed.
+        /// </summary>
+        public static IdTagInfo ConcurrentTx
+            => new(AuthorizationStatus.ConcurrentTx);
+
+        /// <summary>
+        /// An error occured.
+        /// </summary>
+        public static IdTagInfo Error
+            => new(AuthorizationStatus.Error);
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (IdTagInfo1, IdTagInfo2)

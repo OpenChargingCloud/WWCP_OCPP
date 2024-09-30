@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NetworkingNode\**" />
+    <EmbeddedResource Remove="NetworkingNode\**" />
+    <None Remove="NetworkingNode\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
@@ -29,10 +35,6 @@
     <ProjectReference Include="..\WWCP_OCPPv1.6_CentralSystem\WWCP_OCPPv1.6_CentralSystem.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv1.6_ChargePoint\WWCP_OCPPv1.6_ChargePoint.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="NetworkingNode\" />
   </ItemGroup>
 
 </Project>
