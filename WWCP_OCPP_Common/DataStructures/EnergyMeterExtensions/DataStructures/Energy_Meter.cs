@@ -32,7 +32,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
@@ -127,6 +127,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String?                                  FirmwareVersion              { get; }
 
         /// <summary>
+        /// The optional key pairs of the energy meter used for signing the energy meter values.
+        /// </summary>
+        public IEnumerable<KeyPair>                     KeyPairs                     { get; }
+
+        /// <summary>
         /// The optional enumeration of public keys used for signing the energy meter values.
         /// </summary>
         [Optional]
@@ -163,28 +168,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SerialNumber">An optional serial number to the model of the energy meter.</param>
         /// <param name="HardwareVersion">An optional hardware version of the energy meter.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the energy meter.</param>
-        /// <param name="PublicKeys">The optional public key of the energy meter used for signeing the energy meter values.</param>
+        /// <param name="KeyPairs">The optional key pairs of the energy meter used for signing the energy meter values.</param>
+        /// <param name="PublicKeys">The optional public key of the energy meter used for signing the energy meter values.</param>
         /// <param name="PublicKeyCertificateChain">One or multiple optional certificates for the public key of the energy meter.</param>
         /// <param name="TransparencySoftwares">An enumeration of transparency softwares and their legal status, which can be used to validate the charging session data.</param>
         /// 
         /// <param name="LastChange">The timestamp when this energy meter was last updated (or created).</param>
         public Energy_Meter(EnergyMeter_Id                             Id,
-                           I18NString?                                Name                         = null,
-                           I18NString?                                Description                  = null,
+                            I18NString?                                Name                         = null,
+                            I18NString?                                Description                  = null,
 
-                           String?                                    Manufacturer                 = null,
-                           URL?                                       ManufacturerURL              = null,
-                           String?                                    Model                        = null,
-                           URL?                                       ModelURL                     = null,
-                           String?                                    SerialNumber                 = null,
-                           String?                                    HardwareVersion              = null,
-                           String?                                    FirmwareVersion              = null,
-                           IEnumerable<PublicKey>?                    PublicKeys                   = null,
-                           CertificateChain?                          PublicKeyCertificateChain    = null,
-                           IEnumerable<TransparencySoftwareStatus>?   TransparencySoftwares        = null,
+                            String?                                    Manufacturer                 = null,
+                            URL?                                       ManufacturerURL              = null,
+                            String?                                    Model                        = null,
+                            URL?                                       ModelURL                     = null,
+                            String?                                    SerialNumber                 = null,
+                            String?                                    HardwareVersion              = null,
+                            String?                                    FirmwareVersion              = null,
+                            IEnumerable<KeyPair>?                      KeyPairs                     = null,
+                            IEnumerable<PublicKey>?                    PublicKeys                   = null,
+                            CertificateChain?                          PublicKeyCertificateChain    = null,
+                            IEnumerable<TransparencySoftwareStatus>?   TransparencySoftwares        = null,
 
-                           JObject?                                   CustomData                   = null,
-                           UserDefinedDictionary?                     InternalData                 = null)
+                            JObject?                                   CustomData                   = null,
+                            UserDefinedDictionary?                     InternalData                 = null)
         {
 
             this.Id                         = Id;
@@ -198,7 +205,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.SerialNumber               = SerialNumber;
             this.HardwareVersion            = HardwareVersion;
             this.FirmwareVersion            = FirmwareVersion;
-            this.PublicKeys                 = PublicKeys?.           Distinct() ?? [];
+            this.KeyPairs                   = KeyPairs?.             Distinct() ?? PublicKeys?.Distinct()?.Select(publicKey => new KeyPair(publicKey.Value)) ?? [];
+            this.PublicKeys                 = PublicKeys?.           Distinct() ?? KeyPairs?.  Distinct()?.Select(keyPair   => keyPair.PublicKey)            ?? [];
             this.PublicKeyCertificateChain  = PublicKeyCertificateChain;
             this.TransparencySoftwares      = TransparencySoftwares?.Distinct() ?? [];
 
@@ -376,6 +384,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse KeyPairs                      [optional]
+
+                if (JSON.ParseOptionalHashSet("keyPairs",
+                                              "energy meter key pairs",
+                                              KeyPair.TryParse,
+                                              out HashSet<KeyPair> KeyPairs,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse PublicKeys                    [optional]
 
                 if (JSON.ParseOptionalHashSet("publicKeys",
@@ -445,6 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   SerialNumber,
                                   HardwareVersion,
                                   FirmwareVersion,
+                                  KeyPairs,
                                   PublicKeys,
                                   PublicKeyCertificateChain,
                                   TransparencySoftwares,
@@ -566,12 +589,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Manufacturer    is not null ? new String(Manufacturer.ToCharArray()) : null,
                    ManufacturerURL.HasValue    ? ManufacturerURL.Value.Clone : null,
                    Model           is not null ? new String(Model.ToCharArray()) : null,
-                   ModelURL.HasValue           ? ModelURL.Value.Clone : null,
+                   ModelURL.       HasValue    ? ModelURL.       Value.Clone : null,
                    SerialNumber    is not null ? new String(SerialNumber.   ToCharArray()) : null,
                    HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
                    FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
-                   PublicKeys                is not null ? PublicKeys.Select(publicKey => publicKey.Clone()).ToArray() : [],
-                   PublicKeyCertificateChain is not null ? PublicKeyCertificateChain.Clone() : null,
+                   KeyPairs.             Select(keyPair                    => keyPair.                   Clone()).ToArray(),
+                   PublicKeys.           Select(publicKey                  => publicKey.                 Clone()).ToArray(),
+                   PublicKeyCertificateChain?.Clone(),
                    TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray()
 
                );

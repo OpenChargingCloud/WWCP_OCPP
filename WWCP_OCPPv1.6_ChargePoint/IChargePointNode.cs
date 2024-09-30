@@ -17,6 +17,10 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 
 #endregion
@@ -30,15 +34,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public interface IChargePointNode : INetworkingNodeButNotCSMS
     {
 
-        String    ChargePointVendor          { get; }
-        String    ChargePointModel           { get; }
-        String?   ChargePointSerialNumber    { get; }
-        String?   ChargeBoxSerialNumber      { get; }
-        String?   FirmwareVersion            { get; }
-        String?   Iccid                      { get; }
-        String?   IMSI                       { get; }
-        String?   MeterType                  { get; }
-        String?   MeterSerialNumber          { get; }
+        String                             ChargePointVendor          { get; }
+        String                             ChargePointModel           { get; }
+        String?                            ChargePointSerialNumber    { get; }
+        String?                            ChargeBoxSerialNumber      { get; }
+        String?                            FirmwareVersion            { get; }
+        String?                            Iccid                      { get; }
+        String?                            IMSI                       { get; }
+
+        /// <summary>
+        /// An optional uplink energy meter of the charge point.
+        /// </summary>
+        [Optional]
+        IEnergyMeter?                      UplinkEnergyMeter          { get; }
+
+
+        IEnumerable<ChargePointConnector>  Connectors                 { get; }
 
 
     }

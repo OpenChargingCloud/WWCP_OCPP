@@ -88,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(bootNotificationRequest.ChargeBoxSerialNumber,     Is.EqualTo(chargePoint1.ChargeBoxSerialNumber));
                     Assert.That(bootNotificationRequest.Iccid,                     Is.EqualTo(chargePoint1.Iccid));
                     Assert.That(bootNotificationRequest.IMSI,                      Is.EqualTo(chargePoint1.IMSI));
-                    Assert.That(bootNotificationRequest.MeterType,                 Is.EqualTo(chargePoint1.MeterType));
-                    Assert.That(bootNotificationRequest.MeterSerialNumber,         Is.EqualTo(chargePoint1.MeterSerialNumber));
+                    Assert.That(bootNotificationRequest.MeterType,                 Is.EqualTo(chargePoint1.UplinkEnergyMeter?.Model));
+                    Assert.That(bootNotificationRequest.MeterSerialNumber,         Is.EqualTo(chargePoint1.UplinkEnergyMeter?.SerialNumber));
 
                 });
 

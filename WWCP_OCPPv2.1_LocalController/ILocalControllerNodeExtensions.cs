@@ -1010,7 +1010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             Authorize(this ILocalControllerNode      LocalController,
 
                       IdToken                        IdToken,
-                      Certificate?                   Certificate                   = null,
+                      OCPP.Certificate?              Certificate                   = null,
                       IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
                       CustomData?                    CustomData                    = null,
@@ -3047,7 +3047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             SendSignedCertificate(this ILocalControllerNode     LocalController,
                                   SourceRouting                 Destination,
-                                  CertificateChain              CertificateChain,
+                                  OCPP.CertificateChain         CertificateChain,
                                   CertificateSigningUse?        CertificateType       = null,
 
                                   CustomData?                   CustomData            = null,
@@ -3112,7 +3112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             InstallCertificate(this ILocalControllerNode     LocalController,
                                SourceRouting                 Destination,
                                InstallCertificateUse         CertificateType,
-                               Certificate                   Certificate,
+                               OCPP.Certificate              Certificate,
 
                                CustomData?                   CustomData            = null,
 

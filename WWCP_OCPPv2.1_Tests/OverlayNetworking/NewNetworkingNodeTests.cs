@@ -119,32 +119,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
 
 
             var chargingStation1 = new TestChargingStationNode(
-                                       Id:                       NetworkingNode_Id.Parse("cs01"),
-                                       VendorName:               "GraphDefined OEM #1",
-                                       Model:                    "VCP.1",
-                                       Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
-                                       SerialNumber:             "SN-CS0001",
-                                       FirmwareVersion:          "v0.1",
-                                       Modem:                    new Modem(
-                                                                     ICCID:   "0000",
-                                                                     IMSI:    "1111"
-                                                                 ),
-                                       EVSEs:                    [
-                                                                     new EVSESpec(
-                                                                         AdminStatus:         OperationalStatus.Operative,
-                                                                         ConnectorTypes:      [ ConnectorType.sType2 ],
-                                                                         MeterType:           "MT1",
-                                                                         MeterSerialNumber:   "MSN1",
-                                                                         MeterPublicKey:      "MPK1"
-                                                                     )
-                                                                 ],
-                                       UplinkEnergyMeter:        new Energy_Meter(
-                                                                     Id:             EnergyMeter_Id.Parse("SN-EN0001"),
-                                                                     Model:          "Virtual Energy Meter",
-                                                                     SerialNumber:   "SN-EN0001",
-                                                                     PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
-                                                                 ),
-                                       DisableSendHeartbeats:    true
+                                       Id:                      NetworkingNode_Id.Parse("cs01"),
+                                       VendorName:              "GraphDefined OEM #1",
+                                       Model:                   "VCP.1",
+                                       Description:             I18NString.Create(Languages.en, "Our first virtual charging station!"),
+                                       SerialNumber:            "SN-CS0001",
+                                       FirmwareVersion:         "v0.1",
+                                       Modem:                   new Modem(
+                                                                    ICCID:   "0000",
+                                                                    IMSI:    "1111"
+                                                                ),
+                                       EVSEs:                   [
+                                                                    new EVSESpec(
+                                                                        AdminStatus:         OperationalStatus.Operative,
+                                                                        ConnectorTypes:      [ ConnectorType.sType2 ],
+                                                                        MeterType:           "MT1",
+                                                                        MeterSerialNumber:   "MSN1",
+                                                                        MeterPublicKey:      "MPK1"
+                                                                    )
+                                                                ],
+                                       UplinkEnergyMeter:       new Energy_Meter(
+                                                                    Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0001"),
+                                                                    Model:          "Virtual Energy Meter",
+                                                                    SerialNumber:   "SN-EN0001"
+                                                                    //PublicKeys:     [ ECCPublicKey.ParseASN1("0xcafebabe") ]
+                                                                ),
+                                       DisableSendHeartbeats:   true
                                    );
 
 

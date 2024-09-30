@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     await OCPP.OUT.CertificateSigned(
                                               new CertificateSignedRequest(
                                                   SourceRouting.To(request.NetworkPath.Source),
-                                                  CertificateChain.From(ClientCACertificate, newClientCertificate),
+                                                  protocols.OCPP.CertificateChain.From(ClientCACertificate, newClientCertificate),
                                                   request.CertificateType ?? CertificateSigningUse.ChargingStationCertificate
                                               )
                                           );

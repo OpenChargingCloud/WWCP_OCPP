@@ -18,8 +18,10 @@
 #region Usings
 
 using System.Collections.Concurrent;
+using System.Security.Authentication;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
 
@@ -29,16 +31,14 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Authentication;
-using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         protected readonly ConcurrentDictionary<Reservation_Id,        Reservation_Id>      reservations      = [];
         protected readonly ConcurrentDictionary<Transaction_Id,        Transaction>         transactions      = [];
         protected readonly ConcurrentDictionary<Transaction_Id,        Decimal>             totalCosts        = [];
-        protected readonly ConcurrentDictionary<InstallCertificateUse, Certificate>         certificates      = [];
+        protected readonly ConcurrentDictionary<InstallCertificateUse, OCPP.Certificate>    certificates      = [];
 
         #endregion
 
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An optional energy meter for the entire charging station.
         /// </summary>
-        public IEnergyMeter?            UplinkEnergyMeter           { get; }
+        public OCPP.IEnergyMeter?       UplinkEnergyMeter           { get; }
 
 
 
@@ -597,7 +597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     Modem?                             Modem                          = null,
 
                                     IEnumerable<EVSESpec>?             EVSEs                          = null,
-                                    IEnergyMeter?                      UplinkEnergyMeter              = null,
+                                    OCPP.IEnergyMeter?                 UplinkEnergyMeter              = null,
 
                                     TimeSpan?                          DefaultRequestTimeout          = null,
 

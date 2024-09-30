@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// be used to limit the maximum size of this field.
         /// </summary>
         [Mandatory]
-        public CertificateChain        CertificateChain    { get; }
+        public OCPP.CertificateChain   CertificateChain    { get; }
 
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="SerializationFormat">The optional serialization format for this request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public CertificateSignedRequest(SourceRouting            Destination,
-                                        CertificateChain         CertificateChain,
+                                        OCPP.CertificateChain    CertificateChain,
                                         CertificateSigningUse?   CertificateType       = null,
 
                                         IEnumerable<KeyPair>?    SignKeys              = null,
@@ -290,16 +290,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatoryText("certificateChain",
                                              "certificate chain",
-                                             out String certificateChainText,
+                                             out String? certificateChainText,
                                              out ErrorResponse))
                 {
                     return false;
                 }
 
-                if (!OCPPv2_1.CertificateChain.TryParse(certificateChainText,
-                                                        out var CertificateChain,
-                                                        out ErrorResponse) ||
-                     CertificateChain is null)
+                if (!OCPP.CertificateChain.TryParse(certificateChainText,
+                                                    out var CertificateChain,
+                                                    out ErrorResponse))
                 {
                     return false;
                 }

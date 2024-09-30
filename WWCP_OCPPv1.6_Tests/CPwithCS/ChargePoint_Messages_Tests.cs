@@ -39,6 +39,55 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
     public class ChargePoint_Messages_Tests : ACPwithCSTests
     {
 
+        #region ChargePoint_Authorize_Test()
+
+        /// <summary>
+        /// A test for authorizing id tokens against the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_Authorize_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(centralSystem,  Is.Not.Null);
+                Assert.That(chargePoint,    Is.Not.Null);
+            });
+
+            if (centralSystem  is not null &&
+                chargePoint    is not null)
+            {
+
+                var authorizeRequests = new List<AuthorizeRequest>();
+
+                centralSystem.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest, ct) => {
+                    authorizeRequests.Add(authorizeRequest);
+                    return Task.CompletedTask;
+                };
+
+                var idTag     = IdToken.NewRandomRFID7();
+                await centralSystem.RegisterToken(idTag, IdTagInfo.Accepted);
+
+                var response  = await chargePoint.Authorize(idTag);
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,       Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo.Status,        Is.EqualTo(AuthorizationStatus.Accepted));
+
+                    Assert.That(authorizeRequests.Count,          Is.EqualTo(1));
+                    var authorizeRequest = authorizeRequests.First();
+
+                    Assert.That(authorizeRequest.DestinationId,   Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(authorizeRequest.IdTag,           Is.EqualTo(idTag));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
         #region ChargePoint_SendBootNotifications_Test1()
 
         /// <summary>
@@ -83,8 +132,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(bootNotificationRequest.ChargeBoxSerialNumber,     Is.EqualTo(chargePoint.ChargeBoxSerialNumber));
                     Assert.That(bootNotificationRequest.Iccid,                     Is.EqualTo(chargePoint.Iccid));
                     Assert.That(bootNotificationRequest.IMSI,                      Is.EqualTo(chargePoint.IMSI));
-                    Assert.That(bootNotificationRequest.MeterType,                 Is.EqualTo(chargePoint.MeterType));
-                    Assert.That(bootNotificationRequest.MeterSerialNumber,         Is.EqualTo(chargePoint.MeterSerialNumber));
+                    Assert.That(bootNotificationRequest.MeterType,                 Is.EqualTo(chargePoint.UplinkEnergyMeter?.Model));
+                    Assert.That(bootNotificationRequest.MeterSerialNumber,         Is.EqualTo(chargePoint.UplinkEnergyMeter?.SerialNumber));
 
                 });
 
@@ -313,54 +362,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
         #endregion
 
 
-        #region ChargePoint_Authorize_Test()
-
-        /// <summary>
-        /// A test for authorizing id tokens against the central system.
-        /// </summary>
-        [Test]
-        public async Task ChargePoint_Authorize_Test()
-        {
-
-            Assert.Multiple(() => {
-                Assert.That(centralSystem,  Is.Not.Null);
-                Assert.That(chargePoint,    Is.Not.Null);
-            });
-
-            if (centralSystem  is not null &&
-                chargePoint    is not null)
-            {
-
-                var authorizeRequests = new List<AuthorizeRequest>();
-
-                centralSystem.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest, ct) => {
-                    authorizeRequests.Add(authorizeRequest);
-                    return Task.CompletedTask;
-                };
-
-                var idTag     = IdToken.NewRandomRFID7();
-                await centralSystem.RegisterToken(idTag, IdTagInfo.Accepted);
-
-                var response  = await chargePoint.Authorize(idTag);
-
-                Assert.Multiple(() => {
-
-                    Assert.That(response.Result.ResultCode,       Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.IdTagInfo.Status,        Is.EqualTo(AuthorizationStatus.Accepted));
-
-                    Assert.That(authorizeRequests.Count,          Is.EqualTo(1));
-                    var authorizeRequest = authorizeRequests.First();
-
-                    Assert.That(authorizeRequest.DestinationId,   Is.EqualTo(NetworkingNode_Id.CentralSystem));
-                    Assert.That(authorizeRequest.IdTag,           Is.EqualTo(idTag));
-
-                });
-
-            }
-
-        }
-
-        #endregion
 
 
         #region ChargePoint_StartTransaction_Test()

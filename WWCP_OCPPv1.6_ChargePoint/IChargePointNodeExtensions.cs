@@ -38,6 +38,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     public static class IChargePointNodeExtensions
     {
 
+        #region Authorize                         (IdTag, ...)
+
+        /// <summary>
+        /// Send a firmware status notification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="IdTag">The identifier that needs to be Authorized.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<AuthorizeResponse>
+
+            Authorize(this IChargePointNode    ChargePoint,
+                      IdToken                  IdTag,
+                      SourceRouting?           Destination           = null,
+
+                      IEnumerable<KeyPair>?    SignKeys              = null,
+                      IEnumerable<SignInfo>?   SignInfos             = null,
+                      IEnumerable<Signature>?  Signatures            = null,
+
+                      CustomData?              CustomData            = null,
+
+                      Request_Id?              RequestId             = null,
+                      DateTime?                RequestTimestamp      = null,
+                      TimeSpan?                RequestTimeout        = null,
+                      EventTracking_Id?        EventTrackingId       = null,
+                      SerializationFormats?    SerializationFormat   = null,
+                      CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.Authorize(
+                       new AuthorizeRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           IdTag,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #region SendBootNotification              (ChargePointVendor = null, ChargePointModel = null, ...)
 
         /// <summary>
@@ -97,7 +161,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 => ChargePoint.OCPP.OUT.BootNotification(
                        new BootNotificationRequest(
+
                            Destination             ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+
                            ChargePointVendor       ?? ChargePoint.ChargePointVendor,
                            ChargePointModel        ?? ChargePoint.ChargePointModel,
                            ChargePointSerialNumber ?? ChargePoint.ChargePointSerialNumber,
@@ -105,8 +171,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            FirmwareVersion         ?? ChargePoint.FirmwareVersion,
                            Iccid                   ?? ChargePoint.Iccid,
                            IMSI                    ?? ChargePoint.IMSI,
-                           MeterType               ?? ChargePoint.MeterType,
-                           MeterSerialNumber       ?? ChargePoint.MeterSerialNumber,
+                           MeterType               ?? ChargePoint.UplinkEnergyMeter?.Model        ?? ChargePoint.Connectors.FirstOrDefault()?.EnergyMeter?.Model,
+                           MeterSerialNumber       ?? ChargePoint.UplinkEnergyMeter?.SerialNumber ?? ChargePoint.Connectors.FirstOrDefault()?.EnergyMeter?.SerialNumber,
 
                            SignKeys,
                            SignInfos,
@@ -114,13 +180,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                            CustomData,
 
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
+                           RequestId               ?? ChargePoint.NextRequestId,
+                           RequestTimestamp        ?? Timestamp.Now,
+                           RequestTimeout          ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId         ?? EventTracking_Id.New,
                            NetworkPath.From(ChargePoint.Id),
                            SerializationFormat,
                            CancellationToken
+
                        )
                    );
 
@@ -316,69 +383,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize                         (IdTag, ...)
-
-        /// <summary>
-        /// Send a firmware status notification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="IdTag">The identifier that needs to be Authorized.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<AuthorizeResponse>
-
-            Authorize(this IChargePointNode    ChargePoint,
-                      IdToken                  IdTag,
-                      SourceRouting?           Destination           = null,
-
-                      IEnumerable<KeyPair>?    SignKeys              = null,
-                      IEnumerable<SignInfo>?   SignInfos             = null,
-                      IEnumerable<Signature>?  Signatures            = null,
-
-                      CustomData?              CustomData            = null,
-
-                      Request_Id?              RequestId             = null,
-                      DateTime?                RequestTimestamp      = null,
-                      TimeSpan?                RequestTimeout        = null,
-                      EventTracking_Id?        EventTrackingId       = null,
-                      SerializationFormats?    SerializationFormat   = null,
-                      CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.Authorize(
-                       new AuthorizeRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           IdTag,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
 
         #region SendStartTransactionNotification  (ConnectorId, IdTag, StartTimestamp, MeterStart, ReservationId = null, ...)
 

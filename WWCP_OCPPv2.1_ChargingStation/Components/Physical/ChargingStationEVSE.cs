@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     {
 
-        public IEnumerable<ConnectorType> ConnectorTypes { get; set; } = ConnectorTypes ?? [];
+        public IEnumerable<ConnectorType>  ConnectorTypes    { get; set; } = ConnectorTypes ?? [];
 
 
     }

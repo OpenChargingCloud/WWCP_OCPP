@@ -20,22 +20,20 @@
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
-using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -43,104 +41,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// A charge point for testing.
+    /// A Charge Point for testing.
     /// </summary>
     public class TestChargePointNode : AChargePointNode,
                                        IChargePointNode
     {
-
-        #region Data
-
-        //private readonly           HashSet<SignaturePolicy>    signaturePolicies           = [];
-
-        /// <summary>
-        /// The default time span between heartbeat requests.
-        /// </summary>
-        //public readonly            TimeSpan                    DefaultSendHeartbeatEvery   = TimeSpan.FromSeconds(30);
-
-
-        /// <summary>
-        /// The default maintenance interval.
-        /// </summary>
-        //private static readonly    SemaphoreSlim               MaintenanceSemaphore        = new (1, 1);
-        //private readonly           Timer                       MaintenanceTimer;
-
-        //private readonly           Timer                       SendHeartbeatTimer;
-
-
-        //private readonly           List<EnqueuedRequest>       EnqueuedRequests;
-
-        //private                    Int64                       internalRequestId           = 100000;
-
-        #endregion
-
-        #region Properties
-
-        ///// <summary>
-        ///// The client connected to a central system.
-        ///// </summary>
-        //public CP.ICPOutgoingMessages       CPClient                    { get; private set; }
-
-
-        //public ChargePointSOAPServer    CPServer                    { get; private set; }
-
-
-        ///// <summary>
-        ///// The sender identification.
-        ///// </summary>
-        //String IEventSender.Id
-        //    => Id.ToString();
-
-
-
-
-        ///// <summary>
-        ///// The optional public key of the main power meter of the charge point.
-        ///// </summary>
-        //[Optional]
-        //public String?                  MeterPublicKey              { get; }
-
-
-        ///// <summary>
-        ///// The time span between heartbeat requests.
-        ///// </summary>
-        //public TimeSpan                 SendHeartbeatEvery          { get; set; }
-
-        ///// <summary>
-        ///// The time at the central system.
-        ///// </summary>
-        //public DateTime?                CentralSystemTime           { get; private set; }
-
-        ///// <summary>
-        ///// The default request timeout for all requests.
-        ///// </summary>
-        //public TimeSpan                 DefaultRequestTimeout       { get; }
-
-
-
-        ///// <summary>
-        ///// The enumeration of all signature policies.
-        ///// </summary>
-        //public IEnumerable<SignaturePolicy>  SignaturePolicies
-        //    => signaturePolicies;
-
-        ///// <summary>
-        ///// The currently active signature policy.
-        ///// </summary>
-        //public SignaturePolicy               SignaturePolicy
-        //    => SignaturePolicies.First();
-
-
-
-
-        // Controlled by the central system!
-
-        private readonly Dictionary<Connector_Id, ChargePointConnector> connectors = [];
-
-        public IEnumerable<ChargePointConnector> Connectors
-            => connectors.Values;
-
-        #endregion
 
         #region Events
 
@@ -690,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-      //  public CustomBinarySerializerDelegate <OCPP.Signature>?                                      CustomBinarySignatureSerializer                              { get; set; }
+        //  public CustomBinarySerializerDelegate <OCPP.Signature>?                                      CustomBinarySignatureSerializer                              { get; set; }
 
         #endregion
 
@@ -703,10 +608,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="NumberOfConnectors">Number of available connectors.</param>
-        /// <param name="ChargePointVendor">The charge point vendor identification.</param>
-        /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
         /// <param name="Description">An optional multi-language charge box description.</param>
+        /// <param name="ChargePointVendor">An optional charge point vendor identification.</param>
+        /// <param name="ChargePointModel">An optional charge point model identification.</param>
         /// <param name="ChargePointSerialNumber">An optional serial number of the charge point.</param>
         /// <param name="ChargeBoxSerialNumber">An optional serial number of the charge point.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the charge point.</param>
@@ -716,63 +621,67 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="MeterSerialNumber">An optional serial number of the main power meter of the charge point.</param>
         /// <param name="MeterPublicKey">An optional public key of the main power meter of the charge point.</param>
         /// 
-        /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
-        /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargePointNode(NetworkingNode_Id  ChargeBoxId,
-                                   Byte               NumberOfConnectors,
-                                   String             ChargePointVendor,
-                                   String             ChargePointModel,
+        /// 
+        /// 
+        /// <param name="DisableSendHeartbeats">Whether to disable sending heartbeat requests.</param>
+        /// <param name="SendHeartbeatsEvery">The time span between heartbeat requests.</param>
+        /// 
+        /// <param name="DisableMaintenanceTasks">Whether to disable maintenance tasks.</param>
+        /// <param name="MaintenanceEvery">The time span between maintenance task runs.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public TestChargePointNode(NetworkingNode_Id           ChargeBoxId,
+                                   IEnumerable<ConnectorSpec>  Connectors,
 
-                                   I18NString?        Description                    = null,
-                                   String?            ChargePointSerialNumber        = null,
-                                   String?            ChargeBoxSerialNumber          = null,
-                                   String?            FirmwareVersion                = null,
-                                   String?            Iccid                          = null,
-                                   String?            IMSI                           = null,
-                                   String?            MeterType                      = null,
-                                   String?            MeterSerialNumber              = null,
-                                   String?            MeterPublicKey                 = null,
+                                   I18NString?                 Description                    = null,
+                                   String?                     ChargePointVendor              = null,
+                                   String?                     ChargePointModel               = null,
+                                   String?                     ChargePointSerialNumber        = null,
+                                   String?                     ChargeBoxSerialNumber          = null,
+                                   String?                     FirmwareVersion                = null,
+                                   String?                     Iccid                          = null,
+                                   String?                     IMSI                           = null,
+                                   IEnergyMeter?               UplinkEnergyMeter              = null,
 
-                                   TimeSpan?          DefaultRequestTimeout          = null,
+                                   TimeSpan?                   DefaultRequestTimeout          = null,
 
-                                   SignaturePolicy?   SignaturePolicy                = null,
-                                   SignaturePolicy?   ForwardingSignaturePolicy      = null,
+                                   SignaturePolicy?            SignaturePolicy                = null,
+                                   SignaturePolicy?            ForwardingSignaturePolicy      = null,
 
-                                   Boolean            HTTPAPI_Disabled               = false,
-                                   IPPort?            HTTPAPI_Port                   = null,
-                                   String?            HTTPAPI_ServerName             = null,
-                                   String?            HTTPAPI_ServiceName            = null,
-                                   EMailAddress?      HTTPAPI_RobotEMailAddress      = null,
-                                   String?            HTTPAPI_RobotGPGPassphrase     = null,
-                                   Boolean            HTTPAPI_EventLoggingDisabled   = false,
+                                   Boolean                     HTTPAPI_Disabled               = false,
+                                   IPPort?                     HTTPAPI_Port                   = null,
+                                   String?                     HTTPAPI_ServerName             = null,
+                                   String?                     HTTPAPI_ServiceName            = null,
+                                   EMailAddress?               HTTPAPI_RobotEMailAddress      = null,
+                                   String?                     HTTPAPI_RobotGPGPassphrase     = null,
+                                   Boolean                     HTTPAPI_EventLoggingDisabled   = false,
 
-                                   //WebAPI?            WebAPI                         = null,
-                                   Boolean            WebAPI_Disabled                = false,
-                                   HTTPPath?          WebAPI_Path                    = null,
+                                   //WebAPI?                     WebAPI                         = null,
+                                   Boolean                     WebAPI_Disabled                = false,
+                                   HTTPPath?                   WebAPI_Path                    = null,
 
-                                   Boolean            DisableSendHeartbeats          = false,
-                                   TimeSpan?          SendHeartbeatsEvery            = null,
+                                   Boolean                     DisableSendHeartbeats          = false,
+                                   TimeSpan?                   SendHeartbeatsEvery            = null,
 
-                                   Boolean            DisableMaintenanceTasks        = false,
-                                   TimeSpan?          MaintenanceEvery               = null,
+                                   Boolean                     DisableMaintenanceTasks        = false,
+                                   TimeSpan?                   MaintenanceEvery               = null,
 
-                                   CustomData?        CustomData                     = null,
-                                   DNSClient?         DNSClient                      = null)
+                                   CustomData?                 CustomData                     = null,
+                                   DNSClient?                  DNSClient                      = null)
 
             : base(ChargeBoxId,
-                   ChargePointVendor,
-                   ChargePointModel,
-                   Description,
-                   ChargePointSerialNumber,
-                   ChargeBoxSerialNumber,
-                   FirmwareVersion,
-                   Iccid,
-                   IMSI,
-                   MeterType,
-                   MeterSerialNumber,
+                   Connectors,
 
-                   DefaultRequestTimeout,
+                   Description,
+                   ChargePointVendor        ?? "GraphDefined",
+                   ChargePointModel         ?? "CP1.6",
+                   ChargePointSerialNumber  ?? "CP-S/N-00000005",
+                   ChargeBoxSerialNumber    ?? "CB-S/N-00000023",
+                   FirmwareVersion          ?? "FW-1.01a",
+                   Iccid                    ?? "891004234814455936F",
+                   IMSI                     ?? "262012345678901",
+                   UplinkEnergyMeter,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -789,6 +698,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    WebAPI_Disabled,
                    WebAPI_Path,
 
+                   DefaultRequestTimeout,
+
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
 
@@ -800,55 +711,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            if (ChargeBoxId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
-
-            if (ChargePointVendor.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargePointVendor),  "The given charge point vendor must not be null or empty!");
-
-            if (ChargePointModel.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargePointModel),   "The given charge point model must not be null or empty!");
-
-
-            for (var i = 1; i <= NumberOfConnectors; i++)
-            {
-                this.connectors.Add(Connector_Id.Parse(i.ToString()),
-                                    new ChargePointConnector(Connector_Id.Parse(i.ToString()),
-                                                             Availabilities.Inoperative));
-            }
-
             this.Configuration.TryAdd("hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false));
             this.Configuration.TryAdd("changeMe",       new ConfigurationData("now",      AccessRights.ReadWrite, false));
             this.Configuration.TryAdd("doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false));
             this.Configuration.TryAdd("password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false));
-
-
-            //this.MeterPublicKey           = MeterPublicKey;
-
-            //this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
-
-            //this.DisableSendHeartbeats    = DisableSendHeartbeats;
-            //this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
-            //this.SendHeartbeatTimer       = new Timer(
-            //                                    DoSendHeartbeatSync,
-            //                                    null,
-            //                                    this.SendHeartbeatEvery,
-            //                                    this.SendHeartbeatEvery
-            //                                );
-
-            //this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
-            //this.MaintenanceTimer         = new Timer(
-            //                                    DoMaintenanceSync,
-            //                                    null,
-            //                                    this.MaintenanceEvery,
-            //                                    this.MaintenanceEvery
-            //                                );
-
-            //this.HTTPAuthentication       = HTTPAuthentication;
-
-            //this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
-
-            //this.EnqueuedRequests         = [];
 
         }
 

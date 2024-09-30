@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Modem?                  Modem                          = null,
 
                                        IEnumerable<EVSESpec>?  EVSEs                          = null,
-                                       IEnergyMeter?           UplinkEnergyMeter              = null,
+                                       OCPP.IEnergyMeter?      UplinkEnergyMeter              = null,
 
                                        TimeSpan?               DefaultRequestTimeout          = null,
 

@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// [max 5500]
         /// </summary>
         [Mandatory]
-        public Certificate            Certificate        { get; }
+        public OCPP.Certificate       Certificate        { get; }
 
         #endregion
 
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public InstallCertificateRequest(SourceRouting            Destination,
                                          InstallCertificateUse    CertificateType,
-                                         Certificate              Certificate,
+                                         OCPP.Certificate         Certificate,
 
                                          IEnumerable<KeyPair>?    SignKeys              = null,
                                          IEnumerable<SignInfo>?   SignInfos             = null,
@@ -298,9 +298,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     return false;
                 }
 
-                if (!OCPPv2_1.Certificate.TryParse(certificateText,
-                                                   out var Certificate,
-                                                   out ErrorResponse))
+                if (!OCPP.Certificate.TryParse(certificateText,
+                                               out var Certificate,
+                                               out ErrorResponse))
                 {
                     return false;
                 }

@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPP
 {
 
 
@@ -184,15 +184,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryJSON("transparencySoftware",
                                              "transparency software",
-                                             OCPPv2_1.TransparencySoftware.TryParse,
+                                             OCPP.TransparencySoftware.TryParse,
                                              out TransparencySoftware? TransparencySoftware,
                                              out ErrorResponse))
                 {
                     return false;
                 }
-
-                if (TransparencySoftware is null)
-                    return false;
 
                 #endregion
 
@@ -200,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("legalStatus",
                                          "legal status",
-                                         OCPPv2_1.LegalStatus.TryParse,
+                                         OCPP.LegalStatus.TryParse,
                                          out LegalStatus LegalStatus,
                                          out ErrorResponse))
                 {

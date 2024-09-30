@@ -23,6 +23,8 @@ using NUnit.Framework.Legacy;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -53,10 +55,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
             base.SetupEachTest();
 
             chargePoint1  = new TestChargePointNode(
+
                                 ChargeBoxId:              NetworkingNode_Id.Parse("GD001"),
                                 ChargePointVendor:        "GraphDefined OEM #1",
                                 ChargePointModel:         "VCP.1",
-                                NumberOfConnectors:       2,
+                                Connectors:               [
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#1",
+                                                                  MaxPower:           Watt.ParseKW(22),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0011"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              )
+                                                          ],
 
                                 Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
                                 ChargePointSerialNumber:  "SN-CP0001",
@@ -64,22 +80,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 FirmwareVersion:          "v0.1",
                                 Iccid:                    "0000",
                                 IMSI:                     "1111",
-                                MeterType:                "Virtual Energy Meter",
-                                MeterSerialNumber:        "SN-EN0001",
-                                MeterPublicKey:           "0xcafebabe",
+
+                                UplinkEnergyMeter:        new OCPP.Energy_Meter(
+                                                              Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                              Manufacturer:  "GraphDefined",
+                                                              Model:         "Virtual Energy Meter",
+                                                              SerialNumber:  "SN-EN1001"
+                                                           //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                          ),
 
                                 //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
                                 //HTTPBasicAuth:            new Tuple<String, String>("GD001", "1234"),
                                 DNSClient:                testCentralSystem01!.DNSClient
+
                             );
 
             ClassicAssert.IsNotNull(chargePoint1);
 
             chargePoint2  = new TestChargePointNode(
+
                                 ChargeBoxId:              NetworkingNode_Id.Parse("CP002"),
                                 ChargePointVendor:        "GraphDefined OEM #2",
                                 ChargePointModel:         "VCP.2",
-                                NumberOfConnectors:       2,
+                                Connectors:               [
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#1",
+                                                                  MaxPower:           Watt.ParseKW(11),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0021"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              ),
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#2",
+                                                                  MaxPower:           Watt.ParseKW(22),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0022"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              )
+                                                          ],
 
                                 Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
                                 ChargePointSerialNumber:  "SN-CP0002",
@@ -87,20 +135,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 FirmwareVersion:          "v0.2",
                                 Iccid:                    "3333",
                                 IMSI:                     "4444",
-                                MeterType:                "Virtual Energy Meter",
-                                MeterSerialNumber:        "SN-EN0002",
-                                MeterPublicKey:           "0xbabecafe",
+
+                                UplinkEnergyMeter:        new OCPP.Energy_Meter(
+                                                              Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                              Manufacturer:  "GraphDefined",
+                                                              Model:         "Virtual Energy Meter",
+                                                              SerialNumber:  "SN-EN1002"
+                                                           //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                          ),
 
                                 DNSClient:                testCentralSystem01!.DNSClient
+
                             );
 
             ClassicAssert.IsNotNull(chargePoint2);
 
             chargePoint3  = new TestChargePointNode(
+
                                 ChargeBoxId:              NetworkingNode_Id.Parse("CP003"),
                                 ChargePointVendor:        "GraphDefined OEM #3",
                                 ChargePointModel:         "VCP.3",
-                                NumberOfConnectors:       4,
+                                Connectors:               [
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#1",
+                                                                  MaxPower:           Watt.ParseKW(11),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0031"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              ),
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#2",
+                                                                  MaxPower:           Watt.ParseKW(11),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0032"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              ),
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#3",
+                                                                  MaxPower:           Watt.ParseKW(22),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0032"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              ),
+                                                              new ConnectorSpec(
+                                                                  Availabilities.Operative,
+                                                                  PhysicalReference:  "#4",
+                                                                  MaxPower:           Watt.ParseKW(22),
+                                                                  EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                          Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                          Manufacturer:  "GraphDefined",
+                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          SerialNumber:  "SN-EN0032"
+                                                                                       //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                                                      )
+                                                              )
+                                                          ],
 
                                 Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),
                                 ChargePointSerialNumber:  "SN-CP0003",
@@ -108,11 +212,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 FirmwareVersion:          "v0.3",
                                 Iccid:                    "5555",
                                 IMSI:                     "6666",
-                                MeterType:                "Virtual Energy Meter",
-                                MeterSerialNumber:        "SN-EN0003",
-                                MeterPublicKey:           "0xbacafebe",
+
+                                UplinkEnergyMeter:        new OCPP.Energy_Meter(
+                                                              Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                              Manufacturer:  "GraphDefined",
+                                                              Model:         "Virtual Energy Meter",
+                                                              SerialNumber:  "SN-EN1003"
+                                                           //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
+                                                          ),
 
                                 DNSClient:                testCentralSystem01!.DNSClient
+
                             );
 
             ClassicAssert.IsNotNull(chargePoint3);

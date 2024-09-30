@@ -1190,7 +1190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SendSignedCertificate(this ICSMSNode           CSMS,
                                   SourceRouting            Destination,
-                                  CertificateChain         CertificateChain,
+                                  OCPP.CertificateChain    CertificateChain,
                                   CertificateSigningUse?   CertificateType       = null,
 
                                   IEnumerable<KeyPair>?    SignKeys              = null,
@@ -1253,7 +1253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             InstallCertificate(this ICSMSNode           CSMS,
                                SourceRouting            Destination,
                                InstallCertificateUse    CertificateType,
-                               Certificate              Certificate,
+                               OCPP.Certificate         Certificate,
 
                                IEnumerable<KeyPair>?    SignKeys              = null,
                                IEnumerable<SignInfo>?   SignInfos             = null,

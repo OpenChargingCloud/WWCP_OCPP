@@ -1113,7 +1113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             Authorize(this IChargingStationNode      ChargingStation,
 
                       IdToken                        IdToken,
-                      Certificate?                   Certificate                   = null,
+                      OCPP.Certificate?              Certificate                   = null,
                       IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
                       CustomData?                    CustomData                    = null,

@@ -310,10 +310,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                                                                 )
                                                             ],
                                     UplinkEnergyMeter:      new Energy_Meter(
-                                                                Id:             EnergyMeter_Id.Parse("SN-EN0001"),
+                                                                Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0001"),
                                                                 Model:          "Virtual Energy Meter",
-                                                                SerialNumber:   "SN-EN0001",
-                                                                PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
+                                                                SerialNumber:   "SN-EN0001"
+                                                                //PublicKeys:     [ ECCPublicKey.ParseASN1("0xcafebabe") ]
                                                             ),
                                    DisableSendHeartbeats:   true,
 

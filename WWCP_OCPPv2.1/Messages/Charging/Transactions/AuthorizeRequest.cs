@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// [max 5500]
         /// </summary>
         [Optional]
-        public Certificate?                  Certificate                    { get; }
+        public OCPP.Certificate?             Certificate                    { get; }
 
         /// <summary>
         /// Optional information to verify the electric vehicle/user contract certificate via OCSP.
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AuthorizeRequest(SourceRouting                  Destination,
                                 IdToken                        IdToken,
-                                Certificate?                   Certificate                   = null,
+                                OCPP.Certificate?              Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
                                 IEnumerable<KeyPair>?          SignKeys                      = null,
@@ -424,8 +424,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("certificate",
                                        "PEM encoded electric vehicle/user certificate",
-                                       OCPPv2_1.Certificate.TryParse,
-                                       out Certificate? Certificate,
+                                       OCPP.Certificate.TryParse,
+                                       out OCPP.Certificate? Certificate,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

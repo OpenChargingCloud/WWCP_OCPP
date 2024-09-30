@@ -47,145 +47,8 @@ using cloud.charging.open.protocols.OCPPv1_6.CS;
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-
-        /// <summary>
-        /// A charge point connector.
-        /// </summary>
-        public class ChargePointConnector
-        {
-
-            public Connector_Id      Id                       { get; }
-
-            public Availabilities    Availability             { get; set; }
-
-
-            public Boolean           IsReserved               { get; set; }
-
-            public Boolean           IsCharging               { get; set; }
-
-            public IdToken           IdToken                  { get; set; }
-
-            public IdTagInfo         IdTagInfo                { get; set; }
-
-            public Transaction_Id    TransactionId            { get; set; }
-
-            public ChargingProfile?  ChargingProfile          { get; set; }
-
-
-            public DateTime          StartTimestamp           { get; set; }
-
-            public UInt64            MeterStartValue          { get; set; }
-
-            public String?           SignedStartMeterValue    { get; set; }
-
-
-            public DateTime          StopTimestamp            { get; set; }
-
-            public UInt64            MeterStopValue           { get; set; }
-
-            public String?           SignedStopMeterValue     { get; set; }
-
-
-            public ChargePointConnector(Connector_Id    Id,
-                                        Availabilities  Availability)
-            {
-
-                this.Id            = Id;
-                this.Availability  = Availability;
-
-            }
-
-
-        }
-
-
-        /// <summary>
-        /// A configuration value.
-        /// </summary>
-        public class ConfigurationData
-        {
-
-            /// <summary>
-            /// The configuration value.
-            /// </summary>
-            public String        Value             { get; set; }
-
-            /// <summary>
-            /// This configuration value can not be changed.
-            /// </summary>
-            public AccessRights  AccessRights      { get; }
-
-            /// <summary>
-            /// Changing this configuration value requires a reboot of the charge box to take effect.
-            /// </summary>
-            public Boolean       RebootRequired    { get; }
-
-            /// <summary>
-            /// Create a new configuration value.
-            /// </summary>
-            /// <param name="Value">The configuration value.</param>
-            /// <param name="AccessRights">This configuration value is: read/write, read-only, write-only.</param>
-            /// <param name="RebootRequired">Changing this configuration value requires a reboot of the charge box to take effect.</param>
-            public ConfigurationData(String        Value,
-                                     AccessRights  AccessRights,
-                                     Boolean       RebootRequired   = false)
-            {
-
-                this.Value           = Value;
-                this.AccessRights    = AccessRights;
-                this.RebootRequired  = RebootRequired;
-
-            }
-
-        }
-
-
-
-        public class EnqueuedRequest
-        {
-
-            public enum EnqueuedStatus
-            {
-                New,
-                Processing,
-                Finished
-            }
-
-            public String          Command           { get; }
-
-        //    public OCPP.IRequest   Request           { get; }
-
-            public JObject         RequestJSON       { get; }
-
-            public DateTime        EnqueTimestamp    { get; }
-
-            public EnqueuedStatus  Status            { get; set; }
-
-            public Action<Object>  ResponseAction    { get; }
-
-            public EnqueuedRequest(String          Command,
-                             //      OCPP.IRequest   Request,
-                                   JObject         RequestJSON,
-                                   DateTime        EnqueTimestamp,
-                                   EnqueuedStatus  Status,
-                                   Action<Object>  ResponseAction)
-            {
-
-                this.Command         = Command;
-              //  this.Request         = Request;
-                this.RequestJSON     = RequestJSON;
-                this.EnqueTimestamp  = EnqueTimestamp;
-                this.Status          = Status;
-                this.ResponseAction  = ResponseAction;
-
-            }
-
-        }
-
-
-
     /// <summary>
-    /// An abstract charge point node.
+    /// An abstract Charge Point node.
     /// </summary>
     public abstract class AChargePointNode : AOCPPNetworkingNode,
                                              IChargePointNode
@@ -200,7 +63,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //protected readonly ConcurrentDictionary<Transaction_Id,        Decimal>             totalCosts        = [];
         //protected readonly ConcurrentDictionary<InstallCertificateUse, Certificate>         certificates      = [];
 
-        protected readonly ConcurrentDictionary<String, ConfigurationData> Configuration = [];
+        private   readonly Dictionary<Connector_Id, ChargePointConnector>   connectors      = [];
+
+        protected readonly ConcurrentDictionary<String, ConfigurationData>  Configuration   = [];
 
         #endregion
 
@@ -249,16 +114,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public String?        IMSI                      { get; }
 
         /// <summary>
-        /// The meter type of the main power meter of the charge point.
+        /// An optional uplink energy meter of the charge point.
         /// </summary>
         [Optional]
-        public String?        MeterType                 { get; }
+        public IEnergyMeter?  UplinkEnergyMeter         { get; }
 
-        /// <summary>
-        /// The serial number of the main power meter of the charge point.
-        /// </summary>
-        [Optional]
-        public String?        MeterSerialNumber         { get; }
+
+
+        public IEnumerable<ChargePointConnector> Connectors
+            => connectors.Values;
 
 
         /// <summary>
@@ -637,25 +501,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station for testing.
+        /// Create a new charge point for testing.
         /// </summary>
-        /// <param name="Id">The unique identification of this charging station.</param>
-        public AChargePointNode(NetworkingNode_Id                  Id,
-                                String                             ChargePointVendor,
-                                String                             ChargePointModel,
+        /// <param name="ChargeBoxId">The unique identification of this charge point.</param>
+        public AChargePointNode(NetworkingNode_Id                  ChargeBoxId,
+                                IEnumerable<ConnectorSpec>         Connectors,
+
                                 I18NString?                        Description                    = null,
+
+                                //Operator_Id                          OperatorId         
+                                //String?                              OperatorName.......
+                                //ChargingPool_Id?                     ChargingPoolId     
+
+                                //Boolean                              IsOpen24Hours      
+                                //IEnumerable<OpeningTime>?            OpeningTimes       
+
+                                String?                            ChargePointVendor              = null,
+                                String?                            ChargePointModel               = null,
                                 String?                            ChargePointSerialNumber        = null,
                                 String?                            ChargeBoxSerialNumber          = null,
                                 String?                            FirmwareVersion                = null,
                                 String?                            Iccid                          = null,
                                 String?                            IMSI                           = null,
-                                String?                            MeterType                      = null,
-                                String?                            MeterSerialNumber              = null,
-
-                                //IEnumerable<EVSESpec>?             EVSEs                          = null,
-                                //IEnergyMeter?                      UplinkEnergyMeter              = null,
-
-                                TimeSpan?                          DefaultRequestTimeout          = null,
+                                IEnergyMeter?                      UplinkEnergyMeter              = null,
 
                                 SignaturePolicy?                   SignaturePolicy                = null,
                                 SignaturePolicy?                   ForwardingSignaturePolicy      = null,
@@ -672,6 +540,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 Boolean                            WebAPI_Disabled                = false,
                                 HTTPPath?                          WebAPI_Path                    = null,
 
+                                TimeSpan?                          DefaultRequestTimeout          = null,
+
                                 Boolean                            DisableSendHeartbeats          = false,
                                 TimeSpan?                          SendHeartbeatsEvery            = null,
 
@@ -681,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 CustomData?                        CustomData                     = null,
                                 DNSClient?                         DNSClient                      = null)
 
-            : base(Id,
+            : base(ChargeBoxId,
                    Description,
                    CustomData,
 
@@ -713,19 +583,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         {
 
+            if (ChargeBoxId.IsNullOrEmpty)
+                throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
+
             if (ChargePointVendor.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(ChargePointVendor),  "The given charge point vendor must not be null or empty!");
 
-            if (ChargePointModel. IsNullOrEmpty())
+            if (ChargePointModel.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(ChargePointModel),   "The given charge point model must not be null or empty!");
 
+            this.ChargePointVendor        = ChargePointVendor;
+            this.ChargePointModel         = ChargePointModel;
             this.ChargePointSerialNumber  = ChargePointSerialNumber;
             this.ChargeBoxSerialNumber    = ChargeBoxSerialNumber;
             this.FirmwareVersion          = FirmwareVersion;
             this.Iccid                    = Iccid;
             this.IMSI                     = IMSI;
-            this.MeterType                = MeterType;
-            this.MeterSerialNumber        = MeterSerialNumber;
+            this.UplinkEnergyMeter        = UplinkEnergyMeter;
+
+            var connectorSpec             = Connectors.ToArray();
+
+            for (var i = 1; i <= connectorSpec.Length; i++)
+            {
+                connectors.Add(
+
+                    Connector_Id.Parse(i.ToString()),
+
+                    new ChargePointConnector(
+
+                        Connector_Id.Parse(i.ToString()),
+
+                        connectorSpec[i - 1].Availability,
+
+                        connectorSpec[i - 1].MaxPower,
+                        connectorSpec[i - 1].MaxCapacity,
+                        connectorSpec[i - 1].EnergyMeter
+
+                    )
+
+                );
+            }
 
 
             #region Setup HTTP- and WebAPI

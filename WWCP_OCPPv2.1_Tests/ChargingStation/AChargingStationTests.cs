@@ -17,18 +17,17 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -125,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001"
-                                                            //      PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
+                                                            //      PublicKeys:     [ ECCPublicKey.ParseASN1("0xcafebabe") ]
                                                               ),
                                     DisableSendHeartbeats:    true,
 
@@ -247,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001"
-                                                               //   PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
+                                                               //   PublicKeys:     [ ECCPublicKey.ParseASN1("0xcafebabe") ]
                                                               ),
                                     DisableSendHeartbeats:    true,
 
@@ -375,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                   Id:             EnergyMeter_Id.Parse("SN-EN0001"),
                                                                   Model:          "Virtual Energy Meter",
                                                                   SerialNumber:   "SN-EN0001"
-                                                          //        PublicKeys:     [ ECCPublicKey.Parse("0xcafebabe") ]
+                                                          //        PublicKeys:     [ ECCPublicKey.ParseASN1("0xcafebabe") ]
                                                               ),
                                     DisableSendHeartbeats:    true,
 

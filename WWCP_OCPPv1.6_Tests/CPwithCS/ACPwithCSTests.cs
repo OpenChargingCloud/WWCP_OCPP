@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -82,13 +84,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
             centralSystem.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
 
 
+            //var ppp = ECCKeyPair.GenerateKeys();
+            //var pk1 = ppp.PublicKeyBytes. ToHexString();
+            //var pk2 = ppp.PrivateKeyBytes.ToHexString();
 
+            chargePoint = new TestChargePointNode(
 
-            chargePoint       = new TestChargePointNode(
                                     ChargeBoxId:              NetworkingNode_Id.Parse("GD001"),
                                     ChargePointVendor:        "GraphDefined OEM #1",
                                     ChargePointModel:         "VCP.1",
-                                    NumberOfConnectors:       2,
+                                    Connectors:               [
+                                                                  new ConnectorSpec(
+                                                                      Availabilities.Operative,
+                                                                      MaxPower:           Watt.ParseKW(11),
+                                                                      EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                              Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                                              Manufacturer:  "GraphDefined",
+                                                                                              Model:         "Virtual Energy Meter",
+                                                                                              SerialNumber:  "SN-EN0021",
+                                                                                              KeyPairs:       [
+                                                                                                                  ECCKeyPair.ParsePrivateKey(
+                                                                                                                      "00a2c3055ad9038b0c05cb113b1938ea8f21cc5d05b73175f65fbb0b3dfab83211"
+                                                                                                                  )
+                                                                                                              ]
+                                                                                          )
+                                                                  ),
+                                                                  new ConnectorSpec(
+                                                                      Availabilities.Operative,
+                                                                      MaxPower:           Watt.ParseKW(22),
+                                                                      EnergyMeter:        new OCPP.Energy_Meter(
+                                                                                              Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0012"),
+                                                                                              Manufacturer:  "GraphDefined",
+                                                                                              Model:         "Virtual Energy Meter",
+                                                                                              SerialNumber:  "SN-EN0022",
+                                                                                              KeyPairs:       [
+                                                                                                                  ECCKeyPair.ParsePrivateKey(
+                                                                                                                      "00a6e8c7b5ad7cceae504d54177ae83c19edce4e210dd69d00b9c641e8275ee94e"
+                                                                                                                  )
+                                                                                                              ]
+                                                                                          )
+                                                                  )
+                                                              ],
 
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
                                     ChargePointSerialNumber:  "SN-CP0001",
@@ -96,13 +132,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                                     FirmwareVersion:          "v0.1",
                                     Iccid:                    "0000",
                                     IMSI:                     "1111",
-                                    MeterType:                "Virtual Energy Meter",
-                                    MeterSerialNumber:        "SN-EN0001",
-                                    MeterPublicKey:           "0xcafebabe",
+
+                                    UplinkEnergyMeter:        new OCPP.Energy_Meter(
+                                                                  Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
+                                                                  Manufacturer:  "GraphDefined",
+                                                                  Model:         "Virtual Energy Meter",
+                                                                  SerialNumber:  "SN-EN0001",
+                                                                  KeyPairs:       [
+                                                                                      ECCKeyPair.ParsePrivateKey(
+                                                                                          "00f781fd21e8dbf07b7952f5f568805e739f8d2a9970a9edab003e934cc1c03919"
+                                                                                      )
+                                                                                  ]
+                                                              ),
 
                                     //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
                                     //HTTPBasicAuth:            new Tuple<String, String>("GD001", "1234"),
                                     DNSClient:                centralSystem.DNSClient
+
                                 );
 
             Assert.That(chargePoint, Is.Not.Null);
