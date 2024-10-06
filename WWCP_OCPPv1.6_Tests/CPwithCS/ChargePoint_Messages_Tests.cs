@@ -125,7 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(bootNotificationRequests.Count,                    Is.EqualTo(1));
                     var bootNotificationRequest = bootNotificationRequests.First();
 
-                    Assert.That(bootNotificationRequest.DestinationId,             Is.EqualTo(chargePoint.Id));
+                    Assert.That(bootNotificationRequest.NetworkPath.Source,        Is.EqualTo(chargePoint.Id));
+                    Assert.That(bootNotificationRequest.DestinationId,             Is.EqualTo(NetworkingNode_Id.CentralSystem));
                     Assert.That(bootNotificationRequest.ChargePointVendor,         Is.EqualTo(chargePoint.ChargePointVendor));
                     Assert.That(bootNotificationRequest.ChargePointModel,          Is.EqualTo(chargePoint.ChargePointModel));
                     Assert.That(bootNotificationRequest.ChargePointSerialNumber,   Is.EqualTo(chargePoint.ChargePointSerialNumber));
@@ -176,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 var firmwareVersion          = "v0.2";
                 var iccid                    = "0002";
                 var imsi                     = "2222";
-                var meterType                = "Virtual Energy Meter Type2";
+                var meterType                = "eMeter Two";
                 var meterSerialNumber        = "SN-EN0002";
 
                 var response = await chargePoint.SendBootNotification(
@@ -247,13 +248,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,       Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
                     Assert.That(Timestamp.Now - response.CurrentTime < TimeSpan.FromSeconds(10));
 
-                    Assert.That(heartbeatRequests.Count,          Is.EqualTo(1));
+                    Assert.That(heartbeatRequests.Count,               Is.EqualTo(1));
                     var heartbeatRequest = heartbeatRequests.First();
 
-                    Assert.That(heartbeatRequest.DestinationId,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(heartbeatRequest.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(heartbeatRequest.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
 
                 });
 

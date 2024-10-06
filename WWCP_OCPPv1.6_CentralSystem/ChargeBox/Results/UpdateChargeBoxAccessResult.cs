@@ -1,4 +1,4 @@
-﻿/*
+﻿/*UpdateChargeBoxAccessResult
  * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
@@ -21,32 +21,35 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
 {
 
     /// <summary>
-    /// The result of an update charge box request.
+    /// The result of an update charge box access request.
     /// </summary>
-    public class UpdateChargeBoxResult : AEnitityResult<ChargeBox, ChargeBox_Id>
+    public class UpdateChargeBoxAccessResult : AEnitityResult<ChargeBox, ChargeBox_Id>
     {
 
         #region Properties
 
-        public ChargeBox?  ChargeBox
+        public ChargeBox?            ChargeBox
             => Entity;
+
+        public ChargeBoxAccessTypes  ChargeBoxAccessType    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        public UpdateChargeBoxResult(ChargeBox              ChargeBox,
-                                     CommandResult          Result,
-                                     EventTracking_Id?      EventTrackingId   = null,
-                                     IId?                   SenderId          = null,
-                                     Object?                Sender            = null,
-                                     I18NString?            Description       = null,
-                                     IEnumerable<Warning>?  Warnings          = null,
-                                     TimeSpan?              Runtime           = null)
+        public UpdateChargeBoxAccessResult(ChargeBox              ChargeBox,
+                                           ChargeBoxAccessTypes   ChargeBoxAccessType,
+                                           CommandResult          Result,
+                                           EventTracking_Id?      EventTrackingId   = null,
+                                           IId?                   SenderId          = null,
+                                           Object?                Sender            = null,
+                                           I18NString?            Description       = null,
+                                           IEnumerable<Warning>?  Warnings          = null,
+                                           TimeSpan?              Runtime           = null)
 
             : base(ChargeBox,
                    Result,
@@ -57,17 +60,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    Warnings,
                    Runtime)
 
-        { }
+        {
+
+            this.ChargeBoxAccessType = ChargeBoxAccessType;
+
+        }
 
 
-        public UpdateChargeBoxResult(ChargeBox_Id           ChargeBoxId,
-                                     CommandResult          Result,
-                                     EventTracking_Id?      EventTrackingId   = null,
-                                     IId?                   SenderId          = null,
-                                     Object?                Sender            = null,
-                                     I18NString?            Description       = null,
-                                     IEnumerable<Warning>?  Warnings          = null,
-                                     TimeSpan?              Runtime           = null)
+        public UpdateChargeBoxAccessResult(ChargeBox_Id           ChargeBoxId,
+                                           ChargeBoxAccessTypes   ChargeBoxAccessType,
+                                           CommandResult          Result,
+                                           EventTracking_Id?      EventTrackingId   = null,
+                                           IId?                   SenderId          = null,
+                                           Object?                Sender            = null,
+                                           I18NString?            Description       = null,
+                                           IEnumerable<Warning>?  Warnings          = null,
+                                           TimeSpan?              Runtime           = null)
 
             : base(ChargeBoxId,
                    Result,
@@ -78,16 +86,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    Warnings,
                    Runtime)
 
-        { }
+        {
+
+            this.ChargeBoxAccessType = ChargeBoxAccessType;
+
+        }
 
         #endregion
 
 
         #region (static) AdminDown    (ChargeBox,   ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             AdminDown(ChargeBox              ChargeBox,
+                      ChargeBoxAccessTypes   ChargeBoxAccessType,
                       EventTracking_Id?      EventTrackingId   = null,
                       IId?                   SenderId          = null,
                       Object?                Sender            = null,
@@ -96,6 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                       TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.AdminDown,
                         EventTrackingId,
                         SenderId,
@@ -108,9 +122,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) NoOperation  (ChargeBox,   ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             NoOperation(ChargeBox              ChargeBox,
+                        ChargeBoxAccessTypes   ChargeBoxAccessType,
                         EventTracking_Id?      EventTrackingId   = null,
                         IId?                   SenderId          = null,
                         Object?                Sender            = null,
@@ -119,6 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.NoOperation,
                         EventTrackingId,
                         SenderId,
@@ -132,9 +148,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) Enqueued     (ChargeBox,   ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             Enqueued(ChargeBox              ChargeBox,
+                     ChargeBoxAccessTypes   ChargeBoxAccessType,
                      EventTracking_Id?      EventTrackingId   = null,
                      IId?                   SenderId          = null,
                      Object?                Sender            = null,
@@ -143,6 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                      TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.Enqueued,
                         EventTrackingId,
                         SenderId,
@@ -155,9 +173,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) Success      (ChargeBox,   ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             Success(ChargeBox              ChargeBox,
+                    ChargeBoxAccessTypes   ChargeBoxAccessType,
                     EventTracking_Id?      EventTrackingId   = null,
                     IId?                   SenderId          = null,
                     Object?                Sender            = null,
@@ -166,6 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.Success,
                         EventTrackingId,
                         SenderId,
@@ -179,9 +199,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) ArgumentError(ChargeBox,   Description, ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             ArgumentError(ChargeBox              ChargeBox,
+                          ChargeBoxAccessTypes   ChargeBoxAccessType,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,
@@ -190,6 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                           TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.ArgumentError,
                         EventTrackingId,
                         SenderId,
@@ -202,9 +224,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) ArgumentError(ChargeBoxId, Description, ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             ArgumentError(ChargeBox_Id           ChargeBoxId,
+                          ChargeBoxAccessTypes   ChargeBoxAccessType,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,
@@ -213,6 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                           TimeSpan?              Runtime           = null)
 
                 => new (ChargeBoxId,
+                        ChargeBoxAccessType,
                         CommandResult.ArgumentError,
                         EventTrackingId,
                         SenderId,
@@ -225,9 +249,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) Error        (ChargeBox,   Description, ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             Error(ChargeBox              ChargeBox,
+                  ChargeBoxAccessTypes   ChargeBoxAccessType,
                   I18NString             Description,
                   EventTracking_Id?      EventTrackingId   = null,
                   IId?                   SenderId          = null,
@@ -236,6 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                   TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
@@ -248,9 +274,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) Error        (ChargeBox,   Exception,   ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             Error(ChargeBox              ChargeBox,
+                  ChargeBoxAccessTypes   ChargeBoxAccessType,
                   Exception              Exception,
                   EventTracking_Id?      EventTrackingId   = null,
                   IId?                   SenderId          = null,
@@ -259,6 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                   TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
@@ -271,9 +299,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) Timeout      (ChargeBox,   Timeout,     ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             Timeout(ChargeBox              ChargeBox,
+                    ChargeBoxAccessTypes   ChargeBoxAccessType,
                     TimeSpan               Timeout,
                     EventTracking_Id?      EventTrackingId   = null,
                     IId?                   SenderId          = null,
@@ -282,6 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.Timeout,
                         EventTrackingId,
                         SenderId,
@@ -294,9 +324,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) LockTimeout  (ChargeBox,   Timeout,     ...)
 
-        public static UpdateChargeBoxResult
+        public static UpdateChargeBoxAccessResult
 
             LockTimeout(ChargeBox              ChargeBox,
+                        ChargeBoxAccessTypes   ChargeBoxAccessType,
                         TimeSpan               Timeout,
                         EventTracking_Id?      EventTrackingId   = null,
                         IId?                   SenderId          = null,
@@ -305,6 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         TimeSpan?              Runtime           = null)
 
                 => new (ChargeBox,
+                        ChargeBoxAccessType,
                         CommandResult.LockTimeout,
                         EventTrackingId,
                         SenderId,

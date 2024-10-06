@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var firmwareVersion          = "v0.2";
                 var iccid                    = "0002";
                 var imsi                     = "2222";
-                var meterType                = "Virtual Energy Meter Type2";
+                var meterType                = "eMeter Two";
                 var meterSerialNumber        = "SN-EN0002";
 
                 var response = await chargePoint1.SendBootNotification(

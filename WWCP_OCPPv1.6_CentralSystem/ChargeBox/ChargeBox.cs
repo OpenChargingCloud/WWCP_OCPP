@@ -25,8 +25,6 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -851,15 +849,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 throw new ArgumentNullException(nameof(ChargePointModel),   "The given charge point model must not be null or empty!");
 
 
-            this.connectors               = new Dictionary<Connector_Id, ChargePointConnector>();
+            this.connectors               = [];
             for (var i = 1; i <= NumberOfConnectors; i++)
             {
-                this.connectors.Add(Connector_Id.Parse(i.ToString()),
-                                    new ChargePointConnector(Connector_Id.Parse(i.ToString()),
-                                                             Availabilities.Inoperative));
+                connectors.Add(
+                    Connector_Id.Parse(i.ToString()),
+                    new ChargePointConnector(
+                        Connector_Id.Parse(i.ToString()),
+                        Availabilities.Inoperative
+                    )
+                );
             }
 
-            this.Configuration            = new Dictionary<String, ConfigurationData>();
+            this.Configuration            = [];
 
             this.ChargePointVendor        = ChargePointVendor;
             this.ChargePointModel         = ChargePointModel;
@@ -1249,64 +1251,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             /// <summary>
             /// The charge point vendor identification.
             /// </summary>
-            public String                   ChargePointVendor           { get; set; }
+            public String?                  ChargePointVendor           { get; set; }
 
             /// <summary>
             ///  The charge point model identification.
             /// </summary>
-            public String                   ChargePointModel            { get; set; }
-
-
-            /// <summary>
-            /// The optional multi-language charge box description.
-            /// </summary>
-            public I18NString               Description                 { get; set; }
+            public String?                  ChargePointModel            { get; set; }
 
             /// <summary>
             /// The optional serial number of the charge point.
             /// </summary>
-            public String                   ChargePointSerialNumber     { get; set; }
+            public String?                  ChargePointSerialNumber     { get; set; }
 
             /// <summary>
             /// The optional serial number of the charge point.
             /// </summary>
-            public String                   ChargeBoxSerialNumber       { get; set; }
+            public String?                  ChargeBoxSerialNumber       { get; set; }
 
             /// <summary>
             /// The optional firmware version of the charge point.
             /// </summary>
-            public String                   FirmwareVersion             { get; set; }
+            public String?                  FirmwareVersion             { get; set; }
 
             /// <summary>
             /// The optional ICCID of the charge point's SIM card.
             /// </summary>
-            public String                   Iccid                       { get; set; }
+            public String?                  Iccid                       { get; set; }
 
             /// <summary>
             /// The optional IMSI of the charge point’s SIM card.
             /// </summary>
-            public String                   IMSI                        { get; set; }
+            public String?                  IMSI                        { get; set; }
 
             /// <summary>
             /// The optional meter type of the main power meter of the charge point.
             /// </summary>
-            public String                   MeterType                   { get; set; }
+            public String?                  MeterType                   { get; set; }
 
             /// <summary>
             /// The optional serial number of the main power meter of the charge point.
             /// </summary>
-            public String                   MeterSerialNumber           { get; set; }
+            public String?                  MeterSerialNumber           { get; set; }
 
             /// <summary>
             /// The optional public key of the main power meter of the charge point.
             /// </summary>
-            public String                   MeterPublicKey              { get; set; }
+            public String?                  MeterPublicKey              { get; set; }
 
 
             /// <summary>
             /// The time span between expected heartbeat requests.
             /// </summary>
-            public TimeSpan                 ExpectHeartbeatEvery        { get; set; }
+            public TimeSpan?                ExpectHeartbeatEvery        { get; set; }
 
             /// <summary>
             /// The time at the central system.
@@ -1564,28 +1560,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             /// </summary>
             /// <param name="Id">The unique identification of the chargeBox.</param>
             /// <param name="DataSource">The source of all this data, e.g. an automatic importer.</param>
-            public Builder(ChargeBox_Id                             Id,
-                         Byte                                        NumberOfConnectors,
-                         String                                      ChargePointVendor,
-                         String                                      ChargePointModel,
+            public Builder(ChargeBox_Id                                Id,
+                           Byte?                                       NumberOfConnectors                  = null,
+                           String?                                     ChargePointVendor                   = null,
+                           String?                                     ChargePointModel                    = null,
+                           I18NString?                                 Description                         = null,
+                           String?                                     ChargePointSerialNumber             = null,
+                           String?                                     ChargeBoxSerialNumber               = null,
+                           String?                                     FirmwareVersion                     = null,
+                           String?                                     Iccid                               = null,
+                           String?                                     IMSI                                = null,
+                           String?                                     MeterType                           = null,
+                           String?                                     MeterSerialNumber                   = null,
+                           String?                                     MeterPublicKey                      = null,
 
-                         I18NString                                  Description                         = null,
-                         String                                      ChargePointSerialNumber             = null,
-                         String                                      ChargeBoxSerialNumber               = null,
-                         String                                      FirmwareVersion                     = null,
-                         String                                      Iccid                               = null,
-                         String                                      IMSI                                = null,
-                         String                                      MeterType                           = null,
-                         String                                      MeterSerialNumber                   = null,
-                         String                                      MeterPublicKey                      = null,
+                           TimeSpan?                                   ExpectHeartbeatEvery                = null,
 
-                         TimeSpan?                                   ExpectHeartbeatEvery                = null,
-
-                           IEnumerable<ANotification>                  Notifications                       = null,
+                           IEnumerable<ANotification>?                 Notifications                       = null,
 
                            //IEnumerable<User2ChargeBoxEdge>          User2ChargeBoxEdges              = null,
-                           IEnumerable<ChargeBox2ChargeBoxEdge>  ChargeBox2ChargeBoxInEdges    = null,
-                           IEnumerable<ChargeBox2ChargeBoxEdge>  ChargeBox2ChargeBoxOutEdges   = null,
+                           IEnumerable<ChargeBox2ChargeBoxEdge>?       ChargeBox2ChargeBoxInEdges    = null,
+                           IEnumerable<ChargeBox2ChargeBoxEdge>?       ChargeBox2ChargeBoxOutEdges   = null,
 
                            JObject                                     CustomData                          = default,
                            IEnumerable<AttachedFile>                   AttachedFiles                       = default,

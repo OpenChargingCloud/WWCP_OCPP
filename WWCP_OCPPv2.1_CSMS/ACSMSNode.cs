@@ -187,15 +187,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Data
 
-        protected        readonly  ConcurrentDictionary<IdToken, IdTokenInfo>                                    idTokens                     = [];
+        protected readonly ConcurrentDictionary<IdToken, IdTokenInfo>  idTokens                = [];
 
-        private          readonly  HashSet<SignaturePolicy>                                                      signaturePolicies            = [];
+        private   readonly HashSet<SignaturePolicy>                    signaturePolicies       = [];
 
-        //private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
-
-        protected static readonly  SemaphoreSlim                                                                 ChargingStationSemaphore     = new (1, 1);
-
-        private          readonly  TimeSpan                                                                      defaultRequestTimeout        = TimeSpan.FromSeconds(30);
+        private   readonly TimeSpan                                    defaultRequestTimeout   = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -254,7 +250,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public HTTPPath?                   WebAPI_Path                       { get; }
 
 
-        public RegistrationStatus          DefaultRegistrationStatus         { get; set; } = RegistrationStatus.Rejected;
+        /// <summary>
+        /// Whether to "auto create" unknown charging stations and which type of access they should have.
+        /// </summary>
+        public ChargingStationAccessTypes?  AutoCreatedChargingStationsAccessType    { get; set; }
+
+        /// <summary>
+        /// Whether unknown charging stations are automatically created.
+        /// </summary>
+        public Boolean                     AutoCreateUnknownChargingStations
+            => AutoCreatedChargingStationsAccessType.HasValue;
 
         #endregion
 
@@ -268,58 +273,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public ACSMSNode(NetworkingNode_Id              Id,
                          String                         VendorName,
                          String                         Model,
-                         String?                        SerialNumber                     = null,
-                         String?                        SoftwareVersion                  = null,
-                         I18NString?                    Description                      = null,
-                         CustomData?                    CustomData                       = null,
+                         String?                        SerialNumber                            = null,
+                         String?                        SoftwareVersion                         = null,
+                         I18NString?                    Description                             = null,
+                         CustomData?                    CustomData                              = null,
 
-                         AsymmetricCipherKeyPair?       ClientCAKeyPair                  = null,
-                         BCx509.X509Certificate?        ClientCACertificate              = null,
+                         AsymmetricCipherKeyPair?       ClientCAKeyPair                         = null,
+                         BCx509.X509Certificate?        ClientCACertificate                     = null,
 
-                         SignaturePolicy?               SignaturePolicy                  = null,
-                         SignaturePolicy?               ForwardingSignaturePolicy        = null,
+                         SignaturePolicy?               SignaturePolicy                         = null,
+                         SignaturePolicy?               ForwardingSignaturePolicy               = null,
 
-                         Func<ACSMSNode, HTTPAPI>?      HTTPAPI                          = null,
-                         Boolean                        HTTPAPI_Disabled                 = false,
-                         IPPort?                        HTTPAPI_Port                     = null,
-                         String?                        HTTPAPI_ServerName               = null,
-                         String?                        HTTPAPI_ServiceName              = null,
-                         EMailAddress?                  HTTPAPI_RobotEMailAddress        = null,
-                         String?                        HTTPAPI_RobotGPGPassphrase       = null,
-                         Boolean                        HTTPAPI_EventLoggingDisabled     = false,
+                         Func<ACSMSNode, HTTPAPI>?      HTTPAPI                                 = null,
+                         Boolean                        HTTPAPI_Disabled                        = false,
+                         IPPort?                        HTTPAPI_Port                            = null,
+                         String?                        HTTPAPI_ServerName                      = null,
+                         String?                        HTTPAPI_ServiceName                     = null,
+                         EMailAddress?                  HTTPAPI_RobotEMailAddress               = null,
+                         String?                        HTTPAPI_RobotGPGPassphrase              = null,
+                         Boolean                        HTTPAPI_EventLoggingDisabled            = false,
 
-                         Func<ACSMSNode, DownloadAPI>?  HTTPDownloadAPI                  = null,
-                         Boolean                        HTTPDownloadAPI_Disabled         = false,
-                         HTTPPath?                      HTTPDownloadAPI_Path             = null,
-                         String?                        HTTPDownloadAPI_FileSystemPath   = null,
+                         Func<ACSMSNode, DownloadAPI>?  HTTPDownloadAPI                         = null,
+                         Boolean                        HTTPDownloadAPI_Disabled                = false,
+                         HTTPPath?                      HTTPDownloadAPI_Path                    = null,
+                         String?                        HTTPDownloadAPI_FileSystemPath          = null,
 
-                         Func<ACSMSNode, UploadAPI>?    HTTPUploadAPI                    = null,
-                         Boolean                        HTTPUploadAPI_Disabled           = false,
-                         HTTPPath?                      HTTPUploadAPI_Path               = null,
-                         String?                        HTTPUploadAPI_FileSystemPath     = null,
+                         Func<ACSMSNode, UploadAPI>?    HTTPUploadAPI                           = null,
+                         Boolean                        HTTPUploadAPI_Disabled                  = false,
+                         HTTPPath?                      HTTPUploadAPI_Path                      = null,
+                         String?                        HTTPUploadAPI_FileSystemPath            = null,
 
-                         //HTTPPath?                      FirmwareDownloadAPIPath          = null,
-                         //HTTPPath?                      LogfilesUploadAPIPath            = null,
-                         //HTTPPath?                      DiagnosticsUploadAPIPath         = null,
+                         //HTTPPath?                      FirmwareDownloadAPIPath                 = null,
+                         //HTTPPath?                      LogfilesUploadAPIPath                   = null,
+                         //HTTPPath?                      DiagnosticsUploadAPIPath                = null,
 
-                         Func<ACSMSNode, QRCodeAPI>?    QRCodeAPI                        = null,
-                         Boolean                        QRCodeAPI_Disabled               = false,
-                         HTTPPath?                      QRCodeAPI_Path                   = null,
+                         Func<ACSMSNode, QRCodeAPI>?    QRCodeAPI                               = null,
+                         Boolean                        QRCodeAPI_Disabled                      = false,
+                         HTTPPath?                      QRCodeAPI_Path                          = null,
 
-                         Func<ACSMSNode, WebAPI>?       WebAPI                           = null,
-                         Boolean                        WebAPI_Disabled                  = false,
-                         HTTPPath?                      WebAPI_Path                      = null,
+                         Func<ACSMSNode, WebAPI>?       WebAPI                                  = null,
+                         Boolean                        WebAPI_Disabled                         = false,
+                         HTTPPath?                      WebAPI_Path                             = null,
 
-                         TimeSpan?                      DefaultRequestTimeout            = null,
+                         ChargingStationAccessTypes?    AutoCreatedChargingStationsAccessType   = null,
 
-                         Boolean                        DisableSendHeartbeats            = false,
-                         TimeSpan?                      SendHeartbeatsEvery              = null,
+                         TimeSpan?                      DefaultRequestTimeout                   = null,
 
-                         Boolean                        DisableMaintenanceTasks          = false,
-                         TimeSpan?                      MaintenanceEvery                 = null,
+                         Boolean                        DisableSendHeartbeats                   = false,
+                         TimeSpan?                      SendHeartbeatsEvery                     = null,
 
-                         ISMTPClient?                   SMTPClient                       = null,
-                         DNSClient?                     DNSClient                        = null)
+                         Boolean                        DisableMaintenanceTasks                 = false,
+                         TimeSpan?                      MaintenanceEvery                        = null,
+
+                         ISMTPClient?                   SMTPClient                              = null,
+                         DNSClient?                     DNSClient                               = null)
 
             : base(Id,
                    Description,
@@ -359,13 +366,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (Model.     IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
 
-            this.VendorName                      = VendorName;
-            this.Model                           = Model;
-            this.SerialNumber                    = SerialNumber;
-            this.SoftwareVersion                 = SoftwareVersion;
+            this.VendorName                             = VendorName;
+            this.Model                                  = Model;
+            this.SerialNumber                           = SerialNumber;
+            this.SoftwareVersion                        = SoftwareVersion;
 
-            this.ClientCAKeyPair                 = ClientCAKeyPair;
-            this.ClientCACertificate             = ClientCACertificate;
+            this.ClientCAKeyPair                        = ClientCAKeyPair;
+            this.ClientCACertificate                    = ClientCACertificate;
+
+            this.AutoCreatedChargingStationsAccessType  = AutoCreatedChargingStationsAccessType;
 
             OCPP.IN.AnycastIds.Add(NetworkingNode_Id.CSMS);
 
@@ -471,16 +480,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Data
 
+        protected static readonly SemaphoreSlim ChargingStationSemaphore = new(1, 1);
+
         /// <summary>
         /// An enumeration of all charging stationes.
         /// </summary>
-        protected internal readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> chargingStations = new();
+        protected internal readonly ConcurrentDictionary<ChargingStation_Id, ChargingStationAccess> chargingStations = new();
 
         /// <summary>
         /// An enumeration of all charging stationes.
         /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
-            => chargingStations.Values;
+            => chargingStations.Values.Select(chargingStationAccess => chargingStationAccess.ChargingStation);
 
         public bool DisableWebSocketPings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -1049,6 +1060,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+
+
+
         #region AddChargingStation            (ChargingStation, OnAdded = null, ...)
 
         /// <summary>
@@ -1081,6 +1095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal async Task<AddChargingStationResult>
 
             _AddChargingStation(ChargingStation                             ChargingStation,
+                                ChargingStationAccessTypes                  ChargingStationAccessType,
                                 Action<ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                 EventTracking_Id?                           EventTrackingId   = null,
                                 User_Id?                                    CurrentUserId     = null)
@@ -1132,7 +1147,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargingStations.TryAdd(ChargingStation.Id, ChargingStation);
+            chargingStations.TryAdd(
+                ChargingStation.Id,
+                new ChargingStationAccess(
+                    ChargingStation,
+                    ChargingStationAccessType
+                )
+            );
 
             OnAdded?.Invoke(ChargingStation,
                             eventTrackingId);
@@ -1140,9 +1161,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var OnChargingStationAddedLocal = OnChargingStationAdded;
             if (OnChargingStationAddedLocal is not null)
                 await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
-                                                   ChargingStation,
-                                                   eventTrackingId,
-                                                   CurrentUserId);
+                                                         ChargingStation,
+                                                         eventTrackingId,
+                                                         CurrentUserId);
 
             //await SendNotifications(ChargingStation,
             //                        addChargingStation_MessageType,
@@ -1173,6 +1194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<AddChargingStationResult>
 
             AddChargingStation(ChargingStation                             ChargingStation,
+                               ChargingStationAccessTypes                  ChargingStationAccessType,
                                Action<ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                EventTracking_Id?                           EventTrackingId   = null,
                                User_Id?                                    CurrentUserId     = null)
@@ -1187,9 +1209,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     return await _AddChargingStation(ChargingStation,
-                                               OnAdded,
-                                               eventTrackingId,
-                                               CurrentUserId);
+                                                     ChargingStationAccessType,
+                                                     OnAdded,
+                                                     eventTrackingId,
+                                                     CurrentUserId);
 
                 }
                 catch (Exception e)
@@ -1244,6 +1267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal async Task<AddChargingStationResult>
 
             _AddChargingStationIfNotExists(ChargingStation                             ChargingStation,
+                                           ChargingStationAccessTypes                  ChargingStationAccessType,
                                            Action<ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                            EventTracking_Id?                           EventTrackingId   = null,
                                            User_Id?                                    CurrentUserId     = null)
@@ -1252,7 +1276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (ChargingStation.API != null && ChargingStation.API != this)
+            if (ChargingStation.API is not null && ChargingStation.API != this)
                 return AddChargingStationResult.ArgumentError(
                            ChargingStation,
                            "The given chargingStation is already attached to another API!".ToI18NString(),
@@ -1263,7 +1287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (chargingStations.ContainsKey(ChargingStation.Id))
                 return AddChargingStationResult.NoOperation(
-                           chargingStations[ChargingStation.Id],
+                           chargingStations[ChargingStation.Id].ChargingStation,
                            eventTrackingId,
                            Id,
                            this
@@ -1294,13 +1318,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargingStations.TryAdd(ChargingStation.Id, ChargingStation);
+            chargingStations.TryAdd(
+                ChargingStation.Id,
+                new ChargingStationAccess(
+                    ChargingStation,
+                    ChargingStationAccessType
+                )
+            );
 
             OnAdded?.Invoke(ChargingStation,
                             eventTrackingId);
 
             var OnChargingStationAddedLocal = OnChargingStationAdded;
-            if (OnChargingStationAddedLocal != null)
+            if (OnChargingStationAddedLocal is not null)
                 await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
                                                    ChargingStation,
                                                    eventTrackingId,
@@ -1335,6 +1365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<AddChargingStationResult>
 
             AddChargingStationIfNotExists(ChargingStation                             ChargingStation,
+                                          ChargingStationAccessTypes                  ChargingStationAccessType,
                                           Action<ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                           EventTracking_Id?                           EventTrackingId   = null,
                                           User_Id?                                    CurrentUserId     = null)
@@ -1349,9 +1380,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     return await _AddChargingStationIfNotExists(ChargingStation,
-                                                          OnAdded,
-                                                          eventTrackingId,
-                                                          CurrentUserId);
+                                                                ChargingStationAccessType,
+                                                                OnAdded,
+                                                                eventTrackingId,
+                                                                CurrentUserId);
 
                 }
                 catch (Exception e)
@@ -1407,6 +1439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal async Task<AddOrUpdateChargingStationResult>
 
             _AddOrUpdateChargingStation(ChargingStation                             ChargingStation,
+                                        ChargingStationAccessTypes                  ChargingStationAccessType,
                                         Action<ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                         Action<ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                         EventTracking_Id?                           EventTrackingId   = null,
@@ -1416,7 +1449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (ChargingStation.API != null && ChargingStation.API != this)
+            if (ChargingStation.API is not null && ChargingStation.API != this)
                 return AddOrUpdateChargingStationResult.ArgumentError(
                            ChargingStation,
                            "The given chargingStation is already attached to another API!".ToI18NString(),
@@ -1451,26 +1484,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            if (chargingStations.TryGetValue(ChargingStation.Id, out var OldChargingStation))
+            if (chargingStations.TryGetValue(ChargingStation.Id, out var OldChargingStationAccess))
             {
-                chargingStations.TryRemove(OldChargingStation.Id, out _);
-                ChargingStation.CopyAllLinkedDataFromBase(OldChargingStation);
+                chargingStations.TryRemove(ChargingStation.Id, out _);
+                ChargingStation.CopyAllLinkedDataFromBase(OldChargingStationAccess.ChargingStation);
             }
 
-            chargingStations.TryAdd(ChargingStation.Id, ChargingStation);
+            chargingStations.TryAdd(
+                ChargingStation.Id,
+                new ChargingStationAccess(
+                    ChargingStation,
+                    ChargingStationAccessType
+                )
+            );
 
-            if (OldChargingStation is null)
+            if (OldChargingStationAccess is null)
             {
 
                 OnAdded?.Invoke(ChargingStation,
                                 eventTrackingId);
 
                 var OnChargingStationAddedLocal = OnChargingStationAdded;
-                if (OnChargingStationAddedLocal != null)
+                if (OnChargingStationAddedLocal is not null)
                     await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
-                                                       ChargingStation,
-                                                       eventTrackingId,
-                                                       CurrentUserId);
+                                                             ChargingStation,
+                                                             eventTrackingId,
+                                                             CurrentUserId);
 
                 //await SendNotifications(ChargingStation,
                 //                        addChargingStation_MessageType,
@@ -1491,10 +1530,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               eventTrackingId);
 
             var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
-            if (OnChargingStationUpdatedLocal != null)
+            if (OnChargingStationUpdatedLocal is not null)
                 await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
                                                            ChargingStation,
-                                                           OldChargingStation,
+                                                           OldChargingStationAccess.ChargingStation,
+                                                           ChargingStationAccessType,
                                                            eventTrackingId,
                                                            CurrentUserId);
 
@@ -1528,6 +1568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<AddOrUpdateChargingStationResult>
 
             AddOrUpdateChargingStation(ChargingStation                             ChargingStation,
+                                       ChargingStationAccessTypes                  ChargingStationAccessType,
                                        Action<ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                        Action<ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                        EventTracking_Id?                           EventTrackingId   = null,
@@ -1543,10 +1584,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     return await _AddOrUpdateChargingStation(ChargingStation,
-                                                       OnAdded,
-                                                       OnUpdated,
-                                                       eventTrackingId,
-                                                       CurrentUserId);
+                                                             ChargingStationAccessType,
+                                                             OnAdded,
+                                                             OnUpdated,
+                                                             eventTrackingId,
+                                                             CurrentUserId);
 
                 }
                 catch (Exception e)
@@ -1586,6 +1628,106 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        public Task<AddChargingStationAccessResult> AddChargingStationAccess(ChargingStation_Id          ChargingStationId,
+                                                                             ChargingStationAccessTypes  ChargingStationAccessType,
+                                                                             EventTracking_Id?           EventTrackingId   = null,
+                                                                             User_Id?                    CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (chargingStations.ContainsKey(ChargingStationId))
+                return Task.FromResult(
+                           AddChargingStationAccessResult.ArgumentError(
+                               ChargingStationId,
+                               ChargingStationAccessType,
+                               $"The given chargeBox '{ChargingStationId}' already exists in this API!".ToI18NString(),
+                               eventTrackingId,
+                               Id,
+                               this
+                           )
+                       );
+
+            if (chargingStations.TryAdd(ChargingStationId, new ChargingStationAccess(ChargingStationAccessType)))
+                return Task.FromResult(
+                           AddChargingStationAccessResult.Success(
+                               ChargingStationId,
+                               ChargingStationAccessType,
+                               EventTrackingId,
+                               Id,
+                               this
+                           )
+                       );
+
+            // TryAdd(...) failed!
+            return Task.FromResult(
+                       AddChargingStationAccessResult.Error(
+                           ChargingStationId,
+                           ChargingStationAccessType,
+                           I18NString.Create($"Could not add charge box '{ChargingStationId}' with access {ChargingStationAccessType}''!"),
+                           EventTrackingId,
+                           Id,
+                           this
+                       )
+                   );
+
+        }
+
+
+        public async Task<UpdateChargingStationAccessResult> UpdateChargingStationAccess(ChargingStation             ChargingStation,
+                                                                                         ChargingStationAccessTypes  ChargingStationAccessType,
+                                                                                         EventTracking_Id?           EventTrackingId   = null,
+                                                                                         User_Id?                    CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (!chargingStations.TryGetValue(ChargingStation.Id, out var chargeBoxAccess))
+                return UpdateChargingStationAccessResult.ArgumentError(
+                           ChargingStation,
+                           ChargingStationAccessType,
+                           $"The given chargeBox '{ChargingStation.Id}' does not exists in this API!".ToI18NString(),
+                           eventTrackingId,
+                           Id,
+                           this
+                       );
+
+            //if (ChargingStation.API is not null && ChargingStation.API != this)
+            //    return UpdateChargingStationResult.ArgumentError(
+            //               ChargingStation,
+            //               "The given chargeBox is already attached to another API!".ToI18NString(),
+            //               eventTrackingId,
+            //               Id,
+            //               this
+            //           );
+
+            if (chargeBoxAccess.ChargingStationAccessType != ChargingStationAccessType)
+            {
+
+                chargeBoxAccess.ChargingStationAccessType = ChargingStationAccessType;
+
+                return UpdateChargingStationAccessResult.Success(
+                           ChargingStation,
+                           ChargingStationAccessType,
+                           EventTrackingId,
+                           Id,
+                           this
+                       );
+
+            }
+
+            return UpdateChargingStationAccessResult.NoOperation(
+                       ChargingStation,
+                       ChargingStationAccessType,
+                       EventTrackingId,
+                       Id,
+                       this
+                   );
+
+        }
+
+
         #region UpdateChargingStation         (ChargingStation,                 OnUpdated = null, ...)
 
         /// <summary>
@@ -1596,11 +1738,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="OldChargingStation">The old charging station.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargingStation identification initiating this command/request.</param>
-        public delegate Task OnChargingStationUpdatedDelegate(DateTime           Timestamp,
-                                                              ChargingStation    ChargingStation,
-                                                              ChargingStation    OldChargingStation,
-                                                              EventTracking_Id?  EventTrackingId   = null,
-                                                              User_Id?           CurrentUserId     = null);
+        public delegate Task OnChargingStationUpdatedDelegate(DateTime                    Timestamp,
+                                                              ChargingStation             ChargingStation,
+                                                              ChargingStation             OldChargingStation,
+                                                              ChargingStationAccessTypes  ChargingStationAccessType,
+                                                              EventTracking_Id?           EventTrackingId   = null,
+                                                              User_Id?                    CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charging station was updated.
@@ -1620,6 +1763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal async Task<UpdateChargingStationResult>
 
             _UpdateChargingStation(ChargingStation                             ChargingStation,
+                                   ChargingStationAccessTypes                  ChargingStationAccessType,
                                    Action<ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                    EventTracking_Id?                           EventTrackingId   = null,
                                    User_Id?                                    CurrentUserId     = null)
@@ -1637,7 +1781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            this
                        );
 
-            if (ChargingStation.API != null && ChargingStation.API != this)
+            if (ChargingStation.API is not null && ChargingStation.API != this)
                 return UpdateChargingStationResult.ArgumentError(
                            ChargingStation,
                            "The given chargingStation is already attached to another API!".ToI18NString(),
@@ -1656,7 +1800,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             chargingStations.TryRemove(OldChargingStation.Id, out _);
             ChargingStation.CopyAllLinkedDataFromBase(OldChargingStation);
-            chargingStations.TryAdd(ChargingStation.Id, ChargingStation);
+
+            chargingStations.TryAdd(
+                ChargingStation.Id,
+                new ChargingStationAccess(
+                    ChargingStation,
+                    ChargingStationAccessType
+                )
+            );
+
 
             OnUpdated?.Invoke(ChargingStation,
                               eventTrackingId);
@@ -1666,6 +1818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
                                                            ChargingStation,
                                                            OldChargingStation,
+                                                           ChargingStationAccessType,
                                                            eventTrackingId,
                                                            CurrentUserId);
 
@@ -1698,6 +1851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<UpdateChargingStationResult>
 
             UpdateChargingStation(ChargingStation                             ChargingStation,
+                                  ChargingStationAccessTypes                  ChargingStationAccessType,
                                   Action<ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                   EventTracking_Id?                           EventTrackingId   = null,
                                   User_Id?                                    CurrentUserId     = null)
@@ -1712,9 +1866,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     return await _UpdateChargingStation(ChargingStation,
-                                                  OnUpdated,
-                                                  eventTrackingId,
-                                                  CurrentUserId);
+                                                        ChargingStationAccessType,
+                                                        OnUpdated,
+                                                        eventTrackingId,
+                                                        CurrentUserId);
 
                 }
                 catch (Exception e)
@@ -1766,6 +1921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal async Task<UpdateChargingStationResult>
 
             _UpdateChargingStation(ChargingStation                             ChargingStation,
+                                   ChargingStationAccessTypes                  ChargingStationAccessType,
                                    Action<ChargingStation.Builder>             UpdateDelegate,
                                    Action<ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                    EventTracking_Id?                           EventTrackingId   = null,
@@ -1814,7 +1970,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             chargingStations.TryRemove(ChargingStation.Id, out _);
             updatedChargingStation.CopyAllLinkedDataFromBase(ChargingStation);
-            chargingStations.TryAdd(updatedChargingStation.Id, updatedChargingStation);
+
+            chargingStations.TryAdd(
+                updatedChargingStation.Id,
+                new ChargingStationAccess(
+                    updatedChargingStation,
+                    ChargingStationAccessType
+                )
+            );
 
             OnUpdated?.Invoke(updatedChargingStation,
                               eventTrackingId);
@@ -1822,10 +1985,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
             if (OnChargingStationUpdatedLocal is not null)
                 await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
-                                                     updatedChargingStation,
-                                                     ChargingStation,
-                                                     eventTrackingId,
-                                                     CurrentUserId);
+                                                           updatedChargingStation,
+                                                           ChargingStation,
+                                                           ChargingStationAccessType,
+                                                           eventTrackingId,
+                                                           CurrentUserId);
 
             //await SendNotifications(updatedChargingStation,
             //                        updateChargingStation_MessageType,
@@ -1857,6 +2021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<UpdateChargingStationResult>
 
             UpdateChargingStation(ChargingStation                             ChargingStation,
+                                  ChargingStationAccessTypes                  ChargingStationAccessType,
                                   Action<ChargingStation.Builder>             UpdateDelegate,
                                   Action<ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                   EventTracking_Id?                           EventTrackingId   = null,
@@ -1872,10 +2037,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     return await _UpdateChargingStation(ChargingStation,
-                                                  UpdateDelegate,
-                                                  OnUpdated,
-                                                  eventTrackingId,
-                                                  CurrentUserId);
+                                                        ChargingStationAccessType,
+                                                        UpdateDelegate,
+                                                        OnUpdated,
+                                                        eventTrackingId,
+                                                        CurrentUserId);
 
                 }
                 catch (Exception e)
@@ -2232,8 +2398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal ChargingStation? _GetChargingStation(ChargingStation_Id ChargingStationId)
         {
 
-            if (ChargingStationId.IsNotNullOrEmpty && chargingStations.TryGetValue(ChargingStationId, out var chargingStation))
-                return chargingStation;
+            if (ChargingStationId.IsNotNullOrEmpty && chargingStations.TryGetValue(ChargingStationId, out var chargingStationAccess))
+                return chargingStationAccess.ChargingStation;
 
             return default;
 
@@ -2246,8 +2412,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected internal ChargingStation? _GetChargingStation(ChargingStation_Id? ChargingStationId)
         {
 
-            if (ChargingStationId is not null && chargingStations.TryGetValue(ChargingStationId.Value, out var chargingStation))
-                return chargingStation;
+            if (ChargingStationId is not null && chargingStations.TryGetValue(ChargingStationId.Value, out var chargingStationAccess))
+                return chargingStationAccess.ChargingStation;
 
             return default;
 
@@ -2331,9 +2497,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                           [NotNullWhen(true)] out ChargingStation?  ChargingStation)
         {
 
-            if (ChargingStationId.IsNotNullOrEmpty && chargingStations.TryGetValue(ChargingStationId, out var chargingStation))
+            if (ChargingStationId.IsNotNullOrEmpty && chargingStations.TryGetValue(ChargingStationId, out var chargingStationAccess))
             {
-                ChargingStation = chargingStation;
+                ChargingStation = chargingStationAccess.ChargingStation;
                 return true;
             }
 
@@ -2351,9 +2517,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                           [NotNullWhen(true)] out ChargingStation?  ChargingStation)
         {
 
-            if (ChargingStationId is not null && chargingStations.TryGetValue(ChargingStationId.Value, out var chargingStation))
+            if (ChargingStationId is not null && chargingStations.TryGetValue(ChargingStationId.Value, out var chargingStationAccess))
             {
-                ChargingStation = chargingStation;
+                ChargingStation = chargingStationAccess.ChargingStation;
                 return true;
             }
 

@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0011"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 UplinkEnergyMeter:        new OCPP.Energy_Meter(
                                                               Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                               Manufacturer:  "GraphDefined",
-                                                              Model:         "Virtual Energy Meter",
+                                                              Model:         "eMeterOne",
                                                               SerialNumber:  "SN-EN1001"
                                                            //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                           ),
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0021"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0022"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 UplinkEnergyMeter:        new OCPP.Energy_Meter(
                                                               Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                               Manufacturer:  "GraphDefined",
-                                                              Model:         "Virtual Energy Meter",
+                                                              Model:         "eMeterOne",
                                                               SerialNumber:  "SN-EN1002"
                                                            //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                           ),
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0031"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0032"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0032"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   EnergyMeter:        new OCPP.Energy_Meter(
                                                                                           Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                           Manufacturer:  "GraphDefined",
-                                                                                          Model:         "Virtual Energy Meter",
+                                                                                          Model:         "eMeterOne",
                                                                                           SerialNumber:  "SN-EN0032"
                                                                                        //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                                                       )
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 UplinkEnergyMeter:        new OCPP.Energy_Meter(
                                                               Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                               Manufacturer:  "GraphDefined",
-                                                              Model:         "Virtual Energy Meter",
+                                                              Model:         "eMeterOne",
                                                               SerialNumber:  "SN-EN1003"
                                                            //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                           ),
