@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
@@ -45,11 +46,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecurityEventNotificationRequestReceivedDelegate(DateTime                  Timestamp,
-                                                                   IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
-                                                                   SecurityEventNotificationRequest   Request,
-                                                                   CancellationToken         CancellationToken);
+    public delegate Task OnSecurityEventNotificationRequestReceivedDelegate(DateTime                          Timestamp,
+                                                                            IEventSender                      Sender,
+                                                                            IWebSocketConnection              Connection,
+                                                                            SecurityEventNotificationRequest  Request,
+                                                                            CancellationToken                 CancellationToken);
 
 
     /// <summary>
@@ -62,13 +63,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecurityEventNotificationResponseReceivedDelegate(DateTime                   Timestamp,
-                                                                    IEventSender               Sender,
-                                                                    IWebSocketConnection?      Connection,
-                                                                    SecurityEventNotificationRequest?   Request,
-                                                                    SecurityEventNotificationResponse   Response,
-                                                                    TimeSpan?                  Runtime,
-                                                                    CancellationToken          CancellationToken);
+    public delegate Task OnSecurityEventNotificationResponseReceivedDelegate(DateTime                           Timestamp,
+                                                                             IEventSender                       Sender,
+                                                                             IWebSocketConnection?              Connection,
+                                                                             SecurityEventNotificationRequest?  Request,
+                                                                             SecurityEventNotificationResponse  Response,
+                                                                             TimeSpan?                          Runtime,
+                                                                             CancellationToken                  CancellationToken);
 
 
     /// <summary>
@@ -81,13 +82,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecurityEventNotificationRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                                        IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
-                                                                        SecurityEventNotificationRequest?       Request,
-                                                                        OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                                        TimeSpan?                      Runtime,
-                                                                        CancellationToken              CancellationToken);
+    public delegate Task OnSecurityEventNotificationRequestErrorReceivedDelegate(DateTime                           Timestamp,
+                                                                                 IEventSender                       Sender,
+                                                                                 IWebSocketConnection               Connection,
+                                                                                 SecurityEventNotificationRequest?  Request,
+                                                                                 OCPP_JSONRequestErrorMessage       RequestErrorMessage,
+                                                                                 TimeSpan?                          Runtime,
+                                                                                 CancellationToken                  CancellationToken);
 
 
     /// <summary>
@@ -101,14 +102,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecurityEventNotificationResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                         IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
-                                                                         SecurityEventNotificationRequest?        Request,
-                                                                         SecurityEventNotificationResponse?       Response,
-                                                                         OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                                         TimeSpan?                       Runtime,
-                                                                         CancellationToken               CancellationToken);
+    public delegate Task OnSecurityEventNotificationResponseErrorReceivedDelegate(DateTime                            Timestamp,
+                                                                                  IEventSender                        Sender,
+                                                                                  IWebSocketConnection                Connection,
+                                                                                  SecurityEventNotificationRequest?   Request,
+                                                                                  SecurityEventNotificationResponse?  Response,
+                                                                                  OCPP_JSONResponseErrorMessage       ResponseErrorMessage,
+                                                                                  TimeSpan?                           Runtime,
+                                                                                  CancellationToken                   CancellationToken);
 
     #endregion
 
@@ -124,11 +125,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SecurityEventNotificationResponse>
 
-        OnSecurityEventNotificationDelegate(DateTime                  Timestamp,
-                                   IEventSender              Sender,
-                                   IWebSocketConnection      Connection,
-                                   SecurityEventNotificationRequest   Request,
-                                   CancellationToken         CancellationToken);
+        OnSecurityEventNotificationDelegate(DateTime                          Timestamp,
+                                            IEventSender                      Sender,
+                                            IWebSocketConnection              Connection,
+                                            SecurityEventNotificationRequest  Request,
+                                            CancellationToken                 CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -152,13 +153,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SecurityEventNotification(DateTime              RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting     Destination,
-                                     NetworkPath           NetworkPath,
-                                     EventTracking_Id      EventTrackingId,
-                                     Request_Id            RequestId,
-                                     JObject               JSONRequest,
-                                     CancellationToken     CancellationToken)
+                                              IWebSocketConnection  WebSocketConnection,
+                                              SourceRouting         Destination,
+                                              NetworkPath           NetworkPath,
+                                              EventTracking_Id      EventTrackingId,
+                                              Request_Id            RequestId,
+                                              JObject               JSONRequest,
+                                              CancellationToken     CancellationToken)
 
         {
 
@@ -168,15 +169,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (SecurityEventNotificationRequest.TryParse(JSONRequest,
-                                                     RequestId,
-                                                 Destination,
-                                                     NetworkPath,
-                                                     out var request,
-                                                     out var errorResponse,
-                                                     RequestTimestamp,
-                                                     parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                                     EventTrackingId,
-                                                     parentNetworkingNode.OCPP.CustomSecurityEventNotificationRequestParser)) {
+                                                              RequestId,
+                                                              Destination,
+                                                              NetworkPath,
+                                                              out var request,
+                                                              out var errorResponse,
+                                                              RequestTimestamp,
+                                                              parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                              EventTrackingId,
+                                                              parentNetworkingNode.OCPP.CustomSecurityEventNotificationRequestParser)) {
 
                     SecurityEventNotificationResponse? response = null;
 
@@ -304,13 +305,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SecurityEventNotification(DateTime              RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting         Destination,
-                                     NetworkPath           NetworkPath,
-                                     EventTracking_Id      EventTrackingId,
-                                     Request_Id            RequestId,
-                                     Byte[]                BinaryRequest,
-                                     CancellationToken     CancellationToken)
+                                              IWebSocketConnection  WebSocketConnection,
+                                              SourceRouting         Destination,
+                                              NetworkPath           NetworkPath,
+                                              EventTracking_Id      EventTrackingId,
+                                              Request_Id            RequestId,
+                                              Byte[]                BinaryRequest,
+                                              CancellationToken     CancellationToken)
 
         {
 
@@ -471,14 +472,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<SecurityEventNotificationResponse>
 
             Receive_SecurityEventNotificationResponse(SecurityEventNotificationRequest  Request,
-                                             JObject                  ResponseJSON,
-                                             IWebSocketConnection     WebSocketConnection,
-                                             SourceRouting            Destination,
-                                             NetworkPath              NetworkPath,
-                                             EventTracking_Id         EventTrackingId,
-                                             Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
-                                             CancellationToken        CancellationToken   = default)
+                                                      JObject                           ResponseJSON,
+                                                      IWebSocketConnection              WebSocketConnection,
+                                                      SourceRouting                     Destination,
+                                                      NetworkPath                       NetworkPath,
+                                                      EventTracking_Id                  EventTrackingId,
+                                                      Request_Id                        RequestId,
+                                                      DateTime?                         ResponseTimestamp   = null,
+                                                      CancellationToken                 CancellationToken   = default)
 
         {
 
@@ -488,15 +489,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (SecurityEventNotificationResponse.TryParse(Request,
-                                                      ResponseJSON,
-                                                      Destination,
-                                                      NetworkPath,
-                                                      out response,
-                                                      out var errorResponse,
-                                                      ResponseTimestamp,
-                                                      parentNetworkingNode.OCPP.CustomSecurityEventNotificationResponseParser,
-                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                      parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+                                                               ResponseJSON,
+                                                               Destination,
+                                                               NetworkPath,
+                                                               out response,
+                                                               out var errorResponse,
+                                                               ResponseTimestamp,
+                                                               parentNetworkingNode.OCPP.CustomSecurityEventNotificationResponseParser,
+                                                               parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                               parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 
                     #region Verify response signature(s)
 
@@ -568,14 +569,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<SecurityEventNotificationResponse>
 
             Receive_SecurityEventNotificationResponse(SecurityEventNotificationRequest  Request,
-                                             Byte[]                   ResponseBinary,
-                                             IWebSocketConnection     WebSocketConnection,
-                                             SourceRouting            Destination,
-                                             NetworkPath              NetworkPath,
-                                             EventTracking_Id         EventTrackingId,
-                                             Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
-                                             CancellationToken        CancellationToken   = default)
+                                                      Byte[]                            ResponseBinary,
+                                                      IWebSocketConnection              WebSocketConnection,
+                                                      SourceRouting                     Destination,
+                                                      NetworkPath                       NetworkPath,
+                                                      EventTracking_Id                  EventTrackingId,
+                                                      Request_Id                        RequestId,
+                                                      DateTime?                         ResponseTimestamp   = null,
+                                                      CancellationToken                 CancellationToken   = default)
 
         {
 
@@ -677,15 +678,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<SecurityEventNotificationResponse>
 
-            Receive_SecurityEventNotificationRequestError(SecurityEventNotificationRequest       Request,
-                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection          Connection,
-                                                 SourceRouting             Destination,
-                                                 NetworkPath                   NetworkPath,
-                                                 EventTracking_Id              EventTrackingId,
-                                                 Request_Id                    RequestId,
-                                                 DateTime?                     ResponseTimestamp   = null,
-                                                 CancellationToken             CancellationToken   = default)
+            Receive_SecurityEventNotificationRequestError(SecurityEventNotificationRequest  Request,
+                                                          OCPP_JSONRequestErrorMessage      RequestErrorMessage,
+                                                          IWebSocketConnection              Connection,
+                                                          SourceRouting                     Destination,
+                                                          NetworkPath                       NetworkPath,
+                                                          EventTracking_Id                  EventTrackingId,
+                                                          Request_Id                        RequestId,
+                                                          DateTime?                         ResponseTimestamp   = null,
+                                                          CancellationToken                 CancellationToken   = default)
         {
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
@@ -844,16 +845,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task
 
-            Receive_SecurityEventNotificationResponseError(SecurityEventNotificationRequest?       Request,
-                                                  SecurityEventNotificationResponse?      Response,
-                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  IWebSocketConnection           Connection,
-                                                  SourceRouting                  Destination,
-                                                  NetworkPath                    NetworkPath,
-                                                  EventTracking_Id               EventTrackingId,
-                                                  Request_Id                     RequestId,
-                                                  DateTime?                      ResponseTimestamp   = null,
-                                                  CancellationToken              CancellationToken   = default)
+            Receive_SecurityEventNotificationResponseError(SecurityEventNotificationRequest?   Request,
+                                                           SecurityEventNotificationResponse?  Response,
+                                                           OCPP_JSONResponseErrorMessage       ResponseErrorMessage,
+                                                           IWebSocketConnection                Connection,
+                                                           SourceRouting                       Destination,
+                                                           NetworkPath                         NetworkPath,
+                                                           EventTracking_Id                    EventTrackingId,
+                                                           Request_Id                          RequestId,
+                                                           DateTime?                           ResponseTimestamp   = null,
+                                                           CancellationToken                   CancellationToken   = default)
 
         {
 

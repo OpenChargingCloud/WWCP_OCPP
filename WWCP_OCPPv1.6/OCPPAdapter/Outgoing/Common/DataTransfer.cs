@@ -22,10 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,12 +42,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnDataTransferRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               DataTransferRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnDataTransferRequestSentDelegate(DateTime                Timestamp,
+                                                           IEventSender            Sender,
+                                                           IWebSocketConnection?   Connection,
+                                                           DataTransferRequest     Request,
+                                                           SentMessageResults      SentMessageResult,
+                                                           CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -64,14 +63,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDataTransferResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               DataTransferRequest    Request,
-                                               DataTransferResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnDataTransferResponseSentDelegate(DateTime                Timestamp,
+                                           IEventSender            Sender,
+                                           IWebSocketConnection?   Connection,
+                                           DataTransferRequest     Request,
+                                           DataTransferResponse    Response,
+                                           TimeSpan                Runtime,
+                                           SentMessageResults      SentMessageResult,
+                                           CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -88,13 +87,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   DataTransferRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                               IEventSender                   Sender,
+                                               IWebSocketConnection?          Connection,
+                                               DataTransferRequest?           Request,
+                                               OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                               TimeSpan?                      Runtime,
+                                               SentMessageResults             SentMessageResult,
+                                               CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +111,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    DataTransferRequest?        Request,
-                                                    DataTransferResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                                IEventSender                    Sender,
+                                                IWebSocketConnection?           Connection,
+                                                DataTransferRequest?            Request,
+                                                DataTransferResponse?           Response,
+                                                OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                TimeSpan?                       Runtime,
+                                                SentMessageResults              SentMessageResult,
+                                                CancellationToken               CancellationToken);
 
     #endregion
 
@@ -478,14 +477,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnDataTransferResponseSentDelegate?  OnDataTransferResponseSent;
 
-        public Task SendOnDataTransferResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       DataTransferRequest    Request,
-                                                       DataTransferResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnDataTransferResponseSent(DateTime                Timestamp,
+                                                   IEventSender            Sender,
+                                                   IWebSocketConnection?   Connection,
+                                                   DataTransferRequest     Request,
+                                                   DataTransferResponse    Response,
+                                                   TimeSpan                Runtime,
+                                                   SentMessageResults      SentMessageResult,
+                                                   CancellationToken       CancellationToken = default)
 
             => LogEvent(
                    OnDataTransferResponseSent,
@@ -512,13 +511,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnDataTransferRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           DataTransferRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                       IEventSender                  Sender,
+                                                       IWebSocketConnection?         Connection,
+                                                       DataTransferRequest?          Request,
+                                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                       TimeSpan                      Runtime,
+                                                       SentMessageResults            SentMessageResult,
+                                                       CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnDataTransferRequestErrorSent,
@@ -545,14 +544,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnDataTransferResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            DataTransferRequest?       Request,
-                                                            DataTransferResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                        IEventSender                   Sender,
+                                                        IWebSocketConnection?          Connection,
+                                                        DataTransferRequest?           Request,
+                                                        DataTransferResponse?          Response,
+                                                        OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                        TimeSpan                       Runtime,
+                                                        SentMessageResults             SentMessageResult,
+                                                        CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnDataTransferResponseErrorSent,

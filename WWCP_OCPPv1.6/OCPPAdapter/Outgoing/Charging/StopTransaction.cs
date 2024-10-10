@@ -22,8 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -43,12 +44,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnStopTransactionRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               StopTransactionRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnStopTransactionRequestSentDelegate(DateTime                 Timestamp,
+                                                              IEventSender             Sender,
+                                                              IWebSocketConnection?    Connection,
+                                                              StopTransactionRequest   Request,
+                                                              SentMessageResults       SentMessageResult,
+                                                              CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -64,14 +65,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnStopTransactionResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               StopTransactionRequest    Request,
-                                               StopTransactionResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnStopTransactionResponseSentDelegate(DateTime                  Timestamp,
+                                              IEventSender              Sender,
+                                              IWebSocketConnection?     Connection,
+                                              StopTransactionRequest    Request,
+                                              StopTransactionResponse   Response,
+                                              TimeSpan                  Runtime,
+                                              SentMessageResults        SentMessageResult,
+                                              CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -88,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnStopTransactionRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   StopTransactionRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                                  IEventSender                   Sender,
+                                                  IWebSocketConnection?          Connection,
+                                                  StopTransactionRequest?        Request,
+                                                  OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                  TimeSpan?                      Runtime,
+                                                  SentMessageResults             SentMessageResult,
+                                                  CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnStopTransactionResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    StopTransactionRequest?        Request,
-                                                    StopTransactionResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                                   IEventSender                    Sender,
+                                                   IWebSocketConnection?           Connection,
+                                                   StopTransactionRequest?         Request,
+                                                   StopTransactionResponse?        Response,
+                                                   OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                   TimeSpan?                       Runtime,
+                                                   SentMessageResults              SentMessageResult,
+                                                   CancellationToken               CancellationToken);
 
     #endregion
 
@@ -447,15 +448,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         }
                         break;
 
-
-                    default:
-                        response ??= new StopTransactionResponse(
-                                         Request,
-                                         new IdTagInfo(AuthorizationStatus.Error)
-                                     );
-                        break;
-
                 }
+
+                response ??= new StopTransactionResponse(
+                                 Request,
+                                 new IdTagInfo(AuthorizationStatus.Error)
+                             );
 
             }
             catch (Exception e)
@@ -482,14 +480,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnStopTransactionResponseSentDelegate?  OnStopTransactionResponseSent;
 
-        public Task SendOnStopTransactionResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       StopTransactionRequest    Request,
-                                                       StopTransactionResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnStopTransactionResponseSent(DateTime                  Timestamp,
+                                                      IEventSender              Sender,
+                                                      IWebSocketConnection?     Connection,
+                                                      StopTransactionRequest    Request,
+                                                      StopTransactionResponse   Response,
+                                                      TimeSpan                  Runtime,
+                                                      SentMessageResults        SentMessageResult,
+                                                      CancellationToken         CancellationToken = default)
 
             => LogEvent(
                    OnStopTransactionResponseSent,
@@ -516,13 +514,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnStopTransactionRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           StopTransactionRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                          IEventSender                  Sender,
+                                                          IWebSocketConnection?         Connection,
+                                                          StopTransactionRequest?       Request,
+                                                          OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                          TimeSpan                      Runtime,
+                                                          SentMessageResults            SentMessageResult,
+                                                          CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnStopTransactionRequestErrorSent,
@@ -549,14 +547,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnStopTransactionResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            StopTransactionRequest?       Request,
-                                                            StopTransactionResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                           IEventSender                   Sender,
+                                                           IWebSocketConnection?          Connection,
+                                                           StopTransactionRequest?        Request,
+                                                           StopTransactionResponse?       Response,
+                                                           OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                           TimeSpan                       Runtime,
+                                                           SentMessageResults             SentMessageResult,
+                                                           CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnStopTransactionResponseErrorSent,

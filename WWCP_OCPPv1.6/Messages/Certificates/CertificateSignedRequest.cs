@@ -245,15 +245,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryText("certificateChain",
                                              "certificate chain",
-                                             out String certificateChainText,
+                                             out String? certificateChainText,
                                              out ErrorResponse))
                 {
                     return false;
                 }
 
-                if (!OCPPv1_6.CertificateChain.TryParse(certificateChainText,
-                                                        out var CertificateChain,
-                                                        out ErrorResponse))
+                if (!OCPP.CertificateChain.TryParse(certificateChainText,
+                                                    out var CertificateChain,
+                                                    out ErrorResponse))
                 {
                     return false;
                 }

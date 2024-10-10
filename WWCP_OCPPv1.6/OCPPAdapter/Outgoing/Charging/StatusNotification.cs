@@ -22,8 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -43,12 +44,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnStatusNotificationRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               StatusNotificationRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnStatusNotificationRequestSentDelegate(DateTime                    Timestamp,
+                                                                 IEventSender                Sender,
+                                                                 IWebSocketConnection?       Connection,
+                                                                 StatusNotificationRequest   Request,
+                                                                 SentMessageResults          SentMessageResult,
+                                                                 CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -64,14 +65,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnStatusNotificationResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               StatusNotificationRequest    Request,
-                                               StatusNotificationResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnStatusNotificationResponseSentDelegate(DateTime                     Timestamp,
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection?        Connection,
+                                                 StatusNotificationRequest    Request,
+                                                 StatusNotificationResponse   Response,
+                                                 TimeSpan                     Runtime,
+                                                 SentMessageResults           SentMessageResult,
+                                                 CancellationToken            CancellationToken);
 
 
     /// <summary>
@@ -88,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnStatusNotificationRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   StatusNotificationRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                                     IEventSender                   Sender,
+                                                     IWebSocketConnection?          Connection,
+                                                     StatusNotificationRequest?     Request,
+                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                     TimeSpan?                      Runtime,
+                                                     SentMessageResults             SentMessageResult,
+                                                     CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnStatusNotificationResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    StatusNotificationRequest?        Request,
-                                                    StatusNotificationResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                                      IEventSender                    Sender,
+                                                      IWebSocketConnection?           Connection,
+                                                      StatusNotificationRequest?      Request,
+                                                      StatusNotificationResponse?     Response,
+                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                      TimeSpan?                       Runtime,
+                                                      SentMessageResults              SentMessageResult,
+                                                      CancellationToken               CancellationToken);
 
     #endregion
 
@@ -476,14 +477,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnStatusNotificationResponseSentDelegate?  OnStatusNotificationResponseSent;
 
-        public Task SendOnStatusNotificationResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       StatusNotificationRequest    Request,
-                                                       StatusNotificationResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnStatusNotificationResponseSent(DateTime                     Timestamp,
+                                                         IEventSender                 Sender,
+                                                         IWebSocketConnection?        Connection,
+                                                         StatusNotificationRequest    Request,
+                                                         StatusNotificationResponse   Response,
+                                                         TimeSpan                     Runtime,
+                                                         SentMessageResults           SentMessageResult,
+                                                         CancellationToken            CancellationToken = default)
 
             => LogEvent(
                    OnStatusNotificationResponseSent,
@@ -510,13 +511,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnStatusNotificationRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           StatusNotificationRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                             IEventSender                  Sender,
+                                                             IWebSocketConnection?         Connection,
+                                                             StatusNotificationRequest?    Request,
+                                                             OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                             TimeSpan                      Runtime,
+                                                             SentMessageResults            SentMessageResult,
+                                                             CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnStatusNotificationRequestErrorSent,
@@ -543,14 +544,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnStatusNotificationResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            StatusNotificationRequest?       Request,
-                                                            StatusNotificationResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                              IEventSender                   Sender,
+                                                              IWebSocketConnection?          Connection,
+                                                              StatusNotificationRequest?     Request,
+                                                              StatusNotificationResponse?    Response,
+                                                              OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                              TimeSpan                       Runtime,
+                                                              SentMessageResults             SentMessageResult,
+                                                              CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnStatusNotificationResponseErrorSent,

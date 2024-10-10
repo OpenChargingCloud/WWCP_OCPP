@@ -22,8 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -444,16 +445,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         }
                         break;
 
-
-                    default:
-                        response ??= new StartTransactionResponse(
-                                         Request,
-                                         Transaction_Id.Empty,
-                                         new IdTagInfo(AuthorizationStatus.Error)
-                                     );
-                        break;
-
                 }
+
+                response ??= new StartTransactionResponse(
+                                    Request,
+                                    Transaction_Id.Empty,
+                                    new IdTagInfo(AuthorizationStatus.Error)
+                                );
 
             }
             catch (Exception e)
@@ -480,14 +478,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnStartTransactionResponseSentDelegate?  OnStartTransactionResponseSent;
 
-        public Task SendOnStartTransactionResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       StartTransactionRequest    Request,
-                                                       StartTransactionResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnStartTransactionResponseSent(DateTime                  Timestamp,
+                                                       IEventSender              Sender,
+                                                       IWebSocketConnection?     Connection,
+                                                       StartTransactionRequest   Request,
+                                                       StartTransactionResponse  Response,
+                                                       TimeSpan                  Runtime,
+                                                       SentMessageResults        SentMessageResult,
+                                                       CancellationToken         CancellationToken = default)
 
             => LogEvent(
                    OnStartTransactionResponseSent,

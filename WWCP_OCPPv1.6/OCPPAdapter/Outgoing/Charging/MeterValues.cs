@@ -22,8 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -43,12 +44,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnMeterValuesRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               MeterValuesRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnMeterValuesRequestSentDelegate(DateTime                Timestamp,
+                                                          IEventSender            Sender,
+                                                          IWebSocketConnection?   Connection,
+                                                          MeterValuesRequest      Request,
+                                                          SentMessageResults      SentMessageResult,
+                                                          CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -64,14 +65,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnMeterValuesResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               MeterValuesRequest    Request,
-                                               MeterValuesResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnMeterValuesResponseSentDelegate(DateTime                Timestamp,
+                                          IEventSender            Sender,
+                                          IWebSocketConnection?   Connection,
+                                          MeterValuesRequest      Request,
+                                          MeterValuesResponse     Response,
+                                          TimeSpan                Runtime,
+                                          SentMessageResults      SentMessageResult,
+                                          CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -88,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnMeterValuesRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   MeterValuesRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                              IEventSender                   Sender,
+                                              IWebSocketConnection?          Connection,
+                                              MeterValuesRequest?            Request,
+                                              OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                              TimeSpan?                      Runtime,
+                                              SentMessageResults             SentMessageResult,
+                                              CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnMeterValuesResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    MeterValuesRequest?        Request,
-                                                    MeterValuesResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                               IEventSender                    Sender,
+                                               IWebSocketConnection?           Connection,
+                                               MeterValuesRequest?             Request,
+                                               MeterValuesResponse?            Response,
+                                               OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                               TimeSpan?                       Runtime,
+                                               SentMessageResults              SentMessageResult,
+                                               CancellationToken               CancellationToken);
 
     #endregion
 
@@ -446,14 +447,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         }
                         break;
 
-
-                    default:
-                        response ??= new MeterValuesResponse(
-                                         Request
-                                     );
-                        break;
-
                 }
+
+                response ??= new MeterValuesResponse(
+                                 Request
+                             );
 
             }
             catch (Exception e)
@@ -480,14 +478,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnMeterValuesResponseSentDelegate?  OnMeterValuesResponseSent;
 
-        public Task SendOnMeterValuesResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       MeterValuesRequest    Request,
-                                                       MeterValuesResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnMeterValuesResponseSent(DateTime                Timestamp,
+                                                  IEventSender            Sender,
+                                                  IWebSocketConnection?   Connection,
+                                                  MeterValuesRequest      Request,
+                                                  MeterValuesResponse     Response,
+                                                  TimeSpan                Runtime,
+                                                  SentMessageResults      SentMessageResult,
+                                                  CancellationToken       CancellationToken = default)
 
             => LogEvent(
                    OnMeterValuesResponseSent,
@@ -514,13 +512,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnMeterValuesRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           MeterValuesRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                      IEventSender                  Sender,
+                                                      IWebSocketConnection?         Connection,
+                                                      MeterValuesRequest?           Request,
+                                                      OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                      TimeSpan                      Runtime,
+                                                      SentMessageResults            SentMessageResult,
+                                                      CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnMeterValuesRequestErrorSent,
@@ -547,14 +545,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnMeterValuesResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            MeterValuesRequest?       Request,
-                                                            MeterValuesResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                       IEventSender                   Sender,
+                                                       IWebSocketConnection?          Connection,
+                                                       MeterValuesRequest?            Request,
+                                                       MeterValuesResponse?           Response,
+                                                       OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                       TimeSpan                       Runtime,
+                                                       SentMessageResults             SentMessageResult,
+                                                       CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnMeterValuesResponseErrorSent,

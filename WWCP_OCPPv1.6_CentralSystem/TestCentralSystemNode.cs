@@ -17,6 +17,19 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
+using BCx509 = Org.BouncyCastle.X509;
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Operators;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Utilities;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -225,6 +238,152 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
 
+            #region Certificates
+
+            #region OnSignCertificate
+
+            OCPP.IN.OnSignCertificate += async (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                cancellationToken) => {
+
+                DebugX.Log("OnSignCertificate: " + request.DestinationId);
+
+                // CSR
+                // CertificateType
+
+                Pkcs10CertificationRequest?  parsedCSR       = null;
+                String?                      errorResponse   = null;
+
+                //if (!request.CSR.HasValue ||
+                //     request.CertificateType.Value == CertificateSigningUse.ChargingStationCertificate)
+                //{
+
+                    try
+                    {
+
+                        using (var reader = new StringReader(request.CSR))
+                        {
+                            var pemReader = new PemReader(reader);
+                            parsedCSR     = (Pkcs10CertificationRequest) pemReader.ReadObject();
+                        }
+
+                    } catch (Exception e)
+                    {
+                        errorResponse = "The certificate signing request could not be parsed: " + e.Message;
+                    }
+
+                    if (parsedCSR is null)
+                        errorResponse = "The certificate signing request could not be parsed!";
+
+                    else
+                    {
+
+                        if (!parsedCSR.Verify())
+                            errorResponse = "The certificate signing request could not be verified!";
+
+                        else if (ClientCAKeyPair     is null)
+                            errorResponse = "No ClientCA key pair available!";
+
+                        else if (ClientCACertificate is null)
+                            errorResponse = "No ClientCA certificcate available!";
+
+                        else
+                        {
+
+                            #region Sign the client certificate (background process!)
+
+                            //ToDo: Find better ways to do this!
+                            var delayedResponse = Task.Run(async () => {
+
+                                try
+                                {
+
+                                    await Task.Delay(100);
+
+                                    var secureRandom  = new SecureRandom();
+                                    var now           = Timestamp.Now;
+
+                                    var certificateGenerator = new X509V3CertificateGenerator();
+                                    certificateGenerator.SetIssuerDN    (ClientCACertificate.SubjectDN);
+                                    certificateGenerator.SetSubjectDN   (parsedCSR.GetCertificationRequestInfo().Subject);
+                                    certificateGenerator.SetPublicKey   (parsedCSR.GetPublicKey());
+                                    certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), secureRandom));
+                                    certificateGenerator.SetNotBefore   (now.AddDays(-1));
+                                    certificateGenerator.SetNotAfter    (now.AddMonths(3));
+
+                                    certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                                         critical: true,
+                                                                         new KeyUsage(
+                                                                             KeyUsage.NonRepudiation |
+                                                                             KeyUsage.DigitalSignature |
+                                                                             KeyUsage.KeyEncipherment
+                                                                         ));
+
+                                    certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage,
+                                                                         critical: true,
+                                                                         new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+
+                                    var newClientCertificate = certificateGenerator.Generate(
+                                                                   new Asn1SignatureFactory(
+                                                                       "SHA256WithRSAEncryption",
+                                                                       ClientCAKeyPair.Private,
+                                                                       secureRandom
+                                                                   )
+                                                               );
+
+
+                                    await Task.Delay(3000);
+
+
+                                    await OCPP.OUT.CertificateSigned(
+                                              new CertificateSignedRequest(
+                                                  SourceRouting.To(request.NetworkPath.Source),
+                                                  protocols.OCPP.CertificateChain.From(ClientCACertificate, newClientCertificate)
+                                             //     request.CertificateType ?? CertificateSigningUse.ChargingStationCertificate
+                                              )
+                                          );
+
+                                } catch (Exception e)
+                                {
+                                    DebugX.LogException(e, "The client certificate could not be signed!");
+                                }
+
+                            },
+                            cancellationToken);
+
+                            #endregion
+
+                        }
+
+                    }
+
+                //}
+                //else
+                //    errorResponse = $"Invalid CertificateSigningUse: '{request.CertificateType?.ToString() ?? "-"}'!";
+
+                return errorResponse is not null
+
+                           ? new SignCertificateResponse(
+                                 Request:      request,
+                                 Status:       GenericStatus.Rejected,
+                                 Result:       Result.GenericError(errorResponse),
+                                 CustomData:   null
+                             )
+
+                           : new SignCertificateResponse(
+                                 Request:      request,
+                                 Status:       GenericStatus.Accepted,
+                                 CustomData:   null
+                             );
+
+            };
+
+            #endregion
+
+            #endregion
+
             #region Charging
 
             #region OnAuthorize
@@ -256,6 +415,190 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  )
 
                        );
+
+            };
+
+            #endregion
+
+            #region OnMeterValues
+
+            OCPP.IN.OnMeterValues += (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      cancellationToken) => {
+
+                // ConnectorId
+                // MeterValues
+                // TransactionId
+
+                // We can not say 'NO!" anyway!
+
+                return Task.FromResult(
+                           new MeterValuesResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnStatusNotification
+
+            OCPP.IN.OnStatusNotification += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
+
+                // Timestamp
+                // ConnectorStatus
+                // EVSEId
+                // ConnectorId
+
+                return Task.FromResult(
+                           new StatusNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnStartTransaction
+
+            OCPP.IN.OnStartTransaction += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           cancellationToken) => {
+
+                // ConnectorId
+                // IdTag
+                // StartTimestamp
+                // MeterStart
+                // ReservationId
+
+                return Task.FromResult(
+                           new StartTransactionResponse(
+                               Request:         request,
+                               TransactionId:   Transaction_Id.NewRandom,
+                               IdTagInfo:       new IdTagInfo(
+                                                    AuthorizationStatus.Accepted
+                                                ),
+                               CustomData:      null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnStopTransaction
+
+            OCPP.IN.OnStopTransaction += (timestamp,
+                                          sender,
+                                          connection,
+                                          request,
+                                          cancellationToken) => {
+
+                // TransactionId
+                // StopTimestamp
+                // MeterStop
+                // IdTag
+                // Reason
+                // TransactionData
+
+                return Task.FromResult(
+                           new StopTransactionResponse(
+                               Request:      request,
+                               IdTagInfo:    null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #endregion
+
+            #region Custom
+
+            #region OnDataTransfer
+
+            OCPP.IN.OnDataTransfer += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       cancellationToken) => {
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                   property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+
+                var response =  request.VendorId == Vendor_Id.GraphDefined
+
+                                    ? new DataTransferResponse(
+                                          Request:       request,
+                                          NetworkPath:   NetworkPath.From(Id),
+                                          Status:        DataTransferStatus.Accepted,
+                                          Data:          responseData,
+                                          CustomData:    null
+                                      )
+
+                                    : new DataTransferResponse(
+                                          Request:       request,
+                                          NetworkPath:   NetworkPath.From(Id),
+                                          Status:        DataTransferStatus.Rejected,
+                                          Data:          null,
+                                          CustomData:    null
+                                      );
+
+
+                return Task.FromResult(response);
 
             };
 
@@ -403,8 +746,148 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
+            #region OnFirmwareStatusNotification
+
+            OCPP.IN.OnFirmwareStatusNotification += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) => {
+
+                // Status
+                // UpdateFirmwareRequestId
+
+                return Task.FromResult(
+                           new FirmwareStatusNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
             #endregion
 
+            #region OnHeartbeat
+
+            OCPP.IN.OnHeartbeat += (timestamp,
+                                    sender,
+                                    connection,
+                                    request,
+                                    cancellationToken) => {
+
+                return Task.FromResult(
+                           new HeartbeatResponse(
+                               Request:       request,
+                               CurrentTime:   Timestamp.Now,
+                               CustomData:    null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSignedFirmwareStatusNotification
+
+            OCPP.IN.OnSignedFirmwareStatusNotification += (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           cancellationToken) => {
+
+                // Status
+
+                return Task.FromResult(
+                           new SignedFirmwareStatusNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #endregion
+
+            #region Monitoring
+
+            #region OnDiagnosticsStatusNotification
+
+            this.OCPP.IN.OnDiagnosticsStatusNotification += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) => {
+
+
+                DebugX.Log("OnDiagnosticsStatusNotification: " + request.DestinationId);
+
+                // Status
+
+                return Task.FromResult(
+                           new DiagnosticsStatusNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnLogStatusNotification
+
+            this.OCPP.IN.OnLogStatusNotification += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) => {
+
+
+                DebugX.Log("OnLogStatusNotification: " + request.DestinationId);
+
+                // Status
+                // LogRquestId
+
+                return Task.FromResult(
+                           new LogStatusNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSecurityEventNotification
+
+            OCPP.IN.OnSecurityEventNotification += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) => {
+
+                                                        DebugX.Log("OnSecurityEventNotification: " + request.DestinationId);
+
+                                                        // Type
+                                                        // Timestamp
+                                                        // TechInfo
+
+                                                        return Task.FromResult(
+                                                                   new SecurityEventNotificationResponse(
+                                                                       Request: request,
+                                                                       CustomData: null
+                                                                   )
+                                                               );
+
+                                                    };
+
+            #endregion
+
+            #endregion
 
         }
 
@@ -1400,11 +1883,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //    #endregion
 
 
-            #region OnAuthorize
+        #region OnAuthorize
 
-       //     CentralSystemServer.OnAuthorize
+        //     CentralSystemServer.OnAuthorize
 
-            #endregion
+        #endregion
 
         //    #region OnStartTransaction
 
@@ -2252,19 +2735,282 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public void EnableLogging()
         {
 
+            #region Charging
+
             #region OnAuthorizeResponseSent
 
-            this.OCPP.OUT.OnAuthorizeResponseSent += static (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             response,
-                                                             runtime,
-                                                             sentMessageResult,
-                                                             cancellationToken) => {
-                                                                 DebugX.Log($"OnAuthorize: {request.DestinationId}, {request.IdTag} => {response.IdTagInfo.Status}");
-                                                                 return Task.CompletedTask;
-                                                             };
+            OCPP.OUT.OnAuthorizeResponseSent += static (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        response,
+                                                        runtime,
+                                                        sentMessageResult,
+                                                        cancellationToken) => {
+                                                            DebugX.Log($"OnAuthorize: {request.DestinationId}, {request.IdTag} => {response.IdTagInfo.Status}");
+                                                            return Task.CompletedTask;
+                                                        };
+
+            #endregion
+
+            #region OnMeterValues
+
+            // ConnectorId
+            // MeterValues
+            // TransactionId
+
+            OCPP.OUT.OnMeterValuesResponseSent += static (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          response,
+                                                          runtime,
+                                                          sentMessageResult,
+                                                          cancellationToken) => {
+                                                              var meterValue = request.MeterValues.FirstOrDefault();
+                                                              DebugX.Log($"OnMeterValues: {request.NetworkPath.Source} {request.ConnectorId}{(request.TransactionId.HasValue ? request.TransactionId : "")} {request.MeterValues.Count()} meter value(s), {(meterValue is not null ? $"{meterValue.SampledValues.FirstOrDefault()?.Value ?? ""} kWh @{meterValue.Timestamp.ToIso8601()}" : "-")} => {response.Result}");
+
+                                                              //DebugX.Log(request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
+                                                              //                                                        meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
+
+                                                              return Task.CompletedTask;
+                                                          };
+
+            #endregion
+
+            #region OnStatusNotification
+
+            OCPP.OUT.OnStatusNotificationResponseSent += static (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 cancellationToken) => {
+
+                                                                     // Timestamp
+                                                                     // ConnectorStatus
+                                                                     // EVSEId
+                                                                     // ConnectorId
+
+                                                                     //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
+
+                                                                     return Task.CompletedTask;
+                                                                 };
+
+            #endregion
+
+            #region OnStartTransaction
+
+            OCPP.OUT.OnStartTransactionResponseSent += static (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               response,
+                                                               runtime,
+                                                               sentMessageResult,
+                                                               cancellationToken) => {
+
+                                                                   // ConnectorId
+                                                                   // IdTag
+                                                                   // StartTimestamp
+                                                                   // MeterStart
+                                                                   // ReservationId
+
+                                                                   //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
+
+                                                                   return Task.CompletedTask;
+                                                               };
+
+            #endregion
+
+            #region OnStopTransaction
+
+            OCPP.OUT.OnStopTransactionResponseSent += static (timestamp,
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              response,
+                                                              runtime,
+                                                              sentMessageResult,
+                                                              cancellationToken) => {
+
+                                                                  // TransactionId
+                                                                  // StopTimestamp
+                                                                  // MeterStop
+                                                                  // IdTag
+                                                                  // Reason
+                                                                  // TransactionData
+
+                                                                  //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
+
+                                                                  return Task.CompletedTask;
+                                                              };
+
+            #endregion
+
+            #endregion
+
+            #region Common
+
+            #region OnDataTransfer
+
+            OCPP.OUT.OnDataTransferResponseSent += static (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           response,
+                                                           runtime,
+                                                           sentMessageResult,
+                                                           cancellationToken) => {
+                                                               DebugX.Log($"'{request.NetworkPath.Source}': Incoming DataTransfer: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToString() ?? "-"}!");
+                                                               return Task.CompletedTask;
+                                                           };
+
+            #endregion
+
+            #endregion
+
+            #region Firmware
+
+            #region OnBootNotification
+
+            OCPP.OUT.OnBootNotificationResponseSent += static (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               response,
+                                                               runtime,
+                                                               sentMessageResult,
+                                                               cancellationToken) => {
+                                                                   DebugX.Log($"OnBootNotification: {request.DestinationId}, '{request.ChargePointVendor}'/'{request.ChargePointModel}' => {response.Status}");
+                                                                   return Task.CompletedTask;
+                                                               };
+
+            #endregion
+
+            #region OnFirmwareStatusNotification
+
+            OCPP.OUT.OnFirmwareStatusNotificationResponseSent += static (timestamp,
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime,
+                                                                         sentMessageResult,
+                                                                         cancellationToken) => {
+
+                                                                             DebugX.Log("OnFirmwareStatus: " + request.Status);
+
+                                                                             // Status
+                                                                             // UpdateFirmwareRequestId
+
+                                                                             return Task.CompletedTask;
+                                                                         };
+
+            #endregion
+
+            #region OnHeartbeat
+
+            OCPP.OUT.OnHeartbeatResponseSent += static (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        response,
+                                                        runtime,
+                                                        sentMessageResult,
+                                                        cancellationToken) => {
+                                                            DebugX.Log("OnHeartbeat: " + request.DestinationId);
+                                                            return Task.CompletedTask;
+                                                        };
+
+            #endregion
+
+            #region OnSignedFirmwareStatusNotification
+
+            OCPP.OUT.OnSignedFirmwareStatusNotificationResponseSent += static (timestamp,
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime,
+                                                                               sentMessageResult,
+                                                                               cancellationToken) => {
+
+                                                                                   DebugX.Log("OnSignedFirmwareStatusNotification: " + request.Status);
+
+                                                                                   // Status
+                                                                                   // UpdateFirmwareRequestId
+
+                                                                                   return Task.CompletedTask;
+                                                                               };
+
+            #endregion
+
+            #endregion
+
+            #region Monitoring
+
+            #region OnDiagnosticsStatusNotification
+
+            OCPP.OUT.OnDiagnosticsStatusNotificationResponseSent += static (timestamp,
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    cancellationToken) => {
+                                                                        // Status
+                                                                        DebugX.Log("OnDiagnosticsStatusNotification: " + request.DestinationId);
+                                                                        return Task.CompletedTask;
+                                                                    };
+
+            #endregion
+
+            #region OnLogStatusNotification
+
+            OCPP.OUT.OnLogStatusNotificationResponseSent += static (timestamp,
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime,
+                                                                    sentMessageResult,
+                                                                    cancellationToken) => {
+                                                                        // Status
+                                                                        // LogRquestId
+                                                                        DebugX.Log("OnLogStatusNotification: " + request.DestinationId);
+                                                                        return Task.CompletedTask;
+                                                                    };
+
+            #endregion
+
+            #region OnSecurityEventNotification
+
+            OCPP.IN.OnSecurityEventNotification += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) => {
+
+                DebugX.Log("OnSecurityEventNotification: " + request.DestinationId);
+
+                // Type
+                // Timestamp
+                // TechInfo
+
+                return Task.FromResult(
+                           new SecurityEventNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            #endregion
 
             #endregion
 
@@ -2274,21 +3020,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region CSMS -> Charging Station Messages
 
-                                         #region (private) NextRequestId
+        #region (private) NextRequestId
 
-                                         //private Request_Id NextRequestId
-                                         //{
-                                         //    get
-                                         //    {
+        //private Request_Id NextRequestId
+        //{
+        //    get
+        //    {
 
-                                         //        Interlocked.Increment(ref internalRequestId);
+        //        Interlocked.Increment(ref internalRequestId);
 
-                                         //        return Request_Id.Parse(internalRequestId.ToString());
+        //        return Request_Id.Parse(internalRequestId.ToString());
 
-                                         //    }
-                                         //}
+        //    }
+        //}
 
-                                         //    Request_Id ICentralSystem.NextRequestId => throw new NotImplementedException();
+        //    Request_Id ICentralSystem.NextRequestId => throw new NotImplementedException();
 
         public IEnumerable<ICSMSChannel> CSMSChannels => throw new NotImplementedException();
 

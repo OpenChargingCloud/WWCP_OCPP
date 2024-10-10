@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
@@ -45,11 +46,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnStopTransactionRequestReceivedDelegate(DateTime                  Timestamp,
-                                                                   IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
-                                                                   StopTransactionRequest   Request,
-                                                                   CancellationToken         CancellationToken);
+    public delegate Task OnStopTransactionRequestReceivedDelegate(DateTime                 Timestamp,
+                                                                  IEventSender             Sender,
+                                                                  IWebSocketConnection     Connection,
+                                                                  StopTransactionRequest   Request,
+                                                                  CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -62,13 +63,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnStopTransactionResponseReceivedDelegate(DateTime                   Timestamp,
-                                                                    IEventSender               Sender,
-                                                                    IWebSocketConnection?      Connection,
-                                                                    StopTransactionRequest?   Request,
-                                                                    StopTransactionResponse   Response,
-                                                                    TimeSpan?                  Runtime,
-                                                                    CancellationToken          CancellationToken);
+    public delegate Task OnStopTransactionResponseReceivedDelegate(DateTime                  Timestamp,
+                                                                   IEventSender              Sender,
+                                                                   IWebSocketConnection?     Connection,
+                                                                   StopTransactionRequest?   Request,
+                                                                   StopTransactionResponse   Response,
+                                                                   TimeSpan?                 Runtime,
+                                                                   CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -82,12 +83,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnStopTransactionRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                                        IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
-                                                                        StopTransactionRequest?       Request,
-                                                                        OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                                        TimeSpan?                      Runtime,
-                                                                        CancellationToken              CancellationToken);
+                                                                       IEventSender                   Sender,
+                                                                       IWebSocketConnection           Connection,
+                                                                       StopTransactionRequest?        Request,
+                                                                       OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                       TimeSpan?                      Runtime,
+                                                                       CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -102,13 +103,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnStopTransactionResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                         IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
-                                                                         StopTransactionRequest?        Request,
-                                                                         StopTransactionResponse?       Response,
-                                                                         OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                                         TimeSpan?                       Runtime,
-                                                                         CancellationToken               CancellationToken);
+                                                                        IEventSender                    Sender,
+                                                                        IWebSocketConnection            Connection,
+                                                                        StopTransactionRequest?         Request,
+                                                                        StopTransactionResponse?        Response,
+                                                                        OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                        TimeSpan?                       Runtime,
+                                                                        CancellationToken               CancellationToken);
 
     #endregion
 
@@ -124,11 +125,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StopTransactionResponse>
 
-        OnStopTransactionDelegate(DateTime                  Timestamp,
-                                   IEventSender              Sender,
-                                   IWebSocketConnection      Connection,
-                                   StopTransactionRequest   Request,
-                                   CancellationToken         CancellationToken);
+        OnStopTransactionDelegate(DateTime                 Timestamp,
+                                  IEventSender             Sender,
+                                  IWebSocketConnection     Connection,
+                                  StopTransactionRequest   Request,
+                                  CancellationToken        CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -152,13 +153,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_StopTransaction(DateTime              RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting     Destination,
-                                     NetworkPath           NetworkPath,
-                                     EventTracking_Id      EventTrackingId,
-                                     Request_Id            RequestId,
-                                     JObject               JSONRequest,
-                                     CancellationToken     CancellationToken)
+                                    IWebSocketConnection  WebSocketConnection,
+                                    SourceRouting         Destination,
+                                    NetworkPath           NetworkPath,
+                                    EventTracking_Id      EventTrackingId,
+                                    Request_Id            RequestId,
+                                    JObject               JSONRequest,
+                                    CancellationToken     CancellationToken)
 
         {
 
@@ -168,15 +169,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (StopTransactionRequest.TryParse(JSONRequest,
-                                                     RequestId,
-                                                 Destination,
-                                                     NetworkPath,
-                                                     out var request,
-                                                     out var errorResponse,
-                                                     RequestTimestamp,
-                                                     parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                                     EventTrackingId,
-                                                     parentNetworkingNode.OCPP.CustomStopTransactionRequestParser)) {
+                                                    RequestId,
+                                                    Destination,
+                                                    NetworkPath,
+                                                    out var request,
+                                                    out var errorResponse,
+                                                    RequestTimestamp,
+                                                    parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                    EventTrackingId,
+                                                    parentNetworkingNode.OCPP.CustomStopTransactionRequestParser)) {
 
                     StopTransactionResponse? response = null;
 
@@ -308,13 +309,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_StopTransaction(DateTime              RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting         Destination,
-                                     NetworkPath           NetworkPath,
-                                     EventTracking_Id      EventTrackingId,
-                                     Request_Id            RequestId,
-                                     Byte[]                BinaryRequest,
-                                     CancellationToken     CancellationToken)
+                                    IWebSocketConnection  WebSocketConnection,
+                                    SourceRouting         Destination,
+                                    NetworkPath           NetworkPath,
+                                    EventTracking_Id      EventTrackingId,
+                                    Request_Id            RequestId,
+                                    Byte[]                BinaryRequest,
+                                    CancellationToken     CancellationToken)
 
         {
 
@@ -475,14 +476,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<StopTransactionResponse>
 
             Receive_StopTransactionResponse(StopTransactionRequest  Request,
-                                             JObject                  ResponseJSON,
-                                             IWebSocketConnection     WebSocketConnection,
-                                             SourceRouting            Destination,
-                                             NetworkPath              NetworkPath,
-                                             EventTracking_Id         EventTrackingId,
-                                             Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
-                                             CancellationToken        CancellationToken   = default)
+                                            JObject                 ResponseJSON,
+                                            IWebSocketConnection    WebSocketConnection,
+                                            SourceRouting           Destination,
+                                            NetworkPath             NetworkPath,
+                                            EventTracking_Id        EventTrackingId,
+                                            Request_Id              RequestId,
+                                            DateTime?               ResponseTimestamp   = null,
+                                            CancellationToken       CancellationToken   = default)
 
         {
 
@@ -492,15 +493,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (StopTransactionResponse.TryParse(Request,
-                                                      ResponseJSON,
-                                                      Destination,
-                                                      NetworkPath,
-                                                      out response,
-                                                      out var errorResponse,
-                                                      ResponseTimestamp,
-                                                      parentNetworkingNode.OCPP.CustomStopTransactionResponseParser,
-                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                      parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+                                                     ResponseJSON,
+                                                     Destination,
+                                                     NetworkPath,
+                                                     out response,
+                                                     out var errorResponse,
+                                                     ResponseTimestamp,
+                                                     parentNetworkingNode.OCPP.CustomStopTransactionResponseParser,
+                                                     parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                     parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 
                     #region Verify response signature(s)
 
@@ -573,14 +574,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<StopTransactionResponse>
 
             Receive_StopTransactionResponse(StopTransactionRequest  Request,
-                                             Byte[]                   ResponseBinary,
-                                             IWebSocketConnection     WebSocketConnection,
-                                             SourceRouting            Destination,
-                                             NetworkPath              NetworkPath,
-                                             EventTracking_Id         EventTrackingId,
-                                             Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
-                                             CancellationToken        CancellationToken   = default)
+                                            Byte[]                  ResponseBinary,
+                                            IWebSocketConnection    WebSocketConnection,
+                                            SourceRouting           Destination,
+                                            NetworkPath             NetworkPath,
+                                            EventTracking_Id        EventTrackingId,
+                                            Request_Id              RequestId,
+                                            DateTime?               ResponseTimestamp   = null,
+                                            CancellationToken       CancellationToken   = default)
 
         {
 
@@ -682,15 +683,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<StopTransactionResponse>
 
-            Receive_StopTransactionRequestError(StopTransactionRequest       Request,
-                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection          Connection,
-                                                 SourceRouting             Destination,
-                                                 NetworkPath                   NetworkPath,
-                                                 EventTracking_Id              EventTrackingId,
-                                                 Request_Id                    RequestId,
-                                                 DateTime?                     ResponseTimestamp   = null,
-                                                 CancellationToken             CancellationToken   = default)
+            Receive_StopTransactionRequestError(StopTransactionRequest        Request,
+                                                OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                IWebSocketConnection          Connection,
+                                                SourceRouting                 Destination,
+                                                NetworkPath                   NetworkPath,
+                                                EventTracking_Id              EventTrackingId,
+                                                Request_Id                    RequestId,
+                                                DateTime?                     ResponseTimestamp   = null,
+                                                CancellationToken             CancellationToken   = default)
         {
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
@@ -761,15 +762,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<StopTransactionResponse>
 
-            Receive_StopTransactionRequestError(StopTransactionRequest         Request,
-                                                 OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection            Connection,
-                                                 SourceRouting                   Destination,
-                                                 NetworkPath                     NetworkPath,
-                                                 EventTracking_Id                EventTrackingId,
-                                                 Request_Id                      RequestId,
-                                                 DateTime?                       ResponseTimestamp   = null,
-                                                 CancellationToken               CancellationToken   = default)
+            Receive_StopTransactionRequestError(StopTransactionRequest          Request,
+                                                OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
+                                                IWebSocketConnection            Connection,
+                                                SourceRouting                   Destination,
+                                                NetworkPath                     NetworkPath,
+                                                EventTracking_Id                EventTrackingId,
+                                                Request_Id                      RequestId,
+                                                DateTime?                       ResponseTimestamp   = null,
+                                                CancellationToken               CancellationToken   = default)
         {
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
@@ -849,16 +850,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task
 
-            Receive_StopTransactionResponseError(StopTransactionRequest?       Request,
-                                                  StopTransactionResponse?      Response,
-                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  IWebSocketConnection           Connection,
-                                                  SourceRouting                  Destination,
-                                                  NetworkPath                    NetworkPath,
-                                                  EventTracking_Id               EventTrackingId,
-                                                  Request_Id                     RequestId,
-                                                  DateTime?                      ResponseTimestamp   = null,
-                                                  CancellationToken              CancellationToken   = default)
+            Receive_StopTransactionResponseError(StopTransactionRequest?        Request,
+                                                 StopTransactionResponse?       Response,
+                                                 OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                 IWebSocketConnection           Connection,
+                                                 SourceRouting                  Destination,
+                                                 NetworkPath                    NetworkPath,
+                                                 EventTracking_Id               EventTrackingId,
+                                                 Request_Id                     RequestId,
+                                                 DateTime?                      ResponseTimestamp   = null,
+                                                 CancellationToken              CancellationToken   = default)
 
         {
 

@@ -88,6 +88,60 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
         #endregion
 
+        #region ChargePoint_LogStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending log status notifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_LogStatusNotification_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(centralSystem,  Is.Not.Null);
+                Assert.That(chargePoint,    Is.Not.Null);
+            });
+
+            if (centralSystem  is not null &&
+                chargePoint    is not null)
+            {
+
+                var logStatusNotificationRequests = new List<LogStatusNotificationRequest>();
+
+                centralSystem.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp, sender, connection, logStatusNotificationRequest, ct) => {
+                    logStatusNotificationRequests.Add(logStatusNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                var uploadLogStatus  = UploadLogStatus.UploadFailure;
+                var logRequestId     = 1;
+
+                var response         = await chargePoint.SendLogStatusNotification(
+                                                 Status:        uploadLogStatus,
+                                                 LogRequestId:  logRequestId
+                                             );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(logStatusNotificationRequests.Count,                      Is.EqualTo(1));
+                    var statusNotificationRequest = logStatusNotificationRequests.First();
+
+                    Assert.That(statusNotificationRequest.NetworkPath.Source,             Is.EqualTo(chargePoint.Id));
+                    Assert.That(statusNotificationRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(statusNotificationRequest.Status,                         Is.EqualTo(uploadLogStatus));
+                    Assert.That(statusNotificationRequest.LogRequestId,                   Is.EqualTo(logRequestId));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+
         #region ChargePoint_SendBootNotifications_Test1()
 
         /// <summary>
@@ -219,6 +273,107 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
         #endregion
 
+
+        #region ChargePoint_SendDiagnosticsStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending DiagnosticsStatusNotifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SendDiagnosticsStatusNotification_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(centralSystem,  Is.Not.Null);
+                Assert.That(chargePoint,    Is.Not.Null);
+            });
+
+            if (centralSystem  is not null &&
+                chargePoint    is not null)
+            {
+
+                var diagnosticsStatusNotifications = new List<DiagnosticsStatusNotificationRequest>();
+
+                centralSystem.OCPP.IN.OnDiagnosticsStatusNotificationRequestReceived += (timestamp, sender, connection, diagnosticsStatusNotification, ct) => {
+                    diagnosticsStatusNotifications.Add(diagnosticsStatusNotification);
+                    return Task.CompletedTask;
+                };
+
+                var status    = DiagnosticsStatus.Uploaded;
+
+                var response  = await chargePoint.SendDiagnosticsStatusNotification(
+                                          DiagnosticsStatus:  status
+                                      );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                         Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(diagnosticsStatusNotifications.Count,               Is.EqualTo(1));
+                    var diagnosticsStatusNotification = diagnosticsStatusNotifications.First();
+
+                    Assert.That(diagnosticsStatusNotification.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(diagnosticsStatusNotification.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(diagnosticsStatusNotification.Status,               Is.EqualTo(status));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargePoint_SendFirmwareStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending FirmwareStatusNotifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SendFirmwareStatusNotification_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(centralSystem,  Is.Not.Null);
+                Assert.That(chargePoint,    Is.Not.Null);
+            });
+
+            if (centralSystem  is not null &&
+                chargePoint    is not null)
+            {
+
+                var firmwareStatusNotifications = new List<FirmwareStatusNotificationRequest>();
+
+                centralSystem.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotification, ct) => {
+                    firmwareStatusNotifications.Add(firmwareStatusNotification);
+                    return Task.CompletedTask;
+                };
+
+                var status    = FirmwareStatus.Installed;
+
+                var response  = await chargePoint.SendFirmwareStatusNotification(
+                                          FirmwareStatus:  status
+                                      );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(firmwareStatusNotifications.Count,               Is.EqualTo(1));
+                    var firmwareStatusNotification = firmwareStatusNotifications.First();
+
+                    Assert.That(firmwareStatusNotification.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(firmwareStatusNotification.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(firmwareStatusNotification.Status,               Is.EqualTo(status));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
         #region ChargePoint_SendHeartbeat_Test()
 
         /// <summary>
@@ -265,13 +420,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
         #endregion
 
-        #region ChargePoint_SendDiagnosticsStatusNotification_Test()
+        #region ChargePoint_SendMeterValues_Test()
 
         /// <summary>
-        /// A test for sending diagnostics status notifications to the central system.
+        /// A test for sending meter values to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_SendDiagnosticsStatusNotification_Test()
+        public async Task ChargePoint_SendMeterValues_Test()
         {
 
             Assert.Multiple(() => {
@@ -283,28 +438,122 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 chargePoint    is not null)
             {
 
-                var diagnosticsStatusNotifications = new List<DiagnosticsStatusNotificationRequest>();
+                var meterValuesRequests = new List<MeterValuesRequest>();
 
-                centralSystem.OCPP.IN.OnDiagnosticsStatusNotificationRequestReceived += (timestamp, sender, connection, diagnosticsStatusNotification, ct) => {
-                    diagnosticsStatusNotifications.Add(diagnosticsStatusNotification);
+                centralSystem.OCPP.IN.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest, ct) => {
+                    meterValuesRequests.Add(meterValuesRequest);
                     return Task.CompletedTask;
                 };
 
-                var status    = DiagnosticsStatus.Uploaded;
+                var connectorId     = Connector_Id.Parse(1);
+                var meterValues     = new[] {
+                                          new MeterValue(
+                                              Timestamp.Now - TimeSpan.FromMinutes(5),
+                                              [
+                                                  new SampledValue(
+                                                      "001",
+                                                      ReadingContexts.TransactionBegin,
+                                                      ValueFormats.Raw,
+                                                      Measurands.CurrentImport,
+                                                      Phases.L1,
+                                                      Locations.Outlet,
+                                                      UnitsOfMeasure.kW
+                                                  ),
+                                                  new SampledValue(
+                                                      "001cryptic",
+                                                      ReadingContexts.TransactionBegin,
+                                                      ValueFormats.SignedData,
+                                                      Measurands.CurrentImport,
+                                                      Phases.L1,
+                                                      Locations.Outlet,
+                                                      UnitsOfMeasure.kW
+                                                  )
+                                              ]
+                                          ),
+                                          new MeterValue(
+                                              Timestamp.Now,
+                                              [
+                                                  new SampledValue(
+                                                      "002",
+                                                      ReadingContexts.TransactionEnd,
+                                                      ValueFormats.Raw,
+                                                      Measurands.CurrentImport,
+                                                      Phases.L1,
+                                                      Locations.Outlet,
+                                                      UnitsOfMeasure.kW
+                                                  ),
+                                                  new SampledValue(
+                                                      "002cryptic",
+                                                      ReadingContexts.TransactionEnd,
+                                                      ValueFormats.SignedData,
+                                                      Measurands.CurrentImport,
+                                                      Phases.L1,
+                                                      Locations.Outlet,
+                                                      UnitsOfMeasure.kW
+                                                  )
+                                              ]
+                                          )
+                                      };
+                var transactionId   = Transaction_Id.NewRandom;
 
-                var response  = await chargePoint.SendDiagnosticsStatusNotification(
-                                          DiagnosticsStatus:  status
-                                      );
+                var response        = await chargePoint.SendMeterValues(
+                                                ConnectorId:     connectorId,
+                                                MeterValues:     meterValues,
+                                                TransactionId:   transactionId
+                                            );
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                    Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,                                                                  Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(diagnosticsStatusNotifications.Count,          Is.EqualTo(1));
-                    var diagnosticsStatusNotification = diagnosticsStatusNotifications.First();
+                    Assert.That(meterValuesRequests.Count,                                                                   Is.EqualTo(1));
+                    Assert.That(meterValuesRequests.First().NetworkPath.Source,                                              Is.EqualTo(chargePoint.Id));
+                    Assert.That(meterValuesRequests.First().DestinationId,                                                   Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(meterValuesRequests.First().ConnectorId,                                                     Is.EqualTo(connectorId));
+                    Assert.That(meterValuesRequests.First().TransactionId,                                                   Is.EqualTo(transactionId));
 
-                    Assert.That(diagnosticsStatusNotification.DestinationId,   Is.EqualTo(chargePoint.Id));
-                    Assert.That(diagnosticsStatusNotification.Status,          Is.EqualTo(status));
+                    Assert.That(meterValuesRequests.First().MeterValues.Count(),                                             Is.EqualTo(meterValues.Length));
+                    Assert.That(meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
+                    Assert.That(meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count(),                  Is.EqualTo(meterValues.ElementAt(0).SampledValues.Count()));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count(),                  Is.EqualTo(meterValues.ElementAt(1).SampledValues.Count()));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Value));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Value));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Value));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Value));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context,     Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Context));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context,     Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Context));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context,     Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Context));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context,     Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Context));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Format,      Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Format));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Format,      Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Format));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Format,      Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Format));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Format,      Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Format));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Location,    Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Location));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Location,    Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Location));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Location,    Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Location));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Location,    Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Location));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Unit,        Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Unit));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit));
+
 
                 });
 
@@ -314,13 +563,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
         #endregion
 
-        #region ChargePoint_SendFirmwareStatusNotification_Test()
+        #region ChargePoint_SendSecurityEventNotification_Test()
 
         /// <summary>
-        /// A test for sending firmware status notifications to the central system.
+        /// A test for sending SecurityEventNotifications to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_SendFirmwareStatusNotification_Test()
+        public async Task ChargePoint_SendSecurityEventNotification_Test()
         {
 
             Assert.Multiple(() => {
@@ -332,28 +581,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 chargePoint    is not null)
             {
 
-                var firmwareStatusNotifications = new List<FirmwareStatusNotificationRequest>();
+                var securityEventNotifications = new List<SecurityEventNotificationRequest>();
 
-                centralSystem.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotification, ct) => {
-                    firmwareStatusNotifications.Add(firmwareStatusNotification);
+                centralSystem.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp, sender, connection, securityEventNotification, ct) => {
+                    securityEventNotifications.Add(securityEventNotification);
+                    return Task.CompletedTask;
+                };
+
+                var securityEventType  = SecurityEvent.AttemptedReplayAttacks;
+                var timestamp          = Timestamp.Now;
+                var techInfo           = "test123";
+
+                var response  = await chargePoint.SendSecurityEventNotification(
+                                          Type:       securityEventType,
+                                          Timestamp:  timestamp,
+                                          TechInfo:   techInfo
+                                      );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                     Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(securityEventNotifications.Count,               Is.EqualTo(1));
+                    var securityEventNotification = securityEventNotifications.First();
+
+                    Assert.That(securityEventNotification.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(securityEventNotification.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(securityEventNotification.Type,                 Is.EqualTo(securityEventType));
+                    Assert.That(securityEventNotification.Timestamp,            Is.EqualTo(timestamp));
+                    Assert.That(securityEventNotification.TechInfo,             Is.EqualTo(techInfo));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargePoint_SendSignedFirmwareStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending SignedFirmwareStatusNotifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SendSignedFirmwareStatusNotification_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(centralSystem,  Is.Not.Null);
+                Assert.That(chargePoint,    Is.Not.Null);
+            });
+
+            if (centralSystem  is not null &&
+                chargePoint    is not null)
+            {
+
+                var signedFirmwareStatusNotifications = new List<SignedFirmwareStatusNotificationRequest>();
+
+                centralSystem.OCPP.IN.OnSignedFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, signedFirmwareStatusNotification, ct) => {
+                    signedFirmwareStatusNotifications.Add(signedFirmwareStatusNotification);
                     return Task.CompletedTask;
                 };
 
                 var status    = FirmwareStatus.Installed;
 
-                var response  = await chargePoint.SendFirmwareStatusNotification(
+                var response  = await chargePoint.SendSignedFirmwareStatusNotification(
                                           FirmwareStatus:  status
                                       );
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(firmwareStatusNotifications.Count,          Is.EqualTo(1));
-                    var firmwareStatusNotification = firmwareStatusNotifications.First();
+                    Assert.That(signedFirmwareStatusNotifications.Count,               Is.EqualTo(1));
+                    var signedFirmwareStatusNotification = signedFirmwareStatusNotifications.First();
 
-                    Assert.That(firmwareStatusNotification.DestinationId,   Is.EqualTo(chargePoint.Id));
-                    Assert.That(firmwareStatusNotification.Status,          Is.EqualTo(status));
+                    Assert.That(signedFirmwareStatusNotification.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(signedFirmwareStatusNotification.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(signedFirmwareStatusNotification.Status,               Is.EqualTo(status));
 
                 });
 
@@ -363,7 +669,56 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
         #endregion
 
+        #region ChargePoint_SignCertificate_Test1()
 
+        /// <summary>
+        /// A test for sending a SignCertificate request to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SignCertificate_Test1()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(centralSystem,  Is.Not.Null);
+                Assert.That(chargePoint,    Is.Not.Null);
+            });
+
+            if (centralSystem  is not null &&
+                chargePoint    is not null)
+            {
+
+                var signCertificateRequests = new List<SignCertificateRequest>();
+
+                centralSystem.OCPP.IN.OnSignCertificateRequestReceived += (timestamp, sender, connection, signCertificateRequest, ct) => {
+                    signCertificateRequests.Add(signCertificateRequest);
+                    return Task.CompletedTask;
+                };
+
+
+                var CSR       = "";
+
+                var response  = await chargePoint.SignCertificate(CSR);
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                             Is.EqualTo(RegistrationStatus.Accepted));
+
+                    Assert.That(signCertificateRequests.Count,               Is.EqualTo(1));
+                    var signCertificateRequest = signCertificateRequests.First();
+
+                    Assert.That(signCertificateRequest.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(signCertificateRequest.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(signCertificateRequest.CSR,                  Is.EqualTo(CSR));
+
+                });
+
+            }
+
+        }
+
+        #endregion
 
 
         #region ChargePoint_StartTransaction_Test()
@@ -480,7 +835,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(statusNotificationRequests.Count,                         Is.EqualTo(1));
                     var statusNotificationRequest = statusNotificationRequests.First();
 
-                    Assert.That(statusNotificationRequest.DestinationId,                  Is.EqualTo(chargePoint.Id));
+                    Assert.That(statusNotificationRequest.NetworkPath.Source,             Is.EqualTo(chargePoint.Id));
+                    Assert.That(statusNotificationRequest.DestinationId,                  Is.EqualTo(NetworkingNode_Id.CentralSystem));
                     Assert.That(statusNotificationRequest.ConnectorId,                    Is.EqualTo(connectorId));
                     Assert.That(statusNotificationRequest.Status,                         Is.EqualTo(status));
                     Assert.That(statusNotificationRequest.ErrorCode,                      Is.EqualTo(errorCode));
@@ -488,148 +844,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(statusNotificationRequest.StatusTimestamp?.ToIso8601(),   Is.EqualTo(statusTimestamp.ToIso8601()));
                     Assert.That(statusNotificationRequest.VendorId,                       Is.EqualTo(vendorId));
                     Assert.That(statusNotificationRequest.VendorErrorCode,                Is.EqualTo(vendorErrorCode));
-
-                });
-
-            }
-
-        }
-
-        #endregion
-
-        #region ChargePoint_SendMeterValues_Test()
-
-        /// <summary>
-        /// A test for sending meter values to the central system.
-        /// </summary>
-        [Test]
-        public async Task ChargePoint_SendMeterValues_Test()
-        {
-
-            Assert.Multiple(() => {
-                Assert.That(centralSystem,  Is.Not.Null);
-                Assert.That(chargePoint,    Is.Not.Null);
-            });
-
-            if (centralSystem  is not null &&
-                chargePoint    is not null)
-            {
-
-                var meterValuesRequests = new List<MeterValuesRequest>();
-
-                centralSystem.OCPP.IN.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest, ct) => {
-                    meterValuesRequests.Add(meterValuesRequest);
-                    return Task.CompletedTask;
-                };
-
-                var connectorId     = Connector_Id.Parse(1);
-                var meterValues     = new[] {
-                                          new MeterValue(
-                                              Timestamp.Now - TimeSpan.FromMinutes(5),
-                                              [
-                                                  new SampledValue(
-                                                      "001",
-                                                      ReadingContexts.TransactionBegin,
-                                                      ValueFormats.Raw,
-                                                      Measurands.CurrentImport,
-                                                      Phases.L1,
-                                                      Locations.Outlet,
-                                                      UnitsOfMeasure.kW
-                                                  ),
-                                                  new SampledValue(
-                                                      "001cryptic",
-                                                      ReadingContexts.TransactionBegin,
-                                                      ValueFormats.SignedData,
-                                                      Measurands.CurrentImport,
-                                                      Phases.L1,
-                                                      Locations.Outlet,
-                                                      UnitsOfMeasure.kW
-                                                  )
-                                              ]
-                                          ),
-                                          new MeterValue(
-                                              Timestamp.Now,
-                                              [
-                                                  new SampledValue(
-                                                      "002",
-                                                      ReadingContexts.TransactionEnd,
-                                                      ValueFormats.Raw,
-                                                      Measurands.CurrentImport,
-                                                      Phases.L1,
-                                                      Locations.Outlet,
-                                                      UnitsOfMeasure.kW
-                                                  ),
-                                                  new SampledValue(
-                                                      "002cryptic",
-                                                      ReadingContexts.TransactionEnd,
-                                                      ValueFormats.SignedData,
-                                                      Measurands.CurrentImport,
-                                                      Phases.L1,
-                                                      Locations.Outlet,
-                                                      UnitsOfMeasure.kW
-                                                  )
-                                              ]
-                                          )
-                                      };
-                var transactionId   = Transaction_Id.NewRandom;
-
-                var response        = await chargePoint.SendMeterValues(
-                                                ConnectorId:     connectorId,
-                                                MeterValues:     meterValues,
-                                                TransactionId:   transactionId
-                                            );
-
-                Assert.Multiple(() => {
-
-                    Assert.That(response.Result.ResultCode,                                                                  Is.EqualTo(ResultCode.OK));
-
-                    Assert.That(meterValuesRequests.Count,                                                                   Is.EqualTo(1));
-                    Assert.That(meterValuesRequests.First().DestinationId,                                                   Is.EqualTo(chargePoint.Id));
-                    Assert.That(meterValuesRequests.First().ConnectorId,                                                     Is.EqualTo(connectorId));
-                    Assert.That(meterValuesRequests.First().TransactionId,                                                   Is.EqualTo(transactionId));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.Count(),                                             Is.EqualTo(meterValues.Length));
-                    Assert.That(meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
-                    Assert.That(meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count(),                  Is.EqualTo(meterValues.ElementAt(0).SampledValues.Count()));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count(),                  Is.EqualTo(meterValues.ElementAt(1).SampledValues.Count()));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Value));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Value));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Value));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Value));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context,     Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Context));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context,     Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Context));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context,     Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Context));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context,     Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Context));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Format,      Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Format));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Format,      Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Format));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Format,      Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Format));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Format,      Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Format));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Location,    Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Location));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Location,    Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Location));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Location,    Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Location));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Location,    Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Location));
-
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Unit,        Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Unit));
-                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit));
-
 
                 });
 
@@ -729,60 +943,63 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                                                          Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.IdTagInfo,                                                                                  Is.Not.Null);
-                    Assert.That(response.IdTagInfo?.Status,                                                                          Is.EqualTo(AuthorizationStatus.Accepted));
+                    Assert.That(response.Result.ResultCode,                                                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo,                                                                         Is.Not.Null);
+                    Assert.That(response.IdTagInfo?.Status,                                                                 Is.EqualTo(AuthorizationStatus.Accepted));
 
-                    Assert.That(stopTransactionRequests.Count,                                                                       Is.EqualTo(1));
-                    Assert.That(stopTransactionRequests.First().DestinationId,                                                       Is.EqualTo(chargePoint.Id));
+                    Assert.That(stopTransactionRequests.Count,                                                              Is.EqualTo(1));
+                    var stopTransactionRequest = stopTransactionRequests.First();
 
-                    Assert.That(stopTransactionRequests.First().TransactionId,                                                       Is.EqualTo(transactionId));
-                    Assert.That(stopTransactionRequests.First().StopTimestamp.ToIso8601(),                                           Is.EqualTo(stopTimestamp.ToIso8601()));
-                    Assert.That(stopTransactionRequests.First().MeterStop,                                                           Is.EqualTo(meterStop));
-                    Assert.That(stopTransactionRequests.First().IdTag,                                                               Is.EqualTo(idToken));
-                    Assert.That(stopTransactionRequests.First().Reason,                                                              Is.EqualTo(reason));
+                    Assert.That(stopTransactionRequest.NetworkPath.Source,                                                  Is.EqualTo(chargePoint.Id));
+                    Assert.That(stopTransactionRequest.DestinationId,                                                       Is.EqualTo(NetworkingNode_Id.CentralSystem));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.Count(),                                             Is.EqualTo(transactionData.Length));
-                    Assert.That(transactionData.ElementAt(0).Timestamp - stopTransactionRequests.First().TransactionData.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
-                    Assert.That(transactionData.ElementAt(1).Timestamp - stopTransactionRequests.First().TransactionData.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
+                    Assert.That(stopTransactionRequest.TransactionId,                                                       Is.EqualTo(transactionId));
+                    Assert.That(stopTransactionRequest.StopTimestamp.ToIso8601(),                                           Is.EqualTo(stopTimestamp.ToIso8601()));
+                    Assert.That(stopTransactionRequest.MeterStop,                                                           Is.EqualTo(meterStop));
+                    Assert.That(stopTransactionRequest.IdTag,                                                               Is.EqualTo(idToken));
+                    Assert.That(stopTransactionRequest.Reason,                                                              Is.EqualTo(reason));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.Count(),                  Is.EqualTo(transactionData.ElementAt(0).SampledValues.Count()));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.Count(),                  Is.EqualTo(transactionData.ElementAt(1).SampledValues.Count()));
+                    Assert.That(stopTransactionRequest.TransactionData.Count(),                                             Is.EqualTo(transactionData.Length));
+                    Assert.That(transactionData.ElementAt(0).Timestamp - stopTransactionRequest.TransactionData.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
+                    Assert.That(transactionData.ElementAt(1).Timestamp - stopTransactionRequest.TransactionData.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Value,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Value));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Value,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Value));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Value,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Value));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Value,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Value));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.Count(),                  Is.EqualTo(transactionData.ElementAt(0).SampledValues.Count()));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.Count(),                  Is.EqualTo(transactionData.ElementAt(1).SampledValues.Count()));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Context,     Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Context));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Context,     Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Context));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Context,     Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Context));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Context,     Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Context));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Value,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Value));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Value,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Value));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Value,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Value));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Value,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Value));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Format,      Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Format));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Format,      Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Format));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Format,      Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Format));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Format,      Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Format));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Context,     Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Context));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Context,     Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Context));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Context,     Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Context));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Context,     Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Context));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Format,      Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Format));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Format,      Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Format));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Format,      Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Format));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Format,      Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Format));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Phase,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Phase));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Phase,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Phase));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Phase,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Phase));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Phase,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Phase));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Location,    Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Location));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Location,    Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Location));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Location,    Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Location));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Location,    Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Location));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Phase,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Phase));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Phase,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Phase));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Phase,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Phase));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Phase,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Phase));
 
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Unit,        Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Unit));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Unit,        Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Unit));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Unit,        Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Unit));
-                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Unit,        Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Unit));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Location,    Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Location));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Location,    Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Location));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Location,    Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Location));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Location,    Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Location));
+
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(0).Unit,        Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Unit));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(0).SampledValues.ElementAt(1).Unit,        Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Unit));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(0).Unit,        Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Unit));
+                    Assert.That(stopTransactionRequest.TransactionData.ElementAt(1).SampledValues.ElementAt(1).Unit,        Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Unit));
 
                 });
 
@@ -793,13 +1010,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
         #endregion
 
 
-        #region ChargePoint_TransferTextData_Test()
+        #region ChargePoint_TransferJArrayData_Test()
 
         /// <summary>
-        /// A test for sending custom text data to the central system.
+        /// A test for sending custom JArray data to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_TransferTextData_Test()
+        public async Task ChargePoint_TransferJArrayData_Test()
         {
 
             Assert.Multiple(() => {
@@ -820,7 +1037,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
-                var data       = RandomExtensions.RandomString(40);
+                var data       = new JArray(
+                                     RandomExtensions.RandomString(40)
+                                 );
 
                 var response   = await chargePoint.TransferData(
                                            VendorId:    vendorId,
@@ -833,14 +1052,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
                     Assert.That(response.Status,                                 Is.EqualTo(DataTransferStatus.Accepted));
                     Assert.That(response.Data,                                   Is.Not.Null);
-                    Assert.That(response.Data?.Type,                             Is.EqualTo(JTokenType.String));
-                    Assert.That(response.Data?.ToString(),                       Is.EqualTo(data.Reverse()));
+                    Assert.That(response.Data?.Type,                             Is.EqualTo(JTokenType.Array));
+                    Assert.That(response.Data?[0]?.Value<String>()?.Reverse(),   Is.EqualTo(data[0]?.Value<String>()));
 
                     Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().DestinationId,      Is.EqualTo(chargePoint.Id));
-                    Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
-                    Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
-                    Assert.That(dataTransferRequests.First().Data?.ToString(),   Is.EqualTo(data));
+                    var dataTransferRequest = dataTransferRequests.First();
+
+                    Assert.That(dataTransferRequest.NetworkPath.Source,                                              Is.EqualTo(chargePoint.Id));
+                    Assert.That(dataTransferRequest.DestinationId,                                                   Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(dataTransferRequest.VendorId,                    Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequest.MessageId,                   Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequest.Data?.Type,                  Is.EqualTo(JTokenType.Array));
+                    Assert.That(dataTransferRequest.Data?[0]?.Value<String>(),   Is.EqualTo(data[0]?.Value<String>()));
 
                 });
 
@@ -892,18 +1115,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                   Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                              Is.EqualTo(DataTransferStatus.Accepted));
-                    Assert.That(response.Data,                                                Is.Not.Null);
-                    Assert.That(response.Data?.Type,                                          Is.EqualTo(JTokenType.Object));
-                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),            Is.EqualTo(data["key"]?.Value<String>()));
+                    Assert.That(response.Result.ResultCode,                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                     Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                       Is.Not.Null);
+                    Assert.That(response.Data?.Type,                                 Is.EqualTo(JTokenType.Object));
+                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),   Is.EqualTo(data["key"]?.Value<String>()));
 
-                    Assert.That(dataTransferRequests.Count,                                   Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().DestinationId,                   Is.EqualTo(chargePoint.Id));
-                    Assert.That(dataTransferRequests.First().VendorId,                        Is.EqualTo(vendorId));
-                    Assert.That(dataTransferRequests.First().MessageId,                       Is.EqualTo(messageId));
-                    Assert.That(dataTransferRequests.First().Data?.Type,                      Is.EqualTo(JTokenType.Object));
-                    Assert.That(dataTransferRequests.First().Data?["key"]?.Value<String>(),   Is.EqualTo(data["key"]?.Value<String>()));
+                    Assert.That(dataTransferRequests.Count,                          Is.EqualTo(1));
+                    var dataTransferRequest = dataTransferRequests.First();
+
+                    Assert.That(dataTransferRequest.NetworkPath.Source,              Is.EqualTo(chargePoint.Id));
+                    Assert.That(dataTransferRequest.DestinationId,                   Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(dataTransferRequest.VendorId,                        Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequest.MessageId,                       Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequest.Data?.Type,                      Is.EqualTo(JTokenType.Object));
+                    Assert.That(dataTransferRequest.Data?["key"]?.Value<String>(),   Is.EqualTo(data["key"]?.Value<String>()));
 
                 });
 
@@ -913,13 +1139,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
         #endregion
 
-        #region ChargePoint_TransferJArrayData_Test()
+        #region ChargePoint_TransferTextData_Test()
 
         /// <summary>
-        /// A test for sending custom JArray data to the central system.
+        /// A test for sending custom text data to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_TransferJArrayData_Test()
+        public async Task ChargePoint_TransferTextData_Test()
         {
 
             Assert.Multiple(() => {
@@ -940,9 +1166,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
-                var data       = new JArray(
-                                     RandomExtensions.RandomString(40)
-                                 );
+                var data       = RandomExtensions.RandomString(40);
 
                 var response   = await chargePoint.TransferData(
                                            VendorId:    vendorId,
@@ -952,18 +1176,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                          Is.EqualTo(DataTransferStatus.Accepted));
-                    Assert.That(response.Data,                                            Is.Not.Null);
-                    Assert.That(response.Data?.Type,                                      Is.EqualTo(JTokenType.Array));
-                    Assert.That(response.Data?[0]?.Value<String>()?.Reverse(),            Is.EqualTo(data[0]?.Value<String>()));
+                    Assert.That(response.Result.ResultCode,               Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                          Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                            Is.Not.Null);
+                    Assert.That(response.Data?.Type,                      Is.EqualTo(JTokenType.String));
+                    Assert.That(response.Data?.ToString(),                Is.EqualTo(data.Reverse()));
 
-                    Assert.That(dataTransferRequests.Count,                               Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().DestinationId,               Is.EqualTo(chargePoint.Id));
-                    Assert.That(dataTransferRequests.First().VendorId,                    Is.EqualTo(vendorId));
-                    Assert.That(dataTransferRequests.First().MessageId,                   Is.EqualTo(messageId));
-                    Assert.That(dataTransferRequests.First().Data?.Type,                  Is.EqualTo(JTokenType.Array));
-                    Assert.That(dataTransferRequests.First().Data?[0]?.Value<String>(),   Is.EqualTo(data[0]?.Value<String>()));
+                    Assert.That(dataTransferRequests.Count,               Is.EqualTo(1));
+                    var dataTransferRequest = dataTransferRequests.First();
+
+                    Assert.That(dataTransferRequest.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
+                    Assert.That(dataTransferRequest.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
+                    Assert.That(dataTransferRequest.VendorId,             Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequest.MessageId,            Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequest.Data?.ToString(),     Is.EqualTo(data));
 
                 });
 

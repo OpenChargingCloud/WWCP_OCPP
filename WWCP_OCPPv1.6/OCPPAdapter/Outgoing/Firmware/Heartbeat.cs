@@ -444,15 +444,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         }
                         break;
 
-
-                    default:
-                        response ??= new HeartbeatResponse(
-                                         Request,
-                                         Timestamp.Now
-                                     );
-                        break;
-
                 }
+
+                response ??= new HeartbeatResponse(
+                                 Request,
+                                 Timestamp.Now
+                             );
 
             }
             catch (Exception e)
@@ -479,14 +476,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnHeartbeatResponseSentDelegate?  OnHeartbeatResponseSent;
 
-        public Task SendOnHeartbeatResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       HeartbeatRequest    Request,
-                                                       HeartbeatResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnHeartbeatResponseSent(DateTime               Timestamp,
+                                                IEventSender           Sender,
+                                                IWebSocketConnection?  Connection,
+                                                HeartbeatRequest       Request,
+                                                HeartbeatResponse      Response,
+                                                TimeSpan               Runtime,
+                                                SentMessageResults     SentMessageResult,
+                                                CancellationToken      CancellationToken = default)
 
             => LogEvent(
                    OnHeartbeatResponseSent,
@@ -513,13 +510,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnHeartbeatRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           HeartbeatRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                    IEventSender                  Sender,
+                                                    IWebSocketConnection?         Connection,
+                                                    HeartbeatRequest?             Request,
+                                                    OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                    TimeSpan                      Runtime,
+                                                    SentMessageResults            SentMessageResult,
+                                                    CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnHeartbeatRequestErrorSent,
@@ -546,14 +543,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnHeartbeatResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            HeartbeatRequest?       Request,
-                                                            HeartbeatResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                     IEventSender                   Sender,
+                                                     IWebSocketConnection?          Connection,
+                                                     HeartbeatRequest?              Request,
+                                                     HeartbeatResponse?             Response,
+                                                     OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                     TimeSpan                       Runtime,
+                                                     SentMessageResults             SentMessageResult,
+                                                     CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnHeartbeatResponseErrorSent,
