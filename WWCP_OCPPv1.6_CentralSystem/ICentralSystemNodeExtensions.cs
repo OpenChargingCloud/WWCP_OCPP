@@ -41,69 +41,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Certificates
 
-        #region SendCertificateSigned      (Destination, CertificateChain, ...)
-
-        /// <summary>
-        /// Send a signed certificate to the given charge point/networking node.
-        /// </summary>
-        /// <param name="CentralSystem">The central system.</param>
-        /// <param name="Destination">The charge point/networking node identification.</param>
-        /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CertificateSignedResponse>
-
-            SendCertificateSigned(this ICentralSystemNode  CentralSystem,
-                                  SourceRouting            Destination,
-                                  CertificateChain         CertificateChain,
-
-                                  IEnumerable<KeyPair>?    SignKeys              = null,
-                                  IEnumerable<SignInfo>?   SignInfos             = null,
-                                  IEnumerable<Signature>?  Signatures            = null,
-
-                                  CustomData?              CustomData            = null,
-
-                                  Request_Id?              RequestId             = null,
-                                  DateTime?                RequestTimestamp      = null,
-                                  TimeSpan?                RequestTimeout        = null,
-                                  EventTracking_Id?        EventTrackingId       = null,
-                                  SerializationFormats?    SerializationFormat   = null,
-                                  CancellationToken        CancellationToken     = default)
-
-                => CentralSystem.OCPP.OUT.CertificateSigned(
-                       new CertificateSignedRequest(
-                           Destination,
-                           CertificateChain,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(CentralSystem.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
         #region DeleteCertificate          (Destination, CertificateHashData, ...)
 
         /// <summary>
@@ -277,6 +214,69 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            Destination,
                            CertificateType,
                            Certificate,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendSignedCertificate      (Destination, CertificateChain, ...)
+
+        /// <summary>
+        /// Send a signed certificate to the given charge point/networking node.
+        /// </summary>
+        /// <param name="CentralSystem">The central system.</param>
+        /// <param name="Destination">The charge point/networking node identification.</param>
+        /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CertificateSignedResponse>
+
+            SendSignedCertificate(this ICentralSystemNode  CentralSystem,
+                                  SourceRouting            Destination,
+                                  CertificateChain         CertificateChain,
+
+                                  IEnumerable<KeyPair>?    SignKeys              = null,
+                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  IEnumerable<Signature>?  Signatures            = null,
+
+                                  CustomData?              CustomData            = null,
+
+                                  Request_Id?              RequestId             = null,
+                                  DateTime?                RequestTimestamp      = null,
+                                  TimeSpan?                RequestTimeout        = null,
+                                  EventTracking_Id?        EventTrackingId       = null,
+                                  SerializationFormats?    SerializationFormat   = null,
+                                  CancellationToken        CancellationToken     = default)
+
+                => CentralSystem.OCPP.OUT.CertificateSigned(
+                       new CertificateSignedRequest(
+                           Destination,
+                           CertificateChain,
 
                            SignKeys,
                            SignInfos,
@@ -972,7 +972,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SendSignedFirmwareUpdate   (Destination, Firmware, UpdateRequestId, Retries = null, RetryInterval = null, ...)
+        #region UpdateSignedFirmware       (Destination, Firmware, UpdateRequestId, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Send a signed update firmware request to the given charge point/networking node.
@@ -998,25 +998,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<SignedUpdateFirmwareResponse>
 
-            SendSignedFirmwareUpdate(this ICentralSystemNode  CentralSystem,
-                                     SourceRouting            Destination,
-                                     FirmwareImage            Firmware,
-                                     Int32                    UpdateRequestId,
-                                     Byte?                    Retries               = null,
-                                     TimeSpan?                RetryInterval         = null,
+            UpdateSignedFirmware(this ICentralSystemNode  CentralSystem,
+                                 SourceRouting            Destination,
+                                 FirmwareImage            Firmware,
+                                 Int32                    UpdateRequestId,
+                                 Byte?                    Retries               = null,
+                                 TimeSpan?                RetryInterval         = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys              = null,
-                                     IEnumerable<SignInfo>?   SignInfos             = null,
-                                     IEnumerable<Signature>?  Signatures            = null,
+                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                 IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData            = null,
+                                 CustomData?              CustomData            = null,
 
-                                     Request_Id?              RequestId             = null,
-                                     DateTime?                RequestTimestamp      = null,
-                                     TimeSpan?                RequestTimeout        = null,
-                                     EventTracking_Id?        EventTrackingId       = null,
-                                     SerializationFormats?    SerializationFormat   = null,
-                                     CancellationToken        CancellationToken     = default)
+                                 Request_Id?              RequestId             = null,
+                                 DateTime?                RequestTimestamp      = null,
+                                 TimeSpan?                RequestTimeout        = null,
+                                 EventTracking_Id?        EventTrackingId       = null,
+                                 SerializationFormats?    SerializationFormat   = null,
+                                 CancellationToken        CancellationToken     = default)
 
                 => CentralSystem.OCPP.OUT.SignedUpdateFirmware(
                        new SignedUpdateFirmwareRequest(
@@ -1044,7 +1044,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SendFirmwareUpdate         (Destination, Firmware, UpdateRequestId, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware             (Destination, Firmware, UpdateRequestId, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Send an update firmware request to the given charge point/networking node.
@@ -1070,25 +1070,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<UpdateFirmwareResponse>
 
-            SendFirmwareUpdate(this ICentralSystemNode  CentralSystem,
-                               SourceRouting            Destination,
-                               URL                      FirmwareURL,
-                               DateTime                 RetrieveTimestamp,
-                               Byte?                    Retries               = null,
-                               TimeSpan?                RetryInterval         = null,
+            UpdateFirmware(this ICentralSystemNode  CentralSystem,
+                           SourceRouting            Destination,
+                           URL                      FirmwareURL,
+                           DateTime                 RetrieveTimestamp,
+                           Byte?                    Retries               = null,
+                           TimeSpan?                RetryInterval         = null,
 
-                               IEnumerable<KeyPair>?    SignKeys              = null,
-                               IEnumerable<SignInfo>?   SignInfos             = null,
-                               IEnumerable<Signature>?  Signatures            = null,
+                           IEnumerable<KeyPair>?    SignKeys              = null,
+                           IEnumerable<SignInfo>?   SignInfos             = null,
+                           IEnumerable<Signature>?  Signatures            = null,
 
-                               CustomData?              CustomData            = null,
+                           CustomData?              CustomData            = null,
 
-                               Request_Id?              RequestId             = null,
-                               DateTime?                RequestTimestamp      = null,
-                               TimeSpan?                RequestTimeout        = null,
-                               EventTracking_Id?        EventTrackingId       = null,
-                               SerializationFormats?    SerializationFormat   = null,
-                               CancellationToken        CancellationToken     = default)
+                           Request_Id?              RequestId             = null,
+                           DateTime?                RequestTimestamp      = null,
+                           TimeSpan?                RequestTimeout        = null,
+                           EventTracking_Id?        EventTrackingId       = null,
+                           SerializationFormats?    SerializationFormat   = null,
+                           CancellationToken        CancellationToken     = default)
 
                 => CentralSystem.OCPP.OUT.UpdateFirmware(
                        new UpdateFirmwareRequest(
@@ -1450,7 +1450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ExtendedTriggerMessage     (Destination, RequestedMessage, ConnectorId = null, ...)
+        #region ExtendedTrigger            (Destination, RequestedMessage, ConnectorId = null, ...)
 
         /// <summary>
         /// Send an extended trigger message to the given charge point/networking node.
@@ -1800,7 +1800,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
         #endregion
-
 
     }
 

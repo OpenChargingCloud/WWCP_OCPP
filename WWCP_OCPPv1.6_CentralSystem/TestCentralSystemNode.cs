@@ -445,32 +445,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
-            #region OnStatusNotification
-
-            OCPP.IN.OnStatusNotification += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
-
-                // Timestamp
-                // ConnectorStatus
-                // EVSEId
-                // ConnectorId
-
-                return Task.FromResult(
-                           new StatusNotificationResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
             #region OnStartTransaction
 
             OCPP.IN.OnStartTransaction += (timestamp,
@@ -493,6 +467,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     AuthorizationStatus.Accepted
                                                 ),
                                CustomData:      null
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnStatusNotification
+
+            OCPP.IN.OnStatusNotification += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
+
+                // Timestamp
+                // ConnectorStatus
+                // EVSEId
+                // ConnectorId
+
+                return Task.FromResult(
+                           new StatusNotificationResponse(
+                               Request:      request,
+                               CustomData:   null
                            )
                        );
 
@@ -2778,29 +2778,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
-            #region OnStatusNotification
-
-            OCPP.OUT.OnStatusNotificationResponseSent += static (timestamp,
-                                                                 sender,
-                                                                 connection,
-                                                                 request,
-                                                                 response,
-                                                                 runtime,
-                                                                 sentMessageResult,
-                                                                 cancellationToken) => {
-
-                                                                     // Timestamp
-                                                                     // ConnectorStatus
-                                                                     // EVSEId
-                                                                     // ConnectorId
-
-                                                                     //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
-
-                                                                     return Task.CompletedTask;
-                                                                 };
-
-            #endregion
-
             #region OnStartTransaction
 
             OCPP.OUT.OnStartTransactionResponseSent += static (timestamp,
@@ -2822,6 +2799,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                                                    return Task.CompletedTask;
                                                                };
+
+            #endregion
+
+            #region OnStatusNotification
+
+            OCPP.OUT.OnStatusNotificationResponseSent += static (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime,
+                                                                 sentMessageResult,
+                                                                 cancellationToken) => {
+
+                                                                     // Timestamp
+                                                                     // ConnectorStatus
+                                                                     // EVSEId
+                                                                     // ConnectorId
+
+                                                                     //DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
+
+                                                                     return Task.CompletedTask;
+                                                                 };
 
             #endregion
 

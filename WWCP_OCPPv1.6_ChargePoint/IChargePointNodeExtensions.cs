@@ -38,69 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     public static class IChargePointNodeExtensions
     {
 
-        #region Authorize                            (IdTag, ...)
-
-        /// <summary>
-        /// Send a firmware status notification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="IdTag">The identifier that needs to be Authorized.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<AuthorizeResponse>
-
-            Authorize(this IChargePointNode    ChargePoint,
-                      IdToken                  IdTag,
-                      SourceRouting?           Destination           = null,
-
-                      IEnumerable<KeyPair>?    SignKeys              = null,
-                      IEnumerable<SignInfo>?   SignInfos             = null,
-                      IEnumerable<Signature>?  Signatures            = null,
-
-                      CustomData?              CustomData            = null,
-
-                      Request_Id?              RequestId             = null,
-                      DateTime?                RequestTimestamp      = null,
-                      TimeSpan?                RequestTimeout        = null,
-                      EventTracking_Id?        EventTrackingId       = null,
-                      SerializationFormats?    SerializationFormat   = null,
-                      CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.Authorize(
-                       new AuthorizeRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           IdTag,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
+        #region Certificates
 
         #region SignCertificate                      (CSR, ...)
 
@@ -165,6 +103,514 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    );
 
         #endregion
+
+        #endregion
+
+        #region Charging
+
+        #region Authorize                            (IdTag, ...)
+
+        /// <summary>
+        /// Send a firmware status notification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="IdTag">The identifier that needs to be Authorized.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<AuthorizeResponse>
+
+            Authorize(this IChargePointNode    ChargePoint,
+                      IdToken                  IdTag,
+                      SourceRouting?           Destination           = null,
+
+                      IEnumerable<KeyPair>?    SignKeys              = null,
+                      IEnumerable<SignInfo>?   SignInfos             = null,
+                      IEnumerable<Signature>?  Signatures            = null,
+
+                      CustomData?              CustomData            = null,
+
+                      Request_Id?              RequestId             = null,
+                      DateTime?                RequestTimestamp      = null,
+                      TimeSpan?                RequestTimeout        = null,
+                      EventTracking_Id?        EventTrackingId       = null,
+                      SerializationFormats?    SerializationFormat   = null,
+                      CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.Authorize(
+                       new AuthorizeRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           IdTag,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendMeterValues                      (ConnectorId, MeterValues, TransactionId = null, ...)
+
+        /// <summary>
+        /// Send MeterValues.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
+        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+        /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<MeterValuesResponse>
+
+            SendMeterValues(this IChargePointNode    ChargePoint,
+                            Connector_Id             ConnectorId,
+                            IEnumerable<MeterValue>  MeterValues,
+                            Transaction_Id?          TransactionId         = null,
+                            SourceRouting?           Destination           = null,
+
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
+
+                            CustomData?              CustomData            = null,
+
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.MeterValues(
+                       new MeterValuesRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           ConnectorId,
+                           MeterValues,
+                           TransactionId,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendStartTransactionNotification     (ConnectorId, IdTag, StartTimestamp, MeterStart, ReservationId = null, ...)
+
+        /// <summary>
+        /// Send a StartTransaction notification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
+        /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
+        /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
+        /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
+        /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<StartTransactionResponse>
+
+            SendStartTransactionNotification(this IChargePointNode    ChargePoint,
+                                             Connector_Id             ConnectorId,
+                                             IdToken                  IdTag,
+                                             DateTime                 StartTimestamp,
+                                             UInt64                   MeterStart,
+                                             Reservation_Id?          ReservationId         = null,
+                                             SourceRouting?           Destination           = null,
+
+                                             IEnumerable<KeyPair>?    SignKeys              = null,
+                                             IEnumerable<SignInfo>?   SignInfos             = null,
+                                             IEnumerable<Signature>?  Signatures            = null,
+
+                                             CustomData?              CustomData            = null,
+
+                                             Request_Id?              RequestId             = null,
+                                             DateTime?                RequestTimestamp      = null,
+                                             TimeSpan?                RequestTimeout        = null,
+                                             EventTracking_Id?        EventTrackingId       = null,
+                                             SerializationFormats?    SerializationFormat   = null,
+                                             CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.StartTransaction(
+                       new StartTransactionRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           ConnectorId,
+                           IdTag,
+                           StartTimestamp,
+                           MeterStart,
+                           ReservationId,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendStatusNotification               (ConnectorId, Status, ErrorCode, Info = null, StatusTimestamp = null, VendorId = null, VendorErrorCode = null, ...)
+
+        /// <summary>
+        /// Send a StatusNotification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
+        /// <param name="Status">The current status of the charge point.</param>
+        /// <param name="ErrorCode">The error code reported by the charge point.</param>
+        /// <param name="Info">Additional free format information related to the error.</param>
+        /// <param name="StatusTimestamp">The time for which the status is reported.</param>
+        /// <param name="VendorId">An optional identifier of a vendor-specific extension.</param>
+        /// <param name="VendorErrorCode">An optional vendor-specific error code.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<StatusNotificationResponse>
+
+            SendStatusNotification(this IChargePointNode    ChargePoint,
+                                   Connector_Id             ConnectorId,
+                                   ChargePointStatus        Status,
+                                   ChargePointErrorCodes    ErrorCode,
+                                   String?                  Info                  = null,
+                                   DateTime?                StatusTimestamp       = null,
+                                   String?                  VendorId              = null,
+                                   String?                  VendorErrorCode       = null,
+                                   SourceRouting?           Destination           = null,
+
+                                   IEnumerable<KeyPair>?    SignKeys              = null,
+                                   IEnumerable<SignInfo>?   SignInfos             = null,
+                                   IEnumerable<Signature>?  Signatures            = null,
+
+                                   CustomData?              CustomData            = null,
+
+                                   Request_Id?              RequestId             = null,
+                                   DateTime?                RequestTimestamp      = null,
+                                   TimeSpan?                RequestTimeout        = null,
+                                   EventTracking_Id?        EventTrackingId       = null,
+                                   SerializationFormats?    SerializationFormat   = null,
+                                   CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.StatusNotification(
+                       new StatusNotificationRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           ConnectorId,
+                           Status,
+                           ErrorCode,
+                           Info,
+                           StatusTimestamp,
+                           VendorId,
+                           VendorErrorCode,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendStopTransactionNotification      (TransactionId, StopTimestamp, MeterStop, IdTag = null, Reason = null, TransactionData = null, ...)
+
+        /// <summary>
+        /// Send a StopTransaction notification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
+        /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
+        /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
+        /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
+        /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
+        /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<StopTransactionResponse>
+
+            SendStopTransactionNotification(this IChargePointNode     ChargePoint,
+                                            Transaction_Id            TransactionId,
+                                            DateTime                  StopTimestamp,
+                                            UInt64                    MeterStop,
+                                            IdToken?                  IdTag                 = null,
+                                            Reasons?                  Reason                = null,
+                                            IEnumerable<MeterValue>?  TransactionData       = null,
+                                            SourceRouting?            Destination           = null,
+
+                                            IEnumerable<KeyPair>?     SignKeys              = null,
+                                            IEnumerable<SignInfo>?    SignInfos             = null,
+                                            IEnumerable<Signature>?   Signatures            = null,
+
+                                            CustomData?               CustomData            = null,
+
+                                            Request_Id?               RequestId             = null,
+                                            DateTime?                 RequestTimestamp      = null,
+                                            TimeSpan?                 RequestTimeout        = null,
+                                            EventTracking_Id?         EventTrackingId       = null,
+                                            SerializationFormats?     SerializationFormat   = null,
+                                            CancellationToken         CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.StopTransaction(
+                       new StopTransactionRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           TransactionId,
+                           StopTimestamp,
+                           MeterStop,
+                           IdTag,
+                           Reason,
+                           TransactionData,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #endregion
+
+        #region Common
+
+        #region TransferData                         (                    VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Transfer the given vendor-specific data to the given central system.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification field.</param>
+        /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<DataTransferResponse>
+
+            TransferData(this IChargePointNode    ChargePoint,
+                         Vendor_Id                VendorId,
+                         Message_Id?              MessageId             = null,
+                         JToken?                  Data                  = null,
+
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
+
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.DataTransfer(
+                       new DataTransferRequest(
+                           SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           VendorId,
+                           MessageId,
+                           Data,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region TransferData                         (Destination = null, VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Transfer the given vendor-specific data to the given destination.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="Destination">The networking node identification.</param>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification field.</param>
+        /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<DataTransferResponse>
+
+            TransferData(this IChargePointNode    ChargePoint,
+                         SourceRouting            Destination,
+                         Vendor_Id                VendorId,
+                         Message_Id?              MessageId             = null,
+                         JToken?                  Data                  = null,
+
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
+
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.DataTransfer(
+                       new DataTransferRequest(
+                           Destination,
+                           VendorId,
+                           MessageId,
+                           Data,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #endregion
+
+        #region Charging
 
         #region SendBootNotification                 (ChargePointVendor = null, ChargePointModel = null, ...)
 
@@ -318,70 +764,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendDiagnosticsStatusNotification    (DiagnosticsStatus, ...)
-
-        /// <summary>
-        /// Send a diagnostics status notification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="DiagnosticsStatus">The diagnostics status.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<DiagnosticsStatusNotificationResponse>
-
-            SendDiagnosticsStatusNotification(this IChargePointNode    ChargePoint,
-                                              DiagnosticsStatus        DiagnosticsStatus,
-                                              SourceRouting?           Destination           = null,
-
-                                              IEnumerable<KeyPair>?    SignKeys              = null,
-                                              IEnumerable<SignInfo>?   SignInfos             = null,
-                                              IEnumerable<Signature>?  Signatures            = null,
-
-                                              CustomData?              CustomData            = null,
-
-                                              Request_Id?              RequestId             = null,
-                                              DateTime?                RequestTimestamp      = null,
-                                              TimeSpan?                RequestTimeout        = null,
-                                              EventTracking_Id?        EventTrackingId       = null,
-                                              SerializationFormats?    SerializationFormat   = null,
-                                              CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.DiagnosticsStatusNotification(
-                       new DiagnosticsStatusNotificationRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           DiagnosticsStatus,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
         #region SendFirmwareStatusNotification       (FirmwareStatus, ...)
 
         /// <summary>
@@ -427,6 +809,138 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        new FirmwareStatusNotificationRequest(
                            Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
                            FirmwareStatus,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SendSignedFirmwareStatusNotification (FirmwareStatus, ...)
+
+        /// <summary>
+        /// Send a SignedFirmwareStatusNotification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="FirmwareStatus">The firmware status.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<SignedFirmwareStatusNotificationResponse>
+
+            SendSignedFirmwareStatusNotification(this IChargePointNode    ChargePoint,
+                                                 FirmwareStatus           FirmwareStatus,
+                                                 SourceRouting?           Destination           = null,
+
+                                                 IEnumerable<KeyPair>?    SignKeys              = null,
+                                                 IEnumerable<SignInfo>?   SignInfos             = null,
+                                                 IEnumerable<Signature>?  Signatures            = null,
+
+                                                 CustomData?              CustomData            = null,
+
+                                                 Request_Id?              RequestId             = null,
+                                                 DateTime?                RequestTimestamp      = null,
+                                                 TimeSpan?                RequestTimeout        = null,
+                                                 EventTracking_Id?        EventTrackingId       = null,
+                                                 SerializationFormats?    SerializationFormat   = null,
+                                                 CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.SignedFirmwareStatusNotification(
+                       new SignedFirmwareStatusNotificationRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           FirmwareStatus,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #endregion
+
+        #region Monitoring
+
+        #region SendDiagnosticsStatusNotification    (DiagnosticsStatus, ...)
+
+        /// <summary>
+        /// Send a diagnostics status notification.
+        /// </summary>
+        /// <param name="ChargePoint">The charge point.</param>
+        /// <param name="DiagnosticsStatus">The diagnostics status.</param>
+        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
+        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<DiagnosticsStatusNotificationResponse>
+
+            SendDiagnosticsStatusNotification(this IChargePointNode    ChargePoint,
+                                              DiagnosticsStatus        DiagnosticsStatus,
+                                              SourceRouting?           Destination           = null,
+
+                                              IEnumerable<KeyPair>?    SignKeys              = null,
+                                              IEnumerable<SignInfo>?   SignInfos             = null,
+                                              IEnumerable<Signature>?  Signatures            = null,
+
+                                              CustomData?              CustomData            = null,
+
+                                              Request_Id?              RequestId             = null,
+                                              DateTime?                RequestTimestamp      = null,
+                                              TimeSpan?                RequestTimeout        = null,
+                                              EventTracking_Id?        EventTrackingId       = null,
+                                              SerializationFormats?    SerializationFormat   = null,
+                                              CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.DiagnosticsStatusNotification(
+                       new DiagnosticsStatusNotificationRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           DiagnosticsStatus,
 
                            SignKeys,
                            SignInfos,
@@ -583,504 +1097,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendSignedFirmwareStatusNotification (FirmwareStatus, ...)
-
-        /// <summary>
-        /// Send a SignedFirmwareStatusNotification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="FirmwareStatus">The firmware status.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<SignedFirmwareStatusNotificationResponse>
-
-            SendSignedFirmwareStatusNotification(this IChargePointNode    ChargePoint,
-                                                 FirmwareStatus           FirmwareStatus,
-                                                 SourceRouting?           Destination           = null,
-
-                                                 IEnumerable<KeyPair>?    SignKeys              = null,
-                                                 IEnumerable<SignInfo>?   SignInfos             = null,
-                                                 IEnumerable<Signature>?  Signatures            = null,
-
-                                                 CustomData?              CustomData            = null,
-
-                                                 Request_Id?              RequestId             = null,
-                                                 DateTime?                RequestTimestamp      = null,
-                                                 TimeSpan?                RequestTimeout        = null,
-                                                 EventTracking_Id?        EventTrackingId       = null,
-                                                 SerializationFormats?    SerializationFormat   = null,
-                                                 CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.SignedFirmwareStatusNotification(
-                       new SignedFirmwareStatusNotificationRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           FirmwareStatus,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
         #endregion
-
-
-        #region SendStartTransactionNotification     (ConnectorId, IdTag, StartTimestamp, MeterStart, ReservationId = null, ...)
-
-        /// <summary>
-        /// Send a start transaction notification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="ConnectorId">The connector identification at the charge point.</param>
-        /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
-        /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
-        /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
-        /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<StartTransactionResponse>
-
-            SendStartTransactionNotification(this IChargePointNode    ChargePoint,
-                                             Connector_Id             ConnectorId,
-                                             IdToken                  IdTag,
-                                             DateTime                 StartTimestamp,
-                                             UInt64                   MeterStart,
-                                             Reservation_Id?          ReservationId         = null,
-                                             SourceRouting?           Destination           = null,
-
-                                             IEnumerable<KeyPair>?    SignKeys              = null,
-                                             IEnumerable<SignInfo>?   SignInfos             = null,
-                                             IEnumerable<Signature>?  Signatures            = null,
-
-                                             CustomData?              CustomData            = null,
-
-                                             Request_Id?              RequestId             = null,
-                                             DateTime?                RequestTimestamp      = null,
-                                             TimeSpan?                RequestTimeout        = null,
-                                             EventTracking_Id?        EventTrackingId       = null,
-                                             SerializationFormats?    SerializationFormat   = null,
-                                             CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.StartTransaction(
-                       new StartTransactionRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           ConnectorId,
-                           IdTag,
-                           StartTimestamp,
-                           MeterStart,
-                           ReservationId,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region SendStatusNotification               (ConnectorId, Status, ErrorCode, Info = null, StatusTimestamp = null, VendorId = null, VendorErrorCode = null, ...)
-
-        /// <summary>
-        /// Send a status notification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="ConnectorId">The connector identification at the charge point.</param>
-        /// <param name="Status">The current status of the charge point.</param>
-        /// <param name="ErrorCode">The error code reported by the charge point.</param>
-        /// <param name="Info">Additional free format information related to the error.</param>
-        /// <param name="StatusTimestamp">The time for which the status is reported.</param>
-        /// <param name="VendorId">An optional identifier of a vendor-specific extension.</param>
-        /// <param name="VendorErrorCode">An optional vendor-specific error code.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<StatusNotificationResponse>
-
-            SendStatusNotification(this IChargePointNode    ChargePoint,
-                                   Connector_Id             ConnectorId,
-                                   ChargePointStatus        Status,
-                                   ChargePointErrorCodes    ErrorCode,
-                                   String?                  Info                  = null,
-                                   DateTime?                StatusTimestamp       = null,
-                                   String?                  VendorId              = null,
-                                   String?                  VendorErrorCode       = null,
-                                   SourceRouting?           Destination           = null,
-
-                                   IEnumerable<KeyPair>?    SignKeys              = null,
-                                   IEnumerable<SignInfo>?   SignInfos             = null,
-                                   IEnumerable<Signature>?  Signatures            = null,
-
-                                   CustomData?              CustomData            = null,
-
-                                   Request_Id?              RequestId             = null,
-                                   DateTime?                RequestTimestamp      = null,
-                                   TimeSpan?                RequestTimeout        = null,
-                                   EventTracking_Id?        EventTrackingId       = null,
-                                   SerializationFormats?    SerializationFormat   = null,
-                                   CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.StatusNotification(
-                       new StatusNotificationRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           ConnectorId,
-                           Status,
-                           ErrorCode,
-                           Info,
-                           StatusTimestamp,
-                           VendorId,
-                           VendorErrorCode,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region SendMeterValues                      (ConnectorId, MeterValues, TransactionId = null, ...)
-
-        /// <summary>
-        /// Send meter values.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="ConnectorId">The connector identification at the charge point.</param>
-        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
-        /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<MeterValuesResponse>
-
-            SendMeterValues(this IChargePointNode    ChargePoint,
-                            Connector_Id             ConnectorId,
-                            IEnumerable<MeterValue>  MeterValues,
-                            Transaction_Id?          TransactionId         = null,
-                            SourceRouting?           Destination           = null,
-
-                            IEnumerable<KeyPair>?    SignKeys              = null,
-                            IEnumerable<SignInfo>?   SignInfos             = null,
-                            IEnumerable<Signature>?  Signatures            = null,
-
-                            CustomData?              CustomData            = null,
-
-                            Request_Id?              RequestId             = null,
-                            DateTime?                RequestTimestamp      = null,
-                            TimeSpan?                RequestTimeout        = null,
-                            EventTracking_Id?        EventTrackingId       = null,
-                            SerializationFormats?    SerializationFormat   = null,
-                            CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.MeterValues(
-                       new MeterValuesRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           ConnectorId,
-                           MeterValues,
-                           TransactionId,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region SendStopTransactionNotification      (TransactionId, StopTimestamp, MeterStop, IdTag = null, Reason = null, TransactionData = null, ...)
-
-        /// <summary>
-        /// Send a stop transaction notification.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
-        /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
-        /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
-        /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
-        /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
-        /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
-        /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<StopTransactionResponse>
-
-            SendStopTransactionNotification(this IChargePointNode     ChargePoint,
-                                            Transaction_Id            TransactionId,
-                                            DateTime                  StopTimestamp,
-                                            UInt64                    MeterStop,
-                                            IdToken?                  IdTag                 = null,
-                                            Reasons?                  Reason                = null,
-                                            IEnumerable<MeterValue>?  TransactionData       = null,
-                                            SourceRouting?            Destination           = null,
-
-                                            IEnumerable<KeyPair>?     SignKeys              = null,
-                                            IEnumerable<SignInfo>?    SignInfos             = null,
-                                            IEnumerable<Signature>?   Signatures            = null,
-
-                                            CustomData?               CustomData            = null,
-
-                                            Request_Id?               RequestId             = null,
-                                            DateTime?                 RequestTimestamp      = null,
-                                            TimeSpan?                 RequestTimeout        = null,
-                                            EventTracking_Id?         EventTrackingId       = null,
-                                            SerializationFormats?     SerializationFormat   = null,
-                                            CancellationToken         CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.StopTransaction(
-                       new StopTransactionRequest(
-                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           TransactionId,
-                           StopTimestamp,
-                           MeterStop,
-                           IdTag,
-                           Reason,
-                           TransactionData,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           CustomData,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-
-        #region TransferData                         (                    VendorId, MessageId = null, Data = null, ...)
-
-        /// <summary>
-        /// Transfer the given data to the given central system.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<DataTransferResponse>
-
-            TransferData(this IChargePointNode    ChargePoint,
-                         Vendor_Id                VendorId,
-                         Message_Id?              MessageId             = null,
-                         JToken?                  Data                  = null,
-
-                         IEnumerable<KeyPair>?    SignKeys              = null,
-                         IEnumerable<SignInfo>?   SignInfos             = null,
-                         IEnumerable<Signature>?  Signatures            = null,
-
-                         Request_Id?              RequestId             = null,
-                         DateTime?                RequestTimestamp      = null,
-                         TimeSpan?                RequestTimeout        = null,
-                         EventTracking_Id?        EventTrackingId       = null,
-                         SerializationFormats?    SerializationFormat   = null,
-                         CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.DataTransfer(
-                       new DataTransferRequest(
-                           SourceRouting.To(NetworkingNode_Id.CentralSystem),
-                           VendorId,
-                           MessageId,
-                           Data,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region TransferData                         (Destination = null, VendorId, MessageId = null, Data = null, ...)
-
-        /// <summary>
-        /// Transfer the given data to the given central system.
-        /// </summary>
-        /// <param name="ChargePoint">The charge point.</param>
-        /// <param name="Destination">The networking node identification.</param>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
-        /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<DataTransferResponse>
-
-            TransferData(this IChargePointNode    ChargePoint,
-                         SourceRouting            Destination,
-                         Vendor_Id                VendorId,
-                         Message_Id?              MessageId             = null,
-                         JToken?                  Data                  = null,
-
-                         IEnumerable<KeyPair>?    SignKeys              = null,
-                         IEnumerable<SignInfo>?   SignInfos             = null,
-                         IEnumerable<Signature>?  Signatures            = null,
-
-                         Request_Id?              RequestId             = null,
-                         DateTime?                RequestTimestamp      = null,
-                         TimeSpan?                RequestTimeout        = null,
-                         EventTracking_Id?        EventTrackingId       = null,
-                         SerializationFormats?    SerializationFormat   = null,
-                         CancellationToken        CancellationToken     = default)
-
-
-                => ChargePoint.OCPP.OUT.DataTransfer(
-                       new DataTransferRequest(
-                           Destination,
-                           VendorId,
-                           MessageId,
-                           Data,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           RequestId        ?? ChargePoint.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(ChargePoint.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
 
     }
 
