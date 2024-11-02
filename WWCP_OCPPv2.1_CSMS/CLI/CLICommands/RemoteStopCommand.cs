@@ -20,25 +20,22 @@
 using org.GraphDefined.Vanaheimr.CLI;
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPPv1_6.CS;
-
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Reset the current networking node
+    /// Stop a charging session at the current charging station.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
-    //[CLIContext([ DefaultStrings.OCPPv1_6 ])]
-    public class ResetCommand(ICentralSystemCLI CLI) : ACLICommand<ICentralSystemCLI>(CLI),
-                                                       ICLICommand
+    public class RemoteStopCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+                                                   ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(ResetCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(RemoteStopCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -49,11 +46,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
 
             // No suggestions without a defined RemoteSystemId and matching OCPP version!
             if (!cli.RemoteSystemIdIsSet() ||
-                 cli.GetRemoteSystemOCPPVersion() != DefaultStrings.OCPPv1_6)
+                 cli.GetRemoteSystemOCPPVersion() != DefaultStrings.OCPPv2_1)
             {
                 return [];
             }
-
 
             if (Arguments.Length > 2 &&
                 CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
@@ -114,15 +110,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
             if (Arguments.Length == 2)
             {
 
-                if (ResetType.TryParse(Arguments[1], out var resetType))
+                if (Transaction_Id.TryParse(Arguments[1], out var transactionId))
                 {
 
-                    var response = await cli.OCPP.OUT.Reset(
-                                             new ResetRequest(
-                                                 Destination:  sourceRoute,
-                                                 ResetType:    resetType
-                                             )
-                                         );
+                    var response  = await cli.OCPP.OUT.RequestStopTransaction(
+                                              new RequestStopTransactionRequest(
+                                                  Destination:           sourceRoute,
+                                                  TransactionId:         transactionId,
+
+                                                  SignKeys:              null,
+                                                  SignInfos:             null,
+                                                  Signatures:            null,
+
+                                                  CustomData:            null,
+
+                                                  RequestId:             null,
+                                                  RequestTimestamp:      null,
+                                                  RequestTimeout:        null,
+                                                  EventTrackingId:       null,
+                                                  NetworkPath:           null,
+                                                  SerializationFormat:   null,
+                                                  CancellationToken:     CancellationToken
+                                              )
+                                          );
 
                     return [
                         $"{Arguments.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms",
@@ -131,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
 
                 }
 
-                return [ $"Invalid reset type '{Arguments[1]}'!" ];
+                return [$"Invalid transaction identification: '{Arguments[1]}'!"];
 
             }
 

@@ -26,18 +26,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Reset the current networking node
+    /// Start a charging session at the current charging station.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
-    //[CLIContext([ DefaultStrings.OCPPv2_0_1,
-    //              DefaultStrings.OCPPv2_1 ])]
-    public class ResetCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
-                                              ICLICommand
+    public class RemoteStartCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+                                                    ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(ResetCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(RemoteStartCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -109,27 +107,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
 
 
-            if (Arguments.Length == 2)
+            if (Arguments.Length == 2 || Arguments.Length == 3)
             {
 
-                if (ResetType.TryParse(Arguments[1], out var resetType))
+                EVSE_Id? evseId = null;
+
+                if (Arguments.Length == 3)
                 {
 
-                    var response = await cli.OCPP.OUT.Reset(
-                                             new ResetRequest(
-                                                 Destination:  sourceRoute,
-                                                 ResetType:    resetType
-                                             )
-                                         );
-
-                    return [
-                        $"{Arguments.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms",
-                        response.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented)
-                    ];
+                    if (EVSE_Id.TryParse(Arguments[2], out var _evseId))
+                        evseId = _evseId;
+                    else
+                        return [ $"Invalid EVSE identification: '{Arguments[2]}'!" ];
 
                 }
 
-                return [ $"Invalid reset type '{Arguments[1]}'!" ];
+                var idTokenValue  = Arguments[1];
+                var idTokenType   = IdTokenType.eMAID;
+
+                var response      = await cli.OCPP.OUT.RequestStartTransaction(
+                                              new RequestStartTransactionRequest(
+                                                  Destination:                        sourceRoute,
+                                                  RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
+                                                  IdToken:                            new IdToken(
+                                                                                          Value:             idTokenValue,
+                                                                                          Type:              idTokenType,
+                                                                                          AdditionalInfos:   null,
+                                                                                          CustomData:        null
+                                                                                      ),
+                                                  EVSEId:                             evseId,
+                                                  ChargingProfile:                    null,
+                                                  GroupIdToken:                       null,
+                                                  TransactionLimits:                  null,
+
+                                                  SignKeys:                           null,
+                                                  SignInfos:                          null,
+                                                  Signatures:                         null,
+
+                                                  CustomData:                         null,
+
+                                                  RequestId:                          null,
+                                                  RequestTimestamp:                   null,
+                                                  RequestTimeout:                     null,
+                                                  EventTrackingId:                    null,
+                                                  NetworkPath:                        null,
+                                                  SerializationFormat:                null,
+                                                  CancellationToken:                  CancellationToken
+                                              )
+                                          );
+
+                return [
+                    $"{Arguments.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms",
+                    response.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented)
+                ];
 
             }
 

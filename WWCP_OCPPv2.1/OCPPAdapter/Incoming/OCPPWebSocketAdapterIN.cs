@@ -307,6 +307,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
+                    // Most likely the first request message of a new connection (e.g. a BootNotificationRequest) will set the networking mode
+                    WebSocketConnection.TryAddCustomData(WebSocketKeys.X_WWCP_NetworkingMode, jsonRequestMessage.NetworkingMode);
+
 
                     #region OnJSONMessageRequestReceived
 
@@ -638,6 +641,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
 
                     #endregion
+
+                    // Most likely the first send message of a new connection (e.g. a RoutingInformation) will set the networking mode
+                    WebSocketConnection.TryAddCustomData(WebSocketKeys.X_WWCP_NetworkingMode, jsonSendMessage.NetworkingMode);
 
 
                     #region OnJSONSendMessageReceived

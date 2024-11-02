@@ -17,24 +17,18 @@
 
 #region Usings
 
-using System.Reflection;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.OCPP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
 

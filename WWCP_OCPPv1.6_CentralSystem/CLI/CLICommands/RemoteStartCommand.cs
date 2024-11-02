@@ -28,17 +28,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
 {
 
     /// <summary>
-    /// Reset the current networking node
+    /// Start a charging session at the current charging station.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
-    //[CLIContext([ DefaultStrings.OCPPv1_6 ])]
-    public class ResetCommand(ICentralSystemCLI CLI) : ACLICommand<ICentralSystemCLI>(CLI),
-                                                       ICLICommand
+    public class RemoteStartCommand(ICentralSystemCLI CLI) : ACLICommand<ICentralSystemCLI>(CLI),
+                                                             ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(ResetCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(RemoteStartCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -53,7 +52,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
             {
                 return [];
             }
-
 
             if (Arguments.Length > 2 &&
                 CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
@@ -111,18 +109,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
                 return [];
 
 
-            if (Arguments.Length == 2)
+            if (Arguments.Length == 2 || Arguments.Length == 3)
             {
 
-                if (ResetType.TryParse(Arguments[1], out var resetType))
+                if (IdToken.TryParse(Arguments[1], out var idToken))
                 {
 
-                    var response = await cli.OCPP.OUT.Reset(
-                                             new ResetRequest(
-                                                 Destination:  sourceRoute,
-                                                 ResetType:    resetType
-                                             )
-                                         );
+                    Connector_Id? connectorId = null;
+
+                    if (Arguments.Length == 3)
+                    {
+
+                        if (Connector_Id.TryParse(Arguments[2], out var _connectorId))
+                            connectorId = _connectorId;
+                        else
+                            return [ $"Invalid connector identification: '{Arguments[2]}'!" ];
+
+                    }
+
+                    var response  = await cli.OCPP.OUT.RemoteStartTransaction(
+                                              new RemoteStartTransactionRequest(
+                                                  Destination:           sourceRoute,
+                                                  IdTag:                 idToken,
+                                                  ConnectorId:           connectorId,
+                                                  ChargingProfile:       null,
+
+                                                  SignKeys:              null,
+                                                  SignInfos:             null,
+                                                  Signatures:            null,
+
+                                                  CustomData:            null,
+
+                                                  RequestId:             null,
+                                                  RequestTimestamp:      null,
+                                                  RequestTimeout:        null,
+                                                  EventTrackingId:       null,
+                                                  NetworkPath:           null,
+                                                  SerializationFormat:   null,
+                                                  CancellationToken:     CancellationToken
+                                              )
+                                          );
 
                     return [
                         $"{Arguments.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms",
@@ -131,11 +157,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
 
                 }
 
-                return [ $"Invalid reset type '{Arguments[1]}'!" ];
+                return [ $"Invalid idToken: '{Arguments[2]}'!" ];
 
             }
 
-            return [ $"Usage: {CommandName} <{ResetType.All.Select(_ => _.ToString()).AggregateWith("|")}>" ];
+            return [ $"Usage: {CommandName} <idToken> [connectorId]" ];
 
         }
 
@@ -144,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
         #region Help()
 
         public override String Help()
-            => $"{CommandName} <{ResetType.All.Select(_ => _.ToString()).AggregateWith("|")}> - Reset the current networking node";
+            => $"{CommandName} <idToken> [connectorId] - Start a charging session";
 
         #endregion
 

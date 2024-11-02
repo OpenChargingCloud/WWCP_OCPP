@@ -17,8 +17,9 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System.Text.RegularExpressions;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -98,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new identification token.
         /// </summary>
         /// <param name="Token">A string (20 characters).</param>
-        private IdToken(String  Token)
+        private IdToken(String Token)
         {
             this.InternalId = Token;
         }
