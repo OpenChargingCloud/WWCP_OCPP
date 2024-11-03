@@ -817,8 +817,16 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                                       new JProperty("disableWebSocketPings",        ocppWebSocketServer.DisableWebSocketPings),
                                                                                       new JProperty("webSocketPingEvery",           ocppWebSocketServer.WebSocketPingEvery.TotalSeconds),
                                                                                       new JProperty("slowNetworkSimulationDelay",   ocppWebSocketServer.SlowNetworkSimulationDelay?.TotalMilliseconds),
-                                                                                      new JProperty("maxTextMessageSize",           ocppWebSocketServer.MaxTextMessageSize),
-                                                                                      new JProperty("maxBinaryMessageSize",         ocppWebSocketServer.MaxBinaryMessageSize)
+
+                                                                                      new JProperty("maxTextMessageSizeIn",         ocppWebSocketServer.MaxTextMessageSizeIn),
+                                                                                      new JProperty("maxTextMessageSizeOut",        ocppWebSocketServer.MaxTextMessageSizeOut),
+                                                                                      new JProperty("maxTextFragmentLengthIn",      ocppWebSocketServer.MaxTextFragmentLengthIn),
+                                                                                      new JProperty("maxTextFragmentLengthOut",     ocppWebSocketServer.MaxTextFragmentLengthOut),
+
+                                                                                      new JProperty("maxBinaryMessageSizeIn",       ocppWebSocketServer.MaxBinaryMessageSizeIn),
+                                                                                      new JProperty("maxBinaryMessageSizeOut",      ocppWebSocketServer.MaxBinaryMessageSizeOut),
+                                                                                      new JProperty("maxBinaryFragmentLengthIn",    ocppWebSocketServer.MaxBinaryFragmentLengthIn),
+                                                                                      new JProperty("maxBinaryFragmentLengthOut",   ocppWebSocketServer.MaxBinaryFragmentLengthOut)
 
                                                                                   ));
 
