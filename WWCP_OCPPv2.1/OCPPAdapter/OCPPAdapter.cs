@@ -86,6 +86,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public OCPPWebSocketAdapterFORWARD  FORWARD                  { get; }
 
+        public RegistrationStatus           DefaultRegistrationStatus { get; set; } = RegistrationStatus.Rejected;
+
+
         /// <summary>
         /// Disable the sending of heartbeats.
         /// </summary>

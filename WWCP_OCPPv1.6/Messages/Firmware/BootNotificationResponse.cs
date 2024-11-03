@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                Request,
 
                                                XML.MapValueOrFail      (OCPPNS.OCPPv1_6_CS + "status",
-                                                                        RegistrationStatusExtensions.Parse),
+                                                                        RegistrationStatus.Parse),
 
                                                XML.ParseTimestampOrFail(OCPPNS.OCPPv1_6_CS + "currentTime"),
 
@@ -377,18 +377,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Status         [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "registration status",
-                                       RegistrationStatusExtensions.Parse,
-                                       out RegistrationStatus RegistrationStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "registration status",
+                                         OCPPv1_6.RegistrationStatus.TryParse,
+                                         out RegistrationStatus RegistrationStatus,
+                                         out ErrorResponse))
                 {
-                    return false;
-                }
-
-                if (RegistrationStatus == RegistrationStatus.Unknown)
-                {
-                    ErrorResponse = "Unknown registration status '" + JSON["status"]?.Value<String>() + "' received!";
                     return false;
                 }
 
@@ -495,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => new (OCPPNS.OCPPv1_6_CS + "bootNotificationResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",       Status.           AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "status",       Status.           ToString()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",  CurrentTime.      ToIso8601()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "interval",     (UInt32) HeartbeatInterval.TotalSeconds)
 
@@ -518,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",        Status.     AsText()),
+                                 new JProperty("status",        Status.     ToString()),
                                  new JProperty("currentTime",   CurrentTime.ToIso8601()),
                                  new JProperty("interval",      (UInt32) HeartbeatInterval.TotalSeconds),
 

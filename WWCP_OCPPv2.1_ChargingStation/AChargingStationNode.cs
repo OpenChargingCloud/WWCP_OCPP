@@ -765,24 +765,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             OCPP.IN.OnBootNotificationResponseReceived += (timestamp, sender, connection, request, response, runtime, ct) => {
 
-                switch (response.Status)
+                if (response.Status == RegistrationStatus.Accepted)
                 {
+                    this.DisableSendHeartbeats  = false;
+                    this.SendHeartbeatsEvery    = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
+                    this.SendHeartbeatsTimer.Change(this.SendHeartbeatsEvery, this.SendHeartbeatsEvery);
+                    this.CSMSTime               = response.CurrentTime;
+                }
 
-                    case RegistrationStatus.Accepted:
-                        this.CSMSTime               = response.CurrentTime;
-                        this.SendHeartbeatsEvery    = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
-                        this.SendHeartbeatsTimer.Change(this.SendHeartbeatsEvery, this.SendHeartbeatsEvery);
-                        this.DisableSendHeartbeats  = false;
-                        break;
+                else if (response.Status == RegistrationStatus.Pending)
+                {
+                    this.DisableSendHeartbeats  = false;
+                    this.SendHeartbeatsEvery    = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
+                    this.SendHeartbeatsTimer.Change(this.SendHeartbeatsEvery, this.SendHeartbeatsEvery);
+                    this.CSMSTime               = response.CurrentTime;
+                }
 
-                    case RegistrationStatus.Pending:
-                        // Do not reconnect before: response.HeartbeatInterval
-                        break;
-
-                    case RegistrationStatus.Rejected:
-                        // Do not reconnect before: response.HeartbeatInterval
-                        break;
-
+                else
+                {
+                    this.DisableSendHeartbeats  = true;
+                    this.SendHeartbeatsTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 }
 
                 return Task.CompletedTask;

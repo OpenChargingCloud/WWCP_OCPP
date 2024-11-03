@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("status",
                                          "registration status",
-                                         RegistrationStatusExtensions.TryParse,
+                                         OCPPv2_1.RegistrationStatus.TryParse,
                                          out RegistrationStatus RegistrationStatus,
                                          out ErrorResponse))
                 {
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("status",
                                          "registration status",
-                                         RegistrationStatusExtensions.TryParse,
+                                         OCPPv2_1.RegistrationStatus.TryParse,
                                          out RegistrationStatus RegistrationStatus,
                                          out ErrorResponse))
                 {
@@ -705,7 +705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",        Status.           AsText()),
+                                 new JProperty("status",        Status.           ToString()),
                                  new JProperty("currentTime",   CurrentTime.      ToIso8601()),
                                  new JProperty("interval",      (UInt32) Interval.TotalSeconds),
 
