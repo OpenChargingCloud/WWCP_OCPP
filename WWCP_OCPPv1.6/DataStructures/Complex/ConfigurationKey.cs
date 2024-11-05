@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.ParseMandatoryText("key",
                                              "configuration key",
-                                             out String Key,
+                                             out String? Key,
                                              out ErrorResponse))
                 {
                     return false;

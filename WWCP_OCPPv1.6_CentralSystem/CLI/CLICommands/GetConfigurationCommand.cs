@@ -32,13 +32,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem.CommandLine
     /// </summary>
     /// <param name="CLI">The command line interface</param>
     //[CLIContext([ DefaultStrings.OCPPv1_6 ])]
-    public class GetConfigCommand(ICentralSystemCLI CLI) : ACLICommand<ICentralSystemCLI>(CLI),
-                                                           ICLICommand
+    public class GetConfigurationCommand(ICentralSystemCLI CLI) : ACLICommand<ICentralSystemCLI>(CLI),
+                                                                  ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(GetConfigCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(GetConfigurationCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
