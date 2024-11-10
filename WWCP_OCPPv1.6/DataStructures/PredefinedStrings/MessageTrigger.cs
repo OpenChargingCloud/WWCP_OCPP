@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -67,20 +68,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Indicates whether this message trigger is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly Boolean                    IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this message trigger is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly Boolean                    IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the message trigger.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly UInt64                     Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered message triggers.
+        /// </summary>
+        public static IEnumerable<MessageTrigger>  All
+            => lookup.Values;
 
         #endregion
 
@@ -110,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse     (Text)
 
         /// <summary>
         /// Parse the given string as a message trigger.
@@ -129,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse  (Text)
 
         /// <summary>
         /// Try to parse the given text as message trigger.
@@ -147,14 +154,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(Text, out MessageTrigger)
+        #region (static) TryParse  (Text, out MessageTrigger)
 
         /// <summary>
         /// Try to parse the given text as message trigger.
         /// </summary>
         /// <param name="Text">A text representation of a message trigger.</param>
         /// <param name="MessageTrigger">The parsed message trigger.</param>
-        public static Boolean TryParse(String Text, out MessageTrigger MessageTrigger)
+        public static Boolean TryParse(String                                  Text,
+                                       [NotNullWhen(true)] out MessageTrigger  MessageTrigger)
         {
 
             Text = Text.Trim();
@@ -173,6 +181,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return false;
 
         }
+
+        #endregion
+
+        #region (static) IsDefined (Text, out MessageTrigger)
+
+        /// <summary>
+        /// Check whether the given text is a defined message trigger.
+        /// </summary>
+        /// <param name="Text">A text representation of a message trigger.</param>
+        /// <param name="MessageTrigger">The parsed message trigger.</param>
+        public static Boolean IsDefined(String                                 Text,
+                                       [NotNullWhen(true)] out MessageTrigger  MessageTrigger)
+
+            => lookup.TryGetValue(Text.Trim(), out MessageTrigger);
 
         #endregion
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -116,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse     (Text)
 
         /// <summary>
         /// Parse the given string as a reset type.
@@ -135,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse  (Text)
 
         /// <summary>
         /// Try to parse the given text as a reset type.
@@ -153,14 +155,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(Text, out ResetType)
+        #region (static) TryParse  (Text, out ResetType)
 
         /// <summary>
         /// Try to parse the given text as a reset type.
         /// </summary>
         /// <param name="Text">A text representation of a reset type.</param>
         /// <param name="ResetType">The parsed reset type.</param>
-        public static Boolean TryParse(String Text, out ResetType ResetType)
+        public static Boolean TryParse(String                             Text,
+                                       [NotNullWhen(true)] out ResetType  ResetType)
         {
 
             Text = Text.Trim();
@@ -179,6 +182,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return false;
 
         }
+
+        #endregion
+
+        #region (static) IsDefined (Text, out ResetType)
+
+        /// <summary>
+        /// Check whether the given text is a defined reset type.
+        /// </summary>
+        /// <param name="Text">A text representation of a reset type.</param>
+        /// <param name="ResetType">The validated reset type.</param>
+        public static Boolean IsDefined(String                            Text,
+                                       [NotNullWhen(true)] out ResetType  ResetType)
+
+            => lookup.TryGetValue(Text.Trim(), out ResetType);
 
         #endregion
 

@@ -610,7 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region Charging
+        #region Firmware
 
         #region SendBootNotification                 (ChargePointVendor = null, ChargePointModel = null, ...)
 
