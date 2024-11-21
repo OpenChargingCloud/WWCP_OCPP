@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional type of the attribute.
         /// </summary>
         [Optional]
-        public AttributeTypes?   Type          { get; }
+        public AttributeTypes?  Type          { get; }
 
         /// <summary>
         /// The optional value of the attribute.
@@ -52,28 +52,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The max size of these values will always remain equal.
         /// </summary>
         [Optional]
-        public String?           Value         { get; }
+        public String?          Value         { get; }
 
         /// <summary>
         /// The optional mutability of this attribute.
         /// Default when omitted: Read/Write.
         /// </summary>
         [Optional]
-        public MutabilityTypes?  Mutability    { get; }
+        public MutabilityTypes  Mutability    { get; }
 
         /// <summary>
         /// Optional persistency of the attribute across system reboots or power down.
         /// Default when omitted: false (no persistency).
         /// </summary>
         [Optional]
-        public Boolean?          Persistent    { get; }
+        public Boolean          Persistent    { get; }
 
         /// <summary>
         /// Optional constancy of the attribute at runtime.
         /// Default when omitted: false.
         /// </summary>
         [Optional]
-        public Boolean?          Constant      { get; }
+        public Boolean          Constant      { get; }
 
         #endregion
 
@@ -99,21 +99,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.Type        = Type;
+            this.Type        = Type       ?? AttributeTypes. Actual;
             this.Value       = Value;
-            this.Mutability  = Mutability;
-            this.Persistent  = Persistent;
-            this.Constant    = Constant;
+            this.Mutability  = Mutability ?? MutabilityTypes.ReadWrite;
+            this.Persistent  = Persistent ?? false;
+            this.Constant    = Constant   ?? false;
 
             unchecked
             {
 
-                hashCode = (this.Type?.      GetHashCode() ?? 0) * 13 ^
-                           (this.Value?.     GetHashCode() ?? 0) * 11 ^
-                           (this.Mutability?.GetHashCode() ?? 0) *  7 ^
-                           (this.Persistent?.GetHashCode() ?? 0) *  5 ^
-                           (this.Constant?.  GetHashCode() ?? 0) *  3 ^
-                            base.            GetHashCode();
+                hashCode = (this.Type?.     GetHashCode() ?? 0) * 13 ^
+                           (this.Value?.    GetHashCode() ?? 0) * 11 ^
+                            this.Mutability.GetHashCode()       *  7 ^
+                            this.Persistent.GetHashCode()       *  5 ^
+                            this.Constant.  GetHashCode()       *  3 ^
+                            base.           GetHashCode();
 
             }
 
@@ -337,27 +337,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                            Type.HasValue
-                               ? new JProperty("type",         Type.      Value.AsText())
+                               ? new JProperty("type",         Type.Value.AsText())
                                : null,
 
                            Value is not null
                                ? new JProperty("value",        Value)
                                : null,
 
-                           Mutability.HasValue
-                               ? new JProperty("mutability",   Mutability.Value.AsText())
+                           Mutability != MutabilityTypes.ReadWrite
+                               ? new JProperty("mutability",   Mutability.AsText())
                                : null,
 
-                           Persistent.HasValue
-                               ? new JProperty("persistent",   Persistent.Value)
+                           Persistent
+                               ? new JProperty("persistent",   Persistent)
                                : null,
 
-                           Constant.HasValue
-                               ? new JProperty("constant",     Constant.  Value)
+                           Constant
+                               ? new JProperty("constant",     Constant)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -462,21 +462,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => VariableAttribute is not null &&
 
-            ((!Type.      HasValue && !VariableAttribute.Type.      HasValue) ||
-               Type.      HasValue &&  VariableAttribute.Type.      HasValue && Type.      Value.Equals(VariableAttribute.Type.      Value)) &&
+            ((!Type.HasValue && !VariableAttribute.Type.HasValue) ||
+               Type.HasValue &&  VariableAttribute.Type.HasValue && Type.Value.Equals(VariableAttribute.Type.Value)) &&
 
-               String.Equals(Value, VariableAttribute.Value, StringComparison.Ordinal) &&
+                String.Equals(Value, VariableAttribute.Value, StringComparison.Ordinal) &&
 
-            ((!Mutability.HasValue && !VariableAttribute.Mutability.HasValue) ||
-               Mutability.HasValue &&  VariableAttribute.Mutability.HasValue && Mutability.Value.Equals(VariableAttribute.Mutability.Value)) &&
+            Mutability.Equals(VariableAttribute.Mutability) &&
+            Persistent.Equals(VariableAttribute.Persistent) &&
+            Constant.  Equals(VariableAttribute.Constant)   &&
 
-            ((!Persistent.HasValue && !VariableAttribute.Persistent.HasValue) ||
-               Persistent.HasValue &&  VariableAttribute.Persistent.HasValue && Persistent.Value.Equals(VariableAttribute.Persistent.Value)) &&
-
-            ((!Constant.  HasValue && !VariableAttribute.Constant.  HasValue) ||
-               Constant.  HasValue &&  VariableAttribute.Constant.  HasValue && Constant.  Value.Equals(VariableAttribute.Constant.  Value)) &&
-
-               base.  Equals(VariableAttribute);
+            base.      Equals(VariableAttribute);
 
         #endregion
 
@@ -511,21 +506,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        ? "Value: " + Value.SubstringMax(20)
                        : null,
 
-                   Mutability.HasValue
-                       ? "Mutability: " + Mutability.Value.AsText()
-                       : null,
+                   "Mutability: " + Mutability.AsText(),
 
-                   Persistent.HasValue
-                       ? Persistent.Value
-                             ? "persistent"
-                             : "not persistent"
-                       : null,
+                   Persistent
+                       ? "persistent"
+                       : "not persistent",
 
-                   Constant.HasValue
-                       ? Constant.Value
-                             ? "constant"
-                             : "not constant"
-                       : null
+                   Constant
+                       ? "constant"
+                       : "not constant"
 
                }.Where(text => text is not null).
                  AggregateWith(", ");
