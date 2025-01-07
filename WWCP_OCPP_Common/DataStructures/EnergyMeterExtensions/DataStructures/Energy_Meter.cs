@@ -1,12 +1,12 @@
 ﻿/*
- * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.gnu.org/licenses/agpl.html
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -576,27 +576,27 @@ namespace cloud.charging.open.protocols.OCPP
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this energy meter.
         /// </summary>
         public Energy_Meter Clone()
 
             => new (
 
                    Id.Clone,
-                   Name.       IsNotNullOrEmpty() ? Name.       Clone() : I18NString.Empty,
-                   Description.IsNotNullOrEmpty() ? Description.Clone() : I18NString.Empty,
+                   Name?.                     Clone(),
+                   Description?.              Clone(),
 
-                   Manufacturer    is not null ? new String(Manufacturer.ToCharArray()) : null,
-                   ManufacturerURL.HasValue    ? ManufacturerURL.Value.Clone : null,
-                   Model           is not null ? new String(Model.ToCharArray()) : null,
-                   ModelURL.       HasValue    ? ModelURL.       Value.Clone : null,
-                   SerialNumber    is not null ? new String(SerialNumber.   ToCharArray()) : null,
-                   HardwareVersion is not null ? new String(HardwareVersion.ToCharArray()) : null,
-                   FirmwareVersion is not null ? new String(FirmwareVersion.ToCharArray()) : null,
-                   KeyPairs.             Select(keyPair                    => keyPair.                   Clone()).ToArray(),
-                   PublicKeys.           Select(publicKey                  => publicKey.                 Clone()).ToArray(),
+                   Manufacturer?.             CloneString(),
+                   ManufacturerURL?.          Clone(),
+                   Model?.                    CloneString(),
+                   ModelURL?.                 Clone(),
+                   SerialNumber?.             CloneString(),
+                   HardwareVersion?.          CloneString(),
+                   FirmwareVersion?.          CloneString(),
+                   KeyPairs.                  Select(keyPair                    => keyPair.                   Clone()),
+                   PublicKeys.                Select(publicKey                  => publicKey.                 Clone()),
                    PublicKeyCertificateChain?.Clone(),
-                   TransparencySoftwares.Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone()).ToArray()
+                   TransparencySoftwares.     Select(transparencySoftwareStatus => transparencySoftwareStatus.Clone())
 
                );
 
