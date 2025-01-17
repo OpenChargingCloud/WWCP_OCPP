@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public ReactiveSet<Brand> Brands => throw new NotImplementedException();
 
-        public ReactiveSet<OpenDataLicense> DataLicenses => throw new NotImplementedException();
+        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
 
         public Address? Address { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string? OpenStreetMapNodeId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEAdminStatusTypes, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEAdminStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
@@ -789,6 +789,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public UserDefinedDictionary InternalData => throw new NotImplementedException();
 
+        public URL? CertificationInfo => throw new NotImplementedException();
+
+        public URL? CalibrationInfo => throw new NotImplementedException();
+
+        IEnumerable<DataLicense> IChargingStation.DataLicenses => throw new NotImplementedException();
+
+        public IEnumerable<RootCAInfo> MobilityRootCAs => throw new NotImplementedException();
+
+        public IEnumerable<EVRoamingPartnerInfo> EVRoamingPartners => throw new NotImplementedException();
 
         public void DeleteProperty<T>(ref T? FieldToChange, [CallerMemberName] string PropertyName = "")
         {
