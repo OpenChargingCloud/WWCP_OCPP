@@ -168,10 +168,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
         /// <summary>
-        /// The QR-Code Payments Controller
+        /// The Web Payments Controller
         /// </summary>
-        public QRCodePaymentsCtrlr? QRCodePaymentsController
-            => GetComponentConfigs<QRCodePaymentsCtrlr>(nameof(QRCodePaymentsCtrlr)).FirstOrDefault();
+        public WebPaymentsCtrlr? WebPaymentsController
+            => GetComponentConfigs<WebPaymentsCtrlr>(nameof(WebPaymentsCtrlr)).FirstOrDefault();
 
         #endregion
 
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             foreach (var connectorType in ConnectorTypes ?? [])
                 AddConnector(connectorType);
 
-            AddComponent(new QRCodePaymentsCtrlr(
+            AddComponent(new WebPaymentsCtrlr(
                              EVSE:             new EVSE(Id),
                              Enabled:          null,
                              URLTemplate:      null,
@@ -280,22 +280,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             await Task.Delay(1);
 
-            var qrCodePaymentsController = QRCodePaymentsController;
+            var webPaymentsController = WebPaymentsController;
 
-            if (qrCodePaymentsController is not null &&
-                qrCodePaymentsController.Enabled == true &&
-                qrCodePaymentsController.URLTemplate. IsNotNullOrEmpty() &&
-                qrCodePaymentsController.SharedSecret.IsNotNullOrEmpty() &&
+            if (webPaymentsController is not null &&
+                webPaymentsController.Enabled == true &&
+                webPaymentsController.URLTemplate.HasValue &&
+                webPaymentsController.SharedSecret.IsNotNullOrEmpty() &&
                 (!QRCodePaymentsEndTime.HasValue || DateTimeOffset.UtcNow > QRCodePaymentsEndTime.Value == true))
             {
 
                 var (url,
                      remainingTime,
                      endTime) = TOTPGenerator.GenerateURL(
-                                    qrCodePaymentsController.URLTemplate,
-                                    qrCodePaymentsController.SharedSecret,
-                                    qrCodePaymentsController.ValidityTime,
-                                    qrCodePaymentsController.Length
+                                    webPaymentsController.URLTemplate.Value,
+                                    webPaymentsController.SharedSecret,
+                                    webPaymentsController.ValidityTime,
+                                    webPaymentsController.Length
                                 );
 
                 QRCodePaymentsURL     = url;
@@ -330,23 +330,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",               Id.                      ToString()),
+                                 new JProperty("id",            Id.                      ToString()),
 
-                           QRCodePaymentsController?.Enabled == true
-                               ? new JProperty("qrCodePayments",   JSONObject.Create(
+                           WebPaymentsController?.Enabled == true
+                               ? new JProperty("webPayments",   JSONObject.Create(
 
-                                                                       new JProperty("enabled",        QRCodePaymentsController.Enabled),
-                                                                       // URLTemplate
-                                                                       new JProperty("validityTime",   QRCodePaymentsController.ValidityTime?.TotalSeconds),
-                                                                       // HashAlgorithm
-                                                                       // SharedSecret
-                                                                       // Length
-                                                                       // Encoding
-                                                                       // QRCodeQuality
-                                                                       // Signature
-                                                                       new JProperty("totp",          QRCodePaymentsController.ValidityTime)
+                                                                    new JProperty("enabled",        WebPaymentsController.Enabled),
+                                                                    // URLTemplate
+                                                                    new JProperty("validityTime",   WebPaymentsController.ValidityTime.TotalSeconds),
+                                                                    // HashAlgorithm
+                                                                    // SharedSecret
+                                                                    // Length
+                                                                    // Encoding
+                                                                    // QRCodeQuality
+                                                                    // Signature
+                                                                    new JProperty("totp",           WebPaymentsController.ValidityTime)
 
-                                                                   ))
+                                                                ))
                                : null
 
                        );

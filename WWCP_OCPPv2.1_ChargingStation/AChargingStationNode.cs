@@ -201,20 +201,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region QRCodePaymentsController
+        #region WebPaymentsController
 
         /// <summary>
-        /// All QR-Code Payments Controllers
+        /// All Web Payments Controllers
         /// </summary>
-        public IEnumerable<QRCodePaymentsCtrlr>  QRCodePaymentsController()
-            => GetComponentConfigs<QRCodePaymentsCtrlr>(nameof(QRCodePaymentsCtrlr));
+        public IEnumerable<WebPaymentsCtrlr>  WebPaymentsController()
+            => GetComponentConfigs<WebPaymentsCtrlr>(nameof(WebPaymentsCtrlr));
 
         /// <summary>
-        /// The QR-Code Payments Controller for the given EVSE.
+        /// The Web Payments Controller for the given EVSE.
         /// </summary>
         /// <param name="EVSEId">An EVSE identification.</param>
-        public QRCodePaymentsCtrlr?              QRCodePaymentsController(EVSE_Id EVSEId)
-            => GetComponentConfigs<QRCodePaymentsCtrlr>(nameof(QRCodePaymentsCtrlr), EVSEId).FirstOrDefault();
+        public WebPaymentsCtrlr?              WebPaymentsController(EVSE_Id EVSEId)
+            => GetComponentConfigs<WebPaymentsCtrlr>(nameof(WebPaymentsCtrlr), EVSEId).FirstOrDefault();
 
         #endregion
 
