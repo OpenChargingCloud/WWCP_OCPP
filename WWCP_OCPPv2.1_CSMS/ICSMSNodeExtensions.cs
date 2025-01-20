@@ -1655,10 +1655,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region QRCodeScanned               (Destination, EVSEId, Timeout, ...)
+        #region NotifyWebPaymentStarted     (Destination, EVSEId, Timeout, ...)
 
         /// <summary>
-        /// Send a QR code scanned notification.
+        /// Send a WebPaymentStarted notification.
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
         /// <param name="EVSEId">The identification of the EVSE to be reserved. A value of 0 means that the reservation is not for a specific EVSE.</param>
@@ -1672,29 +1672,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.QRCodeScannedResponse>
+        public static Task<CS.NotifyWebPaymentStartedResponse>
 
-            QRCodeScanned(this ICSMSNode           CSMS,
-                          SourceRouting            Destination,
-                          EVSE_Id                  EVSEId,
-                          TimeSpan                 Timeout,
+            NotifyWebPaymentStarted(this ICSMSNode           CSMS,
+                                    SourceRouting            Destination,
+                                    EVSE_Id                  EVSEId,
+                                    TimeSpan                 Timeout,
 
-                          IEnumerable<KeyPair>?    SignKeys              = null,
-                          IEnumerable<SignInfo>?   SignInfos             = null,
-                          IEnumerable<Signature>?  Signatures            = null,
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
 
-                          CustomData?              CustomData            = null,
+                                    CustomData?              CustomData            = null,
 
-                          Request_Id?              RequestId             = null,
-                          DateTime?                RequestTimestamp      = null,
-                          TimeSpan?                RequestTimeout        = null,
-                          EventTracking_Id?        EventTrackingId       = null,
-                          SerializationFormats?    SerializationFormat   = null,
-                          CancellationToken        CancellationToken     = default)
+                                    Request_Id?              RequestId             = null,
+                                    DateTime?                RequestTimestamp      = null,
+                                    TimeSpan?                RequestTimeout        = null,
+                                    EventTracking_Id?        EventTrackingId       = null,
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
 
 
-                => CSMS.OCPP.OUT.QRCodeScanned(
-                       new QRCodeScannedRequest(
+                => CSMS.OCPP.OUT.NotifyWebPaymentStarted(
+                       new NotifyWebPaymentStartedRequest(
                            Destination,
                            EVSEId,
                            Timeout,

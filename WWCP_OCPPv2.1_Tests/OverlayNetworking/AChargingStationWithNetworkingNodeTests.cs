@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
         #region SetupEachTest()
 
         [SetUp]
-        public override void SetupEachTest()
+        public override async Task SetupEachTest()
         {
 
-            InitNetworkingNode1 = true;
+            InitLocalController1 = true;
 
-            base.SetupEachTest();
+            await base.SetupEachTest();
 
         }
 

@@ -52,14 +52,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task SendBinaryData_Test1()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var now1            = Timestamp.Now;
                 var requestKeyPair  = ECCKeyPair.GenerateKeys()!;
-                testCSMS01.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultE2EChargingTariffRequest. DefaultJSONLDContext,
+                testCSMS1.      OCPP.SignaturePolicy.AddSigningRule     (SetDefaultE2EChargingTariffRequest. DefaultJSONLDContext,
                                                                           requestKeyPair!,
                                                                           UserIdGenerator:         (signableMessage) => "csms001",
                                                                           DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test request!"),
                                                                           TimestampGenerator:      (signableMessage) => now1);
 
-                testCSMS01.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultE2EChargingTariffResponse.DefaultJSONLDContext);
+                testCSMS1.      OCPP.SignaturePolicy.AddVerificationRule(SetDefaultE2EChargingTariffResponse.DefaultJSONLDContext);
 
                 #endregion
 
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
                                                      timeReference,
-                                                     testCSMS01.OCPP.CustomChargingTariffSerializer
+                                                     testCSMS1.OCPP.CustomChargingTariffSerializer
                                                      //testCSMS01.OCPP.CustomPriceSerializer,
                                                      //testCSMS01.OCPP.CustomTaxRateSerializer,
                                                      //testCSMS01.OCPP.CustomTariffElementSerializer,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 #endregion
 
 
-                var response        = await testCSMS01.SetDefaultE2EChargingTariff(
+                var response        = await testCSMS1.SetDefaultE2EChargingTariff(
                                                 Destination:      SourceRouting.To(chargingStation1.Id),
                                                 ChargingTariff:   (Tariff)chargingTariff,
                                                 CustomData:       null

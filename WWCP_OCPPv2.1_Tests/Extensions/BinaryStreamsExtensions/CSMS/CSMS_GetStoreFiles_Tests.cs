@@ -52,15 +52,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCSMS01.GetFile(
+                var response   = await testCSMS1.GetFile(
                                            Destination:    SourceRouting.To(chargingStation1.Id),
                                            FileName:       filename
                                        );
@@ -115,15 +115,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCSMS01.SendFile(
+                var response   = await testCSMS1.SendFile(
                                            Destination:    SourceRouting.To(   chargingStation1.Id),
                                            FileName:          filename,
                                            FileContent:       "Hello world!".ToUTF8Bytes(),
@@ -183,15 +183,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCSMS01.DeleteFile(
+                var response   = await testCSMS1.DeleteFile(
                                            Destination:    SourceRouting.To(chargingStation1.Id),
                                            FileName:       filename,
                                            FileSHA256:     SHA256.HashData("Hello world!".ToUTF8Bytes()),

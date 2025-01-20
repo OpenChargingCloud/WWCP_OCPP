@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
     /// Unit tests for charging stations sending messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class CSMS_Messages_Tests : AChargingStationWithNetworkingNodeTests
+    public class CSMS_Messages_Tests : AChargingStationWithLocalControllersTests
     {
 
         #region Reset_ChargingStation_Test()
@@ -50,8 +50,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
+                Assert.That(testCSMS1,                       Is.Not.Null);
+                Assert.That(testBackendWebSockets1,          Is.Not.Null);
                 Assert.That(localController1,                  Is.Not.Null);
 //                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
@@ -59,8 +59,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 Assert.That(chargingStation3,                 Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 localController1         is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                testCSMS01.      OCPP.OUT.    OnResetRequestSent     += (timestamp, sender, connection, resetRequest, sentMessageResult, ct) => {
+                testCSMS1.      OCPP.OUT.    OnResetRequestSent     += (timestamp, sender, connection, resetRequest, sentMessageResult, ct) => {
                     csmsResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -100,14 +100,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.Routing.AddOrUpdateStaticRouting(
+                testCSMS1.Routing.AddOrUpdateStaticRouting(
                     chargingStation1.Id,
                     localController1.Id
                 );
 
 
                 var resetType  = ResetType.Immediate;
-                var response   = await testCSMS01.Reset(
+                var response   = await testCSMS1.Reset(
                                      Destination:    SourceRouting.To( chargingStation1.Id),
                                      ResetType:           resetType,
                                      CustomData:          null
@@ -124,16 +124,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the INPUT of the networking node!");
                     Assert.That(nnResetRequestsIN. First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnResetRequestsIN. First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id));
-                    Assert.That(nnResetRequestsIN. First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id));
+                    Assert.That(nnResetRequestsIN. First().NetworkPath.Source,   Is.EqualTo(testCSMS1.      Id));
+                    Assert.That(nnResetRequestsIN. First().NetworkPath.Last,     Is.EqualTo(testCSMS1.      Id));
 
                     Assert.That(nnResetRequestsFWD.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the FORWARD of the networking node!");
 
                     Assert.That(nnResetRequestsOUT.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the OUTPUT of the networking node!");
                     Assert.That(nnResetRequestsOUT.First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id));
-                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id));
+                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Source,   Is.EqualTo(testCSMS1.      Id));
+                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Last,     Is.EqualTo(testCSMS1.      Id));
 
                     Assert.That(csResetRequests.   Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
                     // Because of 'standard' networking mode towards the charging station!
@@ -158,22 +158,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
         public async Task TransferData_Test()
         {
 
-            InitNetworkingNode1 = true;
+            InitLocalController1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(localController1,         Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,  Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 localController1        is not null &&
-                lcOCPPWebSocketServer01 is not null &&
+                lcOCPPWebSocketServer1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
                 var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OCPP.OUT.  OnDataTransferRequestSent             += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
+                testCSMS1.OCPP.OUT.  OnDataTransferRequestSent             += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
                     csmsDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.Routing.AddOrUpdateStaticRouting(
+                testCSMS1.Routing.AddOrUpdateStaticRouting(
                     chargingStation1.Id,
                     localController1.Id
                 );
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var data       = "Hello world!";
 
 
-                var response   = await testCSMS01.TransferData(
+                var response   = await testCSMS1.TransferData(
                                            Destination:    SourceRouting.To( chargingStation1.Id),
                                            VendorId:            vendorId,
                                            MessageId:           messageId,
@@ -244,8 +244,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(nnDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The DataTransfer did not reach the networking node!");
                     Assert.That(nnDataTransferRequestsIN.      First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
-                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS1.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS1.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(nnDataTransferRequestsIN.      First().MessageId,            Is.EqualTo(messageId));
                     Assert.That(nnDataTransferRequestsIN.      First().Data,                 Is.EqualTo(data));
@@ -280,22 +280,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
         public async Task TransferBinaryData_Test()
         {
 
-            InitNetworkingNode1 = true;
+            InitLocalController1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(localController1,         Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,  Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 localController1        is not null &&
-                lcOCPPWebSocketServer01 is not null &&
+                lcOCPPWebSocketServer1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnBinaryDataTransferRequestsOUT       = new ConcurrentList<BinaryDataTransferRequest>();
                 var csIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCSMS01.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
+                testCSMS1.      OCPP.OUT.    OnBinaryDataTransferRequestSent     += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
                     csmsBinaryDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 // Charging Station 1 is reachable via the networking node 1!
                 // Good old "static routing" ;)
-                testCSMS01.Routing.AddOrUpdateStaticRouting(
+                testCSMS1.Routing.AddOrUpdateStaticRouting(
                     chargingStation1.Id,
                     localController1.Id
                 );
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var data       = "Hello world!".ToUTF8Bytes();
 
 
-                var response   = await testCSMS01.TransferBinaryData(
+                var response   = await testCSMS1.TransferBinaryData(
                                            Destination:          SourceRouting.To(chargingStation1.Id),
                                            VendorId:             vendorId,
                                            MessageId:            messageId,
@@ -367,8 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(nnBinaryDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the networking node!");
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().DestinationId,        Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
-                    Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));
+                    Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS1.Id));
+                    Assert.That(nnBinaryDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS1.Id));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().MessageId,            Is.EqualTo(messageId));
                     Assert.That(nnBinaryDataTransferRequestsIN.      First().Data,                 Is.EqualTo(data));

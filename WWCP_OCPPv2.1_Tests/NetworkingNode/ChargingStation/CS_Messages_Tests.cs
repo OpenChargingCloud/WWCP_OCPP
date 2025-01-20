@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
     /// Unit tests for charging stations sending messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class CS_Messages_Tests : AChargingStationWithNetworkingNodeTests
+    public class CS_Messages_Tests : AChargingStationWithLocalControllersTests
     {
 
         #region Init_Test()
@@ -82,22 +82,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
         public async Task SendBootNotifications_Test()
         {
 
-            InitNetworkingNode1 = true;
+            InitLocalController1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
+                Assert.That(testCSMS1,                       Is.Not.Null);
+                Assert.That(testBackendWebSockets1,          Is.Not.Null);
                 Assert.That(localController1,                  Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer1,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
             });
 
-            if (testCSMS01                     is not null &&
-                testBackendWebSockets01        is not null &&
+            if (testCSMS1                     is not null &&
+                testBackendWebSockets1        is not null &&
                 localController1                is not null &&
-                lcOCPPWebSocketServer01 is not null &&
+                lcOCPPWebSocketServer1 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived      += (timestamp, sender, connection, bootNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnBootNotificationRequestReceived      += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     csmsBootNotificationRequests. TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -210,22 +210,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
         public async Task TransferBinaryData_Test()
         {
 
-            InitNetworkingNode1 = true;
+            InitLocalController1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                Is.Not.Null);
-                Assert.That(testBackendWebSockets01,   Is.Not.Null);
+                Assert.That(testCSMS1,                Is.Not.Null);
+                Assert.That(testBackendWebSockets1,   Is.Not.Null);
                 Assert.That(localController1,          Is.Not.Null);
-                Assert.That(lcOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(lcOCPPWebSocketServer1,   Is.Not.Null);
                 Assert.That(chargingStation1,          Is.Not.Null);
                 Assert.That(chargingStation2,          Is.Not.Null);
                 Assert.That(chargingStation3,          Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 localController1        is not null &&
-                lcOCPPWebSocketServer01 is not null &&
+                lcOCPPWebSocketServer1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
+                testCSMS1.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
                     csmsIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

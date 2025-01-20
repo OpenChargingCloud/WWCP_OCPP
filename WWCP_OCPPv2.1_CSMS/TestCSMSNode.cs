@@ -62,59 +62,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new charging station management system for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this charging station management system.</param>
-        public TestCSMSNode(NetworkingNode_Id              Id,
-                            String                         VendorName,
-                            String                         Model,
-                            String?                        SerialNumber                            = null,
-                            String?                        SoftwareVersion                         = null,
-                            I18NString?                    Description                             = null,
-                            CustomData?                    CustomData                              = null,
+        public TestCSMSNode(NetworkingNode_Id                 Id,
+                            String                            VendorName,
+                            String                            Model,
+                            String?                           SerialNumber                            = null,
+                            String?                           SoftwareVersion                         = null,
+                            I18NString?                       Description                             = null,
+                            CustomData?                       CustomData                              = null,
 
-                            AsymmetricCipherKeyPair?       ClientCAKeyPair                         = null,
-                            BCx509.X509Certificate?        ClientCACertificate                     = null,
+                            AsymmetricCipherKeyPair?          ClientCAKeyPair                         = null,
+                            BCx509.X509Certificate?           ClientCACertificate                     = null,
 
-                            SignaturePolicy?               SignaturePolicy                         = null,
-                            SignaturePolicy?               ForwardingSignaturePolicy               = null,
+                            SignaturePolicy?                  SignaturePolicy                         = null,
+                            SignaturePolicy?                  ForwardingSignaturePolicy               = null,
 
-                            Func<ACSMSNode, HTTPAPI>?      HTTPAPI                                 = null,
-                            Boolean                        HTTPAPI_Disabled                        = false,
-                            IPPort?                        HTTPAPI_Port                            = null,
-                            String?                        HTTPAPI_ServerName                      = null,
-                            String?                        HTTPAPI_ServiceName                     = null,
-                            EMailAddress?                  HTTPAPI_RobotEMailAddress               = null,
-                            String?                        HTTPAPI_RobotGPGPassphrase              = null,
-                            Boolean                        HTTPAPI_EventLoggingDisabled            = false,
+                            Func<ACSMSNode, HTTPAPI>?         HTTPAPI                                 = null,
+                            Boolean                           HTTPAPI_Disabled                        = false,
+                            IPPort?                           HTTPAPI_Port                            = null,
+                            String?                           HTTPAPI_ServerName                      = null,
+                            String?                           HTTPAPI_ServiceName                     = null,
+                            EMailAddress?                     HTTPAPI_RobotEMailAddress               = null,
+                            String?                           HTTPAPI_RobotGPGPassphrase              = null,
+                            Boolean                           HTTPAPI_EventLoggingDisabled            = false,
 
-                            Func<ACSMSNode, DownloadAPI>?  HTTPDownloadAPI                         = null,
-                            Boolean                        HTTPDownloadAPI_Disabled                = false,
-                            HTTPPath?                      HTTPDownloadAPI_Path                    = null,
-                            String?                        HTTPDownloadAPI_FileSystemPath          = null,
+                            Func<ACSMSNode, DownloadAPI>?     HTTPDownloadAPI                         = null,
+                            Boolean                           HTTPDownloadAPI_Disabled                = false,
+                            HTTPPath?                         HTTPDownloadAPI_Path                    = null,
+                            String?                           HTTPDownloadAPI_FileSystemPath          = null,
 
-                            Func<ACSMSNode, UploadAPI>?    HTTPUploadAPI                           = null,
-                            Boolean                        HTTPUploadAPI_Disabled                  = false,
-                            HTTPPath?                      HTTPUploadAPI_Path                      = null,
-                            String?                        HTTPUploadAPI_FileSystemPath            = null,
+                            Func<ACSMSNode, UploadAPI>?       HTTPUploadAPI                           = null,
+                            Boolean                           HTTPUploadAPI_Disabled                  = false,
+                            HTTPPath?                         HTTPUploadAPI_Path                      = null,
+                            String?                           HTTPUploadAPI_FileSystemPath            = null,
 
-                            Func<ACSMSNode, QRCodeAPI>?    QRCodeAPI                               = null,
-                            Boolean                        QRCodeAPI_Disabled                      = false,
-                            HTTPPath?                      QRCodeAPI_Path                          = null,
+                            Func<ACSMSNode, WebPaymentsAPI>?  WebPaymentsAPI                          = null,
+                            Boolean                           WebPaymentsAPI_Disabled                 = false,
+                            HTTPPath?                         WebPaymentsAPI_Path                     = null,
 
-                            Func<ACSMSNode, WebAPI>?       WebAPI                                  = null,
-                            Boolean                        WebAPI_Disabled                         = false,
-                            HTTPPath?                      WebAPI_Path                             = null,
+                            Func<ACSMSNode, WebAPI>?          WebAPI                                  = null,
+                            Boolean                           WebAPI_Disabled                         = false,
+                            HTTPPath?                         WebAPI_Path                             = null,
 
-                            ChargingStationAccessTypes?    AutoCreatedChargingStationsAccessType   = null,
+                            ChargingStationAccessTypes?       AutoCreatedChargingStationsAccessType   = null,
 
-                            TimeSpan?                      DefaultRequestTimeout                   = null,
+                            TimeSpan?                         DefaultRequestTimeout                   = null,
 
-                            Boolean                        DisableSendHeartbeats                   = false,
-                            TimeSpan?                      SendHeartbeatsEvery                     = null,
+                            Boolean                           DisableSendHeartbeats                   = false,
+                            TimeSpan?                         SendHeartbeatsEvery                     = null,
 
-                            Boolean                        DisableMaintenanceTasks                 = false,
-                            TimeSpan?                      MaintenanceEvery                        = null,
+                            Boolean                           DisableMaintenanceTasks                 = false,
+                            TimeSpan?                         MaintenanceEvery                        = null,
 
-                            ISMTPClient?                   SMTPClient                              = null,
-                            DNSClient?                     DNSClient                               = null)
+                            ISMTPClient?                      SMTPClient                              = null,
+                            DNSClient?                        DNSClient                               = null)
 
             : base(Id,
                    VendorName,
@@ -149,9 +149,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    HTTPUploadAPI_Path,
                    HTTPUploadAPI_FileSystemPath,
 
-                   QRCodeAPI,
-                   QRCodeAPI_Disabled,
-                   QRCodeAPI_Path,
+                   WebPaymentsAPI,
+                   WebPaymentsAPI_Disabled,
+                   WebPaymentsAPI_Path,
 
                    WebAPI,
                    WebAPI_Disabled,

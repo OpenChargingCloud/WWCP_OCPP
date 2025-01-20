@@ -25,12 +25,13 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
@@ -53,17 +54,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task Reset_ChargingStation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
@@ -74,19 +81,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var resetType  = ResetType.Immediate;
-                var response   = await testCSMS01.Reset(
+                var response   = await testCSMS1.Reset(
                                            Destination:   SourceRouting.To(chargingStation1.Id),
                                            ResetType:     resetType,
                                            CustomData:    null
                                        );
 
-                ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
-                ClassicAssert.AreEqual(ResetStatus.Accepted,   response.Status);
 
-                ClassicAssert.AreEqual(1,                      resetRequests.Count);
-                ClassicAssert.AreEqual(resetType,              resetRequests.First().ResetType);
+                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
+                Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
+
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -95,44 +123,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region Reset_UnknownChargingStation_Test()
 
         /// <summary>
-        /// A test for sending a reset message to a charging station.
+        /// A test for sending a reset message to an unknown charging station.
         /// </summary>
         [Test]
         public async Task Reset_UnknownChargingStation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                 is not null &&
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent            is not null &&
+                csms1WebSocketJSONRequestErrorsReceived   is not null &&
+                csms1WebSocketJSONResponsesReceived       is not null &&
+                csms1WebSocketJSONRequestsReceived        is not null &&
+                csms1WebSocketJSONResponsesSent           is not null &&
+                csms1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
-                var resetRequests = new ConcurrentList<ResetRequest>();
+                var resetType       = ResetType.Immediate;
+                var networkingNode  = NetworkingNode_Id.Parse(404);
+                var response        = await testCSMS1.Reset(
+                                                Destination:   SourceRouting.To(networkingNode),
+                                                ResetType:     resetType,
+                                                CustomData:    null
+                                            );
 
-                chargingStation2.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
-                    resetRequests.TryAdd(resetRequest);
-                    return Task.CompletedTask;
-                };
+                Assert.That(response.Result.ResultCode,                       Is.EqualTo(ResultCode.UnknownClient));
+                Assert.That(response.Result.Description,                      Is.EqualTo($"The given networking node '{networkingNode}' is unknown or unreachable!"));
+                Assert.That(response.Status,                                  Is.EqualTo(ResetStatus.Rejected));
 
-                var resetType  = ResetType.Immediate;
-                var response   = await testCSMS01.Reset(
-                                           Destination:   SourceRouting.To( chargingStation3.Id),
-                                           ResetType:     resetType,
-                                           CustomData:    null
-                                       );
+                Assert.That(csms1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));  // 0, as it never left the device!
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));  // 0, as it never left the device!
+                Assert.That(csms1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                ClassicAssert.AreEqual  (ResultCode.NetworkError,   response.Result.ResultCode);
-                ClassicAssert.IsNotEmpty(                           response.Result.Description);
-                ClassicAssert.AreEqual  (ResetStatus.Unknown,       response.Status);
-
-                ClassicAssert.AreEqual  (0,                         resetRequests.Count);
+                Assert.That(csms1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
             }
 
@@ -149,17 +174,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task Reset_EVSE_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
@@ -170,22 +201,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var resetType  = ResetType.Immediate;
-                var response   = await testCSMS01.Reset(
-                                           Destination:   SourceRouting.To( chargingStation1.Id),
+                var evseId     = EVSE_Id.  Parse(1);
+                var response   = await testCSMS1.Reset(
+                                           Destination:   SourceRouting.To(chargingStation1.Id),
                                            ResetType:     resetType,
-                                           EVSEId:        EVSE_Id.Parse(1),
+                                           EVSEId:        evseId,
                                            CustomData:    null
                                        );
 
-                ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
-                ClassicAssert.AreEqual(ResetStatus.Accepted,   response.Status);
 
-                ClassicAssert.AreEqual(1,                      resetRequests.Count);
-                ClassicAssert.AreEqual(resetType,              resetRequests.First().ResetType);
-                ClassicAssert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
-                ClassicAssert.AreEqual(EVSE_Id.Parse(1),       resetRequests.First().EVSEId!.Value);
+                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
+                Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
+                Assert.That(resetRequests.First().EVSEId,                                Is.EqualTo(evseId));
+
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -200,17 +252,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task Reset_UnknownEVSE_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
@@ -221,22 +279,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var resetType  = ResetType.Immediate;
-                var response   = await testCSMS01.Reset(
+                var evseId     = EVSE_Id.  Parse(404);
+                var response   = await testCSMS1.Reset(
                                            Destination:   SourceRouting.To(chargingStation1.Id),
                                            ResetType:     resetType,
-                                           EVSEId:        EVSE_Id.Parse(5),
+                                           EVSEId:        evseId,
                                            CustomData:    null
                                        );
 
-                ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
-                ClassicAssert.AreEqual(ResetStatus.Rejected,   response.Status);
 
-                ClassicAssert.AreEqual(1,                      resetRequests.Count);
-                ClassicAssert.AreEqual(resetType,              resetRequests.First().ResetType);
-                ClassicAssert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
-                ClassicAssert.AreEqual(EVSE_Id.Parse(5),       resetRequests.First().EVSEId!.Value);
+                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
+
+                Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
+                Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
+                Assert.That(resetRequests.First().EVSEId,                                Is.EqualTo(evseId));
+
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+
+
+
+
+
+
+            //    var resetRequests = new ConcurrentList<ResetRequest>();
+
+            //    chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
+            //        resetRequests.TryAdd(resetRequest);
+            //        return Task.CompletedTask;
+            //    };
+
+            //    var resetType  = ResetType.Immediate;
+            //    var response   = await testCSMS1.Reset(
+            //                               Destination:   SourceRouting.To(chargingStation1.Id),
+            //                               ResetType:     resetType,
+            //                               EVSEId:        EVSE_Id.Parse(5),
+            //                               CustomData:    null
+            //                           );
+
+            //    ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
+            //    ClassicAssert.AreEqual(ResetStatus.Rejected,   response.Status);
+
+            //    ClassicAssert.AreEqual(1,                      resetRequests.Count);
+            //    ClassicAssert.AreEqual(resetType,              resetRequests.First().ResetType);
+            //    ClassicAssert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
+            //    ClassicAssert.AreEqual(EVSE_Id.Parse(5),       resetRequests.First().EVSEId!.Value);
+
+            //}
 
         }
 
@@ -252,14 +361,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UpdateFirmware_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -272,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.UpdateFirmware(
+                var response = await testCSMS1.UpdateFirmware(
                                          Destination:               SourceRouting.To(chargingStation1.Id),
                                          Firmware:                  new Firmware(
                                                                         FirmwareURL:          URL.Parse("https://example.org/fw0001.bin"),
@@ -307,14 +416,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task PublishFirmware_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -327,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.PublishFirmware(
+                var response = await testCSMS1.PublishFirmware(
                                          Destination:                SourceRouting.To(chargingStation1.Id),
                                          PublishFirmwareRequestId:   1,
                                          DownloadLocation:           URL.Parse("https://example.org/fw0001.bin"),
@@ -356,14 +465,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UnpublishFirmware_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -376,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.UnpublishFirmware(
+                var response = await testCSMS1.UnpublishFirmware(
                                          Destination:         SourceRouting.To(chargingStation1.Id),
                                          MD5Checksum:         "0x1234",
                                          CustomData:          null
@@ -401,14 +510,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetBaseReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -421,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetBaseReport(
+                var response = await testCSMS1.GetBaseReport(
                                          Destination:              SourceRouting.To(chargingStation1.Id),
                                          GetBaseReportRequestId:   1,
                                          ReportBase:               ReportBase.FullInventory,
@@ -447,14 +556,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -467,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetReport(
+                var response = await testCSMS1.GetReport(
                                          Destination:          SourceRouting.To(chargingStation1.Id),
                                          GetReportRequestId:   1,
                                          ComponentCriteria:    new[] {
@@ -515,14 +624,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetLog_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -535,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetLog(
+                var response = await testCSMS1.GetLog(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          LogType:        LogType.DiagnosticsLog,
                                          LogRequestId:   1,
@@ -594,14 +703,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Tests()
         {
 
-            Assert.That(testCSMS01,                Is.Not.Null);
-            Assert.That(testBackendWebSockets01,   Is.Not.Null);
+            Assert.That(testCSMS1,                Is.Not.Null);
+            Assert.That(testBackendWebSockets1,   Is.Not.Null);
             Assert.That(chargingStation1,          Is.Not.Null);
             Assert.That(chargingStation2,          Is.Not.Null);
             Assert.That(chargingStation3,          Is.Not.Null);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -614,7 +723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var setVariablesResponse = await testCSMS01.SetVariables(
+                var setVariablesResponse = await testCSMS1.SetVariables(
                                                      Destination:         SourceRouting.To( chargingStation1.Id),
                                                      VariableData:        [
 
@@ -763,14 +872,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Conditional_Test()
         {
 
-            Assert.That(testCSMS01,                Is.Not.Null);
-            Assert.That(testBackendWebSockets01,   Is.Not.Null);
+            Assert.That(testCSMS1,                Is.Not.Null);
+            Assert.That(testBackendWebSockets1,   Is.Not.Null);
             Assert.That(chargingStation1,          Is.Not.Null);
             Assert.That(chargingStation2,          Is.Not.Null);
             Assert.That(chargingStation3,          Is.Not.Null);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -783,7 +892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var setVariablesResponse = await testCSMS01.SetVariables(
+                var setVariablesResponse = await testCSMS1.SetVariables(
                                                      Destination:    SourceRouting.To( chargingStation1.Id),
                                                      VariableData:        [
 
@@ -884,14 +993,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Conditional_WithinSameRequest_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -904,7 +1013,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetVariables(
+                var response = await testCSMS1.SetVariables(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          VariableData:    [
                                                               new SetVariableData(
@@ -950,14 +1059,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Conditional_WithinSameRequest_Fails_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -970,7 +1079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetVariables(
+                var response = await testCSMS1.SetVariables(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          VariableData:        [
                                                                   new SetVariableData(
@@ -1017,17 +1126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetVariables_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
-
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+            if (testCSMS1       is not null &&
+                chargingStation1 is not null)
             {
 
                 var getVariablesRequests = new ConcurrentList<GetVariablesRequest>();
@@ -1037,50 +1137,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetVariables(
-                                         Destination:    SourceRouting.To( chargingStation1.Id),
-                                         VariableData:        [
+                var response = await testCSMS1.GetVariables(
+                                         Destination:    SourceRouting.To(chargingStation1.Id),
+                                         VariableData:   [
 
-                                                                  new GetVariableData(
-                                                                      Component:       new Component(
-                                                                                           Name:         "OCPPCommCtrlr"
-                                                                                       ),
-                                                                      Variable:        new Variable(
-                                                                                           Name:         "FileTransferProtocols"
-                                                                                       )
-                                                                  ),
+                                                             new GetVariableData(
+                                                                 Component:       new Component(
+                                                                                      Name:         "OCPPCommCtrlr"
+                                                                                  ),
+                                                                 Variable:        new Variable(
+                                                                                      Name:         "FileTransferProtocols"
+                                                                                  )
+                                                             ),
 
-                                                                  new GetVariableData(
-                                                                      Component:       new Component(
-                                                                                           Name:         "SecurityCtrlr"
-                                                                                       ),
-                                                                      Variable:        new Variable(
-                                                                                           Name:         "OrganizationName"
-                                                                                       )
-                                                                  )
+                                                             new GetVariableData(
+                                                                 Component:       new Component(
+                                                                                      Name:         "SecurityCtrlr"
+                                                                                  ),
+                                                                 Variable:        new Variable(
+                                                                                      Name:         "OrganizationName"
+                                                                                  )
+                                                             )
 
-                                                                  //new GetVariableData(
-                                                                  //    Component:       new Component(
-                                                                  //                         Name:         "Alert System!",
-                                                                  //                         Instance:     "Alert System #1",
-                                                                  //                         EVSE:         new EVSE(
-                                                                  //                                           Id:            EVSE_Id.     Parse(1),
-                                                                  //                                           ConnectorId:   Connector_Id.Parse(1),
-                                                                  //                                           CustomData:    null
-                                                                  //                                       ),
-                                                                  //                         CustomData:   null
-                                                                  //                     ),
-                                                                  //    Variable:        new Variable(
-                                                                  //                         Name:         "Temperature Sensors",
-                                                                  //                         Instance:     "Temperature Sensor #1",
-                                                                  //                         CustomData:   null
-                                                                  //                     ),
-                                                                  //    AttributeType:   AttributeTypes.Actual,
-                                                                  //    CustomData:      null
-                                                                  //)
+                                                             //new GetVariableData(
+                                                             //    Component:       new Component(
+                                                             //                         Name:         "Alert System!",
+                                                             //                         Instance:     "Alert System #1",
+                                                             //                         EVSE:         new EVSE(
+                                                             //                                           Id:            EVSE_Id.     Parse(1),
+                                                             //                                           ConnectorId:   Connector_Id.Parse(1),
+                                                             //                                           CustomData:    null
+                                                             //                                       ),
+                                                             //                         CustomData:   null
+                                                             //                     ),
+                                                             //    Variable:        new Variable(
+                                                             //                         Name:         "Temperature Sensors",
+                                                             //                         Instance:     "Temperature Sensor #1",
+                                                             //                         CustomData:   null
+                                                             //                     ),
+                                                             //    AttributeType:   AttributeTypes.Actual,
+                                                             //    CustomData:      null
+                                                             //)
 
-                                                              ],
-                                         CustomData:          null
+                                                         ],
+                                         CustomData:     null
                                      );
 
                 ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
@@ -1094,9 +1194,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 Assert.That(firstResult.AttributeValue, Is.EqualTo("HTTPS"));
 
-
-
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -1112,14 +1213,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetMonitoringBase_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1132,7 +1233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetMonitoringBase(
+                var response = await testCSMS1.SetMonitoringBase(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          MonitoringBase:  MonitoringBase.All,
                                          CustomData:      null
@@ -1157,14 +1258,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetMonitoringReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1177,7 +1278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetMonitoringReport(
+                var response = await testCSMS1.GetMonitoringReport(
                                          Destination:                    SourceRouting.To(            chargingStation1.Id),
                                          GetMonitoringReportRequestId:   1,
                                          MonitoringCriteria:             new[] {
@@ -1224,14 +1325,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetMonitoringLevel_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1244,7 +1345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetMonitoringLevel(
+                var response = await testCSMS1.SetMonitoringLevel(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          Severity:            Severities.Informational,
                                          CustomData:          null
@@ -1269,14 +1370,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariableMonitoring_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1289,7 +1390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetVariableMonitoring(
+                var response = await testCSMS1.SetVariableMonitoring(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          MonitoringData:      new[] {
                                                                   new SetMonitoringData(
@@ -1338,14 +1439,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearVariableMonitoring_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1358,7 +1459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.ClearVariableMonitoring(
+                var response = await testCSMS1.ClearVariableMonitoring(
                                          Destination:    SourceRouting.To(     chargingStation1.Id),
                                          VariableMonitoringIds:   new[] {
                                                                       VariableMonitoring_Id.NewRandom
@@ -1385,14 +1486,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetNetworkProfile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1405,7 +1506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetNetworkProfile(
+                var response = await testCSMS1.SetNetworkProfile(
                                          Destination:    SourceRouting.To(            chargingStation1.Id),
                                          ConfigurationSlot:          1,
                                          NetworkConnectionProfile:   new NetworkConnectionProfile(
@@ -1459,30 +1560,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ChangeAvailability_Test()
         {
 
-            if (testCSMS01                                            is not null &&
-                testBackendWebSockets01                               is not null &&
-                csms1WebSocketJSONMessagesSent                        is not null &&
-                csms1WebSocketJSONMessageResponsesReceived            is not null &&
-                csms1WebSocketJSONMessagesReceived                    is not null &&
-                csms1WebSocketJSONMessageResponsesSent                is not null &&
+            if (testCSMS1                                           is not null &&
+                testBackendWebSockets1                              is not null &&
 
-                chargingStation1                                      is not null &&
-                chargingStation1WebSocketJSONMessagesReceived         is not null &&
-                chargingStation1WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation1WebSocketJSONMessagesSent             is not null &&
-                chargingStation1WebSocketJSONMessageResponsesReceived is not null &&
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
 
-                chargingStation2                                      is not null &&
-                chargingStation2WebSocketJSONMessagesReceived         is not null &&
-                chargingStation2WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation2WebSocketJSONMessagesSent             is not null &&
-                chargingStation2WebSocketJSONMessageResponsesReceived is not null &&
-
-                chargingStation3                                      is not null &&
-                chargingStation3WebSocketJSONMessagesReceived         is not null &&
-                chargingStation3WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation3WebSocketJSONMessagesSent             is not null &&
-                chargingStation3WebSocketJSONMessageResponsesReceived is not null)
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
 
             {
 
@@ -1497,7 +1591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var connectorId        = Connector_Id.Parse(1);
                 var operationalStatus  = OperationalStatus.Operative;
 
-                var response           = await testCSMS01.ChangeAvailability(
+                var response           = await testCSMS1.ChangeAvailability(
                                                    Destination:         SourceRouting.To(chargingStation1.Id),
                                                    OperationalStatus:   operationalStatus,
                                                    EVSE:                new EVSE(
@@ -1508,25 +1602,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                    CustomData:          null
                                                );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                       response.Result.ResultCode);
-                ClassicAssert.AreEqual(ChangeAvailabilityStatus.Accepted,   response.Status);
 
-                ClassicAssert.AreEqual(1,                                   changeAvailabilityRequests.Count);
-                ClassicAssert.AreEqual(evseId,                              changeAvailabilityRequests.First().EVSE?.Id);
-                ClassicAssert.AreEqual(connectorId,                         changeAvailabilityRequests.First().EVSE?.ConnectorId);
-                ClassicAssert.AreEqual(operationalStatus,                   changeAvailabilityRequests.First().OperationalStatus);
+                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status,                                             Is.EqualTo(ChangeAvailabilityStatus.Accepted));
 
-                ClassicAssert.AreEqual(1,                                   csms1WebSocketJSONMessagesSent.                        Count);
-                ClassicAssert.AreEqual(1,                                   csms1WebSocketJSONMessageResponsesReceived.            Count);
-                ClassicAssert.AreEqual(1,                                   csms1WebSocketJSONMessagesReceived.                    Count);
-                ClassicAssert.AreEqual(0,                                   csms1WebSocketJSONMessageResponsesSent.                Count);
+                Assert.That(changeAvailabilityRequests.Count,                            Is.EqualTo(1));
+                Assert.That(changeAvailabilityRequests.First().EVSE?.Id,                 Is.EqualTo(evseId));
+                Assert.That(changeAvailabilityRequests.First().EVSE?.ConnectorId,        Is.EqualTo(connectorId));
+                Assert.That(changeAvailabilityRequests.First().OperationalStatus,        Is.EqualTo(operationalStatus));
 
-                ClassicAssert.AreEqual(1,                                   chargingStation1WebSocketJSONMessagesReceived.        Count);
-                ClassicAssert.AreEqual(1,                                   chargingStation1WebSocketJSONMessageResponsesSent.    Count);
-                ClassicAssert.AreEqual(1,                                   chargingStation1WebSocketJSONMessagesSent.            Count);
-                ClassicAssert.AreEqual(0,                                   chargingStation1WebSocketJSONMessageResponsesReceived.Count);
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -1541,14 +1645,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TriggerMessage_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1564,7 +1668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var evseId          = EVSE_Id.Parse(1);
                 var messageTrigger  = MessageTrigger.StatusNotification;
 
-                var response        = await testCSMS01.TriggerMessage(
+                var response        = await testCSMS1.TriggerMessage(
                                                 Destination:        SourceRouting.To(chargingStation1.Id),
                                                 RequestedMessage:   messageTrigger,
                                                 EVSE:               new EVSE(
@@ -1594,14 +1698,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferTextData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1618,7 +1722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var messageId  = Message_Id.      Parse       (RandomExtensions.RandomString(10));
                 var data       = RandomExtensions.RandomString(40);
 
-                var response   = await testCSMS01.TransferData(
+                var response   = await testCSMS1.TransferData(
                                            Destination:   SourceRouting.To( chargingStation1.Id),
                                            VendorId:      vendorId,
                                            MessageId:     messageId,
@@ -1649,14 +1753,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferJObjectData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1678,7 +1782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      )
                                  );
 
-                var response   = await testCSMS01.TransferData(
+                var response   = await testCSMS1.TransferData(
                                            Destination:   SourceRouting.To( chargingStation1.Id),
                                            VendorId:      vendorId,
                                            MessageId:     messageId,
@@ -1711,14 +1815,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferJArrayData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1737,7 +1841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      RandomExtensions.RandomString(40)
                                  );
 
-                var response   = await testCSMS01.TransferData(
+                var response   = await testCSMS1.TransferData(
                                            Destination:   SourceRouting.To( chargingStation1.Id),
                                            VendorId:      vendorId,
                                            MessageId:     messageId,
@@ -1770,14 +1874,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferTextData_Rejected_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1793,7 +1897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var vendorId   = Vendor_Id. Parse("ACME Inc.");
                 var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
-                var response   = await testCSMS01.TransferData(
+                var response   = await testCSMS1.TransferData(
                                            Destination:   SourceRouting.To( chargingStation1.Id),
                                            VendorId:      vendorId,
                                            MessageId:     messageId,
@@ -1824,14 +1928,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task CertificateSigned_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1845,7 +1949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
 
-                var response = await testCSMS01.SendSignedCertificate(
+                var response = await testCSMS1.SendSignedCertificate(
                                          Destination:        SourceRouting.To(chargingStation1.Id),
                                          CertificateChain:   new OCPP.CertificateChain(
                                                                  Certificates:   [
@@ -1912,14 +2016,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task InstallCertificate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1933,7 +2037,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
 
-                var response = await testCSMS01.InstallCertificate(
+                var response = await testCSMS1.InstallCertificate(
                                          Destination:       SourceRouting.To(chargingStation1.Id),
                                          CertificateType:   InstallCertificateUse.V2GRootCertificate,
                                          Certificate:       OCPP.Certificate.Parse(
@@ -1996,14 +2100,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetInstalledCertificateIds_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2016,7 +2120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response1 = await testCSMS01.InstallCertificate(
+                var response1 = await testCSMS1.InstallCertificate(
                                           Destination:       SourceRouting.To(chargingStation1.Id),
                                           CertificateType:   InstallCertificateUse.V2GRootCertificate,
                                           Certificate:       OCPP.Certificate.Parse(
@@ -2075,7 +2179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response2  = await testCSMS01.GetInstalledCertificateIds(
+                var response2  = await testCSMS1.GetInstalledCertificateIds(
                                            Destination:        SourceRouting.To(chargingStation1.Id),
                                            CertificateTypes:   [ GetCertificateIdUse.V2GRootCertificate ],
                                            CustomData:         null
@@ -2102,14 +2206,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task DeleteCertificate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2124,7 +2228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response1 = await testCSMS01.InstallCertificate(
+                var response1 = await testCSMS1.InstallCertificate(
                                           Destination:       SourceRouting.To(chargingStation1.Id),
                                           CertificateType:   InstallCertificateUse.V2GRootCertificate,
                                           Certificate:       OCPP.Certificate.Parse(
@@ -2186,7 +2290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response2 = await testCSMS01.GetInstalledCertificateIds(
+                var response2 = await testCSMS1.GetInstalledCertificateIds(
                                           Destination:        SourceRouting.To( chargingStation1.Id),
                                           CertificateTypes:   [ GetCertificateIdUse.V2GRootCertificate ],
                                           CustomData:         null
@@ -2213,7 +2317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response3 = await testCSMS01.DeleteCertificate(
+                var response3 = await testCSMS1.DeleteCertificate(
                                           Destination:           SourceRouting.To(chargingStation1.Id),
                                           CertificateHashData:   response2.CertificateHashDataChain.First().CertificateHashData,
                                           CustomData:            null
@@ -2229,7 +2333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 // Verification
                 getInstalledCertificateIdsRequests.Clear();
 
-                var response4  = await testCSMS01.GetInstalledCertificateIds(
+                var response4  = await testCSMS1.GetInstalledCertificateIds(
                                            Destination:        SourceRouting.To( chargingStation1.Id),
                                            CertificateTypes:   [ GetCertificateIdUse.V2GRootCertificate ],
                                            CustomData:         null
@@ -2263,14 +2367,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task NotifyCRL_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2283,7 +2387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.NotifyCRLAvailability(
+                var response = await testCSMS1.NotifyCRLAvailability(
                                          Destination:          SourceRouting.To(chargingStation1.Id),
                                          NotifyCRLRequestId:   1,
                                          Availability:         NotifyCRLStatus.Available,
@@ -2312,14 +2416,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetLocalListVersion_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2333,7 +2437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
 
-                var response = await testCSMS01.GetLocalListVersion(
+                var response = await testCSMS1.GetLocalListVersion(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          CustomData:      null
                                      );
@@ -2358,14 +2462,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SendLocalList_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2379,7 +2483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
 
-                var response  = await testCSMS01.SendLocalList(
+                var response  = await testCSMS1.SendLocalList(
                                           Destination:    SourceRouting.To(      chargingStation1.Id),
                                           ListVersion:              1,
                                           UpdateType:               UpdateTypes.Full,
@@ -2452,14 +2556,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearCache_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2473,7 +2577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
 
-                var response = await testCSMS01.ClearCache(
+                var response = await testCSMS1.ClearCache(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          CustomData:      null
                                      );
@@ -2490,53 +2594,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #endregion
 
 
-        #region QRCodeScanned_Test()
+        #region NotifyWebPaymentStarted_Test()
 
         /// <summary>
-        /// A test for creating a reservation at a charging station.
+        /// A test for notifying a charging station, that a web payment has been started.
         /// </summary>
         [Test]
-        public async Task QRCodeScanned_Test()
+        public async Task NotifyWebPaymentStarted_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation3                                     is not null &&
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation3                                     is not null &&
+                chargingStation3WebSocketJSONRequestsSent            is not null &&
+                chargingStation3WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation3WebSocketJSONResponsesReceived       is not null &&
+                chargingStation3WebSocketJSONRequestsReceived        is not null &&
+                chargingStation3WebSocketJSONResponsesSent           is not null &&
+                chargingStation3WebSocketJSONResponseErrorsReceived  is not null)
             {
 
-                var qrCodeScannedRequests = new ConcurrentList<QRCodeScannedRequest>();
+                var notifyWebPaymentStartedRequests = new ConcurrentList<NotifyWebPaymentStartedRequest>();
 
-                chargingStation1.OCPP.IN.OnQRCodeScannedRequestReceived += (timestamp, sender, connection, qrCodeScannedRequest, ct) => {
-                    qrCodeScannedRequests.TryAdd(qrCodeScannedRequest);
+                chargingStation3.OCPP.IN.OnNotifyWebPaymentStartedRequestReceived += (timestamp, sender, connection, notifyWebPaymentStartedRequest, ct) => {
+                    notifyWebPaymentStartedRequests.TryAdd(notifyWebPaymentStartedRequest);
                     return Task.CompletedTask;
                 };
-
 
                 var reservationId   = Reservation_Id.NewRandom;
                 var evseId          = EVSE_Id.       Parse(1);
                 var timeout         = TimeSpan.      FromMinutes(1);
 
-                var response        = await testCSMS01.QRCodeScanned(
-                                                Destination:    SourceRouting.To( chargingStation1.Id),
-                                                EVSEId:          evseId,
-                                                Timeout:         timeout,
-                                                CustomData:      null
+                var response        = await testCSMS1.NotifyWebPaymentStarted(
+                                                Destination:   SourceRouting.To(chargingStation3.Id),
+                                                EVSEId:        evseId,
+                                                Timeout:       timeout,
+                                                CustomData:    null
                                             );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
+                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
 
-                ClassicAssert.AreEqual(1,               qrCodeScannedRequests.Count);
+                Assert.That(notifyWebPaymentStartedRequests.Count,                       Is.EqualTo(1));
+
+
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation3WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation3WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation3WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation3WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                Assert.That(chargingStation3WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                Assert.That(chargingStation3WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
             }
+
+            else
+                Assert.Fail($"{nameof(NotifyWebPaymentStarted_Test)} preconditions failed!");
 
         }
 
@@ -2551,14 +2680,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ReserveNow_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2576,7 +2705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var evseId          = EVSE_Id.       Parse(1);
                 var connectorType   = ConnectorType.sType2;
 
-                var response        = await testCSMS01.ReserveNow(
+                var response        = await testCSMS1.ReserveNow(
                                                 Destination:    SourceRouting.To( chargingStation1.Id),
                                                 ReservationId:   reservationId,
                                                 ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
@@ -2630,14 +2759,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task CancelReservation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2651,7 +2780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var reservationId  = Reservation_Id.NewRandom;
-                var response       = await testCSMS01.CancelReservation(
+                var response       = await testCSMS1.CancelReservation(
                                                Destination:     SourceRouting.To(chargingStation1.Id),
                                                ReservationId:   reservationId,
                                                CustomData:      null
@@ -2678,14 +2807,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task RequestStartStopTransaction_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2704,7 +2833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var startResponse = await testCSMS01.StartCharging(
+                var startResponse = await testCSMS1.StartCharging(
                                               Destination:                        SourceRouting.To(chargingStation1.Id),
                                               RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
                                               IdToken:                            new IdToken(
@@ -2736,7 +2865,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 if (startResponse.TransactionId.HasValue)
                 {
 
-                    var stopResponse = await testCSMS01.StopCharging(
+                    var stopResponse = await testCSMS1.StopCharging(
                                            Destination:     SourceRouting.To(chargingStation1.Id),
                                            TransactionId:   startResponse.TransactionId.Value,
                                            CustomData:      null
@@ -2765,14 +2894,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetTransactionStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2785,7 +2914,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetTransactionStatus(
+                var response = await testCSMS1.GetTransactionStatus(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          TransactionId:   null,
                                          CustomData:      null
@@ -2812,14 +2941,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetChargingProfile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2832,7 +2961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SetChargingProfile(
+                var response = await testCSMS1.SetChargingProfile(
                                    Destination:    SourceRouting.To(   chargingStation1.Id),
                                    EVSEId:            chargingStation1.EVSEs.First().Id,
                                    ChargingProfile:   new ChargingProfile(
@@ -2919,14 +3048,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetChargingProfiles_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2939,7 +3068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetChargingProfiles(
+                var response = await testCSMS1.GetChargingProfiles(
                                          Destination:    SourceRouting.To(                chargingStation1.Id),
                                          GetChargingProfilesRequestId:   1,
                                          ChargingProfile:                new ChargingProfileCriterion(
@@ -2978,14 +3107,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearChargingProfile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2998,7 +3127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.ClearChargingProfile(
+                var response = await testCSMS1.ClearChargingProfile(
                                          Destination:    SourceRouting.To(           chargingStation1.Id),
                                          ChargingProfileId:         ChargingProfile_Id.Parse(123),
                                          ChargingProfileCriteria:   new ClearChargingProfile(
@@ -3031,14 +3160,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetCompositeSchedule_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3051,7 +3180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.GetCompositeSchedule(
+                var response = await testCSMS1.GetCompositeSchedule(
                                          Destination:    SourceRouting.To(    chargingStation1.Id),
                                          Duration:           TimeSpan.FromSeconds(1),
                                          EVSEId:             EVSE_Id.Parse(1),
@@ -3080,14 +3209,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UpdateDynamicSchedule_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3100,7 +3229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.UpdateDynamicSchedule(
+                var response = await testCSMS1.UpdateDynamicSchedule(
 
                                          Destination:    SourceRouting.To(       chargingStation1.Id),
 
@@ -3147,14 +3276,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task NotifyAllowedEnergyTransfer_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3167,7 +3296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.NotifyAllowedEnergyTransfer(
+                var response = await testCSMS1.NotifyAllowedEnergyTransfer(
                                          Destination:    SourceRouting.To(              chargingStation1.Id),
                                          AllowedEnergyTransferModes:   [
                                                                            EnergyTransferMode.AC_SinglePhase,
@@ -3197,14 +3326,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UsePriorityCharging_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3217,7 +3346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.UsePriorityCharging(
+                var response = await testCSMS1.UsePriorityCharging(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          TransactionId:   Transaction_Id.Parse("1234"),
                                          Activate:        true,
@@ -3245,14 +3374,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UnlockConnector_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3265,7 +3394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.UnlockConnector(
+                var response = await testCSMS1.UnlockConnector(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
                                          EVSEId:          chargingStation1.EVSEs.First().Id,
                                          ConnectorId:     chargingStation1.EVSEs.First().Connectors.First().Id,
@@ -3294,14 +3423,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SendAFRRSignal_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3314,7 +3443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var response = await testCSMS01.SendAFRRSignal(
+                var response = await testCSMS1.SendAFRRSignal(
                                          Destination:    SourceRouting.To(       chargingStation1.Id),
                                          ActivationTimestamp:   Timestamp.Now,
                                          Signal:                AFRR_Signal.Parse(-1),
@@ -3343,14 +3472,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetDisplayMessage_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3365,24 +3494,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var message   = RandomExtensions.RandomString(10);
 
-                var response  = await testCSMS01.SetDisplayMessage(
-                                          Destination:    SourceRouting.To( chargingStation1.Id),
-                                          Message:         new MessageInfo(
-                                                               Id:               DisplayMessage_Id.NewRandom,
-                                                               Priority:         MessagePriority.AlwaysFront,
-                                                               Message:          new MessageContent(
-                                                                                     Content:      message,
-                                                                                     Format:       MessageFormat.UTF8,
-                                                                                     Language:     Language_Id.Parse("de"),
-                                                                                     CustomData:   null
-                                                                                 ),
-                                                               State:            MessageState.Charging,
-                                                               StartTimestamp:   Timestamp.Now,
-                                                               EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                               TransactionId:    null,
-                                                               CustomData:       null
-                                                           ),
-                                          CustomData:      null
+                var response  = await testCSMS1.SetDisplayMessage(
+                                          Destination:   SourceRouting.To(chargingStation1.Id),
+                                          Message:       new MessageInfo(
+                                                             Id:               DisplayMessage_Id.NewRandom,
+                                                             Priority:         MessagePriority.AlwaysFront,
+                                                             Message:          new MessageContent(
+                                                                                   Content:      message,
+                                                                                   Format:       MessageFormat.UTF8,
+                                                                                   Language:     Language_Id.Parse("de"),
+                                                                                   CustomData:   null
+                                                                               ),
+                                                             State:            MessageState.Charging,
+                                                             StartTimestamp:   Timestamp.Now,
+                                                             EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                             TransactionId:    null,
+                                                             CustomData:       null
+                                                         ),
+                                          CustomData:    null
                                       );
 
 
@@ -3409,30 +3538,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetDisplayMessages_Test()
         {
 
-            if (testCSMS01                                            is not null &&
-                testBackendWebSockets01                               is not null &&
-                csms1WebSocketJSONMessagesSent                         is not null &&
-                csms1WebSocketJSONMessageResponsesReceived             is not null &&
-                csms1WebSocketJSONMessagesReceived                     is not null &&
-                csms1WebSocketJSONMessageResponsesSent                 is not null &&
+            if (testCSMS1                                           is not null &&
+                testBackendWebSockets1                              is not null &&
 
-                chargingStation1                                      is not null &&
-                chargingStation1WebSocketJSONMessagesReceived         is not null &&
-                chargingStation1WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation1WebSocketJSONMessagesSent             is not null &&
-                chargingStation1WebSocketJSONMessageResponsesReceived is not null &&
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
 
-                chargingStation2                                      is not null &&
-                chargingStation2WebSocketJSONMessagesReceived         is not null &&
-                chargingStation2WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation2WebSocketJSONMessagesSent             is not null &&
-                chargingStation2WebSocketJSONMessageResponsesReceived is not null &&
-
-                chargingStation3                                      is not null &&
-                chargingStation3WebSocketJSONMessagesReceived         is not null &&
-                chargingStation3WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation3WebSocketJSONMessagesSent             is not null &&
-                chargingStation3WebSocketJSONMessageResponsesReceived is not null)
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
 
             {
 
@@ -3460,24 +3582,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                     var setMessage   = RandomExtensions.RandomString(10);
 
-                    var setResponse  = await testCSMS01.SetDisplayMessage(
-                                                 Destination:    SourceRouting.To( chargingStation1.Id),
-                                                 Message:         new MessageInfo(
-                                                                      Id:               messageIds[i-1],
-                                                                      Priority:         i > 7 ? MessagePriority.AlwaysFront : MessagePriority.NormalCycle,
-                                                                      Message:          new MessageContent(
-                                                                                            Content:      $"{i}:{setMessage}",
-                                                                                            Format:       MessageFormat.UTF8,
-                                                                                            Language:     Language_Id.Parse("de"),
-                                                                                            CustomData:   null
-                                                                                        ),
-                                                                      State:            i > 5 ? MessageState.Charging : MessageState.Idle,
-                                                                      StartTimestamp:   Timestamp.Now,
-                                                                      EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                                      TransactionId:    null,
-                                                                      CustomData:       null
-                                                                  ),
-                                                 CustomData:      null
+                    var setResponse  = await testCSMS1.SetDisplayMessage(
+                                                 Destination:   SourceRouting.To( chargingStation1.Id),
+                                                 Message:       new MessageInfo(
+                                                                    Id:               messageIds[i-1],
+                                                                    Priority:         i > 7 ? MessagePriority.AlwaysFront : MessagePriority.NormalCycle,
+                                                                    Message:          new MessageContent(
+                                                                                          Content:      $"{i}:{setMessage}",
+                                                                                          Format:       MessageFormat.UTF8,
+                                                                                          Language:     Language_Id.Parse("de"),
+                                                                                          CustomData:   null
+                                                                                      ),
+                                                                    State:            i > 5 ? MessageState.Charging : MessageState.Idle,
+                                                                    StartTimestamp:   Timestamp.Now,
+                                                                    EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                                    TransactionId:    null,
+                                                                    CustomData:       null
+                                                                ),
+                                                 CustomData:    null
                                              );
 
                     ClassicAssert.AreEqual(ResultCode.OK,    setResponse.Result.ResultCode);
@@ -3485,16 +3607,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 }
 
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(10));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(10));
 
-                ClassicAssert.AreEqual(10, csms1WebSocketJSONMessagesSent.                        Count);
-                ClassicAssert.AreEqual(10, csms1WebSocketJSONMessageResponsesReceived.            Count);
-                ClassicAssert.AreEqual(10, csms1WebSocketJSONMessagesReceived.                    Count);
-                ClassicAssert.AreEqual( 0, csms1WebSocketJSONMessageResponsesSent.                Count);
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
 
-                ClassicAssert.AreEqual(10, chargingStation1WebSocketJSONMessagesReceived.        Count);
-                ClassicAssert.AreEqual(10, chargingStation1WebSocketJSONMessageResponsesSent.    Count);
-                ClassicAssert.AreEqual(10, chargingStation1WebSocketJSONMessagesSent.            Count);
-                ClassicAssert.AreEqual( 0, chargingStation1WebSocketJSONMessageResponsesReceived.Count);
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(10));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(10));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo( 0));
 
                 await Task.Delay(500);
 
@@ -3507,14 +3634,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.      OCPP.IN. OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest, ct) => {
+                testCSMS1.      OCPP.IN. OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest, ct) => {
                     notifyDisplayMessagesRequests.TryAdd(notifyDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
 
 
-                var getResponse1  = await testCSMS01.GetDisplayMessages(
-                                              Destination:    SourceRouting.To(               chargingStation1.Id),
+                var getResponse1  = await testCSMS1.GetDisplayMessages(
+                                              Destination:                   SourceRouting.To(chargingStation1.Id),
                                               GetDisplayMessagesRequestId:   1,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3528,19 +3655,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 await Task.Delay(500);
 
 
-                ClassicAssert.AreEqual(12, csms1WebSocketJSONMessagesSent.                       Count);
-                ClassicAssert.AreEqual(11, csms1WebSocketJSONMessageResponsesReceived.           Count);
-                ClassicAssert.AreEqual(12, csms1WebSocketJSONMessagesReceived.                   Count);
-                ClassicAssert.AreEqual( 1, csms1WebSocketJSONMessageResponsesSent.               Count);
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(11));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(11));
 
-                ClassicAssert.AreEqual(12, chargingStation1WebSocketJSONMessagesReceived.        Count);
-                ClassicAssert.AreEqual(11, chargingStation1WebSocketJSONMessageResponsesSent.    Count);
-                ClassicAssert.AreEqual(12, chargingStation1WebSocketJSONMessagesSent.            Count);
-                ClassicAssert.AreEqual( 1, chargingStation1WebSocketJSONMessageResponsesReceived.Count);
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(11));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(11));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo( 0));
 
 
-                var getResponse2  = await testCSMS01.GetDisplayMessages(
-                                              Destination:    SourceRouting.To(               chargingStation1.Id),
+
+                //ClassicAssert.AreEqual(12, csms1WebSocketJSONRequestsSent.                       Count);
+                //ClassicAssert.AreEqual(11, csms1WebSocketJSONResponsesReceived.           Count);
+                //ClassicAssert.AreEqual(12, csms1WebSocketJSONRequestsReceived.                   Count);
+                //ClassicAssert.AreEqual( 1, csms1WebSocketJSONResponsesSent.               Count);
+
+                //ClassicAssert.AreEqual(12, chargingStation1WebSocketJSONMessagesReceived.        Count);
+                //ClassicAssert.AreEqual(11, chargingStation1WebSocketJSONMessageResponsesSent.    Count);
+                //ClassicAssert.AreEqual(12, chargingStation1WebSocketJSONMessagesSent.            Count);
+                //ClassicAssert.AreEqual( 1, chargingStation1WebSocketJSONMessageResponsesReceived.Count);
+
+
+                var getResponse2  = await testCSMS1.GetDisplayMessages(
+                                              Destination:                   SourceRouting.To(chargingStation1.Id),
                                               GetDisplayMessagesRequestId:   2,
                                               Ids:                           [
                                                                                  messageIds[0],
@@ -3558,8 +3703,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 await Task.Delay(500);
 
 
-                var getResponse3  = await testCSMS01.GetDisplayMessages(
-                                              Destination:    SourceRouting.To(               chargingStation1.Id),
+                var getResponse3  = await testCSMS1.GetDisplayMessages(
+                                              Destination:                   SourceRouting.To(chargingStation1.Id),
                                               GetDisplayMessagesRequestId:   3,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3573,8 +3718,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 await Task.Delay(500);
 
 
-                var getResponse4  = await testCSMS01.GetDisplayMessages(
-                                              Destination:    SourceRouting.To(               chargingStation1.Id),
+                var getResponse4  = await testCSMS1.GetDisplayMessages(
+                                              Destination:                   SourceRouting.To(chargingStation1.Id),
                                               GetDisplayMessagesRequestId:   4,
                                               Ids:                           null,
                                               Priority:                      MessagePriority.AlwaysFront,
@@ -3610,30 +3755,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearDisplayMessage_Test()
         {
 
-            if (testCSMS01                                            is not null &&
-                testBackendWebSockets01                               is not null &&
-                csms1WebSocketJSONMessagesSent                        is not null &&
-                csms1WebSocketJSONMessageResponsesReceived            is not null &&
-                csms1WebSocketJSONMessagesReceived                    is not null &&
-                csms1WebSocketJSONMessageResponsesSent                is not null &&
+            if (testCSMS1                                           is not null &&
+                testBackendWebSockets1                              is not null &&
 
-                chargingStation1                                      is not null &&
-                chargingStation1WebSocketJSONMessagesReceived         is not null &&
-                chargingStation1WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation1WebSocketJSONMessagesSent             is not null &&
-                chargingStation1WebSocketJSONMessageResponsesReceived is not null &&
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
 
-                chargingStation2                                      is not null &&
-                chargingStation2WebSocketJSONMessagesReceived         is not null &&
-                chargingStation2WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation2WebSocketJSONMessagesSent             is not null &&
-                chargingStation2WebSocketJSONMessageResponsesReceived is not null &&
-
-                chargingStation3                                      is not null &&
-                chargingStation3WebSocketJSONMessagesReceived         is not null &&
-                chargingStation3WebSocketJSONMessageResponsesSent     is not null &&
-                chargingStation3WebSocketJSONMessagesSent             is not null &&
-                chargingStation3WebSocketJSONMessageResponsesReceived is not null)
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
 
             {
 
@@ -3647,24 +3785,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var messageId1    = DisplayMessage_Id.NewRandom;
                 var message1      = RandomExtensions.RandomString(10);
 
-                var setResponse1  = await testCSMS01.SetDisplayMessage(
-                                              Destination:    SourceRouting.To( chargingStation1.Id),
-                                              Message:         new MessageInfo(
-                                                                   Id:               messageId1,
-                                                                   Priority:         MessagePriority.AlwaysFront,
-                                                                   Message:          new MessageContent(
-                                                                                         Content:      message1,
-                                                                                         Format:       MessageFormat.UTF8,
-                                                                                         Language:     Language_Id.Parse("de"),
-                                                                                         CustomData:   null
-                                                                                     ),
-                                                                   State:            MessageState.Charging,
-                                                                   StartTimestamp:   Timestamp.Now,
-                                                                   EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                                   TransactionId:    null,
-                                                                   CustomData:       null
-                                                               ),
-                                              CustomData:      null
+                var setResponse1  = await testCSMS1.SetDisplayMessage(
+                                              Destination:   SourceRouting.To( chargingStation1.Id),
+                                              Message:       new MessageInfo(
+                                                                 Id:               messageId1,
+                                                                 Priority:         MessagePriority.AlwaysFront,
+                                                                 Message:          new MessageContent(
+                                                                                       Content:      message1,
+                                                                                       Format:       MessageFormat.UTF8,
+                                                                                       Language:     Language_Id.Parse("de"),
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 State:            MessageState.Charging,
+                                                                 StartTimestamp:   Timestamp.Now,
+                                                                 EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                                 TransactionId:    null,
+                                                                 CustomData:       null
+                                                             ),
+                                              CustomData:    null
                                           );
 
                 ClassicAssert.AreEqual(ResultCode.OK,   setResponse1.Result.ResultCode);
@@ -3674,24 +3812,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var messageId2    = DisplayMessage_Id.NewRandom;
                 var message2      = RandomExtensions.RandomString(10);
 
-                var setResponse2  = await testCSMS01.SetDisplayMessage(
-                                              Destination:    SourceRouting.To( chargingStation1.Id),
-                                              Message:         new MessageInfo(
-                                                                   Id:               messageId2,
-                                                                   Priority:         MessagePriority.AlwaysFront,
-                                                                   Message:          new MessageContent(
-                                                                                         Content:      message2,
-                                                                                         Format:       MessageFormat.UTF8,
-                                                                                         Language:     Language_Id.Parse("de"),
-                                                                                         CustomData:   null
-                                                                                     ),
-                                                                   State:            MessageState.Charging,
-                                                                   StartTimestamp:   Timestamp.Now,
-                                                                   EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                                   TransactionId:    null,
-                                                                   CustomData:       null
-                                                               ),
-                                              CustomData:      null
+                var setResponse2  = await testCSMS1.SetDisplayMessage(
+                                              Destination:   SourceRouting.To( chargingStation1.Id),
+                                              Message:       new MessageInfo(
+                                                                 Id:               messageId2,
+                                                                 Priority:         MessagePriority.AlwaysFront,
+                                                                 Message:          new MessageContent(
+                                                                                       Content:      message2,
+                                                                                       Format:       MessageFormat.UTF8,
+                                                                                       Language:     Language_Id.Parse("de"),
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 State:            MessageState.Charging,
+                                                                 StartTimestamp:   Timestamp.Now,
+                                                                 EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                                 TransactionId:    null,
+                                                                 CustomData:       null
+                                                             ),
+                                              CustomData:    null
                                           );
 
                 ClassicAssert.AreEqual(ResultCode.OK,   setResponse2.Result.ResultCode);
@@ -3709,14 +3847,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var notifyDisplayMessagesRequests = new ConcurrentList<CS.NotifyDisplayMessagesRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest, ct) => {
                     notifyDisplayMessagesRequests.TryAdd(notifyDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
 
 
-                var getResponse1  = await testCSMS01.GetDisplayMessages(
-                                              Destination:    SourceRouting.To(               chargingStation1.Id),
+                var getResponse1  = await testCSMS1.GetDisplayMessages(
+                                              Destination:                   SourceRouting.To(chargingStation1.Id),
                                               GetDisplayMessagesRequestId:   1,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3739,10 +3877,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var clearResponse  = await testCSMS01.ClearDisplayMessage(
-                                               Destination:    SourceRouting.To(     chargingStation1.Id),
-                                               DisplayMessageId:    messageId1,
-                                               CustomData:          null
+                var clearResponse  = await testCSMS1.ClearDisplayMessage(
+                                               Destination:       SourceRouting.To(chargingStation1.Id),
+                                               DisplayMessageId:  messageId1,
+                                               CustomData:        null
                                            );
 
                 ClassicAssert.AreEqual(ResultCode.OK,   clearResponse.Result.ResultCode);
@@ -3753,8 +3891,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 // Get Messages AFTER
-                var getResponse2  = await testCSMS01.GetDisplayMessages(
-                                              Destination:    SourceRouting.To(               chargingStation1.Id),
+                var getResponse2  = await testCSMS1.GetDisplayMessages(
+                                              Destination:                   SourceRouting.To(chargingStation1.Id),
                                               GetDisplayMessagesRequestId:   2,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3769,19 +3907,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 await Task.Delay(500);
 
 
-                ClassicAssert.AreEqual(2,                notifyDisplayMessagesRequests[0].MessageInfos.Count());
-                ClassicAssert.AreEqual(1,                notifyDisplayMessagesRequests[1].MessageInfos.Count());
+                ClassicAssert.AreEqual(2,               notifyDisplayMessagesRequests[0].MessageInfos.Count());
+                ClassicAssert.AreEqual(1,               notifyDisplayMessagesRequests[1].MessageInfos.Count());
 
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(5));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(5));
 
-                ClassicAssert.AreEqual(7, csms1WebSocketJSONMessagesSent.                        Count);
-                ClassicAssert.AreEqual(5, csms1WebSocketJSONMessageResponsesReceived.            Count);
-                ClassicAssert.AreEqual(7, csms1WebSocketJSONMessagesReceived.                    Count);
-                ClassicAssert.AreEqual(2, csms1WebSocketJSONMessageResponsesSent.                Count);
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                ClassicAssert.AreEqual(7, chargingStation1WebSocketJSONMessagesReceived.        Count);
-                ClassicAssert.AreEqual(5, chargingStation1WebSocketJSONMessageResponsesSent.    Count);
-                ClassicAssert.AreEqual(7, chargingStation1WebSocketJSONMessagesSent.            Count);
-                ClassicAssert.AreEqual(2, chargingStation1WebSocketJSONMessageResponsesReceived.Count);
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(5));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(5));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
             }
 
@@ -3799,14 +3942,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SendCostUpdate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3821,7 +3964,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var message   = RandomExtensions.RandomString(10);
 
-                var response  = await testCSMS01.SendCostUpdated(
+                var response  = await testCSMS1.SendCostUpdated(
                                           Destination:    SourceRouting.To( chargingStation1.Id),
                                           TotalCost:       1.02M,
                                           TransactionId:   Transaction_Id.NewRandom,
@@ -3852,14 +3995,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task RequestCustomerInformation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -3873,13 +4016,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp, sender, connection, notifyCustomerInformationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp, sender, connection, notifyCustomerInformationRequest, ct) => {
                     notifyCustomerInformationRequests.TryAdd(notifyCustomerInformationRequest);
                     return Task.CompletedTask;
                 };
 
 
-                var response = await testCSMS01.RequestCustomerInformation(
+                var response = await testCSMS1.RequestCustomerInformation(
                                          Destination:    SourceRouting.To(                chargingStation1.Id),
                                          CustomerInformationRequestId:   1,
                                          Report:                         true,

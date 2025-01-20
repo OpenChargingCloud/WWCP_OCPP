@@ -27,20 +27,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 {
 
     /// <summary>
-    /// Charging station with networking node test defaults.
+    /// Charging Station with Local Controllers test defaults.
     /// </summary>
-    public abstract class AChargingStationWithNetworkingNodeTests : AChargingStationTests
+    public abstract class AChargingStationWithLocalControllersTests : AChargingStationTests
     {
 
         #region SetupEachTest()
 
         [SetUp]
-        public override void SetupEachTest()
+        public override async Task SetupEachTest()
         {
 
-            InitNetworkingNode1 = true;
+            InitLocalController1 = true;
+            InitLocalController2 = true;
 
-            base.SetupEachTest();
+            await base.SetupEachTest();
 
         }
 

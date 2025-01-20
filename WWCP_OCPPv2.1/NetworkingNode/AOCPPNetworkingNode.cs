@@ -42,6 +42,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
+        /// <summary>
+        /// The default HTTP server name.
+        /// </summary>
+        public    const   String                                              DefaultHTTPServiceName  = $"GraphDefined OCPP {Version.String} WebSocket Server";
+
         //private          readonly  HashSet<SignaturePolicy>                                    signaturePolicies            = [];
 
         //private                    Int64                                                       internalRequestId            = 900000;
@@ -317,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="AutoStart">Start the server immediately.</param>
         public override OCPP.WebSockets.OCPPWebSocketServer
 
-            AttachWebSocketServer(String?                                                         HTTPServiceName              = null,
+            AttachWebSocketServer(String?                                                         HTTPServiceName              = DefaultHTTPServiceName,
                                   IIPAddress?                                                     IPAddress                    = null,
                                   IPPort?                                                         TCPPort                      = null,
                                   I18NString?                                                     Description                  = null,
@@ -352,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                           this,
 
-                                          HTTPServiceName,
+                                          HTTPServiceName ?? DefaultHTTPServiceName,
                                           IPAddress,
                                           TCPPort,
                                           Description,

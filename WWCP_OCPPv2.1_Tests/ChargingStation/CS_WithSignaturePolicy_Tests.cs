@@ -49,14 +49,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public void ChargingStation_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -81,14 +81,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendBootNotifications_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var bootNotificationRequests = new ConcurrentList<CS.BootNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -113,9 +113,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var now2                           = Timestamp.Now;
                 var keyPair2                       = ECCKeyPair.GenerateKeys()!;
-                testCSMS01.OCPP.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
+                testCSMS1.OCPP.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
                                                                           VerificationRuleActions.VerifyAll);
-                testCSMS01.OCPP.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
+                testCSMS1.OCPP.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
                                                                           keyPair2,
                                                                           UserIdGenerator:         (signableMessage) => "csms001",
                                                                           DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test!"),

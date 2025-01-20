@@ -636,18 +636,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            #region OnQRCodeScanned
+            #region OnNotifyWebPaymentStarted
 
-            OCPP.IN.OnQRCodeScanned += (timestamp,
-                                        sender,
-                                        connection,
-                                        request,
-                                        ct) => {
+            OCPP.IN.OnNotifyWebPaymentStarted += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming QRCodeScanned request (EVSE id: {request.EVSEId}, timeout: '{request.Timeout.TotalSeconds} secs)!");
+                DebugX.Log($"Charging station '{Id}': Incoming NotifyWebPaymentStarted request (EVSE id: {request.EVSEId}, timeout: '{request.Timeout.TotalSeconds} secs)!");
 
                 return Task.FromResult(
-                           new QRCodeScannedResponse(
+                           new NotifyWebPaymentStartedResponse(
                                Request:     request,
                                CustomData:  null
                            )

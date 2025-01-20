@@ -21,10 +21,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.WWCP.WebSockets;
+
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Logging Delegates
 
     /// <summary>
-    /// A delegate called whenever a QRCodeScanned request was sent.
+    /// A delegate called whenever a NotifyWebPaymentStarted request was sent.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request logging.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -43,16 +43,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnQRCodeScannedRequestSentDelegate(DateTime                Timestamp,
-                                                            IEventSender            Sender,
-                                                            IWebSocketConnection?   Connection,
-                                                            QRCodeScannedRequest    Request,
-                                                            SentMessageResults      SentMessageResult,
-                                                            CancellationToken       CancellationToken);
+    public delegate Task OnNotifyWebPaymentStartedRequestSentDelegate(DateTime                         Timestamp,
+                                                                      IEventSender                     Sender,
+                                                                      IWebSocketConnection?            Connection,
+                                                                      NotifyWebPaymentStartedRequest   Request,
+                                                                      SentMessageResults               SentMessageResult,
+                                                                      CancellationToken                CancellationToken);
 
 
     /// <summary>
-    /// A QRCodeScanned response.
+    /// A NotifyWebPaymentStarted response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -64,18 +64,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnQRCodeScannedResponseSentDelegate(DateTime                Timestamp,
-                                            IEventSender            Sender,
-                                            IWebSocketConnection?   Connection,
-                                            QRCodeScannedRequest    Request,
-                                            QRCodeScannedResponse   Response,
-                                            TimeSpan                Runtime,
-                                            SentMessageResults      SentMessageResult,
-                                            CancellationToken       CancellationToken);
+        OnNotifyWebPaymentStartedResponseSentDelegate(DateTime                Timestamp,
+                                            IEventSender                      Sender,
+                                            IWebSocketConnection?             Connection,
+                                            NotifyWebPaymentStartedRequest    Request,
+                                            NotifyWebPaymentStartedResponse   Response,
+                                            TimeSpan                          Runtime,
+                                            SentMessageResults                SentMessageResult,
+                                            CancellationToken                 CancellationToken);
 
 
     /// <summary>
-    /// A logging delegate called whenever a QRCodeScanned request error was sent.
+    /// A logging delegate called whenever a NotifyWebPaymentStarted request error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the request error.</param>
@@ -87,18 +87,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnQRCodeScannedRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                IEventSender                   Sender,
-                                                IWebSocketConnection?          Connection,
-                                                QRCodeScannedRequest?          Request,
-                                                OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                TimeSpan?                      Runtime,
-                                                SentMessageResults             SentMessageResult,
-                                                CancellationToken              CancellationToken);
+        OnNotifyWebPaymentStartedRequestErrorSentDelegate(DateTime                          Timestamp,
+                                                          IEventSender                      Sender,
+                                                          IWebSocketConnection?             Connection,
+                                                          NotifyWebPaymentStartedRequest?   Request,
+                                                          OCPP_JSONRequestErrorMessage      RequestErrorMessage,
+                                                          TimeSpan?                         Runtime,
+                                                          SentMessageResults                SentMessageResult,
+                                                          CancellationToken                 CancellationToken);
 
 
     /// <summary>
-    /// A logging delegate called whenever a QRCodeScanned response error was sent.
+    /// A logging delegate called whenever a NotifyWebPaymentStarted response error was sent.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="Sender">The sender of the response error.</param>
@@ -111,15 +111,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnQRCodeScannedResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                 IEventSender                    Sender,
-                                                 IWebSocketConnection?           Connection,
-                                                 QRCodeScannedRequest?           Request,
-                                                 QRCodeScannedResponse?          Response,
-                                                 OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                 TimeSpan?                       Runtime,
-                                                 SentMessageResults              SentMessageResult,
-                                                 CancellationToken               CancellationToken);
+        OnNotifyWebPaymentStartedResponseErrorSentDelegate(DateTime                           Timestamp,
+                                                           IEventSender                       Sender,
+                                                           IWebSocketConnection?              Connection,
+                                                           NotifyWebPaymentStartedRequest?    Request,
+                                                           NotifyWebPaymentStartedResponse?   Response,
+                                                           OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
+                                                           TimeSpan?                          Runtime,
+                                                           SentMessageResults                 SentMessageResult,
+                                                           CancellationToken                  CancellationToken);
 
     #endregion
 
@@ -127,25 +127,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT
     {
 
-        #region Send QRCodeScanned request
+        #region Send NotifyWebPaymentStarted request
 
         /// <summary>
-        /// An event fired whenever a QRCodeScanned request was sent.
+        /// An event fired whenever a NotifyWebPaymentStarted request was sent.
         /// </summary>
-        public event OnQRCodeScannedRequestSentDelegate?  OnQRCodeScannedRequestSent;
+        public event OnNotifyWebPaymentStartedRequestSentDelegate?  OnNotifyWebPaymentStartedRequestSent;
 
 
         /// <summary>
-        /// Send a QRCodeScanned request.
+        /// Send a NotifyWebPaymentStarted request.
         /// </summary>
-        /// <param name="Request">A QRCodeScanned request.</param>
-        public async Task<QRCodeScannedResponse>
+        /// <param name="Request">A NotifyWebPaymentStarted request.</param>
+        public async Task<NotifyWebPaymentStartedResponse>
 
-            QRCodeScanned(QRCodeScannedRequest Request)
+            NotifyWebPaymentStarted(NotifyWebPaymentStartedRequest Request)
 
         {
 
-            QRCodeScannedResponse? response = null;
+            NotifyWebPaymentStartedResponse? response = null;
 
             try
             {
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
                         Request.ToJSON(
-                            parentNetworkingNode.OCPP.CustomQRCodeScannedRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomNotifyWebPaymentStartedRequestSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     ))
                 {
 
-                    response = QRCodeScannedResponse.SignatureError(
+                    response = NotifyWebPaymentStartedResponse.SignatureError(
                                    Request,
                                    signingErrors
                                );
@@ -182,14 +182,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
-                                                             parentNetworkingNode.OCPP.CustomQRCodeScannedRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomNotifyWebPaymentStartedRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )
                                                      ),
 
                                                      sentMessageResult => LogEvent(
-                                                         OnQRCodeScannedRequestSent,
+                                                         OnNotifyWebPaymentStartedRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
                     if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_QRCodeScannedResponse(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_NotifyWebPaymentStartedResponse(
                                              Request,
                                              jsonResponse,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
                     if (sendRequestState.IsValidJSONRequestError(Request, out var jsonRequestError))
-                        response = await parentNetworkingNode.OCPP.IN.Receive_QRCodeScannedRequestError(
+                        response = await parentNetworkingNode.OCPP.IN.Receive_NotifyWebPaymentStartedRequestError(
                                              Request,
                                              jsonRequestError,
                                              sendRequestState.WebSocketConnectionReceived,
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              Request.CancellationToken
                                          );
 
-                    response ??= new QRCodeScannedResponse(
+                    response ??= new NotifyWebPaymentStartedResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = QRCodeScannedResponse.ExceptionOccured(
+                response = NotifyWebPaymentStartedResponse.ExceptionOccured(
                                Request,
                                e
                            );
@@ -255,24 +255,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region Send OnQRCodeScannedResponseSent event
+        #region Send OnNotifyWebPaymentStartedResponseSent event
 
         /// <summary>
-        /// An event sent whenever a QRCodeScanned response was sent.
+        /// An event sent whenever a NotifyWebPaymentStarted response was sent.
         /// </summary>
-        public event OnQRCodeScannedResponseSentDelegate?  OnQRCodeScannedResponseSent;
+        public event OnNotifyWebPaymentStartedResponseSentDelegate?  OnNotifyWebPaymentStartedResponseSent;
 
-        public Task SendOnQRCodeScannedResponseSent(DateTime               Timestamp,
-                                                    IEventSender           Sender,
-                                                    IWebSocketConnection?  Connection,
-                                                    QRCodeScannedRequest   Request,
-                                                    QRCodeScannedResponse  Response,
-                                                    TimeSpan               Runtime,
-                                                    SentMessageResults     SentMessageResult,
-                                                    CancellationToken      CancellationToken = default)
+        public Task SendOnNotifyWebPaymentStartedResponseSent(DateTime                         Timestamp,
+                                                              IEventSender                     Sender,
+                                                              IWebSocketConnection?            Connection,
+                                                              NotifyWebPaymentStartedRequest   Request,
+                                                              NotifyWebPaymentStartedResponse  Response,
+                                                              TimeSpan                         Runtime,
+                                                              SentMessageResults               SentMessageResult,
+                                                              CancellationToken                CancellationToken = default)
 
             => LogEvent(
-                   OnQRCodeScannedResponseSent,
+                   OnNotifyWebPaymentStartedResponseSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -287,25 +287,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnQRCodeScannedRequestErrorSent event
+        #region Send OnNotifyWebPaymentStartedRequestErrorSent event
 
         /// <summary>
-        /// An event sent whenever a QRCodeScanned request error was sent.
+        /// An event sent whenever a NotifyWebPaymentStarted request error was sent.
         /// </summary>
-        public event OnQRCodeScannedRequestErrorSentDelegate? OnQRCodeScannedRequestErrorSent;
+        public event OnNotifyWebPaymentStartedRequestErrorSentDelegate? OnNotifyWebPaymentStartedRequestErrorSent;
 
 
-        public Task SendOnQRCodeScannedRequestErrorSent(DateTime                      Timestamp,
-                                                        IEventSender                  Sender,
-                                                        IWebSocketConnection?         Connection,
-                                                        QRCodeScannedRequest?         Request,
-                                                        OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                        TimeSpan                      Runtime,
-                                                        SentMessageResults            SentMessageResult,
-                                                        CancellationToken             CancellationToken = default)
+        public Task SendOnNotifyWebPaymentStartedRequestErrorSent(DateTime                         Timestamp,
+                                                                  IEventSender                     Sender,
+                                                                  IWebSocketConnection?            Connection,
+                                                                  NotifyWebPaymentStartedRequest?  Request,
+                                                                  OCPP_JSONRequestErrorMessage     RequestErrorMessage,
+                                                                  TimeSpan                         Runtime,
+                                                                  SentMessageResults               SentMessageResult,
+                                                                  CancellationToken                CancellationToken = default)
 
             => LogEvent(
-                   OnQRCodeScannedRequestErrorSent,
+                   OnNotifyWebPaymentStartedRequestErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,
@@ -320,26 +320,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Send OnQRCodeScannedResponseErrorSent event
+        #region Send OnNotifyWebPaymentStartedResponseErrorSent event
 
         /// <summary>
-        /// An event sent whenever a QRCodeScanned response error was sent.
+        /// An event sent whenever a NotifyWebPaymentStarted response error was sent.
         /// </summary>
-        public event OnQRCodeScannedResponseErrorSentDelegate? OnQRCodeScannedResponseErrorSent;
+        public event OnNotifyWebPaymentStartedResponseErrorSentDelegate? OnNotifyWebPaymentStartedResponseErrorSent;
 
 
-        public Task SendOnQRCodeScannedResponseErrorSent(DateTime                       Timestamp,
-                                                         IEventSender                   Sender,
-                                                         IWebSocketConnection?          Connection,
-                                                         QRCodeScannedRequest?          Request,
-                                                         QRCodeScannedResponse?         Response,
-                                                         OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                         TimeSpan                       Runtime,
-                                                         SentMessageResults             SentMessageResult,
-                                                         CancellationToken              CancellationToken = default)
+        public Task SendOnNotifyWebPaymentStartedResponseErrorSent(DateTime                          Timestamp,
+                                                                   IEventSender                      Sender,
+                                                                   IWebSocketConnection?             Connection,
+                                                                   NotifyWebPaymentStartedRequest?   Request,
+                                                                   NotifyWebPaymentStartedResponse?  Response,
+                                                                   OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
+                                                                   TimeSpan                          Runtime,
+                                                                   SentMessageResults                SentMessageResult,
+                                                                   CancellationToken                 CancellationToken = default)
 
             => LogEvent(
-                   OnQRCodeScannedResponseErrorSent,
+                   OnNotifyWebPaymentStartedResponseErrorSent,
                    loggingDelegate => loggingDelegate.Invoke(
                        Timestamp,
                        Sender,

@@ -51,14 +51,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public void ChargingStation_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -85,15 +85,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var bootNotificationRequests= new ConcurrentList<BootNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection,  bootNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection,  bootNotificationRequest, ct) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -158,14 +158,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendFirmwareStatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var firmwareStatusNotificationRequests= new ConcurrentList<FirmwareStatusNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, firmwareStatusNotificationRequest, ct) => {
                     firmwareStatusNotificationRequests.TryAdd(firmwareStatusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -205,14 +205,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendPublishFirmwareStatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var publishFirmwareStatusNotificationRequests = new ConcurrentList<PublishFirmwareStatusNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, publishFirmwareStatusNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp, sender, connection, publishFirmwareStatusNotificationRequest, ct) => {
                     publishFirmwareStatusNotificationRequests.TryAdd(publishFirmwareStatusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -256,14 +256,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendHeartbeats_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var heartbeatRequests= new ConcurrentList<HeartbeatRequest>();
 
-                testCSMS01.OCPP.IN.OnHeartbeatRequestReceived += (timestamp, sender, connection, heartbeatRequest, ct) => {
+                testCSMS1.OCPP.IN.OnHeartbeatRequestReceived += (timestamp, sender, connection, heartbeatRequest, ct) => {
                     heartbeatRequests.TryAdd(heartbeatRequest);
                     return Task.CompletedTask;
                 };
@@ -302,14 +302,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyEvent_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyEventRequests= new ConcurrentList<NotifyEventRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyEventRequestReceived += (timestamp, sender, connection, notifyEventRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyEventRequestReceived += (timestamp, sender, connection, notifyEventRequest, ct) => {
                     notifyEventRequests.TryAdd(notifyEventRequest);
                     return Task.CompletedTask;
                 };
@@ -380,14 +380,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendSecurityEventNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var securityEventNotificationRequests= new ConcurrentList<SecurityEventNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp, sender, connection, securityEventNotificationRequest, ct) => {
                     securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -427,14 +427,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<NotifyReportRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyReportRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyReportRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
@@ -516,14 +516,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyMonitoringReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyMonitoringReportRequests= new ConcurrentList<NotifyMonitoringReportRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp, sender, connection, notifyMonitoringReportRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp, sender, connection, notifyMonitoringReportRequest, ct) => {
                     notifyMonitoringReportRequests.TryAdd(notifyMonitoringReportRequest);
                     return Task.CompletedTask;
                 };
@@ -594,14 +594,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendLogStatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var logStatusNotificationRequests= new ConcurrentList<LogStatusNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp, sender, connection, logStatusNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp, sender, connection, logStatusNotificationRequest, ct) => {
                     logStatusNotificationRequests.TryAdd(logStatusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -641,14 +641,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task TransferTextData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -656,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var dataTransferRequests= new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
+                testCSMS1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -695,14 +695,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task TransferJObjectData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var dataTransferRequests= new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
+                testCSMS1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -756,14 +756,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task TransferJArrayData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var dataTransferRequests= new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
+                testCSMS1.OCPP.IN.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -815,14 +815,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendCertificateSigningRequest_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -830,7 +830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var signCertificateRequests= new ConcurrentList<SignCertificateRequest>();
 
-                testCSMS01.OCPP.IN.OnSignCertificateRequestReceived += (timestamp, sender, connection, signCertificateRequest, ct) => {
+                testCSMS1.OCPP.IN.OnSignCertificateRequestReceived += (timestamp, sender, connection, signCertificateRequest, ct) => {
                     signCertificateRequests.TryAdd(signCertificateRequest);
                     return Task.CompletedTask;
                 };
@@ -862,14 +862,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task Get15118EVCertificate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<Get15118EVCertificateRequest>();
 
-                testCSMS01.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
+                testCSMS1.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
@@ -910,15 +910,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -926,7 +926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<GetCertificateStatusRequest>();
 
-                testCSMS01.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
+                testCSMS1.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };
@@ -966,14 +966,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task GetCRLRequest_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -981,7 +981,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var getCRLRequests= new ConcurrentList<GetCRLRequest>();
 
-                testCSMS01.OCPP.IN.OnGetCRLRequestReceived += (timestamp, sender, connection, getCRLRequest, ct) => {
+                testCSMS1.OCPP.IN.OnGetCRLRequestReceived += (timestamp, sender, connection, getCRLRequest, ct) => {
                     getCRLRequests.TryAdd(getCRLRequest);
                     return Task.CompletedTask;
                 };
@@ -1018,14 +1018,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendReservationStatusUpdate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1033,7 +1033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var reservationStatusUpdateRequests= new ConcurrentList<ReservationStatusUpdateRequest>();
 
-                testCSMS01.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp, sender, connection, reservationStatusUpdateRequest, ct) => {
+                testCSMS1.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp, sender, connection, reservationStatusUpdateRequest, ct) => {
                     reservationStatusUpdateRequests.TryAdd(reservationStatusUpdateRequest);
                     return Task.CompletedTask;
                 };
@@ -1065,15 +1065,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         {
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,               Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(testCSMS1,               Is.Not.Null);
+                Assert.That(testBackendWebSockets1,  Is.Not.Null);
                 Assert.That(chargingStation1,         Is.Not.Null);
                 Assert.That(chargingStation2,         Is.Not.Null);
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS01     is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1     is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1081,7 +1081,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var authorizeRequests= new ConcurrentList<AuthorizeRequest>();
 
-                testCSMS01.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest, ct) => {
+                testCSMS1.OCPP.IN.OnAuthorizeRequestReceived += (timestamp, sender, connection, authorizeRequest, ct) => {
                     authorizeRequests.TryAdd(authorizeRequest);
                     return Task.CompletedTask;
                 };
@@ -1122,14 +1122,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyEVChargingNeeds_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1137,7 +1137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyEVChargingNeedsRequests= new ConcurrentList<NotifyEVChargingNeedsRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp, sender, connection, notifyEVChargingNeedsRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp, sender, connection, notifyEVChargingNeedsRequest, ct) => {
                     notifyEVChargingNeedsRequests.TryAdd(notifyEVChargingNeedsRequest);
                     return Task.CompletedTask;
                 };
@@ -1191,14 +1191,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendTransactionEvent_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01     is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1     is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1206,7 +1206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var transactionEventRequests= new ConcurrentList<TransactionEventRequest>();
 
-                testCSMS01.OCPP.IN.OnTransactionEventRequestReceived += (timestamp, sender, connection, transactionEventRequest, ct) => {
+                testCSMS1.OCPP.IN.OnTransactionEventRequestReceived += (timestamp, sender, connection, transactionEventRequest, ct) => {
                     transactionEventRequests.TryAdd(transactionEventRequest);
                     return Task.CompletedTask;
                 };
@@ -1304,14 +1304,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendStatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1319,7 +1319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var statusNotificationRequests= new ConcurrentList<StatusNotificationRequest>();
 
-                testCSMS01.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp, sender, connection, statusNotificationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp, sender, connection, statusNotificationRequest, ct) => {
                     statusNotificationRequests.TryAdd(statusNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -1361,28 +1361,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendMeterValues_Test()
         {
 
-            if (testCSMS01                                    is not null &&
-                testBackendWebSockets01                       is not null &&
-                csms1WebSocketJSONMessagesReceived            is not null &&
-                csms1WebSocketJSONMessageResponsesSent        is not null &&
+            if (testCSMS1                                           is not null &&
+                testBackendWebSockets1                              is not null &&
 
-                chargingStation1                              is not null &&
-                chargingStation1WebSocketJSONMessagesReceived is not null &&
-                chargingStation1WebSocketJSONMessagesSent     is not null &&
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
 
-                chargingStation2                              is not null &&
-                chargingStation2WebSocketJSONMessagesReceived is not null &&
-                chargingStation2WebSocketJSONMessagesSent     is not null &&
-
-                chargingStation3                              is not null &&
-                chargingStation3WebSocketJSONMessagesReceived is not null &&
-                chargingStation3WebSocketJSONMessagesSent     is not null)
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
 
             {
 
                 var meterValuesRequests= new ConcurrentList<MeterValuesRequest>();
 
-                testCSMS01.OCPP.IN.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest, ct) => {
+                testCSMS1.OCPP.IN.OnMeterValuesRequestReceived += (timestamp, sender, connection, meterValuesRequest, ct) => {
                     meterValuesRequests.TryAdd(meterValuesRequest);
                     return Task.CompletedTask;
                 };
@@ -1534,10 +1535,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 //ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit);
 
 
-                ClassicAssert.AreEqual(1, chargingStation1WebSocketJSONMessagesReceived.Count);
-                ClassicAssert.AreEqual(1, csms1WebSocketJSONMessagesReceived.            Count);
-                ClassicAssert.AreEqual(1, csms1WebSocketJSONMessageResponsesSent.        Count);
-                ClassicAssert.AreEqual(1, chargingStation1WebSocketJSONMessagesSent.    Count);
+                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
             }
 
@@ -1554,14 +1566,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyChargingLimit_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1569,7 +1581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyChargingLimitRequests= new ConcurrentList<NotifyChargingLimitRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp, sender, connection, notifyChargingLimitRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp, sender, connection, notifyChargingLimitRequest, ct) => {
                     notifyChargingLimitRequests.TryAdd(notifyChargingLimitRequest);
                     return Task.CompletedTask;
                 };
@@ -1658,14 +1670,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendClearedChargingLimit_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1673,7 +1685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var clearedChargingLimitRequests= new ConcurrentList<ClearedChargingLimitRequest>();
 
-                testCSMS01.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp, sender, connection, clearedChargingLimitRequest, ct) => {
+                testCSMS1.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp, sender, connection, clearedChargingLimitRequest, ct) => {
                     clearedChargingLimitRequests.TryAdd(clearedChargingLimitRequest);
                     return Task.CompletedTask;
                 };
@@ -1704,14 +1716,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task ReportChargingProfiles_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1719,7 +1731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var reportChargingProfilesRequests= new ConcurrentList<ReportChargingProfilesRequest>();
 
-                testCSMS01.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp, sender, connection, reportChargingProfilesRequest, ct) => {
+                testCSMS1.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp, sender, connection, reportChargingProfilesRequest, ct) => {
                     reportChargingProfilesRequests.TryAdd(reportChargingProfilesRequest);
                     return Task.CompletedTask;
                 };
@@ -1814,14 +1826,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyEVChargingSchedule_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1829,7 +1841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyEVChargingScheduleRequests= new ConcurrentList<NotifyEVChargingScheduleRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp, sender, connection, notifyEVChargingScheduleRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp, sender, connection, notifyEVChargingScheduleRequest, ct) => {
                     notifyEVChargingScheduleRequests.TryAdd(notifyEVChargingScheduleRequest);
                     return Task.CompletedTask;
                 };
@@ -1917,14 +1929,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyPriorityCharging_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1932,7 +1944,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyPriorityChargingRequests= new ConcurrentList<NotifyPriorityChargingRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest, ct) => {
                     notifyPriorityChargingRequests.TryAdd(notifyPriorityChargingRequest);
                     return Task.CompletedTask;
                 };
@@ -1963,14 +1975,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifySettlement_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -1978,7 +1990,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyPriorityChargingRequests= new ConcurrentList<NotifySettlementRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp, sender, connection, notifyPriorityChargingRequest, ct) => {
                     notifyPriorityChargingRequests.TryAdd(notifyPriorityChargingRequest);
                     return Task.CompletedTask;
                 };
@@ -2020,14 +2032,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task PullDynamicScheduleUpdate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2035,7 +2047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var pullDynamicScheduleUpdateRequests= new ConcurrentList<PullDynamicScheduleUpdateRequest>();
 
-                testCSMS01.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp, sender, connection, pullDynamicScheduleUpdateRequest, ct) => {
+                testCSMS1.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp, sender, connection, pullDynamicScheduleUpdateRequest, ct) => {
                     pullDynamicScheduleUpdateRequests.TryAdd(pullDynamicScheduleUpdateRequest);
                     return Task.CompletedTask;
                 };
@@ -2084,14 +2096,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyDisplayMessages_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2099,7 +2111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyDisplayMessagesRequests= new ConcurrentList<NotifyDisplayMessagesRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp, sender, connection, notifyDisplayMessagesRequest, ct) => {
                     notifyDisplayMessagesRequests.TryAdd(notifyDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
@@ -2156,14 +2168,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task NotifyCustomerInformation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -2171,7 +2183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyCustomerInformationRequests= new ConcurrentList<NotifyCustomerInformationRequest>();
 
-                testCSMS01.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp, sender, connection, notifyCustomerInformationRequest, ct) => {
+                testCSMS1.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp, sender, connection, notifyCustomerInformationRequest, ct) => {
                     notifyCustomerInformationRequests.TryAdd(notifyCustomerInformationRequest);
                     return Task.CompletedTask;
                 };

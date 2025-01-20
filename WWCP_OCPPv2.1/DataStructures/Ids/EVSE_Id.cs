@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The nummeric value of the EVSE identification.
         /// </summary>
-        public readonly Byte Value;
+        public readonly UInt16 Value;
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new EVSE identification based on the given number.
         /// </summary>
         /// <param name="Number">A numeric representation of a display message identification.</param>
-        private EVSE_Id(Byte Number)
+        private EVSE_Id(UInt16 Number)
         {
             this.Value = Number;
         }
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as an EVSE identification.
@@ -120,19 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (Number)
-
-        /// <summary>
-        /// Parse the given number as an EVSE identification.
-        /// </summary>
-        /// <param name="Number">A numeric representation of an EVSE identification.</param>
-        public static EVSE_Id Parse(Byte Number)
-
-            => new (Number);
-
-        #endregion
-
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
         /// Try to parse the given text as an EVSE identification.
@@ -150,25 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Number)
-
-        /// <summary>
-        /// Try to parse the given number as an EVSE identification.
-        /// </summary>
-        /// <param name="Number">A numeric representation of an EVSE identification.</param>
-        public static EVSE_Id? TryParse(Byte Number)
-        {
-
-            if (TryParse(Number, out var evseId))
-                return evseId;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text,   out EVSEId)
+        #region (static) TryParse (Text,   out EVSEId)
 
         /// <summary>
         /// Try to parse the given text as an EVSE identification.
@@ -181,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty() &&
-                Byte.TryParse(Text, out var number))
+                UInt16.TryParse(Text, out var number))
             {
                 EVSEId = new EVSE_Id(number);
                 return true;
@@ -194,14 +164,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Number, out EVSEId)
+
+        #region (static) Parse    (Number)
+
+        /// <summary>
+        /// Parse the given number as an EVSE identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an EVSE identification.</param>
+        public static EVSE_Id Parse(UInt16 Number)
+
+            => new (Number);
+
+        #endregion
+
+        #region (static) TryParse (Number)
+
+        /// <summary>
+        /// Try to parse the given number as an EVSE identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an EVSE identification.</param>
+        public static EVSE_Id? TryParse(UInt16 Number)
+        {
+
+            if (TryParse(Number, out var evseId))
+                return evseId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse (Number, out EVSEId)
 
         /// <summary>
         /// Try to parse the given number as an EVSE identification.
         /// </summary>
         /// <param name="Number">A numeric representation of an EVSE identification.</param>
         /// <param name="EVSEId">The parsed EVSE identification.</param>
-        public static Boolean TryParse(Byte Number, out EVSE_Id EVSEId)
+        public static Boolean TryParse(UInt16 Number, out EVSE_Id EVSEId)
         {
 
             EVSEId = new EVSE_Id(Number);
@@ -211,6 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
 
         #region Clone
 

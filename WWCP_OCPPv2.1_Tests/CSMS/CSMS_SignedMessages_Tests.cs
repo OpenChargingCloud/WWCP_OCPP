@@ -50,14 +50,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task Reset_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testCSMS1);
+            ClassicAssert.IsNotNull(testBackendWebSockets1);
             ClassicAssert.IsNotNull(chargingStation1);
             ClassicAssert.IsNotNull(chargingStation2);
             ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
+            if (testCSMS1              is not null &&
+                testBackendWebSockets1 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;
-                var response   = await testCSMS01.Reset(
+                var response   = await testCSMS1.Reset(
                                            Destination:  SourceRouting.To(chargingStation1.Id),
                                            ResetType:    resetType,
                                            SignInfos:    [
@@ -94,13 +94,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
                 ClassicAssert.AreEqual(ResetStatus.Accepted,          response.Status);
 
-                ClassicAssert.IsTrue  (testCSMS01.OCPP.SignaturePolicy.VerifyResponseMessage(
+                ClassicAssert.IsTrue  (testCSMS1.OCPP.SignaturePolicy.VerifyResponseMessage(
                                            response,
                                            response.ToJSON(
-                                               testCSMS01.OCPP.CustomResetResponseSerializer,
-                                               testCSMS01.OCPP.CustomStatusInfoSerializer,
-                                               testCSMS01.OCPP.CustomSignatureSerializer,
-                                               testCSMS01.OCPP.CustomCustomDataSerializer
+                                               testCSMS1.OCPP.CustomResetResponseSerializer,
+                                               testCSMS1.OCPP.CustomStatusInfoSerializer,
+                                               testCSMS1.OCPP.CustomSignatureSerializer,
+                                               testCSMS1.OCPP.CustomCustomDataSerializer
                                            ),
                                            out var errorResponse
                                        ));

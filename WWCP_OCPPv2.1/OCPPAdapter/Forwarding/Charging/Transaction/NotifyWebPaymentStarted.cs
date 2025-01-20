@@ -34,24 +34,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
     /// <summary>
-    /// A QRCodeScanned request.
+    /// A NotifyWebPaymentStarted request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP WebSocket connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<RequestForwardingDecision<QRCodeScannedRequest, QRCodeScannedResponse>>
+    public delegate Task<RequestForwardingDecision<NotifyWebPaymentStartedRequest, NotifyWebPaymentStartedResponse>>
 
-        OnQRCodeScannedRequestFilterDelegate(DateTime               Timestamp,
-                                             IEventSender           Sender,
-                                             IWebSocketConnection   Connection,
-                                             QRCodeScannedRequest   Request,
-                                             CancellationToken      CancellationToken);
+        OnNotifyWebPaymentStartedRequestFilterDelegate(DateTime                         Timestamp,
+                                                       IEventSender                     Sender,
+                                                       IWebSocketConnection             Connection,
+                                                       NotifyWebPaymentStartedRequest   Request,
+                                                       CancellationToken                CancellationToken);
 
 
     /// <summary>
-    /// A filtered QRCodeScanned request.
+    /// A filtered NotifyWebPaymentStarted request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -61,12 +61,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnQRCodeScannedRequestFilteredDelegate(DateTime                                                          Timestamp,
-                                               IEventSender                                                      Sender,
-                                               IWebSocketConnection                                              Connection,
-                                               QRCodeScannedRequest                                              Request,
-                                               RequestForwardingDecision<QRCodeScannedRequest, QRCodeScannedResponse>   ForwardingDecision,
-                                               CancellationToken                                                 CancellationToken);
+        OnNotifyWebPaymentStartedRequestFilteredDelegate(DateTime                                                                                     Timestamp,
+                                                         IEventSender                                                                                 Sender,
+                                                         IWebSocketConnection                                                                         Connection,
+                                                         NotifyWebPaymentStartedRequest                                                               Request,
+                                                         RequestForwardingDecision<NotifyWebPaymentStartedRequest, NotifyWebPaymentStartedResponse>   ForwardingDecision,
+                                                         CancellationToken                                                                            CancellationToken);
 
     #endregion
 
@@ -75,28 +75,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnQRCodeScannedRequestReceivedDelegate?    OnQRCodeScannedRequestReceived;
-        public event OnQRCodeScannedRequestFilterDelegate?      OnQRCodeScannedRequestFilter;
-        public event OnQRCodeScannedRequestFilteredDelegate?    OnQRCodeScannedRequestFiltered;
-        public event OnQRCodeScannedRequestSentDelegate?        OnQRCodeScannedRequestSent;
+        public event OnNotifyWebPaymentStartedRequestReceivedDelegate?    OnNotifyWebPaymentStartedRequestReceived;
+        public event OnNotifyWebPaymentStartedRequestFilterDelegate?      OnNotifyWebPaymentStartedRequestFilter;
+        public event OnNotifyWebPaymentStartedRequestFilteredDelegate?    OnNotifyWebPaymentStartedRequestFiltered;
+        public event OnNotifyWebPaymentStartedRequestSentDelegate?        OnNotifyWebPaymentStartedRequestSent;
 
-        public event OnQRCodeScannedResponseReceivedDelegate?   OnQRCodeScannedResponseReceived;
-        public event OnQRCodeScannedResponseSentDelegate?       OnQRCodeScannedResponseSent;
+        public event OnNotifyWebPaymentStartedResponseReceivedDelegate?   OnNotifyWebPaymentStartedResponseReceived;
+        public event OnNotifyWebPaymentStartedResponseSentDelegate?       OnNotifyWebPaymentStartedResponseSent;
 
         #endregion
 
         public async Task<RequestForwardingDecision>
 
-            Forward_QRCodeScanned(OCPP_JSONRequestMessage    JSONRequestMessage,
-                                  OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                  IWebSocketConnection       WebSocketConnection,
-                                  CancellationToken          CancellationToken   = default)
+            Forward_NotifyWebPaymentStarted(OCPP_JSONRequestMessage    JSONRequestMessage,
+                                            OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                                            IWebSocketConnection       WebSocketConnection,
+                                            CancellationToken          CancellationToken   = default)
 
         {
 
-            #region Parse the QRCodeScanned request
+            #region Parse the NotifyWebPaymentStarted request
 
-            if (!QRCodeScannedRequest.TryParse(JSONRequestMessage.Payload,
+            if (!NotifyWebPaymentStartedRequest.TryParse(JSONRequestMessage.Payload,
                                                JSONRequestMessage.RequestId,
                                                JSONRequestMessage.Destination,
                                                JSONRequestMessage.NetworkPath,
@@ -105,17 +105,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                JSONRequestMessage.RequestTimestamp,
                                                JSONRequestMessage.RequestTimeout - Timestamp.Now,
                                                JSONRequestMessage.EventTrackingId,
-                                               parentNetworkingNode.OCPP.CustomQRCodeScannedRequestParser))
+                                               parentNetworkingNode.OCPP.CustomNotifyWebPaymentStartedRequestParser))
             {
                 return RequestForwardingDecision.REJECT(errorResponse);
             }
 
             #endregion
 
-            #region Send OnQRCodeScannedRequestReceived event
+            #region Send OnNotifyWebPaymentStartedRequestReceived event
 
             await LogEvent(
-                      OnQRCodeScannedRequestReceived,
+                      OnNotifyWebPaymentStartedRequestReceived,
                       loggingDelegate => loggingDelegate.Invoke(
                           Timestamp.Now,
                           parentNetworkingNode,
@@ -128,10 +128,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Call OnQRCodeScannedRequest filter
+            #region Call OnNotifyWebPaymentStartedRequest filter
 
             var forwardingDecision = await CallFilter(
-                                               OnQRCodeScannedRequestFilter,
+                                               OnNotifyWebPaymentStartedRequestFilter,
                                                filter => filter.Invoke(
                                                              Timestamp.Now,
                                                              parentNetworkingNode,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Default result
 
             if (forwardingDecision is null && DefaultForwardingDecision == ForwardingDecisions.FORWARD)
-                forwardingDecision = new RequestForwardingDecision<QRCodeScannedRequest, QRCodeScannedResponse>(
+                forwardingDecision = new RequestForwardingDecision<NotifyWebPaymentStartedRequest, NotifyWebPaymentStartedResponse>(
                                          request,
                                          ForwardingDecisions.FORWARD
                                      );
@@ -156,17 +156,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 var rejectResponse  = forwardingDecision?.RejectResponse ??
-                                          new QRCodeScannedResponse(
+                                          new NotifyWebPaymentStartedResponse(
                                               request,
                                               Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                           );
 
-                forwardingDecision  = new RequestForwardingDecision<QRCodeScannedRequest, QRCodeScannedResponse>(
+                forwardingDecision  = new RequestForwardingDecision<NotifyWebPaymentStartedRequest, NotifyWebPaymentStartedResponse>(
                                           request,
                                           ForwardingDecisions.REJECT,
                                           rejectResponse,
                                           rejectResponse.ToJSON(
-                                              parentNetworkingNode.OCPP.CustomQRCodeScannedResponseSerializer,
+                                              parentNetworkingNode.OCPP.CustomNotifyWebPaymentStartedResponseSerializer,
                                               parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                               parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                           ),
@@ -181,15 +181,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision.NewRequest is not null)
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
-                                                        parentNetworkingNode.OCPP.CustomQRCodeScannedRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomNotifyWebPaymentStartedRequestSerializer,
                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );
 
-            #region Send OnQRCodeScannedRequestFiltered event
+            #region Send OnNotifyWebPaymentStartedRequestFiltered event
 
             await LogEvent(
-                      OnQRCodeScannedRequestFiltered,
+                      OnNotifyWebPaymentStartedRequestFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
                           Timestamp.Now,
                           parentNetworkingNode,
@@ -203,16 +203,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region Attach OnQRCodeScannedRequestSent event
+            #region Attach OnNotifyWebPaymentStartedRequestSent event
 
             if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
-                var sentLogging = OnQRCodeScannedRequestSent;
+                var sentLogging = OnNotifyWebPaymentStartedRequestSent;
                 if (sentLogging is not null)
                     forwardingDecision.SentMessageLogger = async (sentMessageResult) =>
                         await LogEvent(
-                                  OnQRCodeScannedRequestSent,
+                                  OnNotifyWebPaymentStartedRequestSent,
                                   loggingDelegate => loggingDelegate.Invoke(
                                       Timestamp.Now,
                                       parentNetworkingNode,

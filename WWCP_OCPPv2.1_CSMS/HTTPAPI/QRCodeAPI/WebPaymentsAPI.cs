@@ -22,7 +22,6 @@ using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
@@ -31,18 +30,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// OCPP Networking Node QRCodeAPI extensions.
+    /// OCPP Networking Node WebPaymentsAPI extensions.
     /// </summary>
-    public static class QRCodeAPIExtensions
+    public static class WebPaymentsAPIExtensions
     {
 
     }
 
 
     /// <summary>
-    /// The OCPP Networking Node QRCodeAPI.
+    /// The OCPP Networking Node WebPaymentsAPI.
     /// </summary>
-    public class QRCodeAPI : org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI
+    public class WebPaymentsAPI : org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI
     {
 
         #region Data
@@ -55,12 +54,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const            String    DefaultHTTPServerName  = $"Open Charging Cloud OCPP {Version.String} CSMS QRCodeAPI";
+        public new const            String    DefaultHTTPServerName  = $"Open Charging Cloud OCPP {Version.String} CSMS WebPaymentsAPI";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const            String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.QRCodeAPI.HTTPRoot.";
+        public new const            String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.WebPaymentsAPI.HTTPRoot.";
 
         #endregion
 
@@ -72,14 +71,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Attach the given OCPP charging station management system QRCodeAPI to the given HTTP API.
+        /// Attach the given OCPP charging station management system WebPaymentsAPI to the given HTTP API.
         /// </summary>
         /// <param name="CSMSNode">An OCPP charging station management system.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public QRCodeAPI(ACSMSNode   CSMSNode,
+        public WebPaymentsAPI(ACSMSNode   CSMSNode,
                          HTTPServer  HTTPServer,
 
                          HTTPPath?   BasePath        = null,
@@ -134,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override Stream? GetResourceStream(String ResourceName)
 
             => base.GetResourceStream(ResourceName,
-                                 new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                 new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                  new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -145,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
             => base.GetResourceMemoryStream(ResourceName,
-                                       new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                       new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                        new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -156,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override String GetResourceString(String ResourceName)
 
             => base.GetResourceString(ResourceName,
-                                 new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                 new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                  new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -167,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override Byte[] GetResourceBytes(String ResourceName)
 
             => base.GetResourceBytes(ResourceName,
-                                new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -178,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override String MixWithHTMLTemplate(String ResourceName)
 
             => base.MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                   new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                    new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -191,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => base.MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                   new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                    new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -206,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => base.MixWithHTMLTemplate(Template,
                                    ResourceName,
                                    new[] {
-                                       new Tuple<string, Assembly>(QRCodeAPI.HTTPRoot, typeof(QRCodeAPI).Assembly),
+                                       new Tuple<string, Assembly>(WebPaymentsAPI.HTTPRoot, typeof(WebPaymentsAPI).Assembly),
                                        new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
                                    },
@@ -224,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //HTTPBaseAPI.RegisterResourcesFolder(this,
             //                                HTTPHostname.Any,
             //                                URLPathPrefix,
-            //                                "cloud.charging.open.protocols.OCPPv2_1.QRCodeAPI.HTTPRoot",
+            //                                "cloud.charging.open.protocols.OCPPv2_1.WebPaymentsAPI.HTTPRoot",
             //                                DefaultFilename: "index.html");
 
             //HTTPServer.AddMethodCallback(HTTPHostname.Any,

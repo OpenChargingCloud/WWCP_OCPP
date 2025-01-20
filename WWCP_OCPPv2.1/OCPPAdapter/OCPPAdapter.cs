@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<CS.GetCompositeScheduleResponse>?                        CustomGetCompositeScheduleResponseSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<CS.UpdateDynamicScheduleResponse>?                       CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<CS.NotifyAllowedEnergyTransferResponse>?                 CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.QRCodeScannedResponse>?                               CustomQRCodeScannedResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyWebPaymentStartedResponse>?                     CustomNotifyWebPaymentStartedResponseSerializer              { get; set; }
         public CustomJObjectSerializerDelegate<CS.UsePriorityChargingResponse>?                         CustomUsePriorityChargingResponseSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CS.UnlockConnectorResponse>?                             CustomUnlockConnectorResponseSerializer                      { get; set; }
 
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<CSMS.GetCompositeScheduleRequest>?                    CustomGetCompositeScheduleRequestSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.UpdateDynamicScheduleRequest>?                   CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.NotifyAllowedEnergyTransferRequest>?             CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.QRCodeScannedRequest>?                           CustomQRCodeScannedRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyWebPaymentStartedRequest>?                 CustomNotifyWebPaymentStartedRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.UsePriorityChargingRequest>?                     CustomUsePriorityChargingRequestSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.UnlockConnectorRequest>?                         CustomUnlockConnectorRequestSerializer                       { get; set; }
 
@@ -414,7 +414,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<CertificateHashDataChain>?                            CustomCertificateHashDataChainSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
         public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
@@ -631,8 +632,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<CS.  GetTransactionStatusResponse>?                CustomGetTransactionStatusResponseParser                 { get; set; }
         public CustomJObjectParserDelegate<CSMS.NotifyAllowedEnergyTransferRequest>?          CustomNotifyAllowedEnergyTransferRequestParser           { get; set; }
         public CustomJObjectParserDelegate<CS.  NotifyAllowedEnergyTransferResponse>?         CustomNotifyAllowedEnergyTransferResponseParser          { get; set; }
-        public CustomJObjectParserDelegate<CSMS.QRCodeScannedRequest>?                        CustomQRCodeScannedRequestParser                         { get; set; }
-        public CustomJObjectParserDelegate<CS.  QRCodeScannedResponse>?                       CustomQRCodeScannedResponseParser                        { get; set; }
+        public CustomJObjectParserDelegate<CSMS.NotifyWebPaymentStartedRequest>?              CustomNotifyWebPaymentStartedRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<CS.  NotifyWebPaymentStartedResponse>?             CustomNotifyWebPaymentStartedResponseParser              { get; set; }
         public CustomJObjectParserDelegate<CSMS.RequestStartTransactionRequest>?              CustomRequestStartTransactionRequestParser               { get; set; }
         public CustomJObjectParserDelegate<CS.  RequestStartTransactionResponse>?             CustomRequestStartTransactionResponseParser              { get; set; }
         public CustomJObjectParserDelegate<CSMS.RequestStopTransactionRequest>?               CustomRequestStopTransactionRequestParser                { get; set; }
@@ -993,7 +994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState2 is not null)
                 {
 
-                    sendRequestState2.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
+                    sendRequestState2.JSONRequestErrorMessage = new OCPP_JSONRequestErrorMessage(
 
                                                                      Timestamp.Now,
                                                                      JSONRequestMessage.EventTrackingId,
@@ -1015,6 +1016,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
             }
+
+            else if (sentMessageResult.Result == SentMessageResults.UnknownClient)
+            {
+
+                return SendRequestState.FromJSONRequest(
+
+                       RequestTimestamp:         JSONRequestMessage.RequestTimestamp,
+                       Destination:              JSONRequestMessage.Destination,
+                       Timeout:                  JSONRequestMessage.RequestTimeout,
+                       JSONRequest:              JSONRequestMessage,
+                       SentMessageResult:        sentMessageResult,
+                       ResponseTimestamp:        Timestamp.Now,
+
+                       JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
+
+                                                     Timestamp.Now,
+                                                     JSONRequestMessage.EventTrackingId,
+                                                     NetworkingMode.Unknown,
+                                                     SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
+                                                     NetworkPath.From(NetworkingNode.Id),
+                                                     JSONRequestMessage.RequestId,
+
+                                                     ErrorCode:          ResultCode.UnknownClient,
+                                                     ErrorDescription:   $"The given networking node '{JSONRequestMessage.Destination.Last()}' is unknown or unreachable!"
+
+                                                 )
+
+                   );
+
+            }
+
 
             // Just in case...
             return SendRequestState.FromJSONRequest(

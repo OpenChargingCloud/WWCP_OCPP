@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
         #endregion
 
         #region Properties
-        public Boolean  InitNetworkingNode1    { get; set; } = false;
+        public Boolean  InitLocalController1    { get; set; } = false;
         public Boolean  InitNetworkingNode2    { get; set; } = false;
         public Boolean  InitNetworkingNode3    { get; set; } = false;
 
@@ -98,14 +98,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
         #region SetupEachTest()
 
         [SetUp]
-        public override void SetupEachTest()
+        public override async Task SetupEachTest()
         {
 
-            base.SetupEachTest();
+            await base.SetupEachTest();
 
             #region Networking Node #1
 
-            if (InitNetworkingNode1)
+            if (InitLocalController1)
             {
 
                 networkingNode1WebSocketJSONMessagesReceived          = [];
@@ -113,24 +113,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
                 networkingNode1WebSocketJSONMessagesSent              = [];
                 networkingNode1WebSocketJSONMessageResponsesReceived  = [];
 
-                var networkingNode1Id = NetworkingNode_Id.Parse("GD-NN001");
-
                 localController1 = new TestLocalControllerNode(
-                                      Id:                       networkingNode1Id,
-                                      VendorName:               "GraphDefined OEM #1",
-                                      Model:                    "VCP.1",
-                                      Description:              I18NString.Create(Languages.en, "Our first virtual networking node!"),
-                                      SerialNumber:             "SN-NN0001",
-                                      SoftwareVersion:          "v0.1",
-                                      Modem:                    new Modem(
+
+                                       Id:                      NetworkingNode_Id.Parse("GD-NN001"),
+                                       VendorName:              "GraphDefined OEM #1",
+                                       Model:                   "VCP.1",
+                                       Description:             I18NString.Create(Languages.en, "Our first virtual networking node!"),
+                                       SerialNumber:            "SN-NN0001",
+                                       SoftwareVersion:         "v0.1",
+                                       Modem:                   new Modem(
                                                                     ICCID:   "0001",
                                                                     IMSI:    "1112"
                                                                 ),
-                                      DisableSendHeartbeats:    true,
+                                       DisableSendHeartbeats:   true,
 
-                                      //HTTPBasicAuth:            new Tuple<String, String>("GDNN001", "1234"),
-                                      DNSClient:                testCSMS01!.DNSClient
-                                  );
+                                       //HTTPBasicAuth:           new Tuple<String, String>("GDNN001", "1234"),
+                                       DNSClient:               dnsClient
+
+                                   );
 
                 ClassicAssert.IsNotNull(localController1);
 
@@ -144,15 +144,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
                 ClassicAssert.IsNotNull(lcOCPPWebSocketServer01);
 
 
-                if (testBackendWebSockets01 is not null)
+                if (testBackendWebSockets1 is not null)
                 {
 
-                    testCSMS01.AddOrUpdateHTTPBasicAuth(networkingNode1Id, "1234abcd");
+                    testCSMS1.AddOrUpdateHTTPBasicAuth(localController1.Id, "1234abcd");
 
                     var response = localController1.ConnectOCPPWebSocketClient(
                                        NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
-                                       RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + localController1.Id),
-                                       HTTPAuthentication:       HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),
+                                       RemoteURL:                URL.Parse("http://127.0.0.1:" + testBackendWebSockets1.IPPort.ToString() + "/" + localController1.Id),
+                                       HTTPAuthentication:       HTTPBasicAuthentication.Create(localController1.Id.ToString(), "1234abcd"),
                                        DisableWebSocketPings:    true,
                                        NetworkingMode:           NetworkingMode.OverlayNetwork
                                    ).Result;
@@ -217,10 +217,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
         #region ShutdownEachTest()
 
         [TearDown]
-        public override void ShutdownEachTest()
+        public override async Task ShutdownEachTest()
         {
 
-            base.ShutdownEachTest();
+            await base.ShutdownEachTest();
 
             localController1 = null;
             localController2 = null;

@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                    Boolean                                                         AutoStart                    = true)
 
             : base(NetworkingNode,
-                   HTTPServiceName,
+                   HTTPServiceName ?? DefaultHTTPServiceName,
                    IPAddress,
                    TCPPort,
                    Description,
