@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public WebPaymentsCtrlr(EVSE?        EVSE            = null,
                                 Boolean?     Enabled         = null,
                                 URL?         URLTemplate     = null,
-                                String?      TOTPVersion     = null,
+                                String?      TOTPVersion     = DefaultTOTPVersion,
 
                                 // ChargingStationId
 
@@ -211,35 +211,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            #region Initial checks
-
-            if (!URLTemplate.HasValue)
-                throw new ArgumentNullException(nameof(URLTemplate), "The given URL template must not be null!");
-
-            if (!TOTPVersions.Contains(TOTPVersion))
-                throw new ArgumentException($"The given TOTP version '{TOTPVersion}' is not supported!", nameof(TOTPVersion));
-
-            if (ValidityTime < MinimumValidityTime)
-                throw new ArgumentException($"The validity time of the TOTP must be at least {MinimumValidityTime.TotalSeconds} seconds!", nameof(ValidityTime));
-
-
-            if (SharedSecret is not null && SharedSecret.Length < MinimumSharedSecretLength)
-                throw new ArgumentException($"The length of the shared secret for the time-based one-time password algorithm must be at least {MinimumSharedSecretLength} characters!", nameof(SharedSecret));
-
-            if (SharedSecret is not null && SharedSecret.Length > MaximumSharedSecretLength)
-                throw new ArgumentException($"The length of the shared secret for the time-based one-time password algorithm must be at most {MaximumSharedSecretLength} characters!", nameof(SharedSecret));
-
-
-            if (Length.HasValue && Length < MinimumLength)
-                throw new ArgumentException($"The length setting for the generated time-based one-time passwords must be at least {MinimumLength} characters!", nameof(Length));
-
-            if (Length.HasValue && Length > MaximumLength)
-                throw new ArgumentException($"The length setting for the generated time-based one-time passwords must be at most {MaximumLength} characters!", nameof(Length));
-
-            #endregion
-
             this.Enabled        = Enabled       ?? false;
-            this.URLTemplate    = URLTemplate.Value;
+            this.URLTemplate    = URLTemplate;
             this.TOTPVersion    = TOTPVersion   ?? DefaultTOTPVersion;
 
             // ChargingStationId
@@ -256,6 +229,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.EnableQRCodes  = EnableQRCodes ?? false;
             this.EnableBLE      = EnableBLE     ?? false;
             this.EnableNFC      = EnableNFC     ?? false;
+
+            #region Parameter checks
+
+            //if (!URLTemplate.HasValue)
+            //    throw new ArgumentNullException(nameof(URLTemplate), "The given URL template must not be null!");
+
+            if (!TOTPVersions.Contains(this.TOTPVersion))
+                throw new ArgumentException($"The given TOTP version '{TOTPVersion}' is not supported!", nameof(TOTPVersion));
+
+            if (this.ValidityTime < MinimumValidityTime)
+                throw new ArgumentException($"The validity time of the TOTP must be at least {MinimumValidityTime.TotalSeconds} seconds!", nameof(ValidityTime));
+
+
+            if (this.SharedSecret.Length < MinimumSharedSecretLength)
+                throw new ArgumentException($"The length of the shared secret for the time-based one-time password algorithm must be at least {MinimumSharedSecretLength} characters!", nameof(SharedSecret));
+
+            if (this.SharedSecret.Length > MaximumSharedSecretLength)
+                throw new ArgumentException($"The length of the shared secret for the time-based one-time password algorithm must be at most {MaximumSharedSecretLength} characters!", nameof(SharedSecret));
+
+
+            if (this.Length < MinimumLength)
+                throw new ArgumentException($"The length setting for the generated time-based one-time passwords must be at least {MinimumLength} characters!", nameof(Length));
+
+            if (this.Length > MaximumLength)
+                throw new ArgumentException($"The length setting for the generated time-based one-time passwords must be at most {MaximumLength} characters!", nameof(Length));
+
+            #endregion
+
 
 
             #region Enabled

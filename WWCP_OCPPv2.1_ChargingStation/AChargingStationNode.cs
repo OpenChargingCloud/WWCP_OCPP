@@ -681,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (evse is not null)
                 {
-                    evse.OnQRCodeChanged += (timestamp, evseId, qrCodeURL, remainingTime, endTime, ct) =>
+                    evse.OnWebPaymentURLChanged += (timestamp, evseId, qrCodeURL, remainingTime, endTime, ct) =>
                         LogEvent(OnQRCodeChanged, logger => logger.Invoke(timestamp, this, evseId, qrCodeURL, remainingTime, endTime, ct));
                 }
 

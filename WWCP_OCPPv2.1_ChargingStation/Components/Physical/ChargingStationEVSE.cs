@@ -36,12 +36,12 @@ using cloud.charging.open.protocols.OCPP;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    public delegate Task OnQRCodeChanged2Delegate (DateTime            Timestamp,
-                                                   EVSE_Id             EVSEId,
-                                                   String              QRCodeURL,
-                                                   TimeSpan            RemainingTime,
-                                                   DateTimeOffset      EndTime,
-                                                   CancellationToken   CancellationToken);
+    public delegate Task OnWebPaymentURLChanged (DateTime            Timestamp,
+                                                 EVSE_Id             EVSEId,
+                                                 String              QRCodeURL,
+                                                 TimeSpan            RemainingTime,
+                                                 DateTimeOffset      EndTime,
+                                                 CancellationToken   CancellationToken);
 
 
     #region (class) EVSESpec(...)
@@ -139,10 +139,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public Tariff?            DefaultChargingTariff    { get; set; }
 
 
-        public String?            QRCodePaymentsURL        { get; private set; }
-        public DateTimeOffset?    QRCodePaymentsEndTime    { get; private set; }
-        public TimeSpan?          QRCodePaymentsRemaningTime
-            => QRCodePaymentsEndTime - DateTimeOffset.UtcNow;
+        public String?            WebPaymentsURL           { get; private set; }
+        public DateTimeOffset?    WebPaymentsEndTime       { get; private set; }
+        public TimeSpan?          WebPaymentsRemaningTime
+            => WebPaymentsEndTime - DateTimeOffset.UtcNow;
 
         #endregion
 
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Event
 
-        public event OnQRCodeChanged2Delegate? OnQRCodeChanged;
+        public event OnWebPaymentURLChanged? OnWebPaymentURLChanged;
 
         #endregion
 
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 webPaymentsController.Enabled == true &&
                 webPaymentsController.URLTemplate.HasValue &&
                 webPaymentsController.SharedSecret.IsNotNullOrEmpty() &&
-                (!QRCodePaymentsEndTime.HasValue || DateTimeOffset.UtcNow > QRCodePaymentsEndTime.Value == true))
+                (!WebPaymentsEndTime.HasValue || Timestamp.Now > WebPaymentsEndTime.Value == true))
             {
 
                 var (url,
@@ -298,15 +298,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     webPaymentsController.Length
                                 );
 
-                QRCodePaymentsURL     = url;
-                QRCodePaymentsEndTime = endTime;
+                WebPaymentsURL     = url;
+                WebPaymentsEndTime = endTime;
 
                 await LogEvent(
-                          OnQRCodeChanged,
+                          OnWebPaymentURLChanged,
                           logger => logger.Invoke(
                                         Timestamp.Now,
                                         Id,
-                                        QRCodePaymentsURL,
+                                        WebPaymentsURL,
                                         remainingTime,
                                         endTime,
                                         CancellationToken.None
