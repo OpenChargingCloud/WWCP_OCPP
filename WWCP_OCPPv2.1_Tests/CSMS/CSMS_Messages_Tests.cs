@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using Newtonsoft.Json.Linq;
 
@@ -88,28 +87,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                Assert.Multiple(() => {
 
-                Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
-                Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
+                    Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -147,17 +149,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                 CustomData:    null
                                             );
 
-                Assert.That(response.Result.ResultCode,                       Is.EqualTo(ResultCode.UnknownClient));
-                Assert.That(response.Result.Description,                      Is.EqualTo($"The given networking node '{networkingNode}' is unknown or unreachable!"));
-                Assert.That(response.Status,                                  Is.EqualTo(ResetStatus.Rejected));
 
-                Assert.That(csms1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));  // 0, as it never left the device!
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));  // 0, as it never left the device!
-                Assert.That(csms1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                Assert.Multiple(() => {
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(response.Result.ResultCode,                       Is.EqualTo(ResultCode.UnknownClient));
+                    Assert.That(response.Result.Description,                      Is.EqualTo($"The given networking node '{networkingNode}' is unknown or unreachable!"));
+                    Assert.That(response.Status,                                  Is.EqualTo(ResetStatus.Rejected));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));  // 0, as it never left the device!
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));  // 0, as it never left the device!
+                    Assert.That(csms1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -210,29 +217,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                Assert.Multiple(() => {
 
-                Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
-                Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
-                Assert.That(resetRequests.First().EVSEId,                                Is.EqualTo(evseId));
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
+                    Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
+                    Assert.That(resetRequests.First().EVSEId,                                Is.EqualTo(evseId));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -288,64 +298,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
+                Assert.Multiple(() => {
 
-                Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
-                Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
-                Assert.That(resetRequests.First().EVSEId,                                Is.EqualTo(evseId));
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(resetRequests.Count,                                         Is.EqualTo(1));
+                    Assert.That(resetRequests.First().ResetType,                             Is.EqualTo(resetType));
+                    Assert.That(resetRequests.First().EVSEId,                                Is.EqualTo(evseId));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
             else
                 Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
-
-
-
-
-
-
-            //    var resetRequests = new ConcurrentList<ResetRequest>();
-
-            //    chargingStation1.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
-            //        resetRequests.TryAdd(resetRequest);
-            //        return Task.CompletedTask;
-            //    };
-
-            //    var resetType  = ResetType.Immediate;
-            //    var response   = await testCSMS1.Reset(
-            //                               Destination:   SourceRouting.To(chargingStation1.Id),
-            //                               ResetType:     resetType,
-            //                               EVSEId:        EVSE_Id.Parse(5),
-            //                               CustomData:    null
-            //                           );
-
-            //    ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
-            //    ClassicAssert.AreEqual(ResetStatus.Rejected,   response.Status);
-
-            //    ClassicAssert.AreEqual(1,                      resetRequests.Count);
-            //    ClassicAssert.AreEqual(resetType,              resetRequests.First().ResetType);
-            //    ClassicAssert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
-            //    ClassicAssert.AreEqual(EVSE_Id.Parse(5),       resetRequests.First().EVSEId!.Value);
-
-            //}
 
         }
 
@@ -361,17 +344,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UpdateFirmware_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var updateFirmwareRequests = new ConcurrentList<UpdateFirmwareRequest>();
@@ -397,11 +386,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:                null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                     updateFirmwareRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(updateFirmwareRequests.Count,                                Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -416,17 +430,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task PublishFirmware_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var publishFirmwareRequests = new ConcurrentList<PublishFirmwareRequest>();
@@ -446,11 +466,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:                 null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    publishFirmwareRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(publishFirmwareRequests.Count,                               Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -465,17 +510,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UnpublishFirmware_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var unpublishFirmwareRequests = new ConcurrentList<UnpublishFirmwareRequest>();
@@ -486,16 +537,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS1.UnpublishFirmware(
-                                         Destination:         SourceRouting.To(chargingStation1.Id),
-                                         MD5Checksum:         "0x1234",
-                                         CustomData:          null
+                                         Destination:   SourceRouting.To(chargingStation1.Id),
+                                         MD5Checksum:   "0x1234",
+                                         CustomData:    null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    unpublishFirmwareRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(unpublishFirmwareRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -510,17 +586,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetBaseReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getBaseReportRequests = new ConcurrentList<GetBaseReportRequest>();
@@ -537,11 +619,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:               null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    getBaseReportRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(getBaseReportRequests.Count,                                 Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -556,17 +663,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getReportRequests = new ConcurrentList<GetReportRequest>();
@@ -579,10 +692,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response = await testCSMS1.GetReport(
                                          Destination:          SourceRouting.To(chargingStation1.Id),
                                          GetReportRequestId:   1,
-                                         ComponentCriteria:    new[] {
+                                         ComponentCriteria:    [
                                                                    ComponentCriteria.Available
-                                                               },
-                                         ComponentVariables:   new[] {
+                                                               ],
+                                         ComponentVariables:   [
                                                                    new ComponentVariable(
                                                                        Component:    new Component(
                                                                                          Name:         "Alert System!",
@@ -601,15 +714,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                                      ),
                                                                        CustomData:   null
                                                                    )
-                                                               },
+                                                               ],
                                          CustomData:           null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    getReportRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(getReportRequests.Count,                                     Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -624,17 +762,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetLog_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setMonitoringBaseRequests = new ConcurrentList<GetLogRequest>();
@@ -657,11 +801,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:     null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,               setMonitoringBaseRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -703,17 +872,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Tests()
         {
 
-            Assert.That(testCSMS1,                Is.Not.Null);
-            Assert.That(testBackendWebSockets1,   Is.Not.Null);
-            Assert.That(chargingStation1,          Is.Not.Null);
-            Assert.That(chargingStation2,          Is.Not.Null);
-            Assert.That(chargingStation3,          Is.Not.Null);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setVariablesRequests = new ConcurrentList<SetVariablesRequest>();
@@ -836,26 +1011,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                      CustomData:          null
                                                  );
 
-                Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
-                Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
 
-                Assert.That(setVariablesResponse.SetVariableResults.Count,     Is.EqualTo(5));
+                Assert.Multiple(() => {
 
-                var firstResult  = setVariablesResponse.SetVariableResults.First();
-                Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
+                    Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
+                    Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
 
-                var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
-                Assert.That(secondResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
+                    Assert.That(setVariablesResponse.SetVariableResults.Count,     Is.EqualTo(5));
 
-                var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
-                Assert.That(thirdResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
+                    var firstResult  = setVariablesResponse.SetVariableResults.First();
+                    Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
 
-                var fourthResult = setVariablesResponse.SetVariableResults.Skip(3).First();
-                Assert.That(fourthResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+                    var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
+                    Assert.That(secondResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
 
-                var fifthResult  = setVariablesResponse.SetVariableResults.Skip(4).First();
-                Assert.That(fifthResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+                    var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
+                    Assert.That(thirdResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
 
+                    var fourthResult = setVariablesResponse.SetVariableResults.Skip(3).First();
+                    Assert.That(fourthResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+
+                    var fifthResult  = setVariablesResponse.SetVariableResults.Skip(4).First();
+                    Assert.That(fifthResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+
+                });
 
             }
 
@@ -872,17 +1051,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Conditional_Test()
         {
 
-            Assert.That(testCSMS1,                Is.Not.Null);
-            Assert.That(testBackendWebSockets1,   Is.Not.Null);
-            Assert.That(chargingStation1,          Is.Not.Null);
-            Assert.That(chargingStation2,          Is.Not.Null);
-            Assert.That(chargingStation3,          Is.Not.Null);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setVariablesRequests = new ConcurrentList<SetVariablesRequest>();
@@ -963,20 +1148,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                      CustomData:          null
                                                  );
 
-                Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
-                Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
+
+                Assert.Multiple(() => {
+
+                    Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
+                    Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
 
 
-                Assert.That(setVariablesResponse.SetVariableResults.Count(),   Is.EqualTo(3));
+                    Assert.That(setVariablesResponse.SetVariableResults.Count(),   Is.EqualTo(3));
 
-                var firstResult  = setVariablesResponse.SetVariableResults.First();
-                Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
+                    var firstResult  = setVariablesResponse.SetVariableResults.First();
+                    Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
 
-                var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
-                Assert.That(secondResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.Rejected));
+                    var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
+                    Assert.That(secondResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.Rejected));
 
-                var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
-                Assert.That(thirdResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
+                    var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
+                    Assert.That(thirdResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
+
+                });
 
             }
 
@@ -993,17 +1183,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Conditional_WithinSameRequest_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setVariablesRequests = new ConcurrentList<SetVariablesRequest>();
@@ -1015,34 +1211,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS1.SetVariables(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
-                                         VariableData:    [
-                                                              new SetVariableData(
-                                                                  AttributeValue:   "123",
-                                                                  Component:        new Component(
-                                                                                        Name:         "Alert System!",
-                                                                                        Instance:     "Alert System #1",
-                                                                                        EVSE:         new EVSE(
-                                                                                                          Id:            EVSE_Id.     Parse(1),
-                                                                                                          ConnectorId:   Connector_Id.Parse(1),
-                                                                                                          CustomData:    null
-                                                                                                      ),
-                                                                                        CustomData:   null
-                                                                                    ),
-                                                                  Variable:         new Variable(
-                                                                                        Name:         "Temperature Sensors",
-                                                                                        Instance:     "Temperature Sensor #1",
-                                                                                        CustomData:   null
-                                                                                    ),
-                                                                  AttributeType:    AttributeTypes.Actual,
-                                                                  CustomData:       null
-                                                              )
-                                                          ],
-                                         CustomData:      null
+                                         VariableData:   [
+                                                             new SetVariableData(
+                                                                 AttributeValue:   "123",
+                                                                 Component:        new Component(
+                                                                                       Name:         "Alert System!",
+                                                                                       Instance:     "Alert System #1",
+                                                                                       EVSE:         new EVSE(
+                                                                                                         Id:            EVSE_Id.     Parse(1),
+                                                                                                         ConnectorId:   Connector_Id.Parse(1),
+                                                                                                         CustomData:    null
+                                                                                                     ),
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 Variable:         new Variable(
+                                                                                       Name:         "Temperature Sensors",
+                                                                                       Instance:     "Temperature Sensor #1",
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 AttributeType:    AttributeTypes.Actual,
+                                                                 CustomData:       null
+                                                             )
+                                                         ],
+                                         CustomData:     null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    setVariablesRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(setVariablesRequests.Count,                                  Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1059,17 +1276,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariables_Conditional_WithinSameRequest_Fails_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setVariablesRequests = new ConcurrentList<SetVariablesRequest>();
@@ -1081,34 +1304,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS1.SetVariables(
                                          Destination:    SourceRouting.To( chargingStation1.Id),
-                                         VariableData:        [
-                                                                  new SetVariableData(
-                                                                      AttributeValue:   "123",
-                                                                      Component:        new Component(
-                                                                                            Name:         "Alert System!",
-                                                                                            Instance:     "Alert System #1",
-                                                                                            EVSE:         new EVSE(
-                                                                                                              Id:            EVSE_Id.     Parse(1),
-                                                                                                              ConnectorId:   Connector_Id.Parse(1),
-                                                                                                              CustomData:    null
-                                                                                                          ),
-                                                                                            CustomData:   null
-                                                                                        ),
-                                                                      Variable:         new Variable(
-                                                                                            Name:         "Temperature Sensors",
-                                                                                            Instance:     "Temperature Sensor #1",
-                                                                                            CustomData:   null
-                                                                                        ),
-                                                                      AttributeType:    AttributeTypes.Actual,
-                                                                      CustomData:       null
-                                                                  )
-                                                              ],
-                                         CustomData:          null
+                                         VariableData:   [
+                                                             new SetVariableData(
+                                                                 AttributeValue:   "123",
+                                                                 Component:        new Component(
+                                                                                       Name:         "Alert System!",
+                                                                                       Instance:     "Alert System #1",
+                                                                                       EVSE:         new EVSE(
+                                                                                                         Id:            EVSE_Id.     Parse(1),
+                                                                                                         ConnectorId:   Connector_Id.Parse(1),
+                                                                                                         CustomData:    null
+                                                                                                     ),
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 Variable:         new Variable(
+                                                                                       Name:         "Temperature Sensors",
+                                                                                       Instance:     "Temperature Sensor #1",
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 AttributeType:    AttributeTypes.Actual,
+                                                                 CustomData:       null
+                                                             )
+                                                         ],
+                                         CustomData:     null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    setVariablesRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(setVariablesRequests.Count,                                  Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+
+                });
 
             }
 
@@ -1126,8 +1371,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetVariables_Test()
         {
 
-            if (testCSMS1       is not null &&
-                chargingStation1 is not null)
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
+
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getVariablesRequests = new ConcurrentList<GetVariablesRequest>();
@@ -1183,16 +1443,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:     null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    getVariablesRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(getVariablesRequests.Count,                                  Is.EqualTo(1));
 
 
-                Assert.That(response.Results.Count, Is.EqualTo(2));
+                    Assert.That(response.Results.Count, Is.EqualTo(2));
 
-                var firstResult = response.Results.First();
+                    var firstResult = response.Results.First();
 
-                Assert.That(firstResult.AttributeValue, Is.EqualTo("HTTPS"));
+                    Assert.That(firstResult.AttributeValue, Is.EqualTo("HTTPS"));
+
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1213,17 +1495,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetMonitoringBase_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setMonitoringBaseRequests = new ConcurrentList<SetMonitoringBaseRequest>();
@@ -1239,9 +1527,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:      null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    setMonitoringBaseRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1258,17 +1567,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetMonitoringReport_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setMonitoringBaseRequests = new ConcurrentList<GetMonitoringReportRequest>();
@@ -1306,9 +1621,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:                     null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                     setMonitoringBaseRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
+
+                    Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1325,17 +1662,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetMonitoringLevel_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setMonitoringBaseRequests = new ConcurrentList<SetMonitoringLevelRequest>();
@@ -1351,9 +1694,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:          null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    setMonitoringBaseRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
+
+                    Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1370,17 +1735,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetVariableMonitoring_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setMonitoringBaseRequests = new ConcurrentList<SetVariableMonitoringRequest>();
@@ -1420,9 +1791,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:          null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    setMonitoringBaseRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1439,17 +1831,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearVariableMonitoring_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setMonitoringBaseRequests = new ConcurrentList<ClearVariableMonitoringRequest>();
@@ -1467,9 +1865,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:              null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
-                ClassicAssert.AreEqual(1,                    setMonitoringBaseRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1486,17 +1905,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetNetworkProfile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setNetworkProfileRequests = new ConcurrentList<SetNetworkProfileRequest>();
@@ -1540,10 +1965,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:                 null
                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                      response.Result.ResultCode);
-                ClassicAssert.AreEqual(SetNetworkProfileStatus.Accepted,   response.Status);
 
-                ClassicAssert.AreEqual(1,                                  setNetworkProfileRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(SetNetworkProfileStatus.Accepted));
+
+                    Assert.That(setNetworkProfileRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1602,30 +2048,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                    CustomData:          null
                                                );
 
+                Assert.Multiple(() => {
 
-                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                Assert.That(response.Status,                                             Is.EqualTo(ChangeAvailabilityStatus.Accepted));
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ChangeAvailabilityStatus.Accepted));
 
-                Assert.That(changeAvailabilityRequests.Count,                            Is.EqualTo(1));
-                Assert.That(changeAvailabilityRequests.First().EVSE?.Id,                 Is.EqualTo(evseId));
-                Assert.That(changeAvailabilityRequests.First().EVSE?.ConnectorId,        Is.EqualTo(connectorId));
-                Assert.That(changeAvailabilityRequests.First().OperationalStatus,        Is.EqualTo(operationalStatus));
+                    Assert.That(changeAvailabilityRequests.Count,                            Is.EqualTo(1));
+                    Assert.That(changeAvailabilityRequests.First().EVSE?.Id,                 Is.EqualTo(evseId));
+                    Assert.That(changeAvailabilityRequests.First().EVSE?.ConnectorId,        Is.EqualTo(connectorId));
+                    Assert.That(changeAvailabilityRequests.First().OperationalStatus,        Is.EqualTo(operationalStatus));
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1645,17 +2094,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TriggerMessage_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var triggerMessageRequests = new ConcurrentList<TriggerMessageRequest>();
@@ -1677,10 +2132,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                 CustomData:         null
                                             );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                   response.Result.ResultCode);
-                ClassicAssert.AreEqual(TriggerMessageStatus.Accepted,   response.Status);
 
-                ClassicAssert.AreEqual(1,                               triggerMessageRequests.Count);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(TriggerMessageStatus.Accepted));
+
+                    Assert.That(triggerMessageRequests.Count,                                Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1698,17 +2174,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferTextData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
@@ -1730,13 +2212,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
-                ClassicAssert.AreEqual(data.Reverse(),        response.Data?.ToString());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     dataTransferRequests.Count);
-                ClassicAssert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(response.Data?.ToString(),                                   Is.EqualTo(data.Reverse()));
+
+                    Assert.That(dataTransferRequests.Count,                                  Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().VendorId,                       Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                      Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.ToString(),               Is.EqualTo(data));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1753,17 +2256,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferJObjectData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
@@ -1790,15 +2299,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);
-                ClassicAssert.AreEqual(JTokenType.Object,              response.Data?.Type);
-                ClassicAssert.AreEqual(data["key"]?.Value<String>(),   response.Data?["key"]?.Value<String>()?.Reverse());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
-                ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
-                ClassicAssert.AreEqual(data["key"]?.Value<String>(),   dataTransferRequests.First().Data?["key"]?.Value<String>());
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(response.Data?.Type,                                         Is.EqualTo(JTokenType.Object));
+                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),           Is.EqualTo(data["key"]?.Value<String>()));
+
+                    Assert.That(dataTransferRequests.Count,                                  Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().VendorId,                       Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                      Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,                     Is.EqualTo(JTokenType.Object));
+                    Assert.That(dataTransferRequests.First().Data?["key"]?.Value<String>(),  Is.EqualTo(data["key"]?.Value<String>()));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1815,17 +2345,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferJArrayData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
@@ -1849,15 +2385,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);
-                ClassicAssert.AreEqual(JTokenType.Array,               response.Data?.Type);
-                ClassicAssert.AreEqual(data[0]?.Value<String>(),       response.Data?[0]?.Value<String>()?.Reverse());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
-                ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
-                ClassicAssert.AreEqual(data[0]?.Value<String>(),       dataTransferRequests.First().Data?[0]?.Value<String>());
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(response.Data?.Type,                                         Is.EqualTo(JTokenType.Array));
+                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),           Is.EqualTo(data["key"]?.Value<String>()));
+
+                    Assert.That(dataTransferRequests.Count,                                  Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().VendorId,                       Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                      Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,                     Is.EqualTo(JTokenType.Array));
+                    Assert.That(dataTransferRequests.First().Data?[0]?.Value<String>(),      Is.EqualTo(data[0]?.Value<String>()));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1874,17 +2431,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task TransferTextData_Rejected_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
@@ -1904,13 +2467,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                            Data:          data
                                        );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);
-                ClassicAssert.AreEqual(DataTransferStatus.Rejected,    response.Status);
 
-                ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
-                ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(DataTransferStatus.Rejected));
+
+                    Assert.That(dataTransferRequests.Count,                                  Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().VendorId,                       Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                      Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.ToString(),               Is.EqualTo(data));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -1928,17 +2512,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task CertificateSigned_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var certificateSignedRequests = new ConcurrentList<CertificateSignedRequest>();
@@ -1996,12 +2586,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                      response.Result.ResultCode);
-                ClassicAssert.AreEqual(CertificateSignedStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                  certificateSignedRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(CertificateSignedStatus.Accepted));
+
+                    Assert.That(certificateSignedRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2016,17 +2629,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task InstallCertificate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var installCertificateRequests = new ConcurrentList<InstallCertificateRequest>();
@@ -2080,12 +2699,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);
-                ClassicAssert.AreEqual(CertificateStatus.Accepted,     response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              installCertificateRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(CertificateStatus.Accepted));
+
+                    Assert.That(installCertificateRequests.Count,                            Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2100,17 +2742,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetInstalledCertificateIds_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var installCertificateRequests = new ConcurrentList<InstallCertificateRequest>();
@@ -2163,11 +2811,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                       );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                  response1.Result.ResultCode);
-                ClassicAssert.AreEqual(CertificateStatus.Accepted,     response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              installCertificateRequests.Count);
+                    Assert.That(response1.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response1.Status,                                            Is.EqualTo(CertificateStatus.Accepted));
 
+                    Assert.That(installCertificateRequests.Count,                            Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
                 await Task.Delay(500);
 
@@ -2186,12 +2853,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                            response2.Result.ResultCode);
-                ClassicAssert.AreEqual(GetInstalledCertificateStatus.Accepted,   response2.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
+                    Assert.That(response2.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response2.Status,                                            Is.EqualTo(GetInstalledCertificateStatus.Accepted));
+
+                    Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2206,17 +2896,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task DeleteCertificate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 #region 1. Install Certificate
@@ -2271,11 +2967,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                       );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                  response1.Result.ResultCode);
-                ClassicAssert.AreEqual(CertificateStatus.Accepted,     response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              installCertificateRequests.Count);
+                    Assert.That(response1.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response1.Status,                                            Is.EqualTo(CertificateStatus.Accepted));
 
+                    Assert.That(installCertificateRequests.Count,                            Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
                 await Task.Delay(500);
 
@@ -2297,12 +3012,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                       );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                            response2.Result.ResultCode);
-                ClassicAssert.AreEqual(GetInstalledCertificateStatus.Accepted,   response2.Status);
-                ClassicAssert.AreEqual(1,                                        response2.CertificateHashDataChain.Count());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
+                    Assert.That(response2.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response2.Status,                                            Is.EqualTo(GetInstalledCertificateStatus.Accepted));
+                    Assert.That(response2.CertificateHashDataChain.Count(),                  Is.EqualTo(1));
 
+                    Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
                 await Task.Delay(500);
 
@@ -2324,10 +3058,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                       );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                      response3.Result.ResultCode);
-                ClassicAssert.AreEqual(DeleteCertificateStatus.Accepted,   response3.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                  deleteCertificateRequests.Count);
+                    Assert.That(response3.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response3.Status,                                            Is.EqualTo(DeleteCertificateStatus.Accepted));
+
+                    Assert.That(deleteCertificateRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
 
                 // Verification
@@ -2340,12 +3094,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                        );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                            response4.Result.ResultCode);
-                ClassicAssert.AreEqual(GetInstalledCertificateStatus.Accepted,   response4.Status);
-                ClassicAssert.AreEqual(0,                                        response4.CertificateHashDataChain.Count());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
+                    Assert.That(response4.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response4.Status,                                            Is.EqualTo(GetInstalledCertificateStatus.Accepted));
+                    Assert.That(response4.CertificateHashDataChain.Count(),                  Is.EqualTo(0));
 
+                    Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
                 await Task.Delay(500);
 
@@ -2367,17 +3140,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task NotifyCRL_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var notifyCRLRequests = new ConcurrentList<NotifyCRLRequest>();
@@ -2396,11 +3175,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );;
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,               notifyCRLRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(notifyCRLRequests.Count,                                     Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2416,17 +3218,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetLocalListVersion_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getLocalListVersionRequests = new ConcurrentList<GetLocalListVersionRequest>();
@@ -2443,11 +3251,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     getLocalListVersionRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    //Assert.That(response.Status,                                             Is.EqualTo(ReservationStatus.Accepted));
+
+                    Assert.That(getLocalListVersionRequests.Count,                           Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2462,17 +3294,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SendLocalList_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var sendLocalListRequests = new ConcurrentList<SendLocalListRequest>();
@@ -2537,11 +3375,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                       );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     sendLocalListRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    //Assert.That(response.Status,                                             Is.EqualTo(ReservationStatus.Accepted));
+
+                    Assert.That(sendLocalListRequests.Count,                                 Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2556,17 +3418,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearCache_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var clearCacheRequests = new ConcurrentList<ClearCacheRequest>();
@@ -2583,11 +3451,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     clearCacheRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ReservationStatus.Accepted));
+
+                    Assert.That(clearCacheRequests.Count,                                    Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2641,26 +3533,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                             );
 
 
-                Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                Assert.Multiple(() => {
 
-                Assert.That(notifyWebPaymentStartedRequests.Count,                       Is.EqualTo(1));
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(notifyWebPaymentStartedRequests.Count,                       Is.EqualTo(1));
 
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation3WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
-                Assert.That(chargingStation3WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                Assert.That(chargingStation3WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation3WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation3WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation3WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation3WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                Assert.That(chargingStation3WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
-                Assert.That(chargingStation3WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation3WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation3WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation3WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -2680,17 +3576,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ReserveNow_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var reserveNowRequests = new ConcurrentList<ReserveNowRequest>();
@@ -2706,7 +3608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var connectorType   = ConnectorType.sType2;
 
                 var response        = await testCSMS1.ReserveNow(
-                                                Destination:    SourceRouting.To( chargingStation1.Id),
+                                                Destination:     SourceRouting.To( chargingStation1.Id),
                                                 ReservationId:   reservationId,
                                                 ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
                                                 IdToken:         new IdToken(
@@ -2739,12 +3641,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                             );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
-                ClassicAssert.AreEqual(ReservationStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                            reserveNowRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ReservationStatus.Accepted));
+
+                    Assert.That(reserveNowRequests.Count,                                    Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2759,17 +3684,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task CancelReservation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var cancelReservationRequests = new ConcurrentList<CancelReservationRequest>();
@@ -2787,12 +3718,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                            );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                      response.Result.ResultCode);
-                ClassicAssert.AreEqual(CancelReservationStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                  cancelReservationRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(CancelReservationStatus.Accepted));
+
+                    Assert.That(cancelReservationRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2807,17 +3761,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task RequestStartStopTransaction_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var requestStartTransactionRequests  = new ConcurrentList<RequestStartTransactionRequest>();
@@ -2854,28 +3814,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                           );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,         startResponse.Result.ResultCode);
-                ClassicAssert.IsTrue  (startResponse.TransactionId.HasValue);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     requestStartTransactionRequests.Count);
+                    Assert.That(startResponse.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
+                    Assert.That(startResponse.TransactionId.HasValue,                        Is.True);
+
+                    Assert.That(requestStartTransactionRequests.Count,                       Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
                 await Task.Delay(500);
-
 
                 if (startResponse.TransactionId.HasValue)
                 {
 
                     var stopResponse = await testCSMS1.StopCharging(
-                                           Destination:     SourceRouting.To(chargingStation1.Id),
-                                           TransactionId:   startResponse.TransactionId.Value,
-                                           CustomData:      null
-                                       );
+                                                 Destination:     SourceRouting.To(chargingStation1.Id),
+                                                 TransactionId:   startResponse.TransactionId.Value,
+                                                 CustomData:      null
+                                             );
 
+                    Assert.Multiple(() => {
 
-                    ClassicAssert.AreEqual(ResultCode.OK,           stopResponse.Result.ResultCode);
-                    //ClassicAssert.AreEqual(UnlockStatus.Unlocked,   response1.Status);
+                        Assert.That(stopResponse.Result.ResultCode,                              Is.EqualTo(ResultCode.OK));
 
-                    ClassicAssert.AreEqual(1,                       requestStopTransactionRequests.Count);
+                        Assert.That(requestStopTransactionRequests.Count,                        Is.EqualTo(1));
+
+                        Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                        Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                        Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                        Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                        Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                        Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                        Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                        Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                        Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                        Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                        Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                        Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                    });
 
                 }
 
@@ -2894,17 +3891,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetTransactionStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var unlockConnectorRequests = new ConcurrentList<GetTransactionStatusRequest>();
@@ -2921,12 +3924,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,           response.Result.ResultCode);
-                //ClassicAssert.AreEqual(UnlockStatus.Unlocked,   response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                       unlockConnectorRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    //Assert.That(response.Status,                                             Is.EqualTo(ChargingProfileStatus.Accepted));
+
+                    Assert.That(unlockConnectorRequests.Count,                               Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -2941,17 +3967,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetChargingProfile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setChargingProfileRequests = new ConcurrentList<SetChargingProfileRequest>();
@@ -3028,12 +4060,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                    response.Result.ResultCode);
-                ClassicAssert.AreEqual(ChargingProfileStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                setChargingProfileRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ChargingProfileStatus.Accepted));
+
+                    Assert.That(setChargingProfileRequests.Count,                            Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3048,17 +4103,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetChargingProfiles_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getChargingProfilesRequests = new ConcurrentList<GetChargingProfilesRequest>();
@@ -3087,12 +4148,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                       response.Result.ResultCode);
-                ClassicAssert.AreEqual(GetChargingProfileStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                   getChargingProfilesRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(GetChargingProfileStatus.Accepted));
+
+                    Assert.That(getChargingProfilesRequests.Count,                           Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3107,17 +4191,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task ClearChargingProfile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getChargingProfilesRequests = new ConcurrentList<ClearChargingProfileRequest>();
@@ -3140,12 +4230,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                         response.Result.ResultCode);
-                ClassicAssert.AreEqual(ClearChargingProfileStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                     getChargingProfilesRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ClearChargingProfileStatus.Accepted));
+
+                    Assert.That(getChargingProfilesRequests.Count,                           Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3160,17 +4273,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task GetCompositeSchedule_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var getCompositeScheduleRequests = new ConcurrentList<GetCompositeScheduleRequest>();
@@ -3189,12 +4308,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,            response.Result.ResultCode);
-                ClassicAssert.AreEqual(GenericStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                        getCompositeScheduleRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
+
+                    Assert.That(getCompositeScheduleRequests.Count,                          Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3209,17 +4351,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UpdateDynamicSchedule_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var updateDynamicScheduleRequests = new ConcurrentList<UpdateDynamicScheduleRequest>();
@@ -3231,7 +4379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS1.UpdateDynamicSchedule(
 
-                                         Destination:    SourceRouting.To(       chargingStation1.Id),
+                                         Destination:           SourceRouting.To(chargingStation1.Id),
 
                                          ChargingProfileId:     ChargingProfile_Id.Parse(1),
 
@@ -3256,12 +4404,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                    response.Result.ResultCode);
-                ClassicAssert.AreEqual(ChargingProfileStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                updateDynamicScheduleRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(ChargingProfileStatus.Accepted));
+
+                    Assert.That(updateDynamicScheduleRequests.Count,                         Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3276,17 +4447,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task NotifyAllowedEnergyTransfer_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var notifyAllowedEnergyTransferRequests = new ConcurrentList<NotifyAllowedEnergyTransferRequest>();
@@ -3306,12 +4483,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                response.Result.ResultCode);
-                ClassicAssert.AreEqual(NotifyAllowedEnergyTransferStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                            notifyAllowedEnergyTransferRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(NotifyAllowedEnergyTransferStatus.Accepted));
+
+                    Assert.That(notifyAllowedEnergyTransferRequests.Count,                   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3326,17 +4526,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UsePriorityCharging_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var usePriorityChargingRequests = new ConcurrentList<UsePriorityChargingRequest>();
@@ -3354,12 +4560,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,            response.Result.ResultCode);
-                ClassicAssert.AreEqual(GenericStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                        usePriorityChargingRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
+
+                    Assert.That(usePriorityChargingRequests.Count,                           Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3374,17 +4603,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task UnlockConnector_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var unlockConnectorRequests = new ConcurrentList<UnlockConnectorRequest>();
@@ -3402,12 +4637,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,           response.Result.ResultCode);
-                ClassicAssert.AreEqual(UnlockStatus.Unlocked,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                       unlockConnectorRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(UnlockStatus.Unlocked));
+
+                    Assert.That(unlockConnectorRequests.Count,                               Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3423,17 +4681,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SendAFRRSignal_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var afrrSignalRequestRequests = new ConcurrentList<AFRRSignalRequest>();
@@ -3451,12 +4715,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,            response.Result.ResultCode);
-                ClassicAssert.AreEqual(GenericStatus.Accepted,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                        afrrSignalRequestRequests.Count);
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
+
+                    Assert.That(afrrSignalRequestRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3472,17 +4759,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SetDisplayMessage_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
@@ -3515,15 +4808,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                       );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
-                //ClassicAssert.AreEqual(data.Reverse(),        response1.Data?.ToString());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     setDisplayMessageRequests.Count);
-                //ClassicAssert.AreEqual(vendorId,               dataTransferRequests.First().VendorId);
-                //ClassicAssert.AreEqual(messageId,              dataTransferRequests.First().MessageId);
-                //ClassicAssert.AreEqual(data,                   dataTransferRequests.First().Data?.ToString());
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
+
+                    Assert.That(setDisplayMessageRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3602,26 +4915,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                  CustomData:    null
                                              );
 
-                    ClassicAssert.AreEqual(ResultCode.OK,    setResponse.Result.ResultCode);
-                    ClassicAssert.AreEqual(i,                setDisplayMessageRequests.Count);
+                    Assert.Multiple(() => {
+                        Assert.That(setResponse.Result.ResultCode,                           Is.EqualTo(ResultCode.OK));
+                        Assert.That(setDisplayMessageRequests.Count,                         Is.EqualTo(i));
+                    });
 
                 }
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(10));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(10));
+                Assert.Multiple(() => {
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(10));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(10));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(10));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(10));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(10));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(10));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo( 0));
+
+                });
 
                 await Task.Delay(500);
 
@@ -3649,39 +4968,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:                    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK, getResponse1.Result.ResultCode);
-                ClassicAssert.AreEqual(1, getDisplayMessagesRequests.Count);
+                Assert.Multiple(() => {
+                    Assert.That(getResponse1.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(getDisplayMessagesRequests.Count,   Is.EqualTo(1));
+                });
 
                 await Task.Delay(500);
 
+                Assert.Multiple(() => {
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(11));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(11));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(11));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(11));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(11));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(11));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(11));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(11));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo( 0));
 
-
-
-                //ClassicAssert.AreEqual(12, csms1WebSocketJSONRequestsSent.                       Count);
-                //ClassicAssert.AreEqual(11, csms1WebSocketJSONResponsesReceived.           Count);
-                //ClassicAssert.AreEqual(12, csms1WebSocketJSONRequestsReceived.                   Count);
-                //ClassicAssert.AreEqual( 1, csms1WebSocketJSONResponsesSent.               Count);
-
-                //ClassicAssert.AreEqual(12, chargingStation1WebSocketJSONMessagesReceived.        Count);
-                //ClassicAssert.AreEqual(11, chargingStation1WebSocketJSONMessageResponsesSent.    Count);
-                //ClassicAssert.AreEqual(12, chargingStation1WebSocketJSONMessagesSent.            Count);
-                //ClassicAssert.AreEqual( 1, chargingStation1WebSocketJSONMessageResponsesReceived.Count);
+                });
 
 
                 var getResponse2  = await testCSMS1.GetDisplayMessages(
@@ -3697,8 +5009,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:                    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK, getResponse2.Result.ResultCode);
-                ClassicAssert.AreEqual(2, getDisplayMessagesRequests.Count);
+                Assert.Multiple(() => {
+                    Assert.That(getResponse2.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(getDisplayMessagesRequests.Count,   Is.EqualTo(2));
+                });
 
                 await Task.Delay(500);
 
@@ -3712,8 +5026,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:                    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK, getResponse3.Result.ResultCode);
-                ClassicAssert.AreEqual(3, getDisplayMessagesRequests.Count);
+                Assert.Multiple(() => {
+                    Assert.That(getResponse3.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(getDisplayMessagesRequests.Count,   Is.EqualTo(3));
+                });
 
                 await Task.Delay(500);
 
@@ -3727,18 +5043,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:                    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK, getResponse4.Result.ResultCode);
-                ClassicAssert.AreEqual(4, getDisplayMessagesRequests.Count);
+                Assert.Multiple(() => {
+                    Assert.That(getResponse4.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(getDisplayMessagesRequests.Count,   Is.EqualTo(4));
+                });
 
                 await Task.Delay(500);
 
 
-                ClassicAssert.AreEqual(4, notifyDisplayMessagesRequests.Count);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(10, notifyDisplayMessagesRequests[0].MessageInfos.Count());
-                ClassicAssert.AreEqual( 3, notifyDisplayMessagesRequests[1].MessageInfos.Count());
-                ClassicAssert.AreEqual( 5, notifyDisplayMessagesRequests[2].MessageInfos.Count());
-                ClassicAssert.AreEqual( 3, notifyDisplayMessagesRequests[3].MessageInfos.Count());
+                    Assert.That(notifyDisplayMessagesRequests.Count,                     Is.EqualTo(4));
+
+                    Assert.That(notifyDisplayMessagesRequests[0].MessageInfos.Count(),   Is.EqualTo(10));
+                    Assert.That(notifyDisplayMessagesRequests[1].MessageInfos.Count(),   Is.EqualTo( 3));
+                    Assert.That(notifyDisplayMessagesRequests[2].MessageInfos.Count(),   Is.EqualTo( 5));
+                    Assert.That(notifyDisplayMessagesRequests[3].MessageInfos.Count(),   Is.EqualTo( 3));
+
+                });
 
             }
 
@@ -3805,8 +5127,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK,   setResponse1.Result.ResultCode);
-                ClassicAssert.AreEqual(1,               setDisplayMessageRequests.Count);
+                Assert.Multiple(() => {
+                    Assert.That(setResponse1.Result.ResultCode,    Is.EqualTo(ResultCode.OK));
+                    Assert.That(setDisplayMessageRequests.Count,   Is.EqualTo(1));
+                });
 
 
                 var messageId2    = DisplayMessage_Id.NewRandom;
@@ -3832,8 +5156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK,   setResponse2.Result.ResultCode);
-                ClassicAssert.AreEqual(2,               setDisplayMessageRequests.Count);
+                Assert.Multiple(() => {
+                    Assert.That(setResponse2.Result.ResultCode,    Is.EqualTo(ResultCode.OK));
+                    Assert.That(setDisplayMessageRequests.Count,   Is.EqualTo(2));
+                });
 
 
                 // Get Messages BEFORE
@@ -3862,9 +5188,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:                    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK,   getResponse1.Result.ResultCode);
-                ClassicAssert.AreEqual(1,               getDisplayMessagesRequests.Count);
-
+                Assert.Multiple(() => {
+                    Assert.That(getResponse1.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(getDisplayMessagesRequests.Count,   Is.EqualTo(1));
+                });
 
                 await Task.Delay(500);
 
@@ -3883,9 +5210,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                CustomData:        null
                                            );
 
-                ClassicAssert.AreEqual(ResultCode.OK,   clearResponse.Result.ResultCode);
-                ClassicAssert.AreEqual(1,               clearDisplayMessageRequests.Count);
-
+                Assert.Multiple(() => {
+                    Assert.That(clearResponse.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(clearDisplayMessageRequests.Count,   Is.EqualTo(1));
+                });
 
                 await Task.Delay(500);
 
@@ -3900,31 +5228,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               CustomData:                    null
                                           );
 
-                ClassicAssert.AreEqual(ResultCode.OK,   getResponse2.Result.ResultCode);
-                ClassicAssert.AreEqual(2,               getDisplayMessagesRequests.Count);
-
+                Assert.Multiple(() => {
+                    Assert.That(getResponse2.Result.ResultCode,     Is.EqualTo(ResultCode.OK));
+                    Assert.That(getDisplayMessagesRequests.Count,   Is.EqualTo(2));
+                });
 
                 await Task.Delay(500);
 
 
-                ClassicAssert.AreEqual(2,               notifyDisplayMessagesRequests[0].MessageInfos.Count());
-                ClassicAssert.AreEqual(1,               notifyDisplayMessagesRequests[1].MessageInfos.Count());
+                Assert.Multiple(() => {
 
-                Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(5));
-                Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(5));
+                    Assert.That(notifyDisplayMessagesRequests[0].MessageInfos.Count(),       Is.EqualTo(2));
+                    Assert.That(notifyDisplayMessagesRequests[1].MessageInfos.Count(),       Is.EqualTo(1));
 
-                Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
-                Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(5));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(5));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(5));
-                Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(5));
-                Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(5));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(5));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -3942,17 +5275,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task SendCostUpdate_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var costUpdatedRequests = new ConcurrentList<CostUpdatedRequest>();
@@ -3971,16 +5310,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                           CustomData:      null
                                       );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
-                //ClassicAssert.AreEqual(data.Reverse(),        response.Data?.ToString());
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    //ClassicAssert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
-                ClassicAssert.AreEqual(1,                     costUpdatedRequests.Count);
-                //ClassicAssert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
-                //ClassicAssert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
-                //ClassicAssert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
+                    Assert.That(costUpdatedRequests.                                Count,   Is.EqualTo(1));
+                    //ClassicAssert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
+                    //ClassicAssert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
+                    //ClassicAssert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
+
+                    //Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    //Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    //Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 
@@ -3995,17 +5361,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task RequestCustomerInformation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
 
-            if (testCSMS1              is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var customerInformationRequests        = new ConcurrentList<CustomerInformationRequest>();
@@ -4050,18 +5422,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomData:                     null
                                      );
 
-
-                ClassicAssert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
-
-                ClassicAssert.AreEqual(1,                     customerInformationRequests.Count);
-
+                Assert.Multiple(() => {
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(customerInformationRequests.                        Count,   Is.EqualTo(1));
+                });
 
                 await Task.Delay(500);
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                     notifyCustomerInformationRequests.Count);
+                    Assert.That(notifyCustomerInformationRequests.                  Count,   Is.EqualTo(1));
+
+                    //Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    //Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+
+                    //Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+
+                });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
 
         }
 

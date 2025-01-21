@@ -1072,11 +1072,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.That(chargingStation3,         Is.Not.Null);
             });
 
-            if (testCSMS1     is not null &&
-                testBackendWebSockets1 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
+
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
             {
 
                 var authorizeRequests= new ConcurrentList<AuthorizeRequest>();
