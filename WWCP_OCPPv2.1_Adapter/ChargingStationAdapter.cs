@@ -765,6 +765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public bool IsNotEmpty => throw new NotImplementedException();
 
+        public DateTime Created        { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public DateTime LastChangeDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 

@@ -326,6 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                                   Boolean                                                         RequireAuthentication        = true,
                                   IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                  SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
                                   Boolean                                                         DisableWebSocketPings        = false,
                                   TimeSpan?                                                       WebSocketPingEvery           = null,
                                   TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -363,6 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                           SecWebSocketProtocols ?? [
                                                                        Version.WebSocketSubProtocolId
                                                                    ],
+                                          SubprotocolSelector,
                                           DisableWebSocketPings,
                                           WebSocketPingEvery,
                                           SlowNetworkSimulationDelay,

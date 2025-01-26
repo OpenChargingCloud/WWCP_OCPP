@@ -1405,37 +1405,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// </summary>
             /// <param name="Id">The unique identification of the chargeBox.</param>
             /// <param name="DataSource">The source of all this data, e.g. an automatic importer.</param>
-            public Builder(ChargingStation_Id                             Id,
-                         Byte                                        NumberOfConnectors,
-                         String                                      ChargePointVendor,
-                         String                                      ChargePointModel,
+            public Builder(ChargingStation_Id                                 Id,
+                           Byte                                               NumberOfConnectors,
+                           String                                             ChargePointVendor,
+                           String                                             ChargePointModel,
 
-                         I18NString                                  Description                         = null,
-                         String                                      ChargePointSerialNumber             = null,
-                         //String                                      ChargingStationSerialNumber               = null,
-                         String                                      FirmwareVersion                     = null,
-                         String                                      Iccid                               = null,
-                         String                                      IMSI                                = null,
-                         String                                      MeterType                           = null,
-                         String                                      MeterSerialNumber                   = null,
-                         String                                      MeterPublicKey                      = null,
+                           I18NString?                                        Description                               = null,
+                           String?                                            ChargePointSerialNumber                   = null,
+                           //String?                                            ChargingStationSerialNumber               = null,
+                           String?                                            FirmwareVersion                           = null,
+                           String?                                            Iccid                                     = null,
+                           String?                                            IMSI                                      = null,
+                           String?                                            MeterType                                 = null,
+                           String?                                            MeterSerialNumber                         = null,
+                           String?                                            MeterPublicKey                            = null,
 
-                         TimeSpan?                                   ExpectHeartbeatEvery                = null,
+                           TimeSpan?                                          ExpectHeartbeatEvery                      = null,
 
-                           IEnumerable<ANotification>                  Notifications                       = null,
+                           IEnumerable<ANotification>?                        Notifications                             = null,
 
-                           //IEnumerable<User2ChargingStationEdge>          User2ChargingStationEdges              = null,
-                           IEnumerable<ChargingStation2ChargingStationEdge>  ChargingStation2ChargingStationInEdges    = null,
-                           IEnumerable<ChargingStation2ChargingStationEdge>  ChargingStation2ChargingStationOutEdges   = null,
+                           //IEnumerable<User2ChargingStationEdge>?             User2ChargingStationEdges                 = null,
+                           IEnumerable<ChargingStation2ChargingStationEdge>?  ChargingStation2ChargingStationInEdges    = null,
+                           IEnumerable<ChargingStation2ChargingStationEdge>?  ChargingStation2ChargingStationOutEdges   = null,
 
-                           JObject                                     CustomData                          = default,
-                           IEnumerable<AttachedFile>                   AttachedFiles                       = default,
-                           JSONLDContext?                              JSONLDContext                       = default,
-                           String                                      DataSource                          = default,
-                           DateTime?                                   LastChange                          = default)
+                           JObject?                                           CustomData                                = null,
+                           IEnumerable<AttachedFile>?                         AttachedFiles                             = null,
+                           JSONLDContext?                                     JSONLDContext                             = null,
+                           String?                                            DataSource                                = null,
+                           DateTime?                                          Created                                   = null,
+                           DateTime?                                          LastChange                                = null)
 
                 : base(Id,
                        JSONLDContext ?? DefaultJSONLDContext,
+                       Created,
                        LastChange,
                        null,
                        CustomData,

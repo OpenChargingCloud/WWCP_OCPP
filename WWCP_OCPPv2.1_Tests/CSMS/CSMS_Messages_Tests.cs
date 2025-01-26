@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(Reset_ChargingStation_Test)} preconditions failed!");
 
         }
 
@@ -167,6 +167,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(Reset_UnknownChargingStation_Test)} preconditions failed!");
 
         }
 
@@ -247,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(Reset_EVSE_Test)} preconditions failed!");
 
         }
 
@@ -328,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(Reset_UnknownEVSE_Test)} preconditions failed!");
 
         }
 
@@ -415,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(UpdateFirmware_Test)} preconditions failed!");
 
         }
 
@@ -495,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(PublishFirmware_Test)} preconditions failed!");
 
         }
 
@@ -571,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(UnpublishFirmware_Test)} preconditions failed!");
 
         }
 
@@ -648,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetBaseReport_Test)} preconditions failed!");
 
         }
 
@@ -747,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetReport_Test)} preconditions failed!");
 
         }
 
@@ -830,7 +833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetLog_Test)} preconditions failed!");
 
         }
 
@@ -1038,6 +1041,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(SetVariables_Tests)} preconditions failed!");
+
         }
 
         #endregion
@@ -1170,6 +1176,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(SetVariables_Conditional_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -1262,6 +1271,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(SetVariables_Conditional_WithinSameRequest_Test)} preconditions failed!");
 
         }
 
@@ -1356,6 +1368,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(SetVariables_Conditional_WithinSameRequest_Fails_Test)} preconditions failed!");
 
         }
 
@@ -1479,7 +1494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetVariables_Test)} preconditions failed!");
 
         }
 
@@ -1553,6 +1568,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(SetMonitoringBase_Test)} preconditions failed!");
 
         }
 
@@ -1649,6 +1667,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(GetMonitoringReport_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -1721,6 +1742,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(SetMonitoringLevel_Test)} preconditions failed!");
 
         }
 
@@ -1818,6 +1842,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(SetVariableMonitoring_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -1891,6 +1918,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(ClearVariableMonitoring_Test)} preconditions failed!");
 
         }
 
@@ -1992,6 +2022,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(SetNetworkProfile_Test)} preconditions failed!");
 
         }
 
@@ -2160,6 +2193,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(TriggerMessage_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -2242,6 +2278,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(TransferTextData_Test)} preconditions failed!");
 
         }
 
@@ -2332,6 +2371,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(TransferJObjectData_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -2418,6 +2460,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(TransferJArrayData_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -2497,6 +2542,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 });
 
             }
+
+            else
+                Assert.Fail($"{nameof(TransferTextData_Rejected_Test)} preconditions failed!");
 
         }
 
@@ -2614,7 +2662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(CertificateSigned_Test)} preconditions failed!");
 
         }
 
@@ -2727,7 +2775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(InstallCertificate_Test)} preconditions failed!");
 
         }
 
@@ -2881,7 +2929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetInstalledCertificateIds_Test)} preconditions failed!");
 
         }
 
@@ -3126,6 +3174,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(DeleteCertificate_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -3202,7 +3253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(NotifyCRL_Test)} preconditions failed!");
 
         }
 
@@ -3279,7 +3330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetLocalListVersion_Test)} preconditions failed!");
 
         }
 
@@ -3403,7 +3454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(SendLocalList_Test)} preconditions failed!");
 
         }
 
@@ -3479,7 +3530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(ClearCache_Test)} preconditions failed!");
 
         }
 
@@ -3669,7 +3720,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(ReserveNow_Test)} preconditions failed!");
 
         }
 
@@ -3746,7 +3797,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(CancelReservation_Test)} preconditions failed!");
 
         }
 
@@ -3878,6 +3929,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(RequestStartStopTransaction_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -3952,7 +4006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetTransactionStatus_Test)} preconditions failed!");
 
         }
 
@@ -4088,7 +4142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(SetChargingProfile_Test)} preconditions failed!");
 
         }
 
@@ -4176,7 +4230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetChargingProfiles_Test)} preconditions failed!");
 
         }
 
@@ -4258,7 +4312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(ClearChargingProfile_Test)} preconditions failed!");
 
         }
 
@@ -4336,7 +4390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(GetCompositeSchedule_Test)} preconditions failed!");
 
         }
 
@@ -4432,7 +4486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(UpdateDynamicSchedule_Test)} preconditions failed!");
 
         }
 
@@ -4511,7 +4565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(NotifyAllowedEnergyTransfer_Test)} preconditions failed!");
 
         }
 
@@ -4588,7 +4642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(UsePriorityCharging_Test)} preconditions failed!");
 
         }
 
@@ -4665,7 +4719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(UnlockConnector_Test)} preconditions failed!");
 
         }
 
@@ -4743,7 +4797,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(SendAFRRSignal_Test)} preconditions failed!");
 
         }
 
@@ -4836,7 +4890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(SetDisplayMessage_Test)} preconditions failed!");
 
         }
 
@@ -5064,6 +5118,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(GetDisplayMessages_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -5261,6 +5318,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             }
 
+            else
+                Assert.Fail($"{nameof(ClearDisplayMessage_Test)} preconditions failed!");
+
         }
 
         #endregion
@@ -5346,7 +5406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(SendCostUpdate_Test)} preconditions failed!");
 
         }
 
@@ -5459,7 +5519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             }
 
             else
-                Assert.Fail($"{nameof(ChangeAvailability_Test)} preconditions failed!");
+                Assert.Fail($"{nameof(RequestCustomerInformation_Test)} preconditions failed!");
 
         }
 

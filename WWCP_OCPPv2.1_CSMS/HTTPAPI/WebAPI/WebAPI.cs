@@ -42,7 +42,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The OCPP Networking Node WebAPI.
     /// </summary>
-    public class WebAPI
+    public class WebAPI : AHTTPAPIExtension<HTTPExtAPI>,
+                          IHTTPAPIExtension<HTTPExtAPI>
     {
 
         #region Data
@@ -65,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.WebAPI.HTTPRoot.";
+        public const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.CSMS.HTTPAPI.WebAPI.HTTPRoot.";
 
         #endregion
 
@@ -85,19 +86,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
         public WebAPI(ACSMSNode                                   CSMS,
-                      HTTPServer                                  HTTPServer,
+                      //HTTPServer                                  HTTPServer,
+                      HTTPExtAPI                                  HTTPAPI,
                       String?                                     HTTPServerName   = null,
                       HTTPPath?                                   URLPathPrefix    = null,
                       HTTPPath?                                   BasePath         = null,
                       String                                      HTTPRealm        = DefaultHTTPRealm,
                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
                       String?                                     HTMLTemplate     = null)
+
+            : base(HTTPAPI,
+                   HTTPServerName ?? DefaultHTTPServerName,
+                   URLPathPrefix,
+                   BasePath       ?? HTTPPath.Parse("webapi"))
+
         {
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
             //HTTPServer.ResponseLog  += (HTTPProcessor, ServerTimestamp, Request, Response)                       => ResponseLog.WhenAll(HTTPProcessor, ServerTimestamp, Request, Response);
             //HTTPServer.ErrorLog     += (HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException) => ErrorLog.   WhenAll(HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException);
+
+            this.HTMLTemplate = HTMLTemplate ?? GetResourceString("template.html");
 
             RegisterURITemplates();
 
@@ -108,105 +118,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (private) RegisterURLTemplates()
 
-        //#region Manage HTTP Resources
+        #region Manage HTTP Resources
 
-        //#region (protected override) GetResourceStream      (ResourceName)
+        #region (protected override) GetResourceStream      (ResourceName)
 
-        //protected override Stream? GetResourceStream(String ResourceName)
+        protected override Stream? GetResourceStream(String ResourceName)
 
-        //    => base.GetResourceStream(ResourceName,
-        //                         new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                         new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                         new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
+            => base.GetResourceStream(ResourceName,
+                                 new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
-        //#endregion
+        #endregion
 
-        //#region (protected override) GetResourceMemoryStream(ResourceName)
+        #region (protected override) GetResourceMemoryStream(ResourceName)
 
-        //protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
+        protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
-        //    => base.GetResourceMemoryStream(ResourceName,
-        //                               new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                               new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                               new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
+            => base.GetResourceMemoryStream(ResourceName,
+                                       new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
-        //#endregion
+        #endregion
 
-        //#region (protected override) GetResourceString      (ResourceName)
+        #region (protected override) GetResourceString      (ResourceName)
 
-        //protected override String GetResourceString(String ResourceName)
+        protected override String GetResourceString(String ResourceName)
 
-        //    => base.GetResourceString(ResourceName,
-        //                         new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                         new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                         new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
+            => base.GetResourceString(
+                   ResourceName,
+                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot,                                     typeof(WebAPI).                                        Assembly),
+                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot,                                     typeof(HTTPExtAPI).                                    Assembly),
+                   new Tuple<String, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).Assembly)
+               );
 
-        //#endregion
+        #endregion
 
-        //#region (protected override) GetResourceBytes       (ResourceName)
+        #region (protected override) GetResourceBytes       (ResourceName)
 
-        //protected override Byte[] GetResourceBytes(String ResourceName)
+        protected override Byte[] GetResourceBytes(String ResourceName)
 
-        //    => base.GetResourceBytes(ResourceName,
-        //                        new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                        new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                        new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
+            => base.GetResourceBytes(ResourceName,
+                                new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
-        //#endregion
+        #endregion
 
-        //#region (protected override) MixWithHTMLTemplate    (ResourceName)
+        #region (protected override) MixWithHTMLTemplate    (ResourceName)
 
-        //protected override String MixWithHTMLTemplate(String ResourceName)
+        protected override String MixWithHTMLTemplate(String ResourceName)
 
-        //    => base.MixWithHTMLTemplate(ResourceName,
-        //                           new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                           new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                           new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
+            => base.MixWithHTMLTemplate(
+                   ResourceName,
+                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot,                                     typeof(WebAPI).                                        Assembly),
+                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot,                                     typeof(HTTPExtAPI).                                    Assembly),
+                   new Tuple<String, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).Assembly)
+               );
 
-        //#endregion
+        #endregion
 
-        //#region (protected override) MixWithHTMLTemplate    (ResourceName, HTMLConverter, ResourceAssemblies)
+        #region (protected override) MixWithHTMLTemplate    (ResourceName, HTMLConverter, ResourceAssemblies)
 
-        //protected override String MixWithHTMLTemplate(String                ResourceName,
-        //                                              Func<String, String>  HTMLConverter)
+        protected override String MixWithHTMLTemplate(String                ResourceName,
+                                                      Func<String, String>  HTMLConverter)
 
-        //    => base.MixWithHTMLTemplate(ResourceName,
-        //                           HTMLConverter,
-        //                           new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                           new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                           new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
+            => base.MixWithHTMLTemplate(ResourceName,
+                                   HTMLConverter,
+                                   new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
-        //#endregion
+        #endregion
 
-        //#region (protected override) MixWithHTMLTemplate    (Template, ResourceName, ResourceAssemblies)
+        #region (protected override) MixWithHTMLTemplate    (Template, ResourceName, ResourceAssemblies)
 
-        //protected override String MixWithHTMLTemplate(String   Template,
-        //                                              String   ResourceName,
-        //                                              String?  Content   = null)
+        protected override String MixWithHTMLTemplate(String   Template,
+                                                      String   ResourceName,
+                                                      String?  Content   = null)
 
-        //    => base.MixWithHTMLTemplate(Template,
-        //                           ResourceName,
-        //                           new[] {
-        //                               new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
-        //                               new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-        //                               new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
-        //                           },
-        //                           Content);
+            => base.MixWithHTMLTemplate(Template,
+                                   ResourceName,
+                                   new[] {
+                                       new Tuple<string, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
+                                   },
+                                   Content);
 
-        //#endregion
+        #endregion
 
-        //#endregion
+        #endregion
+
 
         private void RegisterURITemplates()
         {
 
             #region / (HTTPRoot)
 
-            //HTTPBaseAPI.RegisterResourcesFolder(this,
-            //                                HTTPHostname.Any,
-            //                                URLPathPrefix,
-            //                                "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot",
-            //                                DefaultFilename: "index.html");
+            HTTPBaseAPI.MapResourceAssemblyFolder(
+                HTTPHostname.Any,
+                URLPathPrefix,
+                HTTPRoot,
+                typeof(WebAPI).Assembly,
+                "index.html",
+                false
+            );
 
             //HTTPServer.AddMethodCallback(HTTPHostname.Any,
             //                             HTTPMethod.GET,
@@ -240,45 +258,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region HTML
 
-            //// --------------------------------------------------------------------
-            //// curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
-            //// --------------------------------------------------------------------
-            //HTTPBaseAPI.AddMethodCallback(
-            //                HTTPHostname.Any,
-            //                HTTPMethod.GET,
-            //                URLPathPrefix + "events",
-            //                HTTPContentType.Text.HTML_UTF8,
-            //                HTTPDelegate: Request => {
+            // --------------------------------------------------------------------
+            // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
+            // --------------------------------------------------------------------
+            HTTPBaseAPI.AddMethodCallback(
+                            HTTPHostname.Any,
+                            HTTPMethod.GET,
+                            URLPathPrefix + "events",
+                            HTTPContentType.Text.HTML_UTF8,
+                            HTTPDelegate: Request => {
 
-            //                    #region Get HTTP user and its organizations
+                                #region Get HTTP user and its organizations
 
-            //                    //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-            //                    //if (!TryGetHTTPUser(Request,
-            //                    //                    out User                   HTTPUser,
-            //                    //                    out HashSet<Organization>  HTTPOrganizations,
-            //                    //                    out HTTPResponse.Builder   Response,
-            //                    //                    Recursive:                 true))
-            //                    //{
-            //                    //    return Task.FromResult(Response.AsImmutable);
-            //                    //}
+                                //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                                //if (!TryGetHTTPUser(Request,
+                                //                    out User                   HTTPUser,
+                                //                    out HashSet<Organization>  HTTPOrganizations,
+                                //                    out HTTPResponse.Builder   Response,
+                                //                    Recursive:                 true))
+                                //{
+                                //    return Task.FromResult(Response.AsImmutable);
+                                //}
 
-            //                    #endregion
+                                #endregion
 
-            //                    return Task.FromResult(
-            //                               new HTTPResponse.Builder(Request) {
-            //                                   HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                   Server                     = HTTPServiceName,
-            //                                   Date                       = Timestamp.Now,
-            //                                   AccessControlAllowOrigin   = "*",
-            //                                   AccessControlAllowMethods  = [ "GET" ],
-            //                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-            //                                   ContentType                = HTTPContentType.Text.HTML_UTF8,
-            //                                   Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-            //                                   Connection                 = ConnectionType.Close,
-            //                                   Vary                       = "Accept"
-            //                               }.AsImmutable);
+                                return Task.FromResult(
+                                           new HTTPResponse.Builder(Request) {
+                                               HTTPStatusCode             = HTTPStatusCode.OK,
+                                               Server                     = HTTPServiceName,
+                                               Date                       = Timestamp.Now,
+                                               AccessControlAllowOrigin   = "*",
+                                               AccessControlAllowMethods  = [ "GET" ],
+                                               AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                               ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                               Content                    = MixWithHTMLTemplate("events.index.shtml").ToUTF8Bytes(),
+                                               Connection                 = ConnectionType.Close,
+                                               Vary                       = "Accept"
+                                           }.AsImmutable);
 
-            //                });
+                            });
 
             #endregion
 

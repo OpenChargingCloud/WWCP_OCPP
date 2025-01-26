@@ -6299,6 +6299,17 @@ function StartEventsSSE() {
 
 
 
+    const webSocket = new WebSocket('ws://127.0.0.1:7001');
+
+    webSocket.onmessage = (event: MessageEvent): void => {
+
+        console.log("Message from WebSocket server:", event.data);
+
+        // If the message is JSON, you could parse it:
+        // const data = JSON.parse(event.data);
+
+    };
+
 
 
     CreateLogEntry(
@@ -6601,7 +6612,4 @@ function StartEventsSSE() {
     }
 
 
-
-
 }
-

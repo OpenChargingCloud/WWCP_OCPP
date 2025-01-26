@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Func<ChargingStationStatusReport, ChargingPoolStatusTypes>? StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Func<ChargingStationStatusReport, ChargingPoolStatusType>? StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public IEnumerable<IChargingStation> ChargingStations => throw new NotImplementedException();
 
@@ -157,8 +157,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public bool IsNotEmpty => throw new NotImplementedException();
 
         public DateTime LastChangeDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<ChargingPoolAdminStatusTypes> AdminStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<ChargingPoolStatusTypes> Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<ChargingPoolAdminStatusType> AdminStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<ChargingPoolStatusType> Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public TimeSpan MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public IEnumerable<ChargingReservation> ChargingReservations => throw new NotImplementedException();
@@ -180,6 +180,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public IEnumerable<Languages> LocationLanguages => throw new NotImplementedException();
 
         IEnumerable<DataLicense> IChargingPool.DataLicenses => throw new NotImplementedException();
+
+        Func<ChargingStationStatusReport, ChargingPoolStatusType>? IChargingPool.StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime Created { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Timestamped<ChargingPoolAdminStatusType> IAdminStatus<ChargingPoolAdminStatusType>.AdminStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Timestamped<ChargingPoolStatusType> IStatus<ChargingPoolStatusType>.Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         event OnChargingPoolDataChangedDelegate IChargingPool.OnDataChanged
         {
@@ -262,27 +267,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.AddChargingStationResult> AddChargingStation(IChargingStation ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.AddChargingStationResult> AddChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation ChargingStation, Action<IChargingStation, EventTracking_Id>? OnAdditionSuccess = null, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddOrUpdatedUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnAdditionSuccess = null, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddOrUpdatedUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation ChargingStation, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation ChargingStation, Action<IChargingStation> UpdateDelegate, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation>? UpdateDelegate, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
@@ -297,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public bool ContainsChargingStation(IChargingStation ChargingStation)
+        public bool ContainsChargingStation(IChargingStation? ChargingStation)
         {
             throw new NotImplementedException();
         }
@@ -347,7 +352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public bool ContainsEVSE(WWCP.EVSE EVSE)
+        public bool ContainsEVSE(WWCP.EVSE? EVSE)
         {
             throw new NotImplementedException();
         }
@@ -367,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public ChargingPool UpdateWith(ChargingPool OtherChargingPool)
+        public ChargingPool UpdateWith(ChargingPool? OtherChargingPool)
         {
             throw new NotImplementedException();
         }
@@ -382,107 +387,107 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public object? GetInternalData(string Key)
+        public object? GetInternalData(string? Key)
         {
             throw new NotImplementedException();
         }
 
-        public T? GetInternalDataAs<T>(string Key)
+        public T? GetInternalDataAs<T>(string? Key)
         {
             throw new NotImplementedException();
         }
 
-        public void IfDefined(string Key, Action<object> ValueDelegate)
+        public void IfDefined(string? Key, Action<object>? ValueDelegate)
         {
             throw new NotImplementedException();
         }
 
-        public void IfDefinedAs<T>(string Key, Action<T> ValueDelegate)
+        public void IfDefinedAs<T>(string? Key, Action<T>? ValueDelegate)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsDefined(string Key)
+        public bool IsDefined(string? Key)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsDefined(string Key, object? Value)
+        public bool IsDefined(string? Key, object? Value)
         {
             throw new NotImplementedException();
         }
 
-        public void PropertyChanged<T>(string PropertyName, T OldValue, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null)
+        public void PropertyChanged<T>(string? PropertyName, T? OldValue, T? NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null)
         {
             throw new NotImplementedException();
         }
 
-        public SetPropertyResult SetInternalData(string Key, object? NewValue, object? OldValue = null, Context? DataSource = null, EventTracking_Id? EventTrackingId = null)
+        public SetPropertyResult SetInternalData(string? Key, object? NewValue, object? OldValue = null, Context? DataSource = null, EventTracking_Id? EventTrackingId = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetProperty<T>(ref T FieldToChange, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] string PropertyName = "")
+        public void SetProperty<T>(ref T FieldToChange, T? NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] string PropertyName = "")
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetInternalData(string Key, out object? Value)
+        public bool TryGetInternalData(string? Key, out object? Value)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetInternalDataAs<T>(string Key, out T? Value)
+        public bool TryGetInternalDataAs<T>(string? Key, out T? Value)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>> AdminStatusSchedule(Func<DateTime, bool>? TimestampFilter = null, Func<ChargingPoolAdminStatusTypes, bool>? AdminStatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> AdminStatusSchedule(Func<DateTime, bool>? TimestampFilter = null, Func<ChargingPoolAdminStatusType, bool>? AdminStatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes NewAdminStatus, Context? DataSource = null)
+        public void SetAdminStatus(ChargingPoolAdminStatusType? NewAdminStatus, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusTypes> NewTimestampedAdminStatus, Context? DataSource = null)
+        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusType>? NewTimestampedAdminStatus, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace, Context? DataSource = null)
+        public void SetAdminStatus(IEnumerable<Timestamped<ChargingPoolAdminStatusType>>? NewAdminStatusList, ChangeMethods? ChangeMethod = ChangeMethods.Replace, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes NewAdminStatus, DateTime Timestamp, Context? DataSource = null)
+        public void SetAdminStatus(ChargingPoolAdminStatusType? NewAdminStatus, DateTime? Timestamp, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Timestamped<ChargingPoolStatusTypes>> StatusSchedule(Func<DateTime, bool>? TimestampFilter = null, Func<ChargingPoolStatusTypes, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule(Func<DateTime, bool>? TimestampFilter = null, Func<ChargingPoolStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetStatus(ChargingPoolStatusTypes NewStatus, Context? DataSource = null)
+        public void SetStatus(ChargingPoolStatusType? NewStatus, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetStatus(Timestamped<ChargingPoolStatusTypes> NewTimestampedStatus, Context? DataSource = null)
+        public void SetStatus(Timestamped<ChargingPoolStatusType>? NewTimestampedStatus, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetStatus(IEnumerable<Timestamped<ChargingPoolStatusTypes>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace, Context? DataSource = null)
+        public void SetStatus(IEnumerable<Timestamped<ChargingPoolStatusType>>? NewStatusList, ChangeMethods? ChangeMethod = ChangeMethods.Replace, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
 
-        public void SetStatus(ChargingPoolStatusTypes NewStatus, DateTime Timestamp, Context? DataSource = null)
+        public void SetStatus(ChargingPoolStatusType? NewStatus, DateTime? Timestamp, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }
@@ -512,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? StartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        public Task<ReservationResult> Reserve(ChargingLocation? ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? StartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -549,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            RequestTimeout,
                            CancellationToken);
 
-        public async Task<RemoteStartResult> RemoteStart(ChargingLocation         ChargingLocation,
+        public async Task<RemoteStartResult> RemoteStart(ChargingLocation?         ChargingLocation,
                                                          ChargingProduct?         ChargingProduct          = null,
                                                          ChargingReservation_Id?  ReservationId            = null,
                                                          ChargingSession_Id?      SessionId                = null,
@@ -647,12 +652,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication? LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication? LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAdminStatus(ChargingPoolAdminStatusType NewAdminStatus, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusType> NewTimestampedAdminStatus, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAdminStatus(IEnumerable<Timestamped<ChargingPoolAdminStatusType>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAdminStatus(ChargingPoolAdminStatusType NewAdminStatus, DateTime Timestamp, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatus(ChargingPoolStatusType NewStatus, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatus(Timestamped<ChargingPoolStatusType> NewTimestampedStatus, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatus(IEnumerable<Timestamped<ChargingPoolStatusType>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatus(ChargingPoolStatusType NewStatus, DateTime Timestamp, Context? DataSource = null)
         {
             throw new NotImplementedException();
         }

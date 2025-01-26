@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -227,6 +228,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
                                                                  Boolean                                                         RequireAuthentication        = true,
                                                                  IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                                                 SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
                                                                  Boolean                                                         DisableWebSocketPings        = false,
                                                                  TimeSpan?                                                       WebSocketPingEvery           = null,
                                                                  TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -259,6 +261,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
                                           RequireAuthentication,
                                           SecWebSocketProtocols,
+                                          SubprotocolSelector,
                                           DisableWebSocketPings,
                                           WebSocketPingEvery,
                                           SlowNetworkSimulationDelay,

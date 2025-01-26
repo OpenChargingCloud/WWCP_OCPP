@@ -18,19 +18,19 @@
 #region Usings
 
 using System.Collections.Concurrent;
-using System.Security.Authentication;
 using System.Runtime.CompilerServices;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -82,6 +82,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                                    Boolean                                                         RequireAuthentication        = true,
                                    IEnumerable<String>?                                            SecWebSocketProtocols        = null,
+                                   SubprotocolSelectorDelegate?                                    SubprotocolSelector          = null,
                                    Boolean                                                         DisableWebSocketPings        = false,
                                    TimeSpan?                                                       WebSocketPingEvery           = null,
                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
@@ -111,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                    RequireAuthentication,
                    SecWebSocketProtocols ?? throw new ArgumentNullException(nameof(SecWebSocketProtocols), "The given enumeration of accepted OCPP versions must not be null!"),
+                   SubprotocolSelector,
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -135,9 +137,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         {
 
             //this.Logger       = new ChargePointwebsocketClient.CPClientLogger(this,
-            //                                                             LoggingPath,
-            //                                                             LoggingContext,
-            //                                                             LogfileCreator);
+            //                                                                  LoggingPath,
+            //                                                                  LoggingContext,
+            //                                                                  LogfileCreator);
 
             //if (AutoStart)
             //    Start();

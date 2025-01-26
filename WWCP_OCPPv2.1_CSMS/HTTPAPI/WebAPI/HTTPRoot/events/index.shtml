@@ -1,8 +1,8 @@
 ﻿<link href="css/events/events.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="/js/date.format.js"></script>
-<script type="text/javascript" src="../defaults/defaults.js"></script>
-<script type="text/javascript" src="events/events.js"></script>
+<!--<script type="text/javascript" src="/js/date.format.js"></script>-->
+<!--<script type="text/javascript" src="../defaults/defaults.js"></script>-->
+<script type="text/javascript" src="{{BasePath}}/events/events.js"></script>
 
 <div id="eventsFilterDiv">
     <div id="group">

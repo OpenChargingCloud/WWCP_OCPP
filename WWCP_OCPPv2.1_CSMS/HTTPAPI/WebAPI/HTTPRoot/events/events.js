@@ -5513,6 +5513,12 @@ function StartEventsSSE() {
             }
         }, false);
     }
+    const webSocket = new WebSocket('ws://127.0.0.1:7001');
+    webSocket.onmessage = (event) => {
+        console.log("Message from WebSocket server:", event.data);
+        // If the message is JSON, you could parse it:
+        // const data = JSON.parse(event.data);
+    };
     CreateLogEntry("2024-02-26T21:53:54.019Z", "-", "1234", "OnNotifyReport", OnNotifyReport(pionixDeviceModel), "-");
     function OnNotifyReport(reportData) {
         var _a;
