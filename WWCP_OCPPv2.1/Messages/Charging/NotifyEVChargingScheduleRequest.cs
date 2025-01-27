@@ -412,7 +412,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                                               IncludeJSONLDContext                              = false,
+                              CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                  = null,
                               CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                    = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer            = null,
@@ -441,33 +442,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("timeBase",                   TimeBase.        ToIso8601()),
-                                 new JProperty("evseId",                     EVSEId.          Value),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                   DefaultJSONLDContext.ToString())
+                               : null,
 
-                                 new JProperty("chargingSchedule",           ChargingSchedule.ToJSON(CustomChargingScheduleSerializer,
-                                                                                                     CustomLimitBeyondSoCSerializer,
-                                                                                                     CustomChargingSchedulePeriodSerializer,
-                                                                                                     CustomV2XFreqWattEntrySerializer,
-                                                                                                     CustomV2XSignalWattEntrySerializer,
+                                 new JProperty("timeBase",                   TimeBase.            ToIso8601()),
+                                 new JProperty("evseId",                     EVSEId.Value),
 
-                                                                                                     CustomSalesTariffSerializer,
-                                                                                                     CustomSalesTariffEntrySerializer,
-                                                                                                     CustomRelativeTimeIntervalSerializer,
-                                                                                                     CustomConsumptionCostSerializer,
-                                                                                                     CustomCostSerializer,
+                                 new JProperty("chargingSchedule",           ChargingSchedule.    ToJSON(CustomChargingScheduleSerializer,
+                                                                                                         CustomLimitBeyondSoCSerializer,
+                                                                                                         CustomChargingSchedulePeriodSerializer,
+                                                                                                         CustomV2XFreqWattEntrySerializer,
+                                                                                                         CustomV2XSignalWattEntrySerializer,
 
-                                                                                                     CustomAbsolutePriceScheduleSerializer,
-                                                                                                     CustomPriceRuleStackSerializer,
-                                                                                                     CustomPriceRuleSerializer,
-                                                                                                     CustomTaxRuleSerializer,
-                                                                                                     CustomOverstayRuleListSerializer,
-                                                                                                     CustomOverstayRuleSerializer,
-                                                                                                     CustomAdditionalServiceSerializer,
+                                                                                                         CustomSalesTariffSerializer,
+                                                                                                         CustomSalesTariffEntrySerializer,
+                                                                                                         CustomRelativeTimeIntervalSerializer,
+                                                                                                         CustomConsumptionCostSerializer,
+                                                                                                         CustomCostSerializer,
 
-                                                                                                     CustomPriceLevelScheduleSerializer,
-                                                                                                     CustomPriceLevelScheduleEntrySerializer,
+                                                                                                         CustomAbsolutePriceScheduleSerializer,
+                                                                                                         CustomPriceRuleStackSerializer,
+                                                                                                         CustomPriceRuleSerializer,
+                                                                                                         CustomTaxRuleSerializer,
+                                                                                                         CustomOverstayRuleListSerializer,
+                                                                                                         CustomOverstayRuleSerializer,
+                                                                                                         CustomAdditionalServiceSerializer,
 
-                                                                                                     CustomCustomDataSerializer)),
+                                                                                                         CustomPriceLevelScheduleSerializer,
+                                                                                                         CustomPriceLevelScheduleEntrySerializer,
+
+                                                                                                         CustomCustomDataSerializer)),
 
                            SelectedScheduleTupleId.HasValue
                                ? new JProperty("selectedScheduleTupleId",    SelectedScheduleTupleId.Value)
@@ -483,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                 CustomData.      ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                 CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyEVChargingScheduleRequestSerializer is not null

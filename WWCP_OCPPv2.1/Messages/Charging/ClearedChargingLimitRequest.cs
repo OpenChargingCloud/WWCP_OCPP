@@ -375,17 +375,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearedChargingLimitRequestSerializer">A delegate to serialize custom ClearedChargingLimit requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearedChargingLimitRequest>?  CustomClearedChargingLimitRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                        IncludeJSONLDContext                          = false,
+                              CustomJObjectSerializerDelegate<ClearedChargingLimitRequest>?  CustomClearedChargingLimitRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingLimitSource",   ChargingLimitSource.ToString()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",              DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource. ToString()),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",                EVSEId.             Value.Value)
+                               ? new JProperty("evseId",                EVSEId.Value.Value)
                                : null,
 
                            Signatures.Any()
@@ -394,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomClearedChargingLimitRequestSerializer is not null

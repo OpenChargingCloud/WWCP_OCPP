@@ -155,6 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
                         Request.ToJSON(
+                            true,
                             parentNetworkingNode.OCPP.CustomClearChargingProfileRequestSerializer,
                             parentNetworkingNode.OCPP.CustomClearChargingProfileSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
+                                                             false,
                                                              parentNetworkingNode.OCPP.CustomClearChargingProfileRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomClearChargingProfileSerializer,
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,

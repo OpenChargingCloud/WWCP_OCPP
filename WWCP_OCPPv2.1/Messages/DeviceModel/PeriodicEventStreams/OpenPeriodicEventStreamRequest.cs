@@ -315,7 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPeriodicEventStreamParametersSerializer">A delegate to serialize custom periodic event stream parameterss.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<OpenPeriodicEventStreamRequest>?  CustomOpenPeriodicEventStreamRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                           IncludeJSONLDContext                             = false,
+                              CustomJObjectSerializerDelegate<OpenPeriodicEventStreamRequest>?  CustomOpenPeriodicEventStreamRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ConstantStreamData>?              CustomConstantStreamDataSerializer               = null,
                               CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?   CustomPeriodicEventStreamParametersSerializer    = null,
                               CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
@@ -324,9 +325,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("constantStreamData",   ConstantStreamData.ToJSON(CustomConstantStreamDataSerializer,
-                                                                                                 CustomPeriodicEventStreamParametersSerializer,
-                                                                                                 CustomCustomDataSerializer)),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",             DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("constantStreamData",   ConstantStreamData.  ToJSON(CustomConstantStreamDataSerializer,
+                                                                                                   CustomPeriodicEventStreamParametersSerializer,
+                                                                                                   CustomCustomDataSerializer)),
 
                            Signatures.Any()
                                ? new JProperty("signatures",           new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -334,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.        ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

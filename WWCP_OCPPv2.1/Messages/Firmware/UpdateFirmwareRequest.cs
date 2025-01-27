@@ -468,7 +468,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomFirmwareSerializer">A delegate to serialize custom firmwares.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                  IncludeJSONLDContext                    = false,
+                              CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Firmware>?               CustomFirmwareSerializer                = null,
                               CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer               = null,
                               CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
@@ -476,8 +477,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("firmware",        Firmware.ToJSON(CustomFirmwareSerializer,
-                                                                                  CustomCustomDataSerializer)),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",        DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("firmware",        Firmware.            ToJSON(CustomFirmwareSerializer,
+                                                                                              CustomCustomDataSerializer)),
 
                                  new JProperty("requestId",       UpdateFirmwareRequestId),
 
@@ -495,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

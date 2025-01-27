@@ -493,6 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                    ForwardingDecisions.REJECT,
                                    response,
                                    response.ToJSON(
+                                       false,
                                        OCPP.CustomDataTransferResponseSerializer,
                                        OCPP.CustomStatusInfoSerializer,
                                        OCPP.CustomSignatureSerializer,

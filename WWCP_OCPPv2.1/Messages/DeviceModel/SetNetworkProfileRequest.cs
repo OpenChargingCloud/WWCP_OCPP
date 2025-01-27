@@ -567,7 +567,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAPNConfigurationSerializer">A delegate to serialize custom APN configurations.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                     IncludeJSONLDContext                       = false,
+                              CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<NetworkConnectionProfile>?  CustomNetworkConnectionProfileSerializer   = null,
                               CustomJObjectSerializerDelegate<VPNConfiguration>?          CustomVPNConfigurationSerializer           = null,
                               CustomJObjectSerializerDelegate<APNConfiguration>?          CustomAPNConfigurationSerializer           = null,
@@ -576,6 +577,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",           DefaultJSONLDContext.    ToString())
+                               : null,
 
                                  new JProperty("configurationSlot",  ConfigurationSlot),
 

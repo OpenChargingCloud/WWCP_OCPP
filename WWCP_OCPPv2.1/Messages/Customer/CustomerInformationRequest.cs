@@ -623,7 +623,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                       IncludeJSONLDContext                         = false,
+                              CustomJObjectSerializerDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?                     CustomIdTokenSerializer                      = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?              CustomAdditionalInfoSerializer               = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?         CustomCertificateHashDataSerializer          = null,
@@ -632,6 +633,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",             DefaultJSONLDContext.    ToString())
+                               : null,
 
                                  new JProperty("requestId",            CustomerInformationRequestId),
                                  new JProperty("report",               Report),

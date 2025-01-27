@@ -167,6 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ForwardingDecisions.REJECT,
                                          response,
                                          response.ToJSON(
+                                             false,
                                              parentNetworkingNode.OCPP.CustomGetVariablesResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomGetVariableResultSerializer,
                                              parentNetworkingNode.OCPP.CustomComponentSerializer,
@@ -184,6 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (forwardingDecision.NewRequest is not null)
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
+                                                        false,
                                                         parentNetworkingNode.OCPP.CustomGetVariablesRequestSerializer,
                                                         parentNetworkingNode.OCPP.CustomGetVariableDataSerializer,
                                                         parentNetworkingNode.OCPP.CustomComponentSerializer,

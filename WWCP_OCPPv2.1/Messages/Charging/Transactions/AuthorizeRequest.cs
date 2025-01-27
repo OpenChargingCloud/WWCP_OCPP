@@ -527,7 +527,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomOCSPRequestDataSerializer">A delegate to serialize custom OCSP request data.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                             IncludeJSONLDContext               = false,
+                              CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenSerializer            = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?    CustomAdditionalInfoSerializer     = null,
                               CustomJObjectSerializerDelegate<OCSPRequestData>?   CustomOCSPRequestDataSerializer    = null,
@@ -537,12 +538,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("idToken",                       IdToken.    ToJSON(CustomIdTokenSerializer,
-                                                                                                   CustomAdditionalInfoSerializer,
-                                                                                                   CustomCustomDataSerializer)),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                      DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("idToken",                       IdToken.             ToJSON(CustomIdTokenSerializer,
+                                                                                                            CustomAdditionalInfoSerializer,
+                                                                                                            CustomCustomDataSerializer)),
 
                            Certificate is not null
-                               ? new JProperty("certificate",                   Certificate.ToString())
+                               ? new JProperty("certificate",                   Certificate.         ToString())
                                : null,
 
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
@@ -556,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                    CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                    CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

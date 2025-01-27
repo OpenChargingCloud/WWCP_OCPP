@@ -374,7 +374,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// 
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                                               IncludeJSONLDContext                         = false,
+                              CustomJObjectSerializerDelegate<NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer             = null,
                               CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer               = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer       = null,
@@ -403,7 +404,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingLimit",      ChargingLimit.ToJSON()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",           DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("chargingLimit",      ChargingLimit.       ToJSON()),
 
                            ChargingSchedules.Any()
                                ? new JProperty("chargingSchedule",   new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
@@ -432,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",             EVSEId.       Value.Value)
+                               ? new JProperty("evseId",             EVSEId.Value.Value)
                                : null,
 
                            Signatures.Any()
@@ -441,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyChargingLimitRequestSerializer is not null

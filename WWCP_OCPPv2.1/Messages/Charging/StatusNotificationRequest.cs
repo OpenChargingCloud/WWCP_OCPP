@@ -437,17 +437,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestSerializer">A delegate to serialize custom StatusNotification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                      IncludeJSONLDContext                        = false,
+                              CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("timestamp",         Timestamp.      ToIso8601()),
-                                 new JProperty("connectorStatus",   ConnectorStatus.ToString()),
-                                 new JProperty("evseId",            EVSEId.         Value),
-                                 new JProperty("connectorId",       ConnectorId.    Value),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",          DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("timestamp",         Timestamp.           ToIso8601()),
+                                 new JProperty("connectorStatus",   ConnectorStatus.     ToString()),
+                                 new JProperty("evseId",            EVSEId.              Value),
+                                 new JProperty("connectorId",       ConnectorId.         Value),
 
                            Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -455,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomStatusNotificationRequestSerializer is not null

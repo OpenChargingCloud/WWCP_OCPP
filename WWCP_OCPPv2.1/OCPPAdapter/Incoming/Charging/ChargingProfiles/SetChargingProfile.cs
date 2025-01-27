@@ -186,6 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         request,
                         request.ToJSON(
 
+                            true,
+
                             parentNetworkingNode.OCPP.CustomSetChargingProfileRequestSerializer,
                             parentNetworkingNode.OCPP.CustomChargingProfileSerializer,
                             parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
@@ -261,6 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
+                            true,
                             parentNetworkingNode.OCPP.CustomSetChargingProfileResponseSerializer,
                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -277,6 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
+                                           false,
                                            parentNetworkingNode.OCPP.CustomSetChargingProfileResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -370,6 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
                             response,
                             response.ToJSON(
+                                true,
                                 parentNetworkingNode.OCPP.CustomSetChargingProfileResponseSerializer,
                                 parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,

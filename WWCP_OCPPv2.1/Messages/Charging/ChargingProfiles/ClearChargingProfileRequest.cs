@@ -393,13 +393,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom ClearChargingProfile objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                        IncludeJSONLDContext                          = false,
+                              CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ClearChargingProfile>?         CustomClearChargingProfileSerializer          = null,
                               CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                  DefaultJSONLDContext.   ToString())
+                               : null,
 
                            ChargingProfileId.HasValue
                                ? new JProperty("chargingProfileId",         ChargingProfileId.Value.Value)

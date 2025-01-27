@@ -121,6 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifySendMessage(
                         request,
                         request.ToJSON(
+                            true,
                             parentNetworkingNode.OCPP.CustomMessageTransferMessageSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer

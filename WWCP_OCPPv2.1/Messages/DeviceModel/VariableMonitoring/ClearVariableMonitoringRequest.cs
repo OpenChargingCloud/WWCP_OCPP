@@ -342,22 +342,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearVariableMonitoringRequestSerializer">A delegate to serialize custom ClearVariableMonitoring requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?  CustomClearVariableMonitoringRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                           IncludeJSONLDContext                             = false,
+                              CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?  CustomClearVariableMonitoringRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+                               : null,
+
                                  new JProperty("id",           new JArray(VariableMonitoringIds.Select(variableMonitoringId => variableMonitoringId.Value))),
 
                            Signatures.Any()
-                               ? new JProperty("signatures",   new JArray(Signatures.           Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                                     CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",   new JArray(Signatures.           Select(signature            => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

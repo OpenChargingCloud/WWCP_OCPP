@@ -103,6 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignSendMessage(
                         Message,
                         Message.ToJSON(
+                            true,
                             parentNetworkingNode.OCPP.CustomMessageTransferMessageSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -128,6 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          OCPP_JSONSendMessage.FromDatagram(
                                              Message,
                                              Message.ToJSON(
+                                                 false,
                                                  parentNetworkingNode.OCPP.CustomMessageTransferMessageSerializer,
                                                  parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                  parentNetworkingNode.OCPP.CustomCustomDataSerializer

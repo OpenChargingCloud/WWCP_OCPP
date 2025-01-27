@@ -156,6 +156,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         Request,
                         Request.ToJSON(
 
+                            true,
+
                             parentNetworkingNode.OCPP.CustomRequestStartTransactionRequestSerializer,
                             parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                             parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
@@ -211,6 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
+
+                                                             false,
 
                                                              parentNetworkingNode.OCPP.CustomRequestStartTransactionRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomIdTokenSerializer,

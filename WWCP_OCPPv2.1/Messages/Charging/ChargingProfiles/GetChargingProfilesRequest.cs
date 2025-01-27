@@ -458,7 +458,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomChargingProfileCriterionSerializer">A delegate to serialize custom ChargingProfileCriterion objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                       IncludeJSONLDContext                         = false,
+                              CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProfileCriterion>?    CustomChargingProfileCriterionSerializer     = null,
                               CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
@@ -466,8 +467,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",          DefaultJSONLDContext.ToString())
+                               : null,
+
                                  new JProperty("requestId",         GetChargingProfilesRequestId),
-                                 new JProperty("chargingProfile",   ChargingProfile.ToJSON(CustomChargingProfileCriterionSerializer)),
+                                 new JProperty("chargingProfile",   ChargingProfile.     ToJSON(CustomChargingProfileCriterionSerializer)),
 
                            EVSEId.HasValue
                                ? new JProperty("evseId",            EVSEId.Value.Value)
@@ -479,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

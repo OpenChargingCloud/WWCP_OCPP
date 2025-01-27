@@ -617,7 +617,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                 IncludeJSONLDContext                   = false,
+                              CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<AuthorizationData>?     CustomAuthorizationDataSerializer      = null,
                               CustomJObjectSerializerDelegate<IdToken>?               CustomIdTokenSerializer                = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?        CustomAdditionalInfoSerializer         = null,
@@ -629,8 +630,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                 DefaultJSONLDContext.ToString())
+                               : null,
+
                                  new JProperty("versionNumber",            VersionNumber),
-                                 new JProperty("updateType",               UpdateType.AsText()),
+                                 new JProperty("updateType",               UpdateType.          AsText()),
 
                            LocalAuthorizationList.IsNeitherNullNorEmpty()
                                ? new JProperty("localAuthorizationList",   new JArray(LocalAuthorizationList.Select(item      => item.     ToJSON(CustomAuthorizationDataSerializer,
@@ -647,7 +652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

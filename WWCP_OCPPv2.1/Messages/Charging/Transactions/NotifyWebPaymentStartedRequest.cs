@@ -323,14 +323,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyWebPaymentStartedRequestSerializer">A delegate to serialize custom NotifyWebPaymentStarted requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyWebPaymentStartedRequest>?  CustomNotifyWebPaymentStartedRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                           IncludeJSONLDContext                             = false,
+                              CustomJObjectSerializerDelegate<NotifyWebPaymentStartedRequest>?  CustomNotifyWebPaymentStartedRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evseId",       EVSEId.Value),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("evseId",       EVSEId. Value),
                                  new JProperty("timeout",      Timeout.TotalSeconds),
 
                            Signatures.Any()
@@ -339,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyWebPaymentStartedRequestSerializer is not null

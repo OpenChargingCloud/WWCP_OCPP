@@ -373,12 +373,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReservationStatusUpdateRequestSerializer">A delegate to serialize custom ReservationStatusUpdate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReservationStatusUpdateRequest>?  CustomReservationStatusUpdateRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                           IncludeJSONLDContext                             = false,
+                              CustomJObjectSerializerDelegate<ReservationStatusUpdateRequest>?  CustomReservationStatusUpdateRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                  DefaultJSONLDContext.   ToString())
+                               : null,
 
                                  new JProperty("reservationId",             ReservationId.          Value),
                                  new JProperty("reservationUpdateStatus",   ReservationUpdateStatus.AsText()),

@@ -587,7 +587,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                              IncludeJSONLDContext                = false,
+                              CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?            CustomIdTokenSerializer             = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?     CustomAdditionalInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
@@ -596,24 +597,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",         DefaultJSONLDContext.ToString())
+                               : null,
+
                                  new JProperty("id",               Id.Value),
-                                 new JProperty("expiryDateTime",   ExpiryDate.         ToIso8601()),
-                                 new JProperty("idToken",          IdToken.            ToJSON(CustomIdTokenSerializer,
-                                                                                              CustomAdditionalInfoSerializer,
-                                                                                              CustomCustomDataSerializer)),
+                                 new JProperty("expiryDateTime",   ExpiryDate.          ToIso8601()),
+                                 new JProperty("idToken",          IdToken.             ToJSON(CustomIdTokenSerializer,
+                                                                                               CustomAdditionalInfoSerializer,
+                                                                                               CustomCustomDataSerializer)),
 
                            ConnectorType.HasValue
-                               ? new JProperty("connectorType",    ConnectorType.Value.ToString())
+                               ? new JProperty("connectorType",    ConnectorType.Value. ToString())
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",           EVSEId.       Value.Value)
+                               ? new JProperty("evseId",           EVSEId.Value.Value)
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",     GroupIdToken.       ToJSON(CustomIdTokenSerializer,
-                                                                                              CustomAdditionalInfoSerializer,
-                                                                                              CustomCustomDataSerializer))
+                               ? new JProperty("groupIdToken",     GroupIdToken.        ToJSON(CustomIdTokenSerializer,
+                                                                                               CustomAdditionalInfoSerializer,
+                                                                                               CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -622,7 +627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

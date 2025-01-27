@@ -204,6 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          ForwardingDecisions.REJECT,
                                          dataTransferResponse,
                                          dataTransferResponse.ToJSON(
+                                             false,
                                              parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -220,6 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
                 if (forwardingDecision.NewRequest.SerializationFormat.Group() == SerializationFormatGroup.JSON)
                     forwardingDecision.NewJSONRequest   = forwardingDecision.NewRequest.ToJSON(
+                                                              false,
                                                               parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
                                                               parentNetworkingNode.OCPP.CustomChargingStationSerializer,
                                                               parentNetworkingNode.OCPP.CustomSignatureSerializer,

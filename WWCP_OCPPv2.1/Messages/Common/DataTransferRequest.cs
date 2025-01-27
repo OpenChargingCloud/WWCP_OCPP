@@ -391,12 +391,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                IncludeJSONLDContext                  = false,
+                              CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+                               : null,
 
                                  new JProperty("vendorId",     VendorId.       TextId),
 
@@ -414,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

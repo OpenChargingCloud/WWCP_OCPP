@@ -419,14 +419,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPublishFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom publish firmware status notification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                                     IncludeJSONLDContext                                       = false,
+                              CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                                 CustomSignatureSerializer                                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                 = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",       Status.    AsText()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("status",       Status.              AsText()),
 
                            PublishFirmwareStatusNotificationRequestId.HasValue
                                ? new JProperty("requestId",    PublishFirmwareStatusNotificationRequestId)
@@ -442,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomPublishFirmwareStatusNotificationRequestSerializer is not null

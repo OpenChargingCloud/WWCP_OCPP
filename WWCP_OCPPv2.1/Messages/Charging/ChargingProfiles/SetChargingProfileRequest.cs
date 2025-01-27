@@ -717,7 +717,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// 
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                                               IncludeJSONLDContext                        = false,
+                              CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer             = null,
                               CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer              = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer            = null,
@@ -747,31 +748,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",          DefaultJSONLDContext.ToString())
+                               : null,
+
                                  new JProperty("evseId",            EVSEId.Value),
-                                 new JProperty("chargingProfile",   ChargingProfile.ToJSON(CustomChargingProfileSerializer,
-                                                                                           CustomLimitBeyondSoCSerializer,
-                                                                                           CustomChargingScheduleSerializer,
-                                                                                           CustomChargingSchedulePeriodSerializer,
-                                                                                           CustomV2XFreqWattEntrySerializer,
-                                                                                           CustomV2XSignalWattEntrySerializer,
-                                                                                           CustomSalesTariffSerializer,
-                                                                                           CustomSalesTariffEntrySerializer,
-                                                                                           CustomRelativeTimeIntervalSerializer,
-                                                                                           CustomConsumptionCostSerializer,
-                                                                                           CustomCostSerializer,
+                                 new JProperty("chargingProfile",   ChargingProfile.     ToJSON(CustomChargingProfileSerializer,
+                                                                                                CustomLimitBeyondSoCSerializer,
+                                                                                                CustomChargingScheduleSerializer,
+                                                                                                CustomChargingSchedulePeriodSerializer,
+                                                                                                CustomV2XFreqWattEntrySerializer,
+                                                                                                CustomV2XSignalWattEntrySerializer,
+                                                                                                CustomSalesTariffSerializer,
+                                                                                                CustomSalesTariffEntrySerializer,
+                                                                                                CustomRelativeTimeIntervalSerializer,
+                                                                                                CustomConsumptionCostSerializer,
+                                                                                                CustomCostSerializer,
 
-                                                                                           CustomAbsolutePriceScheduleSerializer,
-                                                                                           CustomPriceRuleStackSerializer,
-                                                                                           CustomPriceRuleSerializer,
-                                                                                           CustomTaxRuleSerializer,
-                                                                                           CustomOverstayRuleListSerializer,
-                                                                                           CustomOverstayRuleSerializer,
-                                                                                           CustomAdditionalServiceSerializer,
+                                                                                                CustomAbsolutePriceScheduleSerializer,
+                                                                                                CustomPriceRuleStackSerializer,
+                                                                                                CustomPriceRuleSerializer,
+                                                                                                CustomTaxRuleSerializer,
+                                                                                                CustomOverstayRuleListSerializer,
+                                                                                                CustomOverstayRuleSerializer,
+                                                                                                CustomAdditionalServiceSerializer,
 
-                                                                                           CustomPriceLevelScheduleSerializer,
-                                                                                           CustomPriceLevelScheduleEntrySerializer,
+                                                                                                CustomPriceLevelScheduleSerializer,
+                                                                                                CustomPriceLevelScheduleEntrySerializer,
 
-                                                                                           CustomCustomDataSerializer)),
+                                                                                                CustomCustomDataSerializer)),
 
                            Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -779,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -376,14 +376,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomLogStatusNotificationRequestSerializer">A delegate to serialize custom log status notification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                         IncludeJSONLDContext                           = false,
+                              CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",       Status.    AsText()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("status",       Status.              AsText()),
 
                            LogRequestId.HasValue
                                ? new JProperty("requestId",    LogRequestId.Value)
@@ -395,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

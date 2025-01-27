@@ -55,11 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Properties
-
-        public AOCPPNetworkingNode  NetworkingNode    { get; }
-
-        #endregion
+        public AOCPPNetworkingNode NetworkingNode { get; }
 
         #region Constructor(s)
 
@@ -112,6 +108,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+
 
 
         #region (private) RegisterURLTemplates()
@@ -214,7 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     request.Path.ToString() == "/webSocketClients" ||
                     request.Path.ToString() == "/webSocketServers" ||
                     request.Path.ToString() == "/ocppAdapter"      ||
-                    request.Path.ToString() == "/connections")
+                    request.Path.ToString() == "/connections"      ||
+                    request.Path.ToString() == "/events")
                 {
                     return HTTPExtAPI.Anonymous;
                 }

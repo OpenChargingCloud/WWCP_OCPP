@@ -343,14 +343,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetMonitoringBaseRequestSerializer">A delegate to serialize custom SetMonitoringBase requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                     IncludeJSONLDContext                       = false,
+                              CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("monitoringBase",   MonitoringBase.ToString()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",         DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("monitoringBase",   MonitoringBase.      ToString()),
 
 
                            Signatures.Any()
@@ -359,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.    ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

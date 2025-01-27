@@ -24,6 +24,10 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 
 #endregion
 
@@ -161,6 +165,433 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             //DebugX.Log($"OCPP Networking Node HTTP API started on {HTTPBaseAPI.HTTPServer.IPPorts.AggregateWith(", ")}");
 
         }
+
+        #endregion
+
+
+
+        #region HTTP-SSE/HTTP-WebSocket event logging...
+
+        public Boolean  SendHTTPSSELogs          { get; set; } = true;
+        public Boolean  SendHTTPWebSocketLogs    { get; set; } = true;
+
+
+        #region (protected) NotifyRequestReceived  (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, ...)
+
+        protected async Task NotifyRequestReceived(String                OCPPAction,
+                                                   DateTime              Timestamp,
+                                                   IEventSender          Sender,
+                                                   IWebSocketConnection  Connection,
+                                                   IRequest              Request,
+                                                   JObject               RequestJSON,
+                                                   CancellationToken     CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",  Request.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              new JProperty("destination",      Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",      Request.NetworkPath.    ToJSON()),
+                              new JProperty("request",          RequestJSON)
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",  Request.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              new JProperty("destination",      Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",      Request.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",       OCPPAction),
+                              new JProperty("request",          RequestJSON)
+                          ),
+                          Formatting.None,
+                          Request.EventTrackingId,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+        #region (protected) NotifyRequestSent      (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, SentMessageResult, ...)
+
+        protected async Task NotifyRequestSent(String                 OCPPAction,
+                                               DateTime               Timestamp,
+                                               IEventSender           Sender,
+                                               IWebSocketConnection?  Connection,
+                                               IRequest               Request,
+                                               JObject                RequestJSON,
+                                               SentMessageResults     SentMessageResult,
+                                               CancellationToken      CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              new JProperty("destination",        Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",        Request.NetworkPath.    ToJSON()),
+                              new JProperty("request",            RequestJSON),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              new JProperty("destination",        Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",        Request.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",         OCPPAction),
+                              new JProperty("request",            RequestJSON),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                          ),
+                          Formatting.None,
+                          Request.EventTrackingId,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+        #region (protected) NotifyResponseReceived (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, Response, ResponseJSON, Runtime, ...)
+
+        protected async Task NotifyResponseReceived(String                 OCPPAction,
+                                                    DateTime               Timestamp,
+                                                    IEventSender           Sender,
+                                                    IWebSocketConnection?  Connection,
+                                                    IRequest?              Request,
+                                                    JObject?               RequestJSON,
+                                                    IResponse              Response,
+                                                    JObject                ResponseJSON,
+                                                    TimeSpan?              Runtime,
+                                                    CancellationToken      CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",  Response.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              //new JProperty("destination",      Response.Destination.    ToJSON()),
+                              //new JProperty("networkPath",      Response.NetworkPath.    ToJSON()),
+                              new JProperty("request",          RequestJSON),
+                              new JProperty("response",         ResponseJSON),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",    Runtime.Value.TotalMilliseconds)
+                                  : null
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",  Response.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              //new JProperty("destination",      Response.Destination.    ToJSON()),
+                              //new JProperty("networkPath",      Response.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",       OCPPAction),
+                              new JProperty("request",          RequestJSON)
+                          ),
+                          Formatting.None,
+                          Request?.EventTrackingId ?? EventTracking_Id.New,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+        #region (protected) NotifyResponseSent     (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, Response, ResponseJSON, Runtime, SentMessageResult, ...)
+
+        protected async Task NotifyResponseSent(String                 OCPPAction,
+                                                DateTime               Timestamp,
+                                                IEventSender           Sender,
+                                                IWebSocketConnection?  Connection,
+                                                IRequest?              Request,
+                                                JObject?               RequestJSON,
+                                                IResponse              Response,
+                                                JObject                ResponseJSON,
+                                                TimeSpan?              Runtime,
+                                                SentMessageResults     SentMessageResult,
+                                                CancellationToken      CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",    Response.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              //new JProperty("destination",        Response?.Destination.   ToJSON()),
+                              //new JProperty("networkPath",        Response?.NetworkPath.   ToJSON()),
+                              new JProperty("request",            RequestJSON),
+                              new JProperty("response",           ResponseJSON),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString()),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",      Runtime.Value.TotalMilliseconds)
+                                  : null
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              //new JProperty("destination",        Response.Destination.    ToJSON()),
+                              //new JProperty("networkPath",        Response.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",         OCPPAction),
+                              new JProperty("request",            RequestJSON),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                          ),
+                          Formatting.None,
+                          Request?.EventTrackingId ?? EventTracking_Id.New,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+
+        #region (protected) NotifyRequestReceived  (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, ...)
+
+        protected async Task NotifyRequestReceived(String                OCPPAction,
+                                                   DateTime              Timestamp,
+                                                   IEventSender          Sender,
+                                                   IWebSocketConnection  Connection,
+                                                   IRequest              Request,
+                                                   Byte[]                RequestBinary,
+                                                   CancellationToken     CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",  Request.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              new JProperty("destination",      Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",      Request.NetworkPath.    ToJSON()),
+                              new JProperty("request",          RequestBinary)
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",  Request.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              new JProperty("destination",      Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",      Request.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",       OCPPAction),
+                              new JProperty("request",          RequestBinary)
+                          ),
+                          Formatting.None,
+                          Request.EventTrackingId,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+        #region (protected) NotifyRequestSent      (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, SentMessageResult, ...)
+
+        protected async Task NotifyRequestSent(String                 OCPPAction,
+                                               DateTime               Timestamp,
+                                               IEventSender           Sender,
+                                               IWebSocketConnection?  Connection,
+                                               IRequest               Request,
+                                               Byte[]                 RequestBinary,
+                                               SentMessageResults     SentMessageResult,
+                                               CancellationToken      CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              new JProperty("destination",        Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",        Request.NetworkPath.    ToJSON()),
+                              new JProperty("request",            RequestBinary),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              new JProperty("destination",        Request.Destination.    ToJSON()),
+                              new JProperty("networkPath",        Request.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",         OCPPAction),
+                              new JProperty("request",            RequestBinary),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                          ),
+                          Formatting.None,
+                          Request.EventTrackingId,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+        #region (protected) NotifyResponseReceived (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, Response, ResponseBinary, Runtime, ...)
+
+        protected async Task NotifyResponseReceived(String                 OCPPAction,
+                                                    DateTime               Timestamp,
+                                                    IEventSender           Sender,
+                                                    IWebSocketConnection?  Connection,
+                                                    IRequest?              Request,
+                                                    Byte[]?                RequestBinary,
+                                                    IResponse              Response,
+                                                    Byte[]                 ResponseBinary,
+                                                    TimeSpan?              Runtime,
+                                                    CancellationToken      CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",  Response.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              //new JProperty("destination",      Response.Destination.    ToJSON()),
+                              //new JProperty("networkPath",      Response.NetworkPath.    ToJSON()),
+                              new JProperty("request",          RequestBinary),
+                              new JProperty("response",         ResponseBinary),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",    Runtime.Value.TotalMilliseconds)
+                                  : null
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",        Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",  Response.EventTrackingId.ToString()),
+                              new JProperty("sender",           Sender.Id),
+                              new JProperty("connection",       Connection?.            ToJSON()),
+                              //new JProperty("destination",      Response.Destination.    ToJSON()),
+                              //new JProperty("networkPath",      Response.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",       OCPPAction),
+                              new JProperty("request",          RequestBinary)
+                          ),
+                          Formatting.None,
+                          Request?.EventTrackingId ?? EventTracking_Id.New,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
+
+        #region (protected) NotifyResponseSent     (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, Response, ResponseBinary, Runtime, SentMessageResult, ...)
+
+        protected async Task NotifyResponseSent(String                 OCPPAction,
+                                                DateTime               Timestamp,
+                                                IEventSender           Sender,
+                                                IWebSocketConnection?  Connection,
+                                                IRequest?              Request,
+                                                Byte[]?                RequestBinary,
+                                                IResponse              Response,
+                                                Byte[]                 ResponseBinary,
+                                                TimeSpan?              Runtime,
+                                                SentMessageResults     SentMessageResult,
+                                                CancellationToken      CancellationToken = default)
+        {
+
+            if (SendHTTPSSELogs)
+                await EventLog.SubmitEvent(
+                          OCPPAction,
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",    Response.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              //new JProperty("destination",        Response?.Destination.   ToJSON()),
+                              //new JProperty("networkPath",        Response?.NetworkPath.   ToJSON()),
+                              new JProperty("request",            RequestBinary),
+                              new JProperty("response",           ResponseBinary),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString()),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",      Runtime.Value.TotalMilliseconds)
+                                  : null
+                          ),
+                          CancellationToken
+                      );
+
+            if (SendHTTPWebSocketLogs)
+                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+                          JSONObject.Create(
+                              new JProperty("timestamp",          Timestamp.              ToIso8601()),
+                              //new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
+                              new JProperty("sender",             Sender.Id),
+                              new JProperty("connection",         Connection?.            ToJSON()),
+                              //new JProperty("destination",        Response.Destination.    ToJSON()),
+                              //new JProperty("networkPath",        Response.NetworkPath.    ToJSON()),
+                              new JProperty("ocppAction",         OCPPAction),
+                              new JProperty("request",            RequestBinary),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                          ),
+                          Formatting.None,
+                          Request?.EventTrackingId ?? EventTracking_Id.New,
+                          CancellationToken
+                      );
+
+        }
+
+        #endregion
 
         #endregion
 

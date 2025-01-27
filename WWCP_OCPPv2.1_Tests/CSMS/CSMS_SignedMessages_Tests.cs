@@ -97,6 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ClassicAssert.IsTrue  (testCSMS1.OCPP.SignaturePolicy.VerifyResponseMessage(
                                            response,
                                            response.ToJSON(
+                                               true,
                                                testCSMS1.OCPP.CustomResetResponseSerializer,
                                                testCSMS1.OCPP.CustomStatusInfoSerializer,
                                                testCSMS1.OCPP.CustomSignatureSerializer,

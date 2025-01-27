@@ -387,7 +387,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                         IncludeJSONLDContext                           = false,
+                              CustomJObjectSerializerDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingNeeds>?                 CustomChargingNeedsSerializer                  = null,
                               CustomJObjectSerializerDelegate<ACChargingParameters>?          CustomACChargingParametersSerializer           = null,
                               CustomJObjectSerializerDelegate<DCChargingParameters>?          CustomDCChargingParametersSerializer           = null,
@@ -404,19 +405,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",            DefaultJSONLDContext.   ToString())
+                               : null,
+
                                  new JProperty("evseId",              EVSEId.       Value),
 
-                                 new JProperty("chargingNeeds",       ChargingNeeds.ToJSON(CustomChargingNeedsSerializer,
-                                                                                           CustomACChargingParametersSerializer,
-                                                                                           CustomDCChargingParametersSerializer,
-                                                                                           CustomV2XChargingParametersSerializer,
-                                                                                           CustomEVEnergyOfferSerializer,
-                                                                                           CustomEVPowerScheduleSerializer,
-                                                                                           CustomEVPowerScheduleEntrySerializer,
-                                                                                           CustomEVAbsolutePriceScheduleSerializer,
-                                                                                           CustomEVAbsolutePriceScheduleEntrySerializer,
-                                                                                           CustomEVPriceRuleSerializer,
-                                                                                           CustomCustomDataSerializer)),
+                                 new JProperty("chargingNeeds",       ChargingNeeds.          ToJSON(CustomChargingNeedsSerializer,
+                                                                                                     CustomACChargingParametersSerializer,
+                                                                                                     CustomDCChargingParametersSerializer,
+                                                                                                     CustomV2XChargingParametersSerializer,
+                                                                                                     CustomEVEnergyOfferSerializer,
+                                                                                                     CustomEVPowerScheduleSerializer,
+                                                                                                     CustomEVPowerScheduleEntrySerializer,
+                                                                                                     CustomEVAbsolutePriceScheduleSerializer,
+                                                                                                     CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                                                                     CustomEVPriceRuleSerializer,
+                                                                                                     CustomCustomDataSerializer)),
 
                            ReceivedTimestamp.HasValue
                                ? new JProperty("timestamp",           ReceivedTimestamp.Value.ToIso8601())
@@ -432,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyEVChargingNeedsRequestSerializer is not null

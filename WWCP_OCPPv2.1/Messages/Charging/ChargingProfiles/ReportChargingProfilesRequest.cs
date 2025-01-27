@@ -831,7 +831,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// 
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                                               IncludeJSONLDContext                            = false,
+                              CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                 = null,
                               CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                  = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                = null,
@@ -861,9 +862,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",              DefaultJSONLDContext.ToString())
+                               : null,
+
                                  new JProperty("requestId",             ReportChargingProfilesRequestId),
-                                 new JProperty("chargingLimitSource",   ChargingLimitSource.ToString()),
-                                 new JProperty("evseId",                EVSEId.             Value),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource. ToString()),
+                                 new JProperty("evseId",                EVSEId.Value),
 
                                  new JProperty("chargingProfile",       new JArray(ChargingProfiles.Select(chargingProfile => chargingProfile.ToJSON(CustomChargingProfileSerializer,
                                                                                                                                                      CustomLimitBeyondSoCSerializer,
@@ -876,7 +881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                                                                      CustomRelativeTimeIntervalSerializer,
                                                                                                                                                      CustomConsumptionCostSerializer,
                                                                                                                                                      CustomCostSerializer,
-                                     
+
                                                                                                                                                      CustomAbsolutePriceScheduleSerializer,
                                                                                                                                                      CustomPriceRuleStackSerializer,
                                                                                                                                                      CustomPriceRuleSerializer,
@@ -884,10 +889,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                                                                      CustomOverstayRuleListSerializer,
                                                                                                                                                      CustomOverstayRuleSerializer,
                                                                                                                                                      CustomAdditionalServiceSerializer,
-                                     
+
                                                                                                                                                      CustomPriceLevelScheduleSerializer,
                                                                                                                                                      CustomPriceLevelScheduleEntrySerializer,                                     
-                                     
+
                                                                                                                                                      CustomCustomDataSerializer)))),
 
                            ToBeContinued.HasValue
@@ -900,7 +905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomReportChargingProfilesRequestSerializer is not null

@@ -458,12 +458,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGet15118EVCertificateRequestSerializer">A delegate to serialize custom Get15118EVCertificate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                         IncludeJSONLDContext                           = false,
+                              CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                           DefaultJSONLDContext.                  ToString())
+                               : null,
 
                                  new JProperty("iso15118SchemaVersion",              ISO15118SchemaVersion.                 ToString()),
                                  new JProperty("action",                             CertificateAction.                     ToString()),
@@ -483,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                         CustomData.           ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                         CustomData.                            ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

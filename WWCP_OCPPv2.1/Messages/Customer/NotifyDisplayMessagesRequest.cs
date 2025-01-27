@@ -565,7 +565,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                         IncludeJSONLDContext                           = false,
+                              CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MessageInfo>?                   CustomMessageInfoSerializer                    = null,
                               CustomJObjectSerializerDelegate<MessageContent>?                CustomMessageContentSerializer                 = null,
                               CustomJObjectSerializerDelegate<Component>?                     CustomComponentSerializer                      = null,
@@ -575,6 +576,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",      DefaultJSONLDContext.ToString())
+                               : null,
 
                                  new JProperty("requestId",     NotifyDisplayMessagesRequestId),
                                  new JProperty("messageInfo",   new JArray(MessageInfos.Select(messageInfo => messageInfo.ToJSON(CustomMessageInfoSerializer,
@@ -593,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyDisplayMessagesRequestSerializer is not null

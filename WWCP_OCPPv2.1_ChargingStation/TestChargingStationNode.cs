@@ -1626,6 +1626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    ForwardingDecisions.REJECT,
                                    response,
                                    response.ToJSON(
+                                       false,
                                        OCPP.CustomDataTransferResponseSerializer,
                                        OCPP.CustomStatusInfoSerializer,
                                        OCPP.CustomSignatureSerializer,

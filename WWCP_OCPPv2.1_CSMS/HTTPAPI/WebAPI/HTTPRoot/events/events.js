@@ -4650,7 +4650,7 @@ function StartEventsSSE() {
             return connectionColors[connectionId];
         }
     }
-    function CreateLogEntry(timestamp, roamingNetwork, eventTrackingId, command, message, connectionColorKey) {
+    function CreateLogEntry(timestamp, destination, eventTrackingId, command, message, connectionColorKey) {
         const connectionColor = GetConnectionColors(connectionColorKey);
         const logEntryDiv = document.createElement('div');
         logEntryDiv.className = "logLine";
@@ -4660,6 +4660,10 @@ function StartEventsSSE() {
         timestampDiv.className = "timestamp";
         timestampDiv.innerHTML = timestamp;
         logEntryDiv.appendChild(timestampDiv);
+        const eventTrackingIdDiv = document.createElement('div');
+        eventTrackingIdDiv.className = "eventTrackingId";
+        eventTrackingIdDiv.innerHTML = eventTrackingId;
+        logEntryDiv.appendChild(eventTrackingIdDiv);
         const commandDiv = document.createElement('div');
         commandDiv.className = "command";
         commandDiv.innerHTML = command;
@@ -4696,7 +4700,7 @@ function StartEventsSSE() {
         }
     }
     const eventsSource = window.EventSource !== undefined
-        ? new EventSource('events')
+        ? new EventSource('../events')
         : null;
     if (eventsSource !== null) {
         eventsSource.onmessage = function (event) {
@@ -5410,8 +5414,9 @@ function StartEventsSSE() {
         // Firmware
         eventsSource.addEventListener('OnBootNotificationRequestReceived', function (event) {
             try {
-                const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnBootNotification", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                const message = JSON.parse(event.data);
+                //timestamp, roamingNetwork, eventTrackingId, command, message, connectionColorKey
+                CreateLogEntry(message.timestamp, message.destination, message.eventTrackingId, "OnBootNotification", JSON.stringify(message.request), message.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5420,15 +5425,15 @@ function StartEventsSSE() {
         }, false);
         eventsSource.addEventListener('OnBootNotificationResponseSent', function (event) {
             try {
-                const data = JSON.parse(event.data);
-                const request = data.request;
-                const response = data.response;
-                AppendLogEntry(response.timestamp, data.chargeBoxId, 
+                const message = JSON.parse(event.data);
+                const request = message.request;
+                const response = message.response;
+                AppendLogEntry(message.timestamp, message.destination, 
                 // 1) Search for a logline with this command
                 "OnBootNotification", 
                 // 2) Search for a logline with this pattern
-                "\"eventTrackingId\">" + data.eventTrackingId, " &rArr; " +
-                    response.data.status + " (" + response.data.currentTime + ", " + response.data.interval + " sec) " + response.runtime + " ms");
+                "\"eventTrackingId\">" + message.eventTrackingId, " &rArr; " +
+                    response.status + " (" + response.currentTime + ", " + response.interval + " sec) " + message.runtime + " ms");
             }
             catch (exception) {
                 console.debug(exception);

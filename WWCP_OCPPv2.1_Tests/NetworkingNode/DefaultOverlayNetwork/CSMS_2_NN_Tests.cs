@@ -518,6 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                                 SourceRouting.To(localController.Id),
                                 ResetType.Immediate
                             ).ToJSON(
+                                  true,
                                   CSMS.OCPP.CustomResetRequestSerializer,
                                   CSMS.OCPP.CustomSignatureSerializer,
                                   CSMS.OCPP.CustomCustomDataSerializer

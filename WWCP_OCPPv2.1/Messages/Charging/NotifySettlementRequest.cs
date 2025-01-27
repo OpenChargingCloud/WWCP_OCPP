@@ -505,20 +505,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifySettlementRequestSerializer">A delegate to serialize custom NotifySettlement requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifySettlementRequest>?  CustomNotifySettlementRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                    IncludeJSONLDContext                      = false,
+                              CustomJObjectSerializerDelegate<NotifySettlementRequest>?  CustomNotifySettlementRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                 = null,
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("pspRef",             PaymentReference.   ToString()),
-                                 new JProperty("status",             PaymentStatus.      ToString()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",           DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("pspRef",             PaymentReference.    ToString()),
+                                 new JProperty("status",             PaymentStatus.       ToString()),
                                  new JProperty("settlementAmount",   SettlementAmount),
                                  new JProperty("settlementTime",     SettlementTimestamp),
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",      TransactionId.Value.ToString())
+                               ? new JProperty("transactionId",      TransactionId.Value. ToString())
                                : null,
 
                            StatusInfo is not null
@@ -526,15 +531,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            ReceiptId.HasValue
-                               ? new JProperty("receiptId",          ReceiptId.    Value.ToString())
+                               ? new JProperty("receiptId",          ReceiptId.    Value. ToString())
                                : null,
 
                            ReceiptURL.HasValue
-                               ? new JProperty("receiptUrl",         ReceiptURL.   Value.ToString())
+                               ? new JProperty("receiptUrl",         ReceiptURL.   Value. ToString())
                                : null,
 
                            InvoiceNumber.HasValue
-                               ? new JProperty("invoiceNumber",      InvoiceNumber.Value.ToString())
+                               ? new JProperty("invoiceNumber",      InvoiceNumber.Value. ToString())
                                : null,
 
 
@@ -544,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifySettlementRequestSerializer is not null

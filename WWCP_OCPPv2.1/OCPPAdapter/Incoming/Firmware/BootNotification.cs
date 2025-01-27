@@ -185,6 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
                         request,
                         request.ToJSON(
+                            true,
                             parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
                             parentNetworkingNode.OCPP.CustomChargingStationSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -237,6 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
+                            true,
                             parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -253,6 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
+                                           false,
                                            parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -505,6 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
                             response,
                             response.ToJSON(
+                                true,
                                 parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
                                 parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,
@@ -606,6 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
                             response,
                             response.ToJSON(
+                                true,
                                 parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
                                 parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,

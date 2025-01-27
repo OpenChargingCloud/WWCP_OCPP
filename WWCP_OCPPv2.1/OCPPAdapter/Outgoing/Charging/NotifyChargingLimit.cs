@@ -156,6 +156,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         Request,
                         Request.ToJSON(
 
+                            true,
+
                             parentNetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
                             parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
                             parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
@@ -206,6 +208,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
+
+                                                             false,
 
                                                              parentNetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,

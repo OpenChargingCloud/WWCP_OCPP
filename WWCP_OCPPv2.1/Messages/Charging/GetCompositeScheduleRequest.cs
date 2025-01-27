@@ -403,12 +403,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom GetCompositeSchedule requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                        IncludeJSONLDContext                          = false,
+                              CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",           DefaultJSONLDContext.   ToString())
+                               : null,
 
                                  new JProperty("duration",           (UInt64) Duration.TotalSeconds),
                                  new JProperty("evseId",             EVSEId.           Value),

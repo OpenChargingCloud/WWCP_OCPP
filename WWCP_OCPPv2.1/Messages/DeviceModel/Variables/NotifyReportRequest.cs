@@ -689,7 +689,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomVariableCharacteristicsSerializer">A delegate to serialize custom variable characteristics objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyReportRequest>?      CustomNotifyReportRequestSerializer       = null,
+        public JObject ToJSON(Boolean                                                    IncludeJSONLDContext                      = false,
+                              CustomJObjectSerializerDelegate<NotifyReportRequest>?      CustomNotifyReportRequestSerializer       = null,
                               CustomJObjectSerializerDelegate<ReportData>?               CustomReportDataSerializer                = null,
                               CustomJObjectSerializerDelegate<Component>?                CustomComponentSerializer                 = null,
                               CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null,
@@ -701,6 +702,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             var json = JSONObject.Create(
+
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",      DefaultJSONLDContext. ToString())
+                               : null,
 
                                  new JProperty("requestId",     NotifyReportRequestId),
                                  new JProperty("seqNo",         SequenceNumber),

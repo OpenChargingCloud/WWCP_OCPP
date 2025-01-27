@@ -1110,7 +1110,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom units of measure.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TransactionEventRequest>?  CustomTransactionEventRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                    IncludeJSONLDContext                      = false,
+                              CustomJObjectSerializerDelegate<TransactionEventRequest>?  CustomTransactionEventRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Transaction>?              CustomTransactionSerializer               = null,
                               CustomJObjectSerializerDelegate<IdToken>?                  CustomIdTokenSerializer                   = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?           CustomAdditionalInfoSerializer            = null,
@@ -1125,38 +1126,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("eventType",               EventType.      AsText()),
-                                 new JProperty("timestamp",               Timestamp.      ToIso8601()),
-                                 new JProperty("triggerReason",           TriggerReason.  ToString()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",                DefaultJSONLDContext.       ToString())
+                               : null,
+
+                                 new JProperty("eventType",               EventType.                  AsText()),
+                                 new JProperty("timestamp",               Timestamp.                  ToIso8601()),
+                                 new JProperty("triggerReason",           TriggerReason.              ToString()),
                                  new JProperty("seqNo",                   SequenceNumber),
-                                 new JProperty("transactionInfo",         TransactionInfo.ToJSON(CustomTransactionSerializer,
-                                                                                                 CustomCustomDataSerializer)),
+                                 new JProperty("transactionInfo",         TransactionInfo.            ToJSON(CustomTransactionSerializer,
+                                                                                                             CustomCustomDataSerializer)),
 
                            Offline.HasValue
-                               ? new JProperty("offline",                 Offline.           Value)
+                               ? new JProperty("offline",                 Offline.                    Value)
                                : null,
 
                            NumberOfPhasesUsed.HasValue
-                               ? new JProperty("numberOfPhasesUsed",      NumberOfPhasesUsed.Value)
+                               ? new JProperty("numberOfPhasesUsed",      NumberOfPhasesUsed.         Value)
                                : null,
 
                            CableMaxCurrent.HasValue
-                               ? new JProperty("cableMaxCurrent",         CableMaxCurrent.   Value.IntegerValue)
+                               ? new JProperty("cableMaxCurrent",         CableMaxCurrent.            Value.IntegerValue)
                                : null,
 
                            ReservationId.HasValue
-                               ? new JProperty("reservationId",           ReservationId.     Value.Value)
+                               ? new JProperty("reservationId",           ReservationId.              Value.Value)
                                : null,
 
                            IdToken is not null
-                               ? new JProperty("idToken",                 IdToken.        ToJSON(CustomIdTokenSerializer,
-                                                                                                 CustomAdditionalInfoSerializer,
-                                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("idToken",                 IdToken.                    ToJSON(CustomIdTokenSerializer,
+                                                                                                             CustomAdditionalInfoSerializer,
+                                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            EVSE is not null
-                               ? new JProperty("evse",                    EVSE.           ToJSON(CustomEVSESerializer,
-                                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("evse",                    EVSE.                       ToJSON(CustomEVSESerializer,
+                                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            MeterValues.Any()
@@ -1177,7 +1182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.                 ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomTransactionEventRequestSerializer is not null

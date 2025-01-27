@@ -303,7 +303,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClosePeriodicEventStreamResponse>?  CustomClosePeriodicEventStreamResponseSerializer   = null,
+        public JObject ToJSON(Boolean                                                             IncludeJSONLDContext                               = false,
+                              CustomJObjectSerializerDelegate<ClosePeriodicEventStreamResponse>?  CustomClosePeriodicEventStreamResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
                               CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
                               CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
@@ -311,11 +312,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",        Status.    AsText()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",      DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("status",        Status.              AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",    StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                  CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",    StatusInfo.          ToJSON(CustomStatusInfoSerializer,
+                                                                                            CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -324,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

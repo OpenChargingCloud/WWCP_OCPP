@@ -345,7 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStreamDataElementSerializer">A delegate to serialize custom stream data elements.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyPeriodicEventStreamRequest>?  CustomNotifyPeriodicEventStreamRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                             IncludeJSONLDContext                               = false,
+                              CustomJObjectSerializerDelegate<NotifyPeriodicEventStreamRequest>?  CustomNotifyPeriodicEventStreamRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<StreamDataElement>?                 CustomStreamDataElementSerializer                  = null,
                               CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
                               CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
@@ -353,16 +354,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",           Id.   ToString()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+                               : null,
+
+                                 new JProperty("id",           Id.                  ToString()),
                                  new JProperty("data",         new JArray(StreamDataElements.Select(streamDataElement => streamDataElement.ToJSON(CustomStreamDataElementSerializer)))),
 
                            Signatures.Any()
-                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                          CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",   new JArray(Signatures.        Select(signature         => signature.        ToJSON(CustomSignatureSerializer,
+                                                                                                                                                  CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
