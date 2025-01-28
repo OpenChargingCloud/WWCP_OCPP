@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -63,8 +65,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="IdTokenInfo">Information about authorization status, expiry and parent id. For a Differential update the following applies: If this element is present, then this entry SHALL be added or updated in the Local Authorization List. If this element is absent, than the entry for this idtag in the Local Authorization List SHALL be deleted.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AuthorizationData(IdToken       IdToken,
-                                 IdTokenInfo?  IdTokenInfo,
-                                 CustomData?   CustomData   = null)
+                                 IdTokenInfo?  IdTokenInfo   = null,
+                                 CustomData?   CustomData    = null)
 
             : base(CustomData)
 
@@ -117,8 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var authorizationData,
                          out var errorResponse,
-                         CustomAuthorizationDataParser) &&
-                authorizationData is not null)
+                         CustomAuthorizationDataParser))
             {
                 return authorizationData;
             }
@@ -140,9 +141,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out AuthorizationData?  AuthorizationData,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out AuthorizationData?  AuthorizationData,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out AuthorizationData,
@@ -158,8 +159,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out AuthorizationData?                           AuthorizationData,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out AuthorizationData?      AuthorizationData,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<AuthorizationData>?  CustomAuthorizationDataParser)
         {
 
@@ -174,8 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "identification token",
                                              OCPPv2_1.IdToken.TryParse,
                                              out IdToken? IdToken,
-                                             out ErrorResponse) ||
-                     IdToken is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -211,9 +211,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                AuthorizationData = new AuthorizationData(IdToken,
-                                                          IdTokenInfo,
-                                                          CustomData);
+                AuthorizationData = new AuthorizationData(
+                                        IdToken,
+                                        IdTokenInfo,
+                                        CustomData
+                                    );
 
                 if (CustomAuthorizationDataParser is not null)
                     AuthorizationData = CustomAuthorizationDataParser(JSON,

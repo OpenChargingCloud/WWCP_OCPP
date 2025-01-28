@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this log type is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean            IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this log type is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean            IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the log type.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64             Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered log types.
+        /// </summary>
+        public static IEnumerable<LogType>  All
+            => lookup.Values;
 
         #endregion
 
@@ -202,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Sent by the Central System to the Charge Point to request that the Charge Point uploads the security log.
         /// </summary>
         public static LogType SecurityLog         { get; }
-            = Register("eMAID");
+            = Register("SecurityLog");
 
         /// <summary>
         /// The log of sampled measurements from the DataCollector component.

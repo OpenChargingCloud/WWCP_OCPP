@@ -69,14 +69,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="UpdateTypes">The parsed update type.</param>
         public static Boolean TryParse(String Text, out UpdateTypes UpdateTypes)
         {
-            switch (Text.Trim())
+            switch (Text.Trim().ToLower())
             {
 
-                case "Differential":
+                case "differential":
                     UpdateTypes = UpdateTypes.Differential;
                     return true;
 
-                case "Full":
+                case "full":
                     UpdateTypes = UpdateTypes.Full;
                     return true;
 

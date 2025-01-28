@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(30);
+        public static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(15);
 
         #endregion
 

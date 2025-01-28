@@ -24,6 +24,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class ComponentCriteriaExtensions
     {
 
+        public static IEnumerable<ComponentCriteria> All
+            => [
+                   ComponentCriteria.Active,
+                   ComponentCriteria.Available,
+                   ComponentCriteria.Enabled,
+                   ComponentCriteria.Problem
+               ];
+
         #region Parse   (Text)
 
         /// <summary>

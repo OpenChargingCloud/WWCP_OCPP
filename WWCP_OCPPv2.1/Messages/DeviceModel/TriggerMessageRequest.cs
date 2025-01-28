@@ -67,13 +67,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// applies to a specific EVSE and/or connector.
         /// </summary>
         [Optional]
-        public EVSE?            EVSE                { get; }
+        public EVSE?           EVSE                { get; }
 
         /// <summary>
         /// The optional custom trigger, when requestedMessage == "CustomTrigger".
         /// </summary>
         [Optional]
-        public String?          CustomTrigger       { get; }
+        public String?         CustomTrigger       { get; }
 
         #endregion
 

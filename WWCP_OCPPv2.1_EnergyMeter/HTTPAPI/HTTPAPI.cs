@@ -138,124 +138,173 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
             #region Generic JSON Messages
 
-            #region OnJSONMessageRequestReceived
+            //#region OnJSONMessageRequestReceived
 
-            EnergyMeter.OnJSONMessageRequestReceived += (timestamp,
-                                                     webSocketServer,
-                                                     webSocketConnection,
-                                                     networkingNodeId,
-                                                     networkPath,
-                                                     eventTrackingId,
-                                                     requestTimestamp,
-                                                     requestMessage,
-                                                     cancellationToken) =>
+            //EnergyMeter.OnJSONMessageRequestReceived += (timestamp,
+            //                                         webSocketServer,
+            //                                         webSocketConnection,
+            //                                         networkingNodeId,
+            //                                         networkPath,
+            //                                         eventTrackingId,
+            //                                         requestTimestamp,
+            //                                         requestMessage,
+            //                                         cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageRequestReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)
+            //                         ));
 
-            #endregion
+            //#endregion
 
-            #region OnJSONMessageResponseSent
+            //#region OnJSONMessageResponseSent
 
-            EnergyMeter.OnJSONMessageResponseSent += (timestamp,
-                                                  webSocketServer,
-                                                  webSocketConnection,
-                                                  networkingNodeId,
-                                                  networkPath,
-                                                  eventTrackingId,
-                                                  requestTimestamp,
-                                                  jsonRequestMessage,
-                                                  binaryRequestMessage,
-                                                  responseTimestamp,
-                                                  responseMessage,
-                                                  cancellationToken) =>
+            //EnergyMeter.OnJSONMessageResponseSent += (timestamp,
+            //                                      webSocketServer,
+            //                                      webSocketConnection,
+            //                                      networkingNodeId,
+            //                                      networkPath,
+            //                                      eventTrackingId,
+            //                                      requestTimestamp,
+            //                                      jsonRequestMessage,
+            //                                      binaryRequestMessage,
+            //                                      responseTimestamp,
+            //                                      responseMessage,
+            //                                      cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
-
-            #endregion
-
-            #region OnJSONErrorResponseSent
-
-            //EnergyMeter.OnJSONErrorResponseSent += (timestamp,
-            //                                    webSocketServer,
-            //                                    webSocketConnection,
-            //                                    eventTrackingId,
-            //                                    requestTimestamp,
-            //                                    jsonRequestMessage,
-            //                                    binaryRequestMessage,
-            //                                    responseTimestamp,
-            //                                    responseMessage,
-            //                                    cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONErrorResponseSent),
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageResponseSent),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
             //                             new JProperty("message",      responseMessage)
             //                         ));
 
+            //#endregion
+
+            //#region OnJSONErrorResponseSent
+
+            ////EnergyMeter.OnJSONErrorResponseSent += (timestamp,
+            ////                                    webSocketServer,
+            ////                                    webSocketConnection,
+            ////                                    eventTrackingId,
+            ////                                    requestTimestamp,
+            ////                                    jsonRequestMessage,
+            ////                                    binaryRequestMessage,
+            ////                                    responseTimestamp,
+            ////                                    responseMessage,
+            ////                                    cancellationToken) =>
+
+            ////    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONErrorResponseSent),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)
+            ////                         ));
+
+            //#endregion
+
+
+            //#region OnJSONMessageRequestSent
+
+            //EnergyMeter.OnJSONMessageRequestSent += (timestamp,
+            //                                     webSocketServer,
+            //                                     webSocketConnection,
+            //                                     networkingNodeId,
+            //                                     networkPath,
+            //                                     eventTrackingId,
+            //                                     requestTimestamp,
+            //                                     requestMessage,
+            //                                     cancellationToken) =>
+
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)
+            //                         ));
+
+            //#endregion
+
+            //#region OnJSONMessageResponseReceived
+
+            //EnergyMeter.OnJSONMessageResponseReceived += (timestamp,
+            //                                          webSocketServer,
+            //                                          webSocketConnection,
+            //                                          networkingNodeId,
+            //                                          networkPath,
+            //                                          eventTrackingId,
+            //                                          requestTimestamp,
+            //                                          jsonRequestMessage,
+            //                                          binaryRequestMessage,
+            //                                          responseTimestamp,
+            //                                          responseMessage,
+            //                                          cancellationToken) =>
+
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
+
+            //#endregion
+
+            //#region OnJSONErrorResponseReceived
+
+            ////EnergyMeter.OnJSONErrorResponseReceived += (timestamp,
+            ////                                        webSocketServer,
+            ////                                        webSocketConnection,
+            ////                                        eventTrackingId,
+            ////                                        requestTimestamp,
+            ////                                        jsonRequestMessage,
+            ////                                        binaryRequestMessage,
+            ////                                        responseTimestamp,
+            ////                                        responseMessage,
+            ////                                        cancellationToken) =>
+
+            ////    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONErrorResponseReceived),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)
+            ////                         ));
+
+            //#endregion
+
             #endregion
 
+            #region Generic Binary Messages
 
-            #region OnJSONMessageRequestSent
+            //#region OnBinaryMessageRequestReceived
 
-            EnergyMeter.OnJSONMessageRequestSent += (timestamp,
-                                                 webSocketServer,
-                                                 webSocketConnection,
-                                                 networkingNodeId,
-                                                 networkPath,
-                                                 eventTrackingId,
-                                                 requestTimestamp,
-                                                 requestMessage,
-                                                 cancellationToken) =>
+            //EnergyMeter.OnBinaryMessageRequestReceived += (timestamp,
+            //                                           webSocketServer,
+            //                                           webSocketConnection,
+            //                                           networkingNodeId,
+            //                                           networkPath,
+            //                                           eventTrackingId,
+            //                                           requestTimestamp,
+            //                                           requestMessage,
+            //                                           cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageRequestSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
+            //                         ));
 
-            #endregion
+            //#endregion
 
-            #region OnJSONMessageResponseReceived
+            //#region OnBinaryMessageResponseSent
 
-            EnergyMeter.OnJSONMessageResponseReceived += (timestamp,
-                                                      webSocketServer,
-                                                      webSocketConnection,
-                                                      networkingNodeId,
-                                                      networkPath,
-                                                      eventTrackingId,
-                                                      requestTimestamp,
-                                                      jsonRequestMessage,
-                                                      binaryRequestMessage,
-                                                      responseTimestamp,
-                                                      responseMessage,
-                                                      cancellationToken) =>
-
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONMessageResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
-
-            #endregion
-
-            #region OnJSONErrorResponseReceived
-
-            //EnergyMeter.OnJSONErrorResponseReceived += (timestamp,
+            //EnergyMeter.OnBinaryMessageResponseSent += (timestamp,
             //                                        webSocketServer,
             //                                        webSocketConnection,
+            //                                        networkingNodeId,
+            //                                        networkPath,
             //                                        eventTrackingId,
             //                                        requestTimestamp,
             //                                        jsonRequestMessage,
@@ -264,151 +313,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
             //                                        responseMessage,
             //                                        cancellationToken) =>
 
-            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnJSONErrorResponseReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)
-            //                         ));
-
-            #endregion
-
-            #endregion
-
-            #region Generic Binary Messages
-
-            #region OnBinaryMessageRequestReceived
-
-            EnergyMeter.OnBinaryMessageRequestReceived += (timestamp,
-                                                       webSocketServer,
-                                                       webSocketConnection,
-                                                       networkingNodeId,
-                                                       networkPath,
-                                                       eventTrackingId,
-                                                       requestTimestamp,
-                                                       requestMessage,
-                                                       cancellationToken) =>
-
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageRequestReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)  // BASE64 encoded string!
-                                     ));
-
-            #endregion
-
-            #region OnBinaryMessageResponseSent
-
-            EnergyMeter.OnBinaryMessageResponseSent += (timestamp,
-                                                    webSocketServer,
-                                                    webSocketConnection,
-                                                    networkingNodeId,
-                                                    networkPath,
-                                                    eventTrackingId,
-                                                    requestTimestamp,
-                                                    jsonRequestMessage,
-                                                    binaryRequestMessage,
-                                                    responseTimestamp,
-                                                    responseMessage,
-                                                    cancellationToken) =>
-
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)  // BASE64 encoded string!
-                                     ));
-
-            #endregion
-
-            #region OnBinaryErrorResponseSent
-
-            //NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
-            //                                             webSocketServer,
-            //                                             webSocketConnection,
-            //                                             eventTrackingId,
-            //                                             requestTimestamp,
-            //                                             jsonRequestMessage,
-            //                                             binaryRequestMessage,
-            //                                             responseTimestamp,
-            //                                             responseMessage) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageResponseSent),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
             //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
             //                         ));
 
-            #endregion
+            //#endregion
+
+            //#region OnBinaryErrorResponseSent
+
+            ////NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
+            ////                                             webSocketServer,
+            ////                                             webSocketConnection,
+            ////                                             eventTrackingId,
+            ////                                             requestTimestamp,
+            ////                                             jsonRequestMessage,
+            ////                                             binaryRequestMessage,
+            ////                                             responseTimestamp,
+            ////                                             responseMessage) =>
+
+            ////    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            ////                         ));
+
+            //#endregion
 
 
-            #region OnBinaryMessageRequestSent
+            //#region OnBinaryMessageRequestSent
 
-            EnergyMeter.OnBinaryMessageRequestSent += (timestamp,
-                                                   webSocketServer,
-                                                   webSocketConnection,
-                                                   networkingNodeId,
-                                                   networkPath,
-                                                   eventTrackingId,
-                                                   requestTimestamp,
-                                                   requestMessage,
-                                                   cancellationToken) =>
+            //EnergyMeter.OnBinaryMessageRequestSent += (timestamp,
+            //                                       webSocketServer,
+            //                                       webSocketConnection,
+            //                                       networkingNodeId,
+            //                                       networkPath,
+            //                                       eventTrackingId,
+            //                                       requestTimestamp,
+            //                                       requestMessage,
+            //                                       cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageRequestSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)  // BASE64 encoded string!
-                                     ));
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
+            //                         ));
 
-            #endregion
+            //#endregion
 
-            #region OnBinaryMessageResponseReceived
+            //#region OnBinaryMessageResponseReceived
 
-            EnergyMeter.OnBinaryMessageResponseReceived += (timestamp,
-                                                        webSocketServer,
-                                                        webSocketConnection,
-                                                        networkingNodeId,
-                                                        networkPath,
-                                                        eventTrackingId,
-                                                        requestTimestamp,
-                                                        jsonRequestMessage,
-                                                        binaryRequestMessage,
-                                                        responseTimestamp,
-                                                        responseMessage,
-                                                        cancellationToken) =>
+            //EnergyMeter.OnBinaryMessageResponseReceived += (timestamp,
+            //                                            webSocketServer,
+            //                                            webSocketConnection,
+            //                                            networkingNodeId,
+            //                                            networkPath,
+            //                                            eventTrackingId,
+            //                                            requestTimestamp,
+            //                                            jsonRequestMessage,
+            //                                            binaryRequestMessage,
+            //                                            responseTimestamp,
+            //                                            responseMessage,
+            //                                            cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)  // BASE64 encoded string!
-                                     ));
-
-            #endregion
-
-            #region OnBinaryErrorResponseReceived
-
-            //NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
-            //                                                 webSocketServer,
-            //                                                 webSocketConnection,
-            //                                                 eventTrackingId,
-            //                                                 requestTimestamp,
-            //                                                 jsonRequestMessage,
-            //                                                 binaryRequestMessage,
-            //                                                 responseTimestamp,
-            //                                                 responseMessage) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
+            //    EventLog.SubmitEvent(nameof(EnergyMeter.OnBinaryMessageResponseReceived),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
             //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
             //                         ));
 
-            #endregion
+            //#endregion
+
+            //#region OnBinaryErrorResponseReceived
+
+            ////NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
+            ////                                                 webSocketServer,
+            ////                                                 webSocketConnection,
+            ////                                                 eventTrackingId,
+            ////                                                 requestTimestamp,
+            ////                                                 jsonRequestMessage,
+            ////                                                 binaryRequestMessage,
+            ////                                                 responseTimestamp,
+            ////                                                 responseMessage) =>
+
+            ////    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            ////                         ));
+
+            //#endregion
 
             #endregion
 

@@ -24,6 +24,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class MonitoringCriteriaExtensions
     {
 
+        public static IEnumerable<MonitoringCriterion> All
+            => [
+                   MonitoringCriterion.ThresholdMonitoring,
+                   MonitoringCriterion.DeltaMonitoring,
+                   MonitoringCriterion.PeriodicMonitoring
+               ];
+
         #region Parse   (Text)
 
         /// <summary>
@@ -69,18 +76,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MonitoringCriterion">The parsed monitoring criterion.</param>
         public static Boolean TryParse(String Text, out MonitoringCriterion MonitoringCriterion)
         {
-            switch (Text.Trim())
+            switch (Text.Trim().ToLower())
             {
 
-                case "ThresholdMonitoring":
+                case "thresholdmonitoring":
                     MonitoringCriterion = MonitoringCriterion.ThresholdMonitoring;
                     return true;
 
-                case "DeltaMonitoring":
+                case "deltamonitoring":
                     MonitoringCriterion = MonitoringCriterion.DeltaMonitoring;
                     return true;
 
-                case "PeriodicMonitoring":
+                case "periodicmonitoring":
                     MonitoringCriterion = MonitoringCriterion.PeriodicMonitoring;
                     return true;
 

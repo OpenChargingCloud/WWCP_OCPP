@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -169,6 +170,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
                                     Boolean            WebAPI_Disabled                  = false,
                                     HTTPPath?          WebAPI_Path                      = null,
 
+                                    WebSocketServer?   ControlWebSocketServer           = null,
+
                                     TimeSpan?          DefaultRequestTimeout            = null,
 
                                     Boolean            DisableSendHeartbeats            = false,
@@ -198,6 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
                              AutoStart:               true
                          )
                        : null,
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

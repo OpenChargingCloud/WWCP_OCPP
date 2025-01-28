@@ -19,10 +19,8 @@
 
 using Newtonsoft.Json.Linq;
 
-using BCx509 = Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Security;
@@ -36,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -137,6 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                      IPPort?                HTTPUploadPort                     = null,
 
+                                     WebSocketServer?       ControlWebSocketServer             = null,
+
                                      SignaturePolicy?       SignaturePolicy                    = null,
                                      SignaturePolicy?       ForwardingSignaturePolicy          = null,
 
@@ -171,6 +172,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    false,
                    null,
                    null,
+
+                   ControlWebSocketServer,
 
                    AutoCreatedChargeBoxesAccessType,
 

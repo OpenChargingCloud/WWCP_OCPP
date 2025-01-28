@@ -24,6 +24,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class OperationalStatusExtensions
     {
 
+        public static IEnumerable<OperationalStatus> All
+            => [ OperationalStatus.Inoperative, OperationalStatus.Operative ];
+
         #region Parse   (Text)
 
         /// <summary>

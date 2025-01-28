@@ -1250,6 +1250,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
                                   //Boolean                        WebAPI_Disabled                  = false,
                                   //HTTPPath?                      WebAPI_Path                      = null,
 
+                                  WebSocketServer?               ControlWebSocketServer             = null,
+
                                   ChargeBoxAccessTypes?          AutoCreatedChargeBoxesAccessType   = null,
 
                                   TimeSpan?                      DefaultRequestTimeout              = null,
@@ -1283,6 +1285,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
                    //          AutoStart:              true
                    //      )
                    //    : null,
+
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

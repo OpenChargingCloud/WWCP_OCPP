@@ -289,124 +289,173 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region Generic JSON Messages
 
-            #region OnJSONMessageRequestReceived
+            //#region OnJSONMessageRequestReceived
 
-            CSMS.OnJSONMessageRequestReceived += (timestamp,
-                                                            webSocketServer,
-                                                            webSocketConnection,
-                                                            networkingNodeId,
-                                                            networkPath,
-                                                            eventTrackingId,
-                                                            requestTimestamp,
-                                                            requestMessage,
-                                                            cancellationToken) =>
+            //CSMS.OnJSONMessageRequestReceived += (timestamp,
+            //                                                webSocketServer,
+            //                                                webSocketConnection,
+            //                                                networkingNodeId,
+            //                                                networkPath,
+            //                                                eventTrackingId,
+            //                                                requestTimestamp,
+            //                                                requestMessage,
+            //                                                cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)
+            //                         ));
 
-            #endregion
+            //#endregion
 
-            #region OnJSONMessageResponseSent
+            //#region OnJSONMessageResponseSent
 
-            CSMS.OnJSONMessageResponseSent += (timestamp,
-                                                         webSocketServer,
-                                                         webSocketConnection,
-                                                         networkingNodeId,
-                                                         networkPath,
-                                                         eventTrackingId,
-                                                         requestTimestamp,
-                                                         jsonRequestMessage,
-                                                         binaryRequestMessage,
-                                                         responseTimestamp,
-                                                         responseMessage,
-                                                         cancellationToken) =>
+            //CSMS.OnJSONMessageResponseSent += (timestamp,
+            //                                             webSocketServer,
+            //                                             webSocketConnection,
+            //                                             networkingNodeId,
+            //                                             networkPath,
+            //                                             eventTrackingId,
+            //                                             requestTimestamp,
+            //                                             jsonRequestMessage,
+            //                                             binaryRequestMessage,
+            //                                             responseTimestamp,
+            //                                             responseMessage,
+            //                                             cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
-
-            #endregion
-
-            #region OnJSONErrorResponseSent
-
-            //NetworkingNode.OnJSONErrorResponseSent += (timestamp,
-            //                                           webSocketServer,
-            //                                           webSocketConnection,
-            //                                           eventTrackingId,
-            //                                           requestTimestamp,
-            //                                           jsonRequestMessage,
-            //                                           binaryRequestMessage,
-            //                                           responseTimestamp,
-            //                                           responseMessage,
-            //                                           cancellationToken) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseSent),
+            //    EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseSent),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
             //                             new JProperty("message",      responseMessage)
             //                         ));
 
+            //#endregion
+
+            //#region OnJSONErrorResponseSent
+
+            ////NetworkingNode.OnJSONErrorResponseSent += (timestamp,
+            ////                                           webSocketServer,
+            ////                                           webSocketConnection,
+            ////                                           eventTrackingId,
+            ////                                           requestTimestamp,
+            ////                                           jsonRequestMessage,
+            ////                                           binaryRequestMessage,
+            ////                                           responseTimestamp,
+            ////                                           responseMessage,
+            ////                                           cancellationToken) =>
+
+            ////    EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseSent),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)
+            ////                         ));
+
+            //#endregion
+
+
+            //#region OnJSONMessageRequestSent
+
+            //CSMS.OnJSONMessageRequestSent += (timestamp,
+            //                                            webSocketServer,
+            //                                            webSocketConnection,
+            //                                            networkingNodeId,
+            //                                            networkPath,
+            //                                            eventTrackingId,
+            //                                            requestTimestamp,
+            //                                            requestMessage,
+            //                                            cancellationToken) =>
+
+            //    EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)
+            //                         ));
+
+            //#endregion
+
+            //#region OnJSONMessageResponseReceived
+
+            //CSMS.OnJSONMessageResponseReceived += (timestamp,
+            //                                                 webSocketServer,
+            //                                                 webSocketConnection,
+            //                                                 networkingNodeId,
+            //                                                 networkPath,
+            //                                                 eventTrackingId,
+            //                                                 requestTimestamp,
+            //                                                 jsonRequestMessage,
+            //                                                 binaryRequestMessage,
+            //                                                 responseTimestamp,
+            //                                                 responseMessage,
+            //                                                 cancellationToken) =>
+
+            //    EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)
+            //                         ));
+
+            //#endregion
+
+            //#region OnJSONErrorResponseReceived
+
+            ////NetworkingNode.OnJSONErrorResponseReceived += (timestamp,
+            ////                                               webSocketServer,
+            ////                                               webSocketConnection,
+            ////                                               eventTrackingId,
+            ////                                               requestTimestamp,
+            ////                                               jsonRequestMessage,
+            ////                                               binaryRequestMessage,
+            ////                                               responseTimestamp,
+            ////                                               responseMessage,
+            ////                                               cancellationToken) =>
+
+            ////    EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseReceived),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)
+            ////                         ));
+
+            //#endregion
+
             #endregion
 
+            #region Generic Binary Messages
 
-            #region OnJSONMessageRequestSent
+            //#region OnBinaryMessageRequestReceived
 
-            CSMS.OnJSONMessageRequestSent += (timestamp,
-                                                        webSocketServer,
-                                                        webSocketConnection,
-                                                        networkingNodeId,
-                                                        networkPath,
-                                                        eventTrackingId,
-                                                        requestTimestamp,
-                                                        requestMessage,
-                                                        cancellationToken) =>
+            //CSMS.OnBinaryMessageRequestReceived += (timestamp,
+            //                                                  webSocketServer,
+            //                                                  webSocketConnection,
+            //                                                  networkingNodeId,
+            //                                                  networkPath,
+            //                                                  eventTrackingId,
+            //                                                  requestTimestamp,
+            //                                                  requestMessage,
+            //                                                  cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
+            //                         ));
 
-            #endregion
+            //#endregion
 
-            #region OnJSONMessageResponseReceived
+            //#region OnBinaryMessageResponseSent
 
-            CSMS.OnJSONMessageResponseReceived += (timestamp,
-                                                             webSocketServer,
-                                                             webSocketConnection,
-                                                             networkingNodeId,
-                                                             networkPath,
-                                                             eventTrackingId,
-                                                             requestTimestamp,
-                                                             jsonRequestMessage,
-                                                             binaryRequestMessage,
-                                                             responseTimestamp,
-                                                             responseMessage,
-                                                             cancellationToken) =>
-
-                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)
-                                     ));
-
-            #endregion
-
-            #region OnJSONErrorResponseReceived
-
-            //NetworkingNode.OnJSONErrorResponseReceived += (timestamp,
+            //CSMS.OnBinaryMessageResponseSent += (timestamp,
             //                                               webSocketServer,
             //                                               webSocketConnection,
+            //                                               networkingNodeId,
+            //                                               networkPath,
             //                                               eventTrackingId,
             //                                               requestTimestamp,
             //                                               jsonRequestMessage,
@@ -415,151 +464,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                                               responseMessage,
             //                                               cancellationToken) =>
 
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseReceived),
-            //                         JSONObject.Create(
-            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
-            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
-            //                             new JProperty("message",      responseMessage)
-            //                         ));
-
-            #endregion
-
-            #endregion
-
-            #region Generic Binary Messages
-
-            #region OnBinaryMessageRequestReceived
-
-            CSMS.OnBinaryMessageRequestReceived += (timestamp,
-                                                              webSocketServer,
-                                                              webSocketConnection,
-                                                              networkingNodeId,
-                                                              networkPath,
-                                                              eventTrackingId,
-                                                              requestTimestamp,
-                                                              requestMessage,
-                                                              cancellationToken) =>
-
-                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)  // BASE64 encoded string!
-                                     ));
-
-            #endregion
-
-            #region OnBinaryMessageResponseSent
-
-            CSMS.OnBinaryMessageResponseSent += (timestamp,
-                                                           webSocketServer,
-                                                           webSocketConnection,
-                                                           networkingNodeId,
-                                                           networkPath,
-                                                           eventTrackingId,
-                                                           requestTimestamp,
-                                                           jsonRequestMessage,
-                                                           binaryRequestMessage,
-                                                           responseTimestamp,
-                                                           responseMessage,
-                                                           cancellationToken) =>
-
-                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)  // BASE64 encoded string!
-                                     ));
-
-            #endregion
-
-            #region OnBinaryErrorResponseSent
-
-            //NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
-            //                                                  webSocketServer,
-            //                                                  webSocketConnection,
-            //                                                  eventTrackingId,
-            //                                                  requestTimestamp,
-            //                                                  jsonRequestMessage,
-            //                                                  binaryRequestMessage,
-            //                                                  responseTimestamp,
-            //                                                  responseMessage) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
+            //    EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseSent),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
             //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
             //                         ));
 
-            #endregion
+            //#endregion
+
+            //#region OnBinaryErrorResponseSent
+
+            ////NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
+            ////                                                  webSocketServer,
+            ////                                                  webSocketConnection,
+            ////                                                  eventTrackingId,
+            ////                                                  requestTimestamp,
+            ////                                                  jsonRequestMessage,
+            ////                                                  binaryRequestMessage,
+            ////                                                  responseTimestamp,
+            ////                                                  responseMessage) =>
+
+            ////    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            ////                         ));
+
+            //#endregion
 
 
-            #region OnBinaryMessageRequestSent
+            //#region OnBinaryMessageRequestSent
 
-            CSMS.OnBinaryMessageRequestSent += (timestamp,
-                                                               webSocketServer,
-                                                               webSocketConnection,
-                                                               networkingNodeId,
-                                                               networkPath,
-                                                               eventTrackingId,
-                                                               requestTimestamp,
-                                                               requestMessage,
-                                                               cancellationToken) =>
+            //CSMS.OnBinaryMessageRequestSent += (timestamp,
+            //                                                   webSocketServer,
+            //                                                   webSocketConnection,
+            //                                                   networkingNodeId,
+            //                                                   networkPath,
+            //                                                   eventTrackingId,
+            //                                                   requestTimestamp,
+            //                                                   requestMessage,
+            //                                                   cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      requestMessage)  // BASE64 encoded string!
-                                     ));
+            //    EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      requestMessage)  // BASE64 encoded string!
+            //                         ));
 
-            #endregion
+            //#endregion
 
-            #region OnBinaryMessageResponseReceived
+            //#region OnBinaryMessageResponseReceived
 
-            CSMS.OnBinaryMessageResponseReceived += (timestamp,
-                                                                    webSocketServer,
-                                                                    webSocketConnection,
-                                                                    networkingNodeId,
-                                                                    networkPath,
-                                                                    eventTrackingId,
-                                                                    requestTimestamp,
-                                                                    jsonRequestMessage,
-                                                                    binaryRequestMessage,
-                                                                    responseTimestamp,
-                                                                    responseMessage,
-                                                                    cancellationToken) =>
+            //CSMS.OnBinaryMessageResponseReceived += (timestamp,
+            //                                                        webSocketServer,
+            //                                                        webSocketConnection,
+            //                                                        networkingNodeId,
+            //                                                        networkPath,
+            //                                                        eventTrackingId,
+            //                                                        requestTimestamp,
+            //                                                        jsonRequestMessage,
+            //                                                        binaryRequestMessage,
+            //                                                        responseTimestamp,
+            //                                                        responseMessage,
+            //                                                        cancellationToken) =>
 
-                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                         new JProperty("connection",   webSocketConnection.ToJSON()),
-                                         new JProperty("message",      responseMessage)  // BASE64 encoded string!
-                                     ));
-
-            #endregion
-
-            #region OnBinaryErrorResponseReceived
-
-            //NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
-            //                                                      webSocketServer,
-            //                                                      webSocketConnection,
-            //                                                      eventTrackingId,
-            //                                                      requestTimestamp,
-            //                                                      jsonRequestMessage,
-            //                                                      binaryRequestMessage,
-            //                                                      responseTimestamp,
-            //                                                      responseMessage) =>
-
-            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
+            //    EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseReceived),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
             //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
             //                         ));
 
-            #endregion
+            //#endregion
+
+            //#region OnBinaryErrorResponseReceived
+
+            ////NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
+            ////                                                      webSocketServer,
+            ////                                                      webSocketConnection,
+            ////                                                      eventTrackingId,
+            ////                                                      requestTimestamp,
+            ////                                                      jsonRequestMessage,
+            ////                                                      binaryRequestMessage,
+            ////                                                      responseTimestamp,
+            ////                                                      responseMessage) =>
+
+            ////    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
+            ////                         JSONObject.Create(
+            ////                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            ////                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            ////                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            ////                         ));
+
+            //#endregion
 
             #endregion
 

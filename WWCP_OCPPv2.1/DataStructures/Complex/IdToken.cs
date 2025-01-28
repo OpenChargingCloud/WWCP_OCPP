@@ -285,6 +285,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region (static) TryParseRFID   (UID, out IdToken)
+
+        /// <summary>
+        /// Create a new identification token based on the given RFID UID.
+        /// </summary>
+        /// <param name="UID">The RFID UID as hex values.</param>
+        public static Boolean TryParseRFID(String UID, [NotNullWhen(true)] out IdToken? IdToken)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            IdToken = rfid_UIDPattern.IsMatch(uid)
+                          ? new(
+                                uid,
+                                IdTokenType.ISO14443
+                            )
+                          : null;
+
+            return IdToken != null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID4  (UID, out IdToken)
+
+        /// <summary>
+        /// Create a new identification token based on the given 4 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The RFID UID as hex values.</param>
+        public static Boolean TryParseRFID4(String UID, [NotNullWhen(true)] out IdToken? IdToken)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            IdToken = rfid4_UIDPattern.IsMatch(uid)
+                          ? new(
+                                uid,
+                                IdTokenType.ISO14443
+                            )
+                          : null;
+
+            return IdToken != null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID7  (UID, out IdToken)
+
+        /// <summary>
+        /// Create a new identification token based on the given 7 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The RFID UID as hex values.</param>
+        public static Boolean TryParseRFID7(String UID, [NotNullWhen(true)] out IdToken? IdToken)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            IdToken = rfid7_UIDPattern.IsMatch(uid)
+                          ? new(
+                                uid,
+                                IdTokenType.ISO14443
+                            )
+                          : null;
+
+            return IdToken != null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseRFID10 (UID, out IdToken)
+
+        /// <summary>
+        /// Create a new identification token based on the given 10 byte RFID UID.
+        /// </summary>
+        /// <param name="UID">The RFID UID as hex values.</param>
+        public static Boolean TryParseRFID10(String UID, [NotNullWhen(true)] out IdToken? IdToken)
+        {
+
+            var uid = UID.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            IdToken = rfid10_UIDPattern.IsMatch(uid)
+                          ? new(
+                                uid,
+                                IdTokenType.ISO14443
+                            )
+                          : null;
+
+            return IdToken != null;
+
+        }
+
+        #endregion
+
+
         #region (static) Parse   (JSON, CustomIdTokenParser = null)
 
         /// <summary>

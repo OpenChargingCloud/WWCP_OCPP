@@ -38,6 +38,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
@@ -103,6 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             Boolean                           WebAPI_Disabled                         = false,
                             HTTPPath?                         WebAPI_Path                             = null,
 
+                            WebSocketServer?                  ControlWebSocketServer                  = null,
+
                             ChargingStationAccessTypes?       AutoCreatedChargingStationsAccessType   = null,
 
                             TimeSpan?                         DefaultRequestTimeout                   = null,
@@ -156,6 +159,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    WebAPI,
                    WebAPI_Disabled,
                    WebAPI_Path,
+
+                   ControlWebSocketServer,
 
                    AutoCreatedChargingStationsAccessType,
 

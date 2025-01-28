@@ -315,6 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          Boolean                           WebAPI_Disabled                         = false,
                          HTTPPath?                         WebAPI_Path                             = null,
 
+                         WebSocketServer?                  ControlWebSocketServer                  = null,
+
                          ChargingStationAccessTypes?       AutoCreatedChargingStationsAccessType   = null,
 
                          TimeSpan?                         DefaultRequestTimeout                   = null,
@@ -347,6 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                              AutoStart:              true
                          )
                        : null,
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

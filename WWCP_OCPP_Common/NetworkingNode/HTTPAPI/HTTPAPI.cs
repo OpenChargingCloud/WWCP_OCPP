@@ -140,8 +140,10 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         {
 
             this.networkingNode      = NetworkingNode;
+
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
+            this.JSONFormatting      = JSONFormatting;
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -202,8 +204,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",        Timestamp.              ToIso8601()),
                               new JProperty("eventTrackingId",  Request.EventTrackingId.ToString()),
@@ -251,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",          Timestamp.              ToIso8601()),
                               new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
@@ -306,8 +308,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",        Timestamp.              ToIso8601()),
                               //new JProperty("eventTrackingId",  Response.EventTrackingId.ToString()),
@@ -316,7 +318,11 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                               //new JProperty("destination",      Response.Destination.    ToJSON()),
                               //new JProperty("networkPath",      Response.NetworkPath.    ToJSON()),
                               new JProperty("ocppAction",       OCPPAction),
-                              new JProperty("request",          RequestJSON)
+                              new JProperty("request",          RequestJSON),
+                              new JProperty("response",         ResponseJSON),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",    Runtime.Value.TotalMilliseconds)
+                                  : null
                           ),
                           Formatting.None,
                           Request?.EventTrackingId ?? EventTracking_Id.New,
@@ -362,8 +368,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",          Timestamp.              ToIso8601()),
                               //new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
@@ -373,7 +379,11 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                               //new JProperty("networkPath",        Response.NetworkPath.    ToJSON()),
                               new JProperty("ocppAction",         OCPPAction),
                               new JProperty("request",            RequestJSON),
-                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                              new JProperty("response",           ResponseJSON),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString()),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",      Runtime.Value.TotalMilliseconds)
+                                  : null
                           ),
                           Formatting.None,
                           Request?.EventTrackingId ?? EventTracking_Id.New,
@@ -411,8 +421,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",        Timestamp.              ToIso8601()),
                               new JProperty("eventTrackingId",  Request.EventTrackingId.ToString()),
@@ -460,8 +470,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",          Timestamp.              ToIso8601()),
                               new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
@@ -515,8 +525,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",        Timestamp.              ToIso8601()),
                               //new JProperty("eventTrackingId",  Response.EventTrackingId.ToString()),
@@ -525,7 +535,11 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                               //new JProperty("destination",      Response.Destination.    ToJSON()),
                               //new JProperty("networkPath",      Response.NetworkPath.    ToJSON()),
                               new JProperty("ocppAction",       OCPPAction),
-                              new JProperty("request",          RequestBinary)
+                              new JProperty("request",          RequestBinary),
+                              new JProperty("response",         ResponseBinary),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",    Runtime.Value.TotalMilliseconds)
+                                  : null
                           ),
                           Formatting.None,
                           Request?.EventTrackingId ?? EventTracking_Id.New,
@@ -571,8 +585,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                           CancellationToken
                       );
 
-            if (SendHTTPWebSocketLogs)
-                await networkingNode.LoggingWebServer.BroadcastJSONMessage(
+            if (SendHTTPWebSocketLogs && networkingNode.ControlWebSocketServer is not null)
+                await networkingNode.ControlWebSocketServer.BroadcastJSONMessage(
                           JSONObject.Create(
                               new JProperty("timestamp",          Timestamp.              ToIso8601()),
                               //new JProperty("eventTrackingId",    Request.EventTrackingId.ToString()),
@@ -582,7 +596,11 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                               //new JProperty("networkPath",        Response.NetworkPath.    ToJSON()),
                               new JProperty("ocppAction",         OCPPAction),
                               new JProperty("request",            RequestBinary),
-                              new JProperty("sentMessageResult",  SentMessageResult.      ToString())
+                              new JProperty("response",           ResponseBinary),
+                              new JProperty("sentMessageResult",  SentMessageResult.      ToString()),
+                              Runtime.HasValue
+                                  ? new JProperty("runtime",      Runtime.Value.TotalMilliseconds)
+                                  : null
                           ),
                           Formatting.None,
                           Request?.EventTrackingId ?? EventTracking_Id.New,

@@ -84,6 +84,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
                                    HTTPExtAPI?        HTTPExtAPI                  = null,
+                                   WebSocketServer?   ControlWebSocketServer      = null,
 
                                    Boolean            DisableSendHeartbeats       = false,
                                    TimeSpan?          SendHeartbeatsEvery         = null,
@@ -101,6 +102,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                    ForwardingSignaturePolicy,
 
                    HTTPExtAPI,
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

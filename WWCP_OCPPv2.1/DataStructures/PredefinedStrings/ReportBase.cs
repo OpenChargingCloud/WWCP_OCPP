@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this report base is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean               IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this report base is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean               IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the report base.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered report bases.
+        /// </summary>
+        public static IEnumerable<ReportBase>  All
+            => lookup.Values;
 
         #endregion
 

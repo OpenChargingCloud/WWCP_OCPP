@@ -24,6 +24,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class SeveritiesExtensions
     {
 
+        public static IEnumerable<Severities> All
+            => [
+                   Severities.Danger,
+                   Severities.HardwareFailure,
+                   Severities.SystemFailure,
+                   Severities.Critical,
+                   Severities.Error,
+                   Severities.Alert,
+                   Severities.Warning,
+                   Severities.Notice,
+                   Severities.Informational,
+                   Severities.Debug
+               ];
+
         #region Parse   (Text)
 
         /// <summary>

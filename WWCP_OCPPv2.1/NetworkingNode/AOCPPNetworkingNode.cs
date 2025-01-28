@@ -77,6 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
                                    HTTPExtAPI?        HTTPExtAPI                  = null,
+                                   WebSocketServer?   ControlWebSocketServer      = null,
 
                                    Boolean            DisableSendHeartbeats       = false,
                                    TimeSpan?          SendHeartbeatsEvery         = null,
@@ -94,6 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    ForwardingSignaturePolicy,
 
                    HTTPExtAPI,
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
@@ -396,14 +398,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Wire On(JSON/Binary)MessageReceived with OCPP Adapter
 
-            ocppWebSocketServer.OnJSONMessageReceived += (requestTimestamp,
-                                                          wwcpWebSocketServer,
-                                                          webSocketServerConnection,
-                                                          eventTrackingId,
-                                                          messageTimestamp,
-                                                          sourceNodeId,
-                                                          jsonMessage,
-                                                          cancellationToken) =>
+            ocppWebSocketServer.OnJSONMessageReceived2 += (requestTimestamp,
+                                                           wwcpWebSocketServer,
+                                                           webSocketServerConnection,
+                                                           messageTimestamp,
+                                                           eventTrackingId,
+                                                           sourceNodeId,
+                                                           jsonMessage,
+                                                           cancellationToken) =>
 
                 OCPP.IN.ProcessJSONMessage(
                     messageTimestamp,
@@ -415,14 +417,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 );
 
 
-            ocppWebSocketServer.OnBinaryMessageReceived += (requestTimestamp,
-                                                            wwcpWebSocketServer,
-                                                            webSocketServerConnection,
-                                                            eventTrackingId,
-                                                            messageTimestamp,
-                                                            sourceNodeId,
-                                                            binaryMessage,
-                                                            cancellationToken) =>
+            ocppWebSocketServer.OnBinaryMessageReceived2 += (requestTimestamp,
+                                                             wwcpWebSocketServer,
+                                                             webSocketServerConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             sourceNodeId,
+                                                             binaryMessage,
+                                                             cancellationToken) =>
 
                 OCPP.IN.ProcessBinaryMessage(
                     messageTimestamp,

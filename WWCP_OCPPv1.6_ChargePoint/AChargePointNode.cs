@@ -540,6 +540,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 Boolean                            WebAPI_Disabled                = false,
                                 HTTPPath?                          WebAPI_Path                    = null,
 
+                                WebSocketServer?                   ControlWebSocketServer         = null,
+
                                 TimeSpan?                          DefaultRequestTimeout          = null,
 
                                 Boolean                            DisableSendHeartbeats          = false,
@@ -570,6 +572,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                              AutoStart:               true
                          )
                        : null,
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,

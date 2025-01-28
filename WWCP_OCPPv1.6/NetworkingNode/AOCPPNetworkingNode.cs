@@ -72,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                    SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
                                    HTTPExtAPI?        HTTPExtAPI                  = null,
+                                   WebSocketServer?   ControlWebSocketServer      = null,
 
                                    Boolean            DisableSendHeartbeats       = false,
                                    TimeSpan?          SendHeartbeatsEvery         = null,
@@ -89,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                    ForwardingSignaturePolicy,
 
                    HTTPExtAPI,
+                   ControlWebSocketServer,
 
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
@@ -395,8 +397,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             ocppWebSocketServer.OnJSONMessageReceived += (requestTimestamp,
                                                           wwcpWebSocketServer,
                                                           webSocketServerConnection,
-                                                          eventTrackingId,
                                                           messageTimestamp,
+                                                          eventTrackingId,
                                                           sourceNodeId,
                                                           jsonMessage,
                                                           cancellationToken) =>
@@ -414,8 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             ocppWebSocketServer.OnBinaryMessageReceived += (requestTimestamp,
                                                             wwcpWebSocketServer,
                                                             webSocketServerConnection,
-                                                            eventTrackingId,
                                                             messageTimestamp,
+                                                            eventTrackingId,
                                                             sourceNodeId,
                                                             binaryMessage,
                                                             cancellationToken) =>
