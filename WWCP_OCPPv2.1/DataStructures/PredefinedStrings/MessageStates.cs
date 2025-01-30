@@ -195,25 +195,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Message only to be shown while the charging station is charging.
         /// </summary>
-        public static MessageState Charging       { get; }
+        public static MessageState  Charging       { get; }
             = Register("Charging");
 
         /// <summary>
         /// Message only to be shown while the charging station is in faulted state.
         /// </summary>
-        public static MessageState Faulted        { get; }
+        public static MessageState  Faulted        { get; }
             = Register("Faulted");
 
         /// <summary>
         /// Message only to be shown while the charging station is idle (not charging).
         /// </summary>
-        public static MessageState Idle           { get; }
+        public static MessageState  Idle           { get; }
             = Register("Idle");
 
         /// <summary>
         /// Message only to be shown while the charging station is in unavailable state.
         /// </summary>
-        public static MessageState Unavailable    { get; }
+        public static MessageState  Unavailable    { get; }
             = Register("Unavailable");
 
         #endregion

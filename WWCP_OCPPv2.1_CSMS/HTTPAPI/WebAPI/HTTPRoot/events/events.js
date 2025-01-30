@@ -1,7 +1,7 @@
 ///<reference path="../../../../../../../libs/UsersAPI/UsersAPI/HTTPRoot/libs/date.format.ts" />
 function StartEventsSSE() {
     //MenuHighlight('Events');
-    const pionixDeviceModel = [
+    const pionix222DeviceModel = [
         {
             "component": {
                 "name": "AlignedDataCtrlr"
@@ -4689,14 +4689,48 @@ function StartEventsSSE() {
         eventsDiv.insertBefore(logEntryDiv, eventsDiv.firstChild);
     }
     function AppendLogEntry(timestamp, roamingNetwork, command, searchPattern, message) {
-        const AllLogLines = eventsDiv.getElementsByClassName('logLine');
-        for (let i = 0; i < AllLogLines.length; i++) {
-            if (AllLogLines[i].getElementsByClassName("command")[0].innerHTML == command) {
-                if (AllLogLines[i].innerHTML.indexOf(searchPattern) > -1) {
-                    AllLogLines[i].getElementsByClassName("message")[0].innerHTML += message;
+        const allLogLines = eventsDiv.getElementsByClassName('logLine');
+        let found = false;
+        for (let i = 0; i < allLogLines.length; i++) {
+            if (allLogLines[i].getElementsByClassName("command")[0].innerHTML == command) {
+                if (allLogLines[i].innerHTML.indexOf(searchPattern) > -1) {
+                    found = true;
+                    allLogLines[i].getElementsByClassName("message")[0].innerHTML += message;
                     break;
                 }
             }
+        }
+        if (!found) {
+            const logEntryDiv = document.createElement('div');
+            logEntryDiv.className = "logLine";
+            //logEntryDiv.style.color       = "#" + connectionColor.textcolor;
+            //logEntryDiv.style.background  = "#" + connectionColor.background;
+            const timestampDiv = document.createElement('div');
+            timestampDiv.className = "timestamp";
+            timestampDiv.innerHTML = timestamp;
+            logEntryDiv.appendChild(timestampDiv);
+            const eventTrackingIdDiv = document.createElement('div');
+            eventTrackingIdDiv.className = "eventTrackingId";
+            //eventTrackingIdDiv.innerHTML  = eventTrackingId;
+            logEntryDiv.appendChild(eventTrackingIdDiv);
+            const commandDiv = document.createElement('div');
+            commandDiv.className = "command";
+            commandDiv.innerHTML = command;
+            logEntryDiv.appendChild(commandDiv);
+            const messageDiv = document.createElement('div');
+            messageDiv.className = "message";
+            logEntryDiv.appendChild(messageDiv);
+            if (Array.isArray(message))
+                message = message.reduce(function (a, b) { return a + "<br />" + b; });
+            else if (message instanceof HTMLDivElement)
+                messageDiv.appendChild(message);
+            else
+                messageDiv.innerHTML = "RESPONSE: " + message;
+            if (logEntryDiv.innerHTML.indexOf(streamFilterInput.value) > -1)
+                logEntryDiv.style.display = 'table-row';
+            else
+                logEntryDiv.style.display = 'none';
+            eventsDiv.insertBefore(logEntryDiv, eventsDiv.firstChild);
         }
     }
     const eventsSource = window.EventSource !== undefined
@@ -4787,7 +4821,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnGet15118EVCertificateRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnGet15118EVCertificate", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnGet15118EVCertificate", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4813,7 +4847,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnGetCertificateStatusRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnGetCertificateStatus", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnGetCertificateStatus", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4839,7 +4873,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnGetCRLRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnGetCRL", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnGetCRL", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4865,7 +4899,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnSignCertificateRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnSignCertificate", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnSignCertificate", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4892,7 +4926,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnAuthorizeRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnAuthorize", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnAuthorize", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4918,7 +4952,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnClearedChargingLimitRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnClearedChargingLimit", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnClearedChargingLimit", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4944,7 +4978,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnMeterValuesRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnMeterValues", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnMeterValues", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4970,7 +5004,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyChargingLimitRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyChargingLimit", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyChargingLimit", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -4996,7 +5030,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyEVChargingNeedsRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyEVChargingNeeds", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyEVChargingNeeds", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5022,7 +5056,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyEVChargingScheduleRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyEVChargingSchedule", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyEVChargingSchedule", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5048,7 +5082,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyPriorityChargingRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyPriorityCharging", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyPriorityCharging", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5074,7 +5108,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifySettlementRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifySettlement", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifySettlement", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5100,7 +5134,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnPullDynamicScheduleUpdateRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnPullDynamicScheduleUpdate", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnPullDynamicScheduleUpdate", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5126,7 +5160,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnReportChargingProfilesRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnReportChargingProfiles", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnReportChargingProfiles", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5152,7 +5186,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnReservationStatusUpdateRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnReservationStatusUpdate", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnReservationStatusUpdate", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5178,7 +5212,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnStatusNotificationRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnStatusNotification", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnStatusNotification", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5204,7 +5238,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnTransactionEventRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnTransactionEvent", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnTransactionEvent", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5231,7 +5265,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyCustomerInformationRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyCustomerInformation", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyCustomerInformation", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5257,7 +5291,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyDisplayMessagesRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyDisplayMessages", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyDisplayMessages", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5284,7 +5318,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnLogStatusNotificationRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnLogStatusNotification", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnLogStatusNotification", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5310,7 +5344,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyEventRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyEvent", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyEvent", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5336,7 +5370,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyMonitoringReportRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyMonitoringReport", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyMonitoringReport", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5362,7 +5396,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnNotifyReportRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyReport", OnNotifyReport(request.data.reportData), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnNotifyReport", OnNotifyReport(request.request.reportData), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5388,7 +5422,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnSecurityEventNotificationRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnSecurityEventNotification", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnSecurityEventNotification", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5442,7 +5476,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnFirmwareStatusNotificationRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnFirmwareStatusNotification", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnFirmwareStatusNotification", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5468,7 +5502,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnHeartbeatRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnHeartbeat", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnHeartbeat", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5494,7 +5528,7 @@ function StartEventsSSE() {
         eventsSource.addEventListener('OnPublishFirmwareStatusNotificationRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnPublishFirmwareStatusNotification", JSON.stringify(request.data), request.networkPath[0] // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.destinationNodeId, request.eventTrackingId, "OnPublishFirmwareStatusNotification", JSON.stringify(request.request), request.networkPath[0] // ConnectionColorKey
                 );
             }
             catch (exception) {
@@ -5524,184 +5558,193 @@ function StartEventsSSE() {
         // If the message is JSON, you could parse it:
         // const data = JSON.parse(event.data);
     };
-    CreateLogEntry("2024-02-26T21:53:54.019Z", "-", "1234", "OnNotifyReport", OnNotifyReport(pionixDeviceModel), "-");
     function OnNotifyReport(reportData) {
-        var _a;
+        var _a, _b, _c;
         if (!Array.isArray(reportData))
             return;
-        const lookup = new Map();
-        for (const entry of reportData) {
-            // Component Name
-            const componentName = entry.component.name;
-            if (!lookup.has(componentName))
-                lookup.set(componentName, new Map());
-            const componentMap = lookup.get(componentName);
-            // Component Instance
-            const componentInstance = entry.component.instance || 'default';
-            if (!(componentMap === null || componentMap === void 0 ? void 0 : componentMap.has(componentInstance)))
-                componentMap === null || componentMap === void 0 ? void 0 : componentMap.set(componentInstance, new Map());
-            const componentInstanceMap = componentMap.get(componentInstance);
-            // Component EVSE
-            const evseId = ((_a = entry.component.evse) === null || _a === void 0 ? void 0 : _a.id) || 'default';
-            if (!(componentInstanceMap === null || componentInstanceMap === void 0 ? void 0 : componentInstanceMap.has(evseId)))
-                componentInstanceMap === null || componentInstanceMap === void 0 ? void 0 : componentInstanceMap.set(evseId, new Map());
-            // Variable Name
-            const variableMap = componentInstanceMap.get(evseId);
-            const variableName = entry.variable.name;
-            if (!variableMap.has(variableName))
-                variableMap.set(variableName, []);
-            // Variable Instance
-            const variableInstance = entry.variable.instance || 'default';
-            const entries = variableMap === null || variableMap === void 0 ? void 0 : variableMap.get(variableName);
-            entries === null || entries === void 0 ? void 0 : entries.push({
-                //variable:                 entry.variable,
-                instance: variableInstance,
-                variableAttribute: entry.variableAttribute,
-                variableCharacteristics: entry.variableCharacteristics,
-            });
-        }
-        const deviceModelDiv = document.createElement('div');
-        deviceModelDiv.className = "deviceModel";
-        for (var component of lookup) {
-            const componentDiv = document.createElement('div');
-            componentDiv.id = "dmc_" + component[0];
-            componentDiv.className = "component";
-            deviceModelDiv.appendChild(componentDiv);
-            // Component Name
-            const componentNameDiv = document.createElement('div');
-            componentNameDiv.className = "name";
-            componentNameDiv.innerHTML = component[0];
-            componentDiv.appendChild(componentNameDiv);
-            // Component Instances
-            const componentInstancesDiv = document.createElement('div');
-            componentInstancesDiv.className = "componentInstances";
-            componentDiv.appendChild(componentInstancesDiv);
-            for (var componentInstance of component[1]) {
+        try {
+            const lookup = new Map();
+            for (const entry of reportData) {
+                // Component Name
+                const componentName = entry.component.name;
+                if (!lookup.has(componentName))
+                    lookup.set(componentName, new Map());
+                const componentMap = lookup.get(componentName);
                 // Component Instance
-                const componentInstanceDiv = document.createElement('div');
-                componentInstanceDiv.id = "dmc_" + component[0] + "_" + componentInstance[0];
-                componentInstanceDiv.className = "componentInstance";
-                componentInstancesDiv.appendChild(componentInstanceDiv);
-                // Component Instance Name
-                if (componentInstance[0].toString() !== "default") {
-                    const componentInstanceNameDiv = document.createElement('div');
-                    componentInstanceNameDiv.className = "name";
-                    componentInstanceNameDiv.innerHTML = componentInstance[0] + " (Instance)";
-                    componentInstanceDiv.appendChild(componentInstanceNameDiv);
-                }
-                // EVSEs
-                const evsesDiv = document.createElement('div');
-                evsesDiv.className = "evses";
-                componentInstanceDiv.appendChild(evsesDiv);
-                for (var evse of componentInstance[1]) {
-                    const evseDiv = document.createElement('div');
-                    evseDiv.id = "dmc_" + component[0] + "_" + componentInstance[0] + "_" + evse[0].toString();
-                    evseDiv.className = "evse";
-                    evsesDiv.appendChild(evseDiv);
-                    // EVSE Id or "default"
-                    if (evse[0].toString() !== "default") {
-                        const evseNameDiv = document.createElement('div');
-                        evseNameDiv.className = "name";
-                        evseNameDiv.innerHTML = "EVSE #" + evse[0].toString();
-                        evseDiv.appendChild(evseNameDiv);
+                const componentInstance = entry.component.instance || 'default';
+                if (!(componentMap === null || componentMap === void 0 ? void 0 : componentMap.has(componentInstance)))
+                    componentMap === null || componentMap === void 0 ? void 0 : componentMap.set(componentInstance, new Map());
+                const componentInstanceMap = componentMap.get(componentInstance);
+                // Component EVSE
+                const evseId = ((_a = entry.component.evse) === null || _a === void 0 ? void 0 : _a.id) || 'default';
+                if (!(componentInstanceMap === null || componentInstanceMap === void 0 ? void 0 : componentInstanceMap.has(evseId)))
+                    componentInstanceMap === null || componentInstanceMap === void 0 ? void 0 : componentInstanceMap.set(evseId, new Map());
+                // Variable Name
+                const variableMap = componentInstanceMap.get(evseId);
+                const variableName = entry.variable.name;
+                if (!variableMap.has(variableName))
+                    variableMap.set(variableName, []);
+                // Variable Instance
+                const variableInstance = entry.variable.instance || 'default';
+                const entries = variableMap === null || variableMap === void 0 ? void 0 : variableMap.get(variableName);
+                entries === null || entries === void 0 ? void 0 : entries.push({
+                    //variable:                 entry.variable,
+                    instance: variableInstance,
+                    variableAttribute: entry.variableAttribute,
+                    variableCharacteristics: entry.variableCharacteristics,
+                });
+            }
+            const deviceModelDiv = document.createElement('div');
+            deviceModelDiv.className = "deviceModel";
+            for (var component of lookup) {
+                const componentDiv = document.createElement('div');
+                componentDiv.id = "dmc_" + component[0];
+                componentDiv.className = "component";
+                deviceModelDiv.appendChild(componentDiv);
+                // Component Name
+                const componentNameDiv = document.createElement('div');
+                componentNameDiv.className = "name";
+                componentNameDiv.innerHTML = component[0];
+                componentDiv.appendChild(componentNameDiv);
+                // Component Instances
+                const componentInstancesDiv = document.createElement('div');
+                componentInstancesDiv.className = "componentInstances";
+                componentDiv.appendChild(componentInstancesDiv);
+                for (var componentInstance of component[1]) {
+                    // Component Instance
+                    const componentInstanceDiv = document.createElement('div');
+                    componentInstanceDiv.id = "dmc_" + component[0] + "_" + componentInstance[0];
+                    componentInstanceDiv.className = "componentInstance";
+                    componentInstancesDiv.appendChild(componentInstanceDiv);
+                    // Component Instance Name
+                    if (componentInstance[0].toString() !== "default") {
+                        const componentInstanceNameDiv = document.createElement('div');
+                        componentInstanceNameDiv.className = "name";
+                        componentInstanceNameDiv.innerHTML = componentInstance[0] + " (Instance)";
+                        componentInstanceDiv.appendChild(componentInstanceNameDiv);
                     }
-                    // Variables
-                    const variablesDiv = document.createElement('div');
-                    variablesDiv.className = "variables";
-                    evseDiv.appendChild(variablesDiv);
-                    for (var variable of evse[1]) {
-                        const variableDiv = document.createElement('div');
-                        variableDiv.className = "variable";
-                        variablesDiv.appendChild(variableDiv);
-                        // Variable Name
-                        const variableNameDiv = document.createElement('div');
-                        variableNameDiv.className = "name";
-                        variableNameDiv.innerHTML = variable[0];
-                        variableDiv.appendChild(variableNameDiv);
-                        // Variable Instances
-                        const instancesDiv = document.createElement('div');
-                        instancesDiv.className = "instances";
-                        variableDiv.appendChild(instancesDiv);
-                        for (var instance of variable[1]) {
-                            const instanceDiv = document.createElement('div');
-                            instanceDiv.className = "instance";
-                            instancesDiv.appendChild(instanceDiv);
-                            // Instance
-                            if (instance.instance !== "default") {
-                                const instanceNameDiv = document.createElement('div');
-                                instanceNameDiv.className = "name";
-                                instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
-                                instanceDiv.appendChild(instanceNameDiv);
+                    // EVSEs
+                    const evsesDiv = document.createElement('div');
+                    evsesDiv.className = "evses";
+                    componentInstanceDiv.appendChild(evsesDiv);
+                    for (var evse of componentInstance[1]) {
+                        const evseDiv = document.createElement('div');
+                        evseDiv.id = "dmc_" + component[0] + "_" + componentInstance[0] + "_" + evse[0].toString();
+                        evseDiv.className = "evse";
+                        evsesDiv.appendChild(evseDiv);
+                        // EVSE Id or "default"
+                        if (evse[0].toString() !== "default") {
+                            const evseNameDiv = document.createElement('div');
+                            evseNameDiv.className = "name";
+                            evseNameDiv.innerHTML = "EVSE #" + evse[0].toString();
+                            evseDiv.appendChild(evseNameDiv);
+                        }
+                        // Variables
+                        const variablesDiv = document.createElement('div');
+                        variablesDiv.className = "variables";
+                        evseDiv.appendChild(variablesDiv);
+                        for (var variable of evse[1]) {
+                            const variableDiv = document.createElement('div');
+                            variableDiv.className = "variable";
+                            variablesDiv.appendChild(variableDiv);
+                            // Variable Name
+                            const variableNameDiv = document.createElement('div');
+                            variableNameDiv.className = "name";
+                            variableNameDiv.innerHTML = variable[0];
+                            variableDiv.appendChild(variableNameDiv);
+                            // Variable Instances
+                            const instancesDiv = document.createElement('div');
+                            instancesDiv.className = "instances";
+                            variableDiv.appendChild(instancesDiv);
+                            for (var instance of variable[1]) {
+                                const instanceDiv = document.createElement('div');
+                                instanceDiv.className = "instance";
+                                instancesDiv.appendChild(instanceDiv);
+                                // Instance
+                                if (instance.instance !== "default") {
+                                    const instanceNameDiv = document.createElement('div');
+                                    instanceNameDiv.className = "name";
+                                    instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
+                                    instanceDiv.appendChild(instanceNameDiv);
+                                }
+                                const vc = instance.variableCharacteristics;
+                                if (vc != null) {
+                                    // Variable Characteristics
+                                    const characteristicsDiv = document.createElement('div');
+                                    characteristicsDiv.className = "characteristics";
+                                    instanceDiv.appendChild(characteristicsDiv);
+                                    const dataTypeDiv = document.createElement('div');
+                                    dataTypeDiv.className = "dataType";
+                                    dataTypeDiv.innerHTML = "Data Type: " + ((_c = (_b = instance.variableCharacteristics) === null || _b === void 0 ? void 0 : _b.dataType) !== null && _c !== void 0 ? _c : "-");
+                                    characteristicsDiv.appendChild(dataTypeDiv);
+                                    const supportsMonitoringDiv = document.createElement('div');
+                                    supportsMonitoringDiv.className = "supportsMonitoring";
+                                    supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
+                                    characteristicsDiv.appendChild(supportsMonitoringDiv);
+                                    if (instance.variableCharacteristics.unit) {
+                                        const unitDiv = document.createElement('div');
+                                        unitDiv.className = "unit";
+                                        unitDiv.innerHTML = "Unit: " + instance.variableCharacteristics.unit;
+                                        characteristicsDiv.appendChild(unitDiv);
+                                    }
+                                    if (instance.variableCharacteristics.minLimit) {
+                                        const minLimitDiv = document.createElement('div');
+                                        minLimitDiv.className = "minLimit";
+                                        minLimitDiv.innerHTML = "Min Limit: " + instance.variableCharacteristics.minLimit;
+                                        characteristicsDiv.appendChild(minLimitDiv);
+                                    }
+                                    if (instance.variableCharacteristics.maxLimit) {
+                                        const maxLimitDiv = document.createElement('div');
+                                        maxLimitDiv.className = "maxLimit";
+                                        maxLimitDiv.innerHTML = "Max Limit: " + instance.variableCharacteristics.maxLimit;
+                                        characteristicsDiv.appendChild(maxLimitDiv);
+                                    }
+                                    if (instance.variableCharacteristics.valueList) {
+                                        const valueListDiv = document.createElement('div');
+                                        valueListDiv.className = "valueList";
+                                        characteristicsDiv.appendChild(valueListDiv);
+                                        if (Array.isArray(reportData))
+                                            valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
+                                        else
+                                            valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
+                                    }
+                                }
+                                // Variable Attribute(s)
+                                const attributeDiv = document.createElement('div');
+                                attributeDiv.className = "attribute";
+                                instanceDiv.appendChild(attributeDiv);
+                                const constantDiv = document.createElement('div');
+                                constantDiv.className = "constant";
+                                constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
+                                attributeDiv.appendChild(constantDiv);
+                                const mutabilityDiv = document.createElement('div');
+                                mutabilityDiv.className = "mutability";
+                                mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
+                                attributeDiv.appendChild(mutabilityDiv);
+                                const persistentDiv = document.createElement('div');
+                                persistentDiv.className = "persistent";
+                                persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
+                                attributeDiv.appendChild(persistentDiv);
+                                const typeDiv = document.createElement('div');
+                                typeDiv.className = "type";
+                                typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
+                                attributeDiv.appendChild(typeDiv);
+                                const valueDiv = document.createElement('div');
+                                valueDiv.className = "value";
+                                valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
+                                attributeDiv.appendChild(valueDiv);
                             }
-                            // Variable Characteristics
-                            const characteristicsDiv = document.createElement('div');
-                            characteristicsDiv.className = "characteristics";
-                            instanceDiv.appendChild(characteristicsDiv);
-                            const dataTypeDiv = document.createElement('div');
-                            dataTypeDiv.className = "dataType";
-                            dataTypeDiv.innerHTML = "Data Type: " + instance.variableCharacteristics.dataType;
-                            characteristicsDiv.appendChild(dataTypeDiv);
-                            const supportsMonitoringDiv = document.createElement('div');
-                            supportsMonitoringDiv.className = "supportsMonitoring";
-                            supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
-                            characteristicsDiv.appendChild(supportsMonitoringDiv);
-                            if (instance.variableCharacteristics.unit) {
-                                const unitDiv = document.createElement('div');
-                                unitDiv.className = "unit";
-                                unitDiv.innerHTML = "Unit: " + instance.variableCharacteristics.unit;
-                                characteristicsDiv.appendChild(unitDiv);
-                            }
-                            if (instance.variableCharacteristics.minLimit) {
-                                const minLimitDiv = document.createElement('div');
-                                minLimitDiv.className = "minLimit";
-                                minLimitDiv.innerHTML = "Min Limit: " + instance.variableCharacteristics.minLimit;
-                                characteristicsDiv.appendChild(minLimitDiv);
-                            }
-                            if (instance.variableCharacteristics.maxLimit) {
-                                const maxLimitDiv = document.createElement('div');
-                                maxLimitDiv.className = "maxLimit";
-                                maxLimitDiv.innerHTML = "Max Limit: " + instance.variableCharacteristics.maxLimit;
-                                characteristicsDiv.appendChild(maxLimitDiv);
-                            }
-                            if (instance.variableCharacteristics.valueList) {
-                                const valueListDiv = document.createElement('div');
-                                valueListDiv.className = "valueList";
-                                characteristicsDiv.appendChild(valueListDiv);
-                                if (Array.isArray(reportData))
-                                    valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
-                                else
-                                    valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
-                            }
-                            // Variable Attribute(s)
-                            const attributeDiv = document.createElement('div');
-                            attributeDiv.className = "attribute";
-                            instanceDiv.appendChild(attributeDiv);
-                            const constantDiv = document.createElement('div');
-                            constantDiv.className = "constant";
-                            constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
-                            attributeDiv.appendChild(constantDiv);
-                            const mutabilityDiv = document.createElement('div');
-                            mutabilityDiv.className = "mutability";
-                            mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
-                            attributeDiv.appendChild(mutabilityDiv);
-                            const persistentDiv = document.createElement('div');
-                            persistentDiv.className = "persistent";
-                            persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
-                            attributeDiv.appendChild(persistentDiv);
-                            const typeDiv = document.createElement('div');
-                            typeDiv.className = "type";
-                            typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
-                            attributeDiv.appendChild(typeDiv);
-                            const valueDiv = document.createElement('div');
-                            valueDiv.className = "value";
-                            valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
-                            attributeDiv.appendChild(valueDiv);
                         }
                     }
                 }
             }
+            return deviceModelDiv;
         }
-        return deviceModelDiv;
+        catch (exception) {
+            const x = document.createElement('div');
+            x.innerHTML = exception.toString();
+            return x;
+        }
     }
 }
 //# sourceMappingURL=events.js.map

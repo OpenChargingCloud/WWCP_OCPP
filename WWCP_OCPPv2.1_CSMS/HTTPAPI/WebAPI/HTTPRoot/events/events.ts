@@ -4,7 +4,7 @@ function StartEventsSSE() {
 
     //MenuHighlight('Events');
 
-    const pionixDeviceModel  = [
+    const pionix222DeviceModel  = [
         {
             "component": {
                 "name": "AlignedDataCtrlr"
@@ -4724,15 +4724,61 @@ function StartEventsSSE() {
 
     function AppendLogEntry(timestamp, roamingNetwork, command, searchPattern, message) {
 
-        const AllLogLines = eventsDiv.getElementsByClassName('logLine');
+        const allLogLines = eventsDiv.getElementsByClassName('logLine');
+        let   found       = false;
 
-        for (let i = 0; i < AllLogLines.length; i++) {
-            if (AllLogLines[i].getElementsByClassName("command")[0].innerHTML == command) {
-                if (AllLogLines[i].innerHTML.indexOf(searchPattern) > -1) {
-                    AllLogLines[i].getElementsByClassName("message")[0].innerHTML += message;
+        for (let i = 0; i < allLogLines.length; i++) {
+            if (allLogLines[i].getElementsByClassName("command")[0].innerHTML == command) {
+                if (allLogLines[i].innerHTML.indexOf(searchPattern) > -1) {
+                    found = true;
+                    allLogLines[i].getElementsByClassName("message")[0].innerHTML += message;
                     break;
                 }
             }
+        }
+
+        if (!found) {
+
+            const logEntryDiv = document.createElement('div');
+            logEntryDiv.className         = "logLine";
+            //logEntryDiv.style.color       = "#" + connectionColor.textcolor;
+            //logEntryDiv.style.background  = "#" + connectionColor.background;
+
+            const timestampDiv            = document.createElement('div');
+            timestampDiv.className        = "timestamp";
+            timestampDiv.innerHTML        = timestamp;
+            logEntryDiv.appendChild(timestampDiv);
+
+            const eventTrackingIdDiv      = document.createElement('div');
+            eventTrackingIdDiv.className  = "eventTrackingId";
+            //eventTrackingIdDiv.innerHTML  = eventTrackingId;
+            logEntryDiv.appendChild(eventTrackingIdDiv);
+
+            const commandDiv              = document.createElement('div');
+            commandDiv.className          = "command";
+            commandDiv.innerHTML          = command;
+            logEntryDiv.appendChild(commandDiv);
+
+            const messageDiv              = document.createElement('div');
+            messageDiv.className          = "message";
+            logEntryDiv.appendChild(messageDiv);
+
+            if (Array.isArray(message))
+                message = message.reduce(function (a, b) { return a + "<br />" + b; });
+
+            else if (message instanceof HTMLDivElement)
+                messageDiv.appendChild(message);
+
+            else
+                messageDiv.innerHTML = "RESPONSE: " + message;
+
+            if (logEntryDiv.innerHTML.indexOf(streamFilterInput.value) > -1)
+                logEntryDiv.style.display = 'table-row';
+            else
+                logEntryDiv.style.display = 'none';
+
+            eventsDiv.insertBefore(logEntryDiv, eventsDiv.firstChild);
+
         }
 
     }
@@ -4926,7 +4972,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnGet15118EVCertificate",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -4975,7 +5021,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnGetCertificateStatus",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5024,7 +5070,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnGetCRL",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5073,7 +5119,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnSignCertificate",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5126,7 +5172,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnAuthorize",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5175,7 +5221,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnClearedChargingLimit",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5224,7 +5270,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnMeterValues",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5273,7 +5319,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyChargingLimit",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5322,7 +5368,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyEVChargingNeeds",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5371,7 +5417,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyEVChargingSchedule",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5420,7 +5466,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyPriorityCharging",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5469,7 +5515,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifySettlement",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5518,7 +5564,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnPullDynamicScheduleUpdate",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5567,7 +5613,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnReportChargingProfiles",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5616,7 +5662,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnReservationStatusUpdate",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5665,7 +5711,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnStatusNotification",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5714,7 +5760,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnTransactionEvent",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5766,7 +5812,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyCustomerInformation",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5815,7 +5861,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyDisplayMessages",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5867,7 +5913,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnLogStatusNotification",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5916,7 +5962,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyEvent",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -5965,7 +6011,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyMonitoringReport",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -6014,7 +6060,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnNotifyReport",
-                               OnNotifyReport(request.data.reportData),
+                               OnNotifyReport(request.request.reportData),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -6063,7 +6109,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnSecurityEventNotification",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -6165,7 +6211,7 @@ function StartEventsSSE() {
                     request.destinationNodeId,
                     request.eventTrackingId,
                     "OnFirmwareStatusNotification",
-                    JSON.stringify(request.data),
+                    JSON.stringify(request.request),
                     request.networkPath[0] // ConnectionColorKey
                 );
 
@@ -6213,7 +6259,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnHeartbeat",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -6262,7 +6308,7 @@ function StartEventsSSE() {
                                request.destinationNodeId,
                                request.eventTrackingId,
                                "OnPublishFirmwareStatusNotification",
-                               JSON.stringify(request.data),
+                               JSON.stringify(request.request),
                                request.networkPath[0] // ConnectionColorKey
                               );
 
@@ -6319,14 +6365,14 @@ function StartEventsSSE() {
 
 
 
-    CreateLogEntry(
-        "2024-02-26T21:53:54.019Z",
-        "-",
-        "1234",
-        "OnNotifyReport",
-        OnNotifyReport(pionixDeviceModel),
-        "-"
-    );
+    //CreateLogEntry(
+    //    "2024-02-26T21:53:54.019Z",
+    //    "-",
+    //    "1234",
+    //    "OnNotifyReport",
+    //    OnNotifyReport(pionixDeviceModel),
+    //    "-"
+    //);
 
 
     interface Variable {
@@ -6377,232 +6423,240 @@ function StartEventsSSE() {
         if (!Array.isArray(reportData))
             return;
 
-        const lookup: ComponentLookup = new Map();
+        try {
 
-        for (const entry of reportData)
-        {
+            const lookup: ComponentLookup = new Map();
 
-            // Component Name
-            const componentName  = entry.component.name;
+            for (const entry of reportData) {
 
-            if (!lookup.has(componentName))
-                lookup.set(componentName, new Map());
+                // Component Name
+                const componentName = entry.component.name;
 
-            const componentMap = lookup.get(componentName);
+                if (!lookup.has(componentName))
+                    lookup.set(componentName, new Map());
 
+                const componentMap = lookup.get(componentName);
 
-            // Component Instance
-            const componentInstance = entry.component.instance || 'default';
-
-            if (!componentMap?.has(componentInstance))
-                componentMap?.set(componentInstance, new Map());
-
-            const componentInstanceMap = componentMap.get(componentInstance);
-
-
-            // Component EVSE
-            const evseId = entry.component.evse?.id || 'default';
-
-            if (!componentInstanceMap?.has(evseId))
-                componentInstanceMap?.set(evseId, new Map());
-
-
-            // Variable Name
-            const variableMap      = componentInstanceMap.get(evseId);
-            const variableName     = entry.variable.name;
-
-            if (!variableMap.has(variableName))
-                variableMap.set(variableName, []);
-
-
-            // Variable Instance
-            const variableInstance = entry.variable.instance || 'default';
-
-            const entries = variableMap?.get(variableName);
-            entries?.push({
-                //variable:                 entry.variable,
-                instance:                 variableInstance,
-                variableAttribute:        entry.variableAttribute,
-                variableCharacteristics:  entry.variableCharacteristics,
-            });
-
-        }
-
-        const deviceModelDiv = document.createElement('div');
-        deviceModelDiv.className = "deviceModel";
-
-        for (var component of lookup)
-        {
-
-            const componentDiv              = document.createElement('div');
-            componentDiv.id                 = "dmc_" + component[0];
-            componentDiv.className          = "component";
-            deviceModelDiv.appendChild(componentDiv);
-
-            // Component Name
-            const componentNameDiv          = document.createElement('div');
-            componentNameDiv.className      = "name";
-            componentNameDiv.innerHTML      = component[0];
-            componentDiv.appendChild(componentNameDiv);
-
-            // Component Instances
-            const componentInstancesDiv      = document.createElement('div');
-            componentInstancesDiv.className  = "componentInstances";
-            componentDiv.appendChild(componentInstancesDiv);
-
-            for (var componentInstance of component[1]) {
 
                 // Component Instance
-                const componentInstanceDiv          = document.createElement('div');
-                componentInstanceDiv.id             = "dmc_" + component[0] + "_" + componentInstance[0];
-                componentInstanceDiv.className      = "componentInstance";
-                componentInstancesDiv.appendChild(componentInstanceDiv);
+                const componentInstance = entry.component.instance || 'default';
 
-                // Component Instance Name
-                if (componentInstance[0].toString() !== "default") {
-                    const componentInstanceNameDiv      = document.createElement('div');
-                    componentInstanceNameDiv.className  = "name";
-                    componentInstanceNameDiv.innerHTML = componentInstance[0] + " (Instance)";
-                    componentInstanceDiv.appendChild(componentInstanceNameDiv);
-                }
+                if (!componentMap?.has(componentInstance))
+                    componentMap?.set(componentInstance, new Map());
 
-                // EVSEs
-                const evsesDiv                      = document.createElement('div');
-                evsesDiv.className                  = "evses";
-                componentInstanceDiv.appendChild(evsesDiv);
+                const componentInstanceMap = componentMap.get(componentInstance);
 
-                for (var evse of componentInstance[1]) {
 
-                    const evseDiv             = document.createElement('div');
-                    evseDiv.id                = "dmc_" + component[0] + "_" + componentInstance[0] + "_" + evse[0].toString();
-                    evseDiv.className         = "evse";
-                    evsesDiv.appendChild(evseDiv);
+                // Component EVSE
+                const evseId = entry.component.evse?.id || 'default';
 
-                    // EVSE Id or "default"
-                    if (evse[0].toString() !== "default") {
-                        const evseNameDiv = document.createElement('div');
-                        evseNameDiv.className = "name";
-                        evseNameDiv.innerHTML = "EVSE #" + evse[0].toString();
-                        evseDiv.appendChild(evseNameDiv);
+                if (!componentInstanceMap?.has(evseId))
+                    componentInstanceMap?.set(evseId, new Map());
+
+
+                // Variable Name
+                const variableMap = componentInstanceMap.get(evseId);
+                const variableName = entry.variable.name;
+
+                if (!variableMap.has(variableName))
+                    variableMap.set(variableName, []);
+
+
+                // Variable Instance
+                const variableInstance = entry.variable.instance || 'default';
+
+                const entries = variableMap?.get(variableName);
+                entries?.push({
+                    //variable:                 entry.variable,
+                    instance: variableInstance,
+                    variableAttribute: entry.variableAttribute,
+                    variableCharacteristics: entry.variableCharacteristics,
+                });
+
+            }
+
+            const deviceModelDiv = document.createElement('div');
+            deviceModelDiv.className = "deviceModel";
+
+            for (var component of lookup) {
+
+                const componentDiv = document.createElement('div');
+                componentDiv.id = "dmc_" + component[0];
+                componentDiv.className = "component";
+                deviceModelDiv.appendChild(componentDiv);
+
+                // Component Name
+                const componentNameDiv = document.createElement('div');
+                componentNameDiv.className = "name";
+                componentNameDiv.innerHTML = component[0];
+                componentDiv.appendChild(componentNameDiv);
+
+                // Component Instances
+                const componentInstancesDiv = document.createElement('div');
+                componentInstancesDiv.className = "componentInstances";
+                componentDiv.appendChild(componentInstancesDiv);
+
+                for (var componentInstance of component[1]) {
+
+                    // Component Instance
+                    const componentInstanceDiv = document.createElement('div');
+                    componentInstanceDiv.id = "dmc_" + component[0] + "_" + componentInstance[0];
+                    componentInstanceDiv.className = "componentInstance";
+                    componentInstancesDiv.appendChild(componentInstanceDiv);
+
+                    // Component Instance Name
+                    if (componentInstance[0].toString() !== "default") {
+                        const componentInstanceNameDiv = document.createElement('div');
+                        componentInstanceNameDiv.className = "name";
+                        componentInstanceNameDiv.innerHTML = componentInstance[0] + " (Instance)";
+                        componentInstanceDiv.appendChild(componentInstanceNameDiv);
                     }
 
-                    // Variables
-                    const variablesDiv = document.createElement('div');
-                    variablesDiv.className = "variables";
-                    evseDiv.appendChild(variablesDiv);
+                    // EVSEs
+                    const evsesDiv = document.createElement('div');
+                    evsesDiv.className = "evses";
+                    componentInstanceDiv.appendChild(evsesDiv);
 
-                    for (var variable of evse[1]) {
+                    for (var evse of componentInstance[1]) {
 
-                        const variableDiv = document.createElement('div');
-                        variableDiv.className = "variable";
-                        variablesDiv.appendChild(variableDiv);
+                        const evseDiv = document.createElement('div');
+                        evseDiv.id = "dmc_" + component[0] + "_" + componentInstance[0] + "_" + evse[0].toString();
+                        evseDiv.className = "evse";
+                        evsesDiv.appendChild(evseDiv);
 
-                        // Variable Name
-                        const variableNameDiv = document.createElement('div');
-                        variableNameDiv.className = "name";
-                        variableNameDiv.innerHTML = variable[0];
-                        variableDiv.appendChild(variableNameDiv);
+                        // EVSE Id or "default"
+                        if (evse[0].toString() !== "default") {
+                            const evseNameDiv = document.createElement('div');
+                            evseNameDiv.className = "name";
+                            evseNameDiv.innerHTML = "EVSE #" + evse[0].toString();
+                            evseDiv.appendChild(evseNameDiv);
+                        }
 
-                        // Variable Instances
-                        const instancesDiv = document.createElement('div');
-                        instancesDiv.className = "instances";
-                        variableDiv.appendChild(instancesDiv);
+                        // Variables
+                        const variablesDiv = document.createElement('div');
+                        variablesDiv.className = "variables";
+                        evseDiv.appendChild(variablesDiv);
 
-                        for (var instance of variable[1]) {
+                        for (var variable of evse[1]) {
 
-                            const instanceDiv = document.createElement('div');
-                            instanceDiv.className = "instance";
-                            instancesDiv.appendChild(instanceDiv);
+                            const variableDiv = document.createElement('div');
+                            variableDiv.className = "variable";
+                            variablesDiv.appendChild(variableDiv);
 
-                            // Instance
-                            if (instance.instance !== "default") {
-                                const instanceNameDiv = document.createElement('div');
-                                instanceNameDiv.className = "name";
-                                instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
-                                instanceDiv.appendChild(instanceNameDiv);
+                            // Variable Name
+                            const variableNameDiv = document.createElement('div');
+                            variableNameDiv.className = "name";
+                            variableNameDiv.innerHTML = variable[0];
+                            variableDiv.appendChild(variableNameDiv);
+
+                            // Variable Instances
+                            const instancesDiv = document.createElement('div');
+                            instancesDiv.className = "instances";
+                            variableDiv.appendChild(instancesDiv);
+
+                            for (var instance of variable[1]) {
+
+                                const instanceDiv = document.createElement('div');
+                                instanceDiv.className = "instance";
+                                instancesDiv.appendChild(instanceDiv);
+
+                                // Instance
+                                if (instance.instance !== "default") {
+                                    const instanceNameDiv = document.createElement('div');
+                                    instanceNameDiv.className = "name";
+                                    instanceNameDiv.innerHTML = instance.instance + " (Variable Instance)";
+                                    instanceDiv.appendChild(instanceNameDiv);
+                                }
+
+                                const vc = instance.variableCharacteristics;
+
+                                if (vc != null) {
+
+                                    // Variable Characteristics
+                                    const characteristicsDiv = document.createElement('div');
+                                    characteristicsDiv.className = "characteristics";
+                                    instanceDiv.appendChild(characteristicsDiv);
+
+                                    const dataTypeDiv = document.createElement('div');
+                                    dataTypeDiv.className = "dataType";
+                                    dataTypeDiv.innerHTML = "Data Type: " + (instance.variableCharacteristics?.dataType ?? "-");
+                                    characteristicsDiv.appendChild(dataTypeDiv);
+
+                                    const supportsMonitoringDiv = document.createElement('div');
+                                    supportsMonitoringDiv.className = "supportsMonitoring";
+                                    supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
+                                    characteristicsDiv.appendChild(supportsMonitoringDiv);
+
+                                    if (instance.variableCharacteristics.unit) {
+                                        const unitDiv = document.createElement('div');
+                                        unitDiv.className = "unit";
+                                        unitDiv.innerHTML = "Unit: " + instance.variableCharacteristics.unit;
+                                        characteristicsDiv.appendChild(unitDiv);
+                                    }
+
+                                    if (instance.variableCharacteristics.minLimit) {
+                                        const minLimitDiv = document.createElement('div');
+                                        minLimitDiv.className = "minLimit";
+                                        minLimitDiv.innerHTML = "Min Limit: " + instance.variableCharacteristics.minLimit;
+                                        characteristicsDiv.appendChild(minLimitDiv);
+                                    }
+
+                                    if (instance.variableCharacteristics.maxLimit) {
+                                        const maxLimitDiv = document.createElement('div');
+                                        maxLimitDiv.className = "maxLimit";
+                                        maxLimitDiv.innerHTML = "Max Limit: " + instance.variableCharacteristics.maxLimit;
+                                        characteristicsDiv.appendChild(maxLimitDiv);
+                                    }
+
+                                    if (instance.variableCharacteristics.valueList) {
+
+                                        const valueListDiv = document.createElement('div');
+                                        valueListDiv.className = "valueList";
+                                        characteristicsDiv.appendChild(valueListDiv);
+
+                                        if (Array.isArray(reportData))
+                                            valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
+
+                                        else
+                                            valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
+
+                                    }
+
+                                }
+
+
+                                // Variable Attribute(s)
+                                const attributeDiv = document.createElement('div');
+                                attributeDiv.className = "attribute";
+                                instanceDiv.appendChild(attributeDiv);
+
+                                const constantDiv = document.createElement('div');
+                                constantDiv.className = "constant";
+                                constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
+                                attributeDiv.appendChild(constantDiv);
+
+                                const mutabilityDiv = document.createElement('div');
+                                mutabilityDiv.className = "mutability";
+                                mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
+                                attributeDiv.appendChild(mutabilityDiv);
+
+                                const persistentDiv = document.createElement('div');
+                                persistentDiv.className = "persistent";
+                                persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
+                                attributeDiv.appendChild(persistentDiv);
+
+                                const typeDiv = document.createElement('div');
+                                typeDiv.className = "type";
+                                typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
+                                attributeDiv.appendChild(typeDiv);
+
+                                const valueDiv = document.createElement('div');
+                                valueDiv.className = "value";
+                                valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
+                                attributeDiv.appendChild(valueDiv);
+
+
                             }
-
-                            // Variable Characteristics
-                            const characteristicsDiv = document.createElement('div');
-                            characteristicsDiv.className = "characteristics";
-                            instanceDiv.appendChild(characteristicsDiv);
-
-                            const dataTypeDiv = document.createElement('div');
-                            dataTypeDiv.className = "dataType";
-                            dataTypeDiv.innerHTML = "Data Type: " + instance.variableCharacteristics.dataType;
-                            characteristicsDiv.appendChild(dataTypeDiv);
-
-                            const supportsMonitoringDiv = document.createElement('div');
-                            supportsMonitoringDiv.className = "supportsMonitoring";
-                            supportsMonitoringDiv.innerHTML = "Supports Monitoring: " + (instance.variableCharacteristics.supportsMonitoring ? "true" : "false");
-                            characteristicsDiv.appendChild(supportsMonitoringDiv);
-
-                            if (instance.variableCharacteristics.unit) {
-                                const unitDiv = document.createElement('div');
-                                unitDiv.className = "unit";
-                                unitDiv.innerHTML = "Unit: " + instance.variableCharacteristics.unit;
-                                characteristicsDiv.appendChild(unitDiv);
-                            }
-
-                            if (instance.variableCharacteristics.minLimit) {
-                                const minLimitDiv = document.createElement('div');
-                                minLimitDiv.className = "minLimit";
-                                minLimitDiv.innerHTML = "Min Limit: " + instance.variableCharacteristics.minLimit;
-                                characteristicsDiv.appendChild(minLimitDiv);
-                            }
-
-                            if (instance.variableCharacteristics.maxLimit) {
-                                const maxLimitDiv = document.createElement('div');
-                                maxLimitDiv.className = "maxLimit";
-                                maxLimitDiv.innerHTML = "Max Limit: " + instance.variableCharacteristics.maxLimit;
-                                characteristicsDiv.appendChild(maxLimitDiv);
-                            }
-
-                            if (instance.variableCharacteristics.valueList) {
-
-                                const valueListDiv      = document.createElement('div');
-                                valueListDiv.className  = "valueList";
-                                characteristicsDiv.appendChild(valueListDiv);
-
-                                if (Array.isArray(reportData))
-                                    valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
-
-                                else
-                                    valueListDiv.innerHTML = "Value List: " + instance.variableCharacteristics.valueList;
-
-                            }
-
-
-                            // Variable Attribute(s)
-                            const attributeDiv = document.createElement('div');
-                            attributeDiv.className = "attribute";
-                            instanceDiv.appendChild(attributeDiv);
-
-                            const constantDiv = document.createElement('div');
-                            constantDiv.className = "constant";
-                            constantDiv.innerHTML = "Constant: " + (instance.variableAttribute[0].constant ? "true" : "false");
-                            attributeDiv.appendChild(constantDiv);
-
-                            const mutabilityDiv = document.createElement('div');
-                            mutabilityDiv.className = "mutability";
-                            mutabilityDiv.innerHTML = "Mutability: " + instance.variableAttribute[0].mutability;
-                            attributeDiv.appendChild(mutabilityDiv);
-
-                            const persistentDiv = document.createElement('div');
-                            persistentDiv.className = "persistent";
-                            persistentDiv.innerHTML = "Persistent: " + (instance.variableAttribute[0].persistent ? "true" : "false");
-                            attributeDiv.appendChild(persistentDiv);
-
-                            const typeDiv = document.createElement('div');
-                            typeDiv.className = "type";
-                            typeDiv.innerHTML = "Type: " + instance.variableAttribute[0].type;
-                            attributeDiv.appendChild(typeDiv);
-
-                            const valueDiv = document.createElement('div');
-                            valueDiv.className = "value";
-                            valueDiv.innerHTML = "Value: '" + instance.variableAttribute[0].value + "'";
-                            attributeDiv.appendChild(valueDiv);
-
 
                         }
 
@@ -6612,9 +6666,13 @@ function StartEventsSSE() {
 
             }
 
-        }
+            return deviceModelDiv;
 
-        return deviceModelDiv;
+        } catch (exception) {
+            const x = document.createElement('div')
+            x.innerHTML = exception.toString();
+            return x;
+        }
 
     }
 

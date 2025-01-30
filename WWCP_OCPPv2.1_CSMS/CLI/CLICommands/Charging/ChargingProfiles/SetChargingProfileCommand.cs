@@ -131,6 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 if (!ChargingProfile_Id.TryParse(Arguments[2], out var chargingProfileId))
                     return [ $"Invalid charging profile identification '{Arguments[2]}'"];
 
+
                 var chargingProfile = new ChargingProfile(
                                           ChargingProfile_Id.Parse("100"),
                                           0,
@@ -153,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(20), // == 20:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(12, ChargingRateUnits.Amperes),
+                                                                                    Limit:           ChargingRateValue.Parse(14, ChargingRateUnits.Amperes),
                                                                                     NumberOfPhases:  3
                                                                                 )
                                                                             ],
@@ -164,9 +165,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                           null, //Transaction_Id.TryParse(5678),
                                           RecurrencyKinds.Daily,
                                           DateTime.Parse("2025-01-25T00:00:00Z").ToUniversalTime(),
-                                          DateTime.Now.AddDays(7).ToUniversalTime()
+                                          DateTime.Now.AddMinutes(1).ToUniversalTime()//   .AddDays(7).ToUniversalTime()
                                       );
 
+                //Note: startSchedule is not between validFrom and validTo
                 if (chargingProfileId.ToString() == "50")
                     chargingProfile = new ChargingProfile(
                                           chargingProfileId,
@@ -180,28 +182,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                   ChargingSchedulePeriods:  [
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(0),  // == 00:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(16, ChargingRateUnits.Watts),
+                                                                                    Limit:           ChargingRateValue.Parse(16000, ChargingRateUnits.Watts),
                                                                                     NumberOfPhases:  3
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(8),  // == 08:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(6,  ChargingRateUnits.Watts),
+                                                                                    Limit:           ChargingRateValue.Parse( 6000, ChargingRateUnits.Watts),
                                                                                     NumberOfPhases:  3
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(20), // == 20:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(12, ChargingRateUnits.Watts),
+                                                                                    Limit:           ChargingRateValue.Parse(10000, ChargingRateUnits.Watts),
                                                                                     NumberOfPhases:  3
                                                                                 )
                                                                             ],
                                                   Duration:                 TimeSpan.FromDays(1),
-                                                  StartSchedule:            DateTime.Parse("2025-01-01T00:00:00Z").ToUniversalTime()
+                                                  StartSchedule:            DateTime.Parse("2025-01-25T00:00:00Z").ToUniversalTime()
                                               )
                                           ],
                                           null, //Transaction_Id.TryParse(5678),
                                           RecurrencyKinds.Daily,
                                           DateTime.Parse("2025-01-25T00:00:00Z").ToUniversalTime(),
-                                          DateTime.Now.AddDays(7).ToUniversalTime()
+                                          DateTime.Now.AddMinutes(1).ToUniversalTime()
                                       );
 
 

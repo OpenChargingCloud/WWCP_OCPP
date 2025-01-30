@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this get certificate id use is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                        IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this get certificate id use is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                        IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the get certificate id use.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                         Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered certificate id uses.
+        /// </summary>
+        public static IEnumerable<GetCertificateIdUse>  All
+            => lookup.Values;
 
         #endregion
 
@@ -195,38 +201,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Use for certificate of the V2G Root.
         /// </summary>
-        public static GetCertificateIdUse V2GRootCertificate             { get; }
+        public static GetCertificateIdUse  V2GRootCertificate             { get; }
             = Register("V2GRootCertificate");
 
         /// <summary>
         /// Use for certificate from an e-mobility service provider.
         /// To support PnC charging with contracts from service providers that not derived their certificates from the V2G root.
         /// </summary>
-        public static GetCertificateIdUse MORootCertificate              { get; }
+        public static GetCertificateIdUse  MORootCertificate              { get; }
             = Register("MORootCertificate");
 
         /// <summary>
         /// Root certificate for verification of the CSMS certificate.
         /// </summary>
-        public static GetCertificateIdUse CSMSRootCertificate            { get; }
+        public static GetCertificateIdUse  CSMSRootCertificate            { get; }
             = Register("CSMSRootCertificate");
 
         /// <summary>
         /// ISO 15118 V2G certificate chain (excluding the V2GRootCertificate).
         /// </summary>
-        public static GetCertificateIdUse V2GCertificateChain            { get; }
+        public static GetCertificateIdUse  V2GCertificateChain            { get; }
             = Register("V2GCertificateChain");
 
         /// <summary>
         /// Root certificate for verification of the Manufacturer certificate.
         /// </summary>
-        public static GetCertificateIdUse ManufacturerRootCertificate    { get; }
+        public static GetCertificateIdUse  ManufacturerRootCertificate    { get; }
             = Register("ManufacturerRootCertificate");
 
         /// <summary>
         /// OEM root certificate for 2-way TLS with the electric vehicle.
         /// </summary>
-        public static GetCertificateIdUse OEMRootCertificate             { get; }
+        public static GetCertificateIdUse  OEMRootCertificate             { get; }
             = Register("OEMRootCertificate");
 
         #endregion

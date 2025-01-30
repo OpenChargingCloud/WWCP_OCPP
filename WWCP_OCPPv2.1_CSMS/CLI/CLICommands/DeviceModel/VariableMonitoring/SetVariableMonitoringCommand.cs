@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                                        Component:                       new Component(
                                                                                                             Name: Arguments[1],
                                                                                                             Instance: null,
-                                                                                                            EVSE: null
+                                                                                                            EVSE: new EVSE(EVSE_Id.Parse(1), ConnectorId: Connector_Id.Parse(1))
                                                                                                         ),
                                                                        Variable:                        new Variable(
                                                                                                             Name: Arguments[2],

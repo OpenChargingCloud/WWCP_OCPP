@@ -204,20 +204,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// When a newer message with this message priority is received, this message is replaced.
         /// No message of the charging station itself may override this message.
         /// </summary>
-        public static MessagePriority AlwaysFront    { get; }
+        public static MessagePriority  AlwaysFront    { get; }
             = Register("AlwaysFront");
 
         /// <summary>
         /// Show this message in front of the normal cycle of messages.
         /// When multiple messages with this priority have to be shown, they SHALL be cycled.
         /// </summary>
-        public static MessagePriority InFront        { get; }
+        public static MessagePriority  InFront        { get; }
             = Register("InFront");
 
         /// <summary>
         /// Show this message in the normal cycle of display messages.
         /// </summary>
-        public static MessagePriority NormalCycle    { get; }
+        public static MessagePriority  NormalCycle    { get; }
             = Register("NormalCycle");
 
         #endregion

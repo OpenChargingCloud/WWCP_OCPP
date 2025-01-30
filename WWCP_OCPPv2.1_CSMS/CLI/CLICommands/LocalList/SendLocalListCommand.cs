@@ -126,6 +126,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                         authorizationList.Add(new AuthorizationData(idToken));
                 }
 
+                IdToken.TryParseMACAddress("04E77E7318DE", out var mac);
+                authorizationList.Add(new AuthorizationData(mac));
+
                 if (authorizationList.Count == 0)
                     return [$"Invalid Id tokens: '{Arguments.Skip(3).AggregateWith(", ")}'!"];
 

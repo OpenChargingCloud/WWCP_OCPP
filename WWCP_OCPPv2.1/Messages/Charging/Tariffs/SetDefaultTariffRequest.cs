@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("evseId",       EVSEId.              ToString()),
+                                 new JProperty("evseId",       EVSEId.              Value),
 
                                  new JProperty("tariff",       Tariff.              ToJSON(CustomTariffSerializer,
                                                                                            CustomMessageContentSerializer,

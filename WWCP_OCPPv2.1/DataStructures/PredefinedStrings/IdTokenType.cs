@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Used when MAC address is used for authorization (AutoCharge).
         /// </summary>
         public static IdTokenType MACAddress         { get; }
-            = Register("MACAddress");
+            = Register("MacAddress");
 
         /// <summary>
         /// NEMA EVSE1 2018 token.

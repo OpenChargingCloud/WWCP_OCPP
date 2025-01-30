@@ -42,10 +42,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private static readonly Regex rfid_UIDPattern    = new Regex(@"^([A-F0-9]{8}|[A-F0-9]{14}|[A-F0-9]{20})$");
-        private static readonly Regex rfid4_UIDPattern   = new Regex(@"^([A-F0-9]{8})$");
-        private static readonly Regex rfid7_UIDPattern   = new Regex(@"^([A-F0-9]{14})$");
-        private static readonly Regex rfid10_UIDPattern  = new Regex(@"^([A-F0-9]{20})$");
+        private static readonly Regex rfid_UIDPattern        = new Regex(@"^([A-F0-9]{8}|[A-F0-9]{14}|[A-F0-9]{20})$");
+        private static readonly Regex rfid4_UIDPattern       = new Regex(@"^([A-F0-9]{8})$");
+        private static readonly Regex rfid7_UIDPattern       = new Regex(@"^([A-F0-9]{14})$");
+        private static readonly Regex rfid10_UIDPattern      = new Regex(@"^([A-F0-9]{20})$");
+
+        private static readonly Regex macAddress_UIDPattern  = new Regex(@"^([A-F0-9]{12})$");
 
         #endregion
 
@@ -285,6 +287,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region (static) TryParseMACAddress  (MACAddress)
+
+        /// <summary>
+        /// Create a new identification token based on the given 6 byte MAC Address.
+        /// </summary>
+        /// <param name="UID">The MAC Address as hex values.</param>
+        public static IdToken? TryParseMACAddress(String MACAddress)
+        {
+
+            var macAddress = MACAddress.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            return macAddress_UIDPattern.IsMatch(macAddress)
+                       ? new(
+                             macAddress,
+                             IdTokenType.MACAddress
+                         )
+                       : null;
+
+        }
+
+        #endregion
+
+
         #region (static) TryParseRFID   (UID, out IdToken)
 
         /// <summary>
@@ -372,6 +397,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           ? new(
                                 uid,
                                 IdTokenType.ISO14443
+                            )
+                          : null;
+
+            return IdToken != null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParseMACAddress  (MACAddress, out IdToken)
+
+        /// <summary>
+        /// Create a new identification token based on the given 6 byte MAC Address.
+        /// </summary>
+        /// <param name="UID">The MAC Address as hex values.</param>
+        public static Boolean TryParseMACAddress(String MACAddress, [NotNullWhen(true)] out IdToken? IdToken)
+        {
+
+            var macAddress = MACAddress.Trim().Replace("-", "").Replace(":", "").ToUpper();
+
+            IdToken = macAddress_UIDPattern.IsMatch(macAddress)
+                          ? new(
+                                macAddress,
+                                IdTokenType.MACAddress
                             )
                           : null;
 

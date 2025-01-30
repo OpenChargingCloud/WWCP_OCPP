@@ -431,6 +431,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 // Certificate
                 // ISO15118CertificateHashData
 
+                if (request.IdToken.Value.ToString() == "3bac1b20")
+                     return Task.FromResult(
+                                new AuthorizeResponse(
+                                    Request:            request,
+                                    IdTokenInfo:        new IdTokenInfo(
+                                                            Status:   AuthorizationStatus.Accepted
+                                                        ),
+                                    CertificateStatus:  null,
+                                    CustomData:         null
+                                )
+                            );
+
+                if (request.IdToken.Value.ToString() == "04E77E7318DE")
+                     return Task.FromResult(
+                                new AuthorizeResponse(
+                                    Request:            request,
+                                    IdTokenInfo:        new IdTokenInfo(
+                                                            Status:   AuthorizationStatus.Accepted
+                                                        ),
+                                    CertificateStatus:  null,
+                                    CustomData:         null
+                                )
+                            );
+
+
+                if (request.IdToken.Value.ToString() == "aabbccdd")
+                     return Task.FromResult(
+                                new AuthorizeResponse(
+                                    Request:            request,
+                                    IdTokenInfo:        new IdTokenInfo(
+                                                            Status:   AuthorizationStatus.Accepted
+                                                        ),
+                                    CertificateStatus:  null,
+                                    CustomData:         null
+                                )
+                            );
+
+
                 return Task.FromResult(
                            idTokens.TryGetValue(request.IdToken, out var idTokenInfo)
 

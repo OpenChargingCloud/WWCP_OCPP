@@ -26,16 +26,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Stop a charging session at the current charging station.
+    /// Get installed certificate identifications.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
-    public class RemoteStopCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
-                                                   ICLICommand
+    //[CLIContext([ DefaultStrings.OCPPv2_0_1,
+    //              DefaultStrings.OCPPv2_1 ])]
+    public class GetInstalledCertificateIdsCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+                                                                   ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(RemoteStopCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(GetInstalledCertificateIdsCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -51,32 +53,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
             }
 
-            if (Arguments.Length > 2 &&
-                CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
-            {
-                Arguments = Arguments.Take(2).ToArray();
-            }
-
-
-            if (Arguments.Length == 2 &&
+            if (Arguments.Length >= 2 &&
                 CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
             {
 
-                foreach (var resetType in ResetType.All)
+                var pos = Arguments.Length - 1;
+
+                foreach (var getCertificateIdUse in GetCertificateIdUse.All)
                 {
 
-                    if (resetType.ToString().Equals    (Arguments[1], StringComparison.OrdinalIgnoreCase))
-                        return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {resetType.ToString().ToLower()}") ];
+                    if (getCertificateIdUse.ToString().Equals    (Arguments[pos], StringComparison.OrdinalIgnoreCase))
+                        return [ SuggestionResponse.ParameterCompleted($"{Arguments.Take(pos).AggregateWith(" ")} {getCertificateIdUse.ToString().ToLower()}") ];
 
-                    if (resetType.ToString().StartsWith(Arguments[1], StringComparison.OrdinalIgnoreCase))
-                        return [ SuggestionResponse.ParameterPrefix   ($"{Arguments[0]} {resetType.ToString().ToLower()}") ];
+                    if (getCertificateIdUse.ToString().StartsWith(Arguments[pos], StringComparison.OrdinalIgnoreCase))
+                        return [ SuggestionResponse.ParameterPrefix   ($"{Arguments.Take(pos).AggregateWith(" ")} {getCertificateIdUse.ToString().ToLower()}") ];
 
                 }
 
-                return [ SuggestionResponse.CommandCompleted(CommandName) ];
+                return [ SuggestionResponse.ParameterCompleted($"{Arguments.Take(pos).AggregateWith(" ")} {Arguments[Arguments.Length]}") ];
 
             }
-
 
             if (Arguments.Length == 1)
             {
@@ -107,33 +103,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
 
 
-            if (Arguments.Length == 2)
+            if (Arguments.Length >= 2)
             {
 
-                if (!Transaction_Id.TryParse(Arguments[1], out var transactionId))
-                    return [ $"Invalid transaction identification: '{Arguments[1]}'!" ];
+                var getCertificateIdUses = new List<GetCertificateIdUse>();
 
+                foreach (var getCertificateIdUseText in Arguments.Skip(1))
+                {
+                    if (GetCertificateIdUse.TryParse(getCertificateIdUseText, out var getCertificateIdUse))
+                        getCertificateIdUses.Add(getCertificateIdUse);
+                }
 
-                var response  = await cli.OCPP.OUT.RequestStopTransaction(
-                                          new RequestStopTransactionRequest(
-                                              Destination:           sourceRoute,
-                                              TransactionId:         transactionId,
-
-                                              SignKeys:              null,
-                                              SignInfos:             null,
-                                              Signatures:            null,
-
-                                              CustomData:            null,
-
-                                              RequestId:             null,
-                                              RequestTimestamp:      null,
-                                              RequestTimeout:        null,
-                                              EventTrackingId:       null,
-                                              NetworkPath:           null,
-                                              SerializationFormat:   null,
-                                              CancellationToken:     CancellationToken
-                                          )
-                                      );
+                var response = await cli.OCPP.OUT.GetInstalledCertificateIds(
+                                         new GetInstalledCertificateIdsRequest(
+                                             Destination:        sourceRoute,
+                                             CertificateTypes:   getCertificateIdUses
+                                         )
+                                     );
 
                 return [
                     $"{Arguments.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms",
@@ -142,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 
             }
 
-            return [ $"Usage: {CommandName} <transactionId>" ];
+            return [ $"Usage: {CommandName} <{GetCertificateIdUse.All.Select(_ => _.ToString()).AggregateWith("|")}...>" ];
 
         }
 
@@ -151,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
         #region Help()
 
         public override String Help()
-            => $"{CommandName} <transactionId> - Stop the given charging session";
+            => $"{CommandName} <{GetCertificateIdUse.All.Select(_ => _.ToString()).AggregateWith("|")}...> - Get installed certificate identifications";
 
         #endregion
 

@@ -20,7 +20,9 @@
 using org.GraphDefined.Vanaheimr.CLI;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
+using System;
 using System.Diagnostics.Eventing.Reader;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 #endregion
 
@@ -28,18 +30,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Get logs
+    /// Get tariffs
     /// </summary>
     /// <param name="CLI">The command line interface</param>
     //[CLIContext([ DefaultStrings.OCPPv2_0_1,
     //              DefaultStrings.OCPPv2_1 ])]
-    public class SetDisplayMessageCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
-                                                          ICLICommand
+    public class GetTariffsCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+                                                   ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(SetDisplayMessageCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(GetTariffsCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -126,30 +128,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
             if (Arguments.Length >= 2)
             {
 
-                //if (!EVSE_Id.     TryParse(Arguments[1], out var evseId))
-                //    return [$"Invalid EVSE Id '{Arguments[1]}'"];
+                if (!EVSE_Id.TryParse(Arguments[1], out var evseId))
+                    return [ $"Invalid EVSE Id '{Arguments[1]}'" ];
 
-                //if (!Connector_Id.TryParse(Arguments[2], out var connectorId))
-                //    return [ $"Invalid connector Id '{Arguments[2]}'" ];
-
-                var response = await cli.OCPP.OUT.SetDisplayMessage(
-                                         new SetDisplayMessageRequest(
+                var response = await cli.OCPP.OUT.GetTariffs(
+                                         new GetTariffsRequest(
                                              Destination:   sourceRoute,
-                                             Message:       new MessageInfo(
-                                                                Id:               DisplayMessage_Id.NewRandom,
-                                                                Priority:         MessagePriority.NormalCycle,
-                                                                Message:          new MessageContent(
-                                                                                      Content:      Arguments[1],
-                                                                                      Language:     Language_Id.EN,
-                                                                                      Format:       MessageFormat.UTF8,
-                                                                                      CustomData:   null
-                                                                                  ),
-                                                                State:            MessageState.Idle,
-                                                                StartTimestamp:   Timestamp.Now,
-                                                                EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(1),
-                                                                TransactionId:    null,
-                                                                Display:          null
-                                                            )
+                                             EVSEId:        evseId
                                          )
                                      );
 
@@ -160,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 
             }
 
-            return [ $"Usage: {CommandName} <text>" ];
+            return [ $"Usage: {CommandName} <EVSE Id>" ];
 
         }
 
@@ -169,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
         #region Help()
 
         public override String Help()
-            => $"{CommandName} <text> - Unlock the given EVSE connector";
+            => $"{CommandName} <EVSE Id> - Get tariffs";
 
         #endregion
 

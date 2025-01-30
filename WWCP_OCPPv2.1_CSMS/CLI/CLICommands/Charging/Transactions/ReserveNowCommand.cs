@@ -26,16 +26,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Start a charging session at the current charging station.
+    /// Reserve a charging session at the current charging station.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
-    public class RemoteStartCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
-                                                    ICLICommand
+    public class ReserveNowCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+                                                   ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(RemoteStartCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(ReserveNowCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -107,8 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
 
 
-            if (Arguments.Length == 2 || Arguments.Length == 3)
+            if (Arguments.Length >= 2)
             {
+
+                if (!IdToken.TryParseRFID(Arguments[1], out var idToken))
+                    return [ $"Invalid identification token: '{Arguments[1]}'!" ];
 
                 EVSE_Id? evseId = null;
 
@@ -122,41 +125,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 
                 }
 
-                var idTokenValue  = Arguments[1];
-                var idTokenType   = IdTokenType.ISO14443;
-
-                var response      = await cli.OCPP.OUT.RequestStartTransaction(
-                                              new RequestStartTransactionRequest(
-                                                  Destination:                        sourceRoute,
-                                                  RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
-                                                  IdToken:                            new IdToken(
-                                                                                          Value:             idTokenValue,
-                                                                                          Type:              idTokenType,
-                                                                                          AdditionalInfos:   null,
-                                                                                          CustomData:        null
-                                                                                      ),
-                                                  EVSEId:                             evseId,
-                                                  ChargingProfile:                    null,
-                                                  GroupIdToken:                       null,
-                                                  //TransactionLimits:                  new TransactionLimits(
-                                                  //                                        MaxTime:  TimeSpan.FromMinutes(1)
-                                                  //                                    ),
-
-                                                  SignKeys:                           null,
-                                                  SignInfos:                          null,
-                                                  Signatures:                         null,
-
-                                                  CustomData:                         null,
-
-                                                  RequestId:                          null,
-                                                  RequestTimestamp:                   null,
-                                                  RequestTimeout:                     null,
-                                                  EventTrackingId:                    null,
-                                                  NetworkPath:                        null,
-                                                  SerializationFormat:                null,
-                                                  CancellationToken:                  CancellationToken
-                                              )
-                                          );
+                var response = await cli.OCPP.OUT.ReserveNow(
+                                         new ReserveNowRequest(
+                                             Destination:     sourceRoute,
+                                             Id:              Reservation_Id.NewRandom,
+                                             ExpiryDate:      Timestamp.Now + TimeSpan.FromMinutes(15),
+                                             IdToken:         idToken,
+                                             //ConnectorType = null,// ConnectorType?           
+                                             EVSEId:          evseId
+                                             //GroupIdToken  = null,// IdToken?                 
+                                         )
+                                     );
 
                 return [
                     $"{Arguments.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms",
@@ -165,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 
             }
 
-            return [ $"Usage: {CommandName} <idTokenValue> <EVSE Id>" ];
+            return [ $"Usage: {CommandName} <idTokenValue> [EVSE Id]" ];
 
         }
 
@@ -174,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
         #region Help()
 
         public override String Help()
-            => $"{CommandName} <idTokenValue> <EVSE Id> - Reset the current networking node";
+            => $"{CommandName} <idTokenValue> [EVSE Id] - Reserve the current charging station (or EVSE)";
 
         #endregion
 

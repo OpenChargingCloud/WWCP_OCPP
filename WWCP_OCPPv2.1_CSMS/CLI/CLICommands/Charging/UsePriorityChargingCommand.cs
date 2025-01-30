@@ -17,7 +17,6 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.CLI;
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -27,18 +26,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Get logs
+    /// Use priority charging request.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
     //[CLIContext([ DefaultStrings.OCPPv2_0_1,
     //              DefaultStrings.OCPPv2_1 ])]
-    public class ChangeAvailabilityCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
-                                                           ICLICommand
+    public class UsePriorityChargingCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+                                                            ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(ChangeAvailabilityCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(UsePriorityChargingCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -58,39 +57,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
             {
 
-                foreach (var reportBase in ReportBase.All)
+                foreach (var operationalStatus in OperationalStatusExtensions.All)
                 {
 
-                    if (reportBase.ToString().Equals    (Arguments[1], StringComparison.OrdinalIgnoreCase))
-                        return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {reportBase.ToString().ToLower()}") ];
+                    if (operationalStatus.ToString().Equals    (Arguments[2], StringComparison.OrdinalIgnoreCase))
+                        return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {Arguments[1]} {operationalStatus.ToString().ToLower()}") ];
 
-                    if (reportBase.ToString().StartsWith(Arguments[1], StringComparison.OrdinalIgnoreCase))
-                        return [ SuggestionResponse.ParameterPrefix   ($"{Arguments[0]} {reportBase.ToString().ToLower()}") ];
+                    if (operationalStatus.ToString().StartsWith(Arguments[2], StringComparison.OrdinalIgnoreCase))
+                        return [ SuggestionResponse.ParameterPrefix   ($"{Arguments[0]} {Arguments[1]} {operationalStatus.ToString().ToLower()}") ];
 
                 }
 
                 return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {Arguments[1]}") ];
 
             }
-
-            //if (Arguments.Length == 3 &&
-            //    CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
-            //{
-
-            //    foreach (var componentCriteria in ComponentCriteriaExtensions.All)
-            //    {
-
-            //        if (componentCriteria.ToString().Equals(Arguments[1], StringComparison.OrdinalIgnoreCase))
-            //            return [SuggestionResponse.ParameterCompleted($"{Arguments[0]} {componentCriteria.ToString().ToLower()}")];
-
-            //        if (componentCriteria.ToString().StartsWith(Arguments[1], StringComparison.OrdinalIgnoreCase))
-            //            return [SuggestionResponse.ParameterPrefix($"{Arguments[0]} {componentCriteria.ToString().ToLower()}")];
-
-            //    }
-
-            //    return [SuggestionResponse.ParameterCompleted($"{Arguments[0]} {Arguments[1]}")];
-
-            //}
 
 
             if (Arguments.Length == 1)
@@ -122,23 +102,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
 
 
-            if (Arguments.Length >= 4)
+            if (Arguments.Length >= 3)
             {
 
-                if (!OperationalStatusExtensions.TryParse(Arguments[1], out var operationalStatus))
-                    return [ $"Invalid operational status: '{Arguments[1]}'!" ];
+                if (!Transaction_Id.TryParse(Arguments[1], out var transactionId))
+                    return [ $"Invalid transaction identification: '{Arguments[1]}'!" ];
 
-                //if (!EVSE.TryParse(Arguments[1], out var operationalStatus))
-                //    return [$"Invalid operational status: '{Arguments[1]}'!"];
+                var activate = Arguments[2] switch {
+                                   "true" => true,
+                                   "on"   => true,
+                                   _      => false
+                               };
 
-                var response = await cli.OCPP.OUT.ChangeAvailability(
-                                         new ChangeAvailabilityRequest(
+
+                //EVSE? evse = null;
+
+                //if (Arguments.Length >= 3)
+                //{
+
+                //    if (EVSE_Id.TryParse(Arguments[2], out var evseId))
+                //        evse = new EVSE(evseId);
+
+                //    else
+                //        return [$"Invalid EVSE identification '{Arguments[2]}'!"];
+
+                //}
+
+                var response = await cli.OCPP.OUT.UsePriorityCharging(
+                                         new UsePriorityChargingRequest(
                                              Destination:         sourceRoute,
-                                             OperationalStatus:   operationalStatus,
-                                             EVSE:                new EVSE(
-                                                                      Id:            EVSE_Id.     Parse(Arguments[2]),
-                                                                      ConnectorId:   Connector_Id.Parse(Arguments[3])
-                                                                  )
+                                             TransactionId:       transactionId,
+                                             Activate:            true
                                          )
                                      );
 
@@ -149,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 
             }
 
-            return [ $"Usage: {CommandName} <{OperationalStatusExtensions.All.Select(_ => _.ToString()).AggregateWith("|")}> <EVSEId> <ConnectorId>" ];
+            return [ $"Usage: {CommandName} <TransactionId> <Activate>" ];
 
         }
 
@@ -158,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
         #region Help()
 
         public override String Help()
-            => $"{CommandName} <{OperationalStatusExtensions.All.Select(_ => _.ToString()).AggregateWith("|")}> <EVSEId> <ConnectorId> - Change the availability of an EVSE/connector";
+            => $"{CommandName} <TransactionId> <Activate> - (De-)Activate priority charging request";
 
         #endregion
 

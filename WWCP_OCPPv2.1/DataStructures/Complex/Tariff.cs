@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse Id               [optional]
 
-                if (JSON.ParseOptional("id",
+                if (JSON.ParseOptional("tariffId",
                                        "tariff identification",
                                        Tariff_Id.TryParse,
                                        out Tariff_Id? TariffIdBody,
@@ -626,10 +626,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",             Id.              ToString()),
+                                 new JProperty("tariffId",       Id.              ToString()),
                                  new JProperty("currency",       Currency.        ISOCode),
 
-                           Description.       Any()
+                           Description.Count > 0
                                ? new JProperty("description",    Description.     ToJSON(CustomMessageContentSerializer,
                                                                                          CustomCustomDataSerializer))
                                : null,

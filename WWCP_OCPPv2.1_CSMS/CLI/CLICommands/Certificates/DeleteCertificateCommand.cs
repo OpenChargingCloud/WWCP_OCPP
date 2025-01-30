@@ -18,9 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.CLI;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Diagnostics.Eventing.Reader;
 
 #endregion
 
@@ -28,18 +26,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Get logs
+    /// Delete the specified certificate
     /// </summary>
     /// <param name="CLI">The command line interface</param>
     //[CLIContext([ DefaultStrings.OCPPv2_0_1,
     //              DefaultStrings.OCPPv2_1 ])]
-    public class SetDisplayMessageCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
+    public class DeleteCertificateCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
                                                           ICLICommand
     {
 
         #region Data
 
-        public static readonly String CommandName = nameof(SetDisplayMessageCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(DeleteCertificateCommand)[..^7].ToLowerFirstChar();
 
         #endregion
 
@@ -123,33 +121,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
 
 
-            if (Arguments.Length >= 2)
+            if (Arguments.Length >= 5)
             {
 
-                //if (!EVSE_Id.     TryParse(Arguments[1], out var evseId))
-                //    return [$"Invalid EVSE Id '{Arguments[1]}'"];
+                if (!HashAlgorithmsExtensions.TryParse(Arguments[1], out var hashAlgorithm))
+                    return [ $"Invalid hash algorithm '{Arguments[1]}'" ];
 
-                //if (!Connector_Id.TryParse(Arguments[2], out var connectorId))
-                //    return [ $"Invalid connector Id '{Arguments[2]}'" ];
-
-                var response = await cli.OCPP.OUT.SetDisplayMessage(
-                                         new SetDisplayMessageRequest(
-                                             Destination:   sourceRoute,
-                                             Message:       new MessageInfo(
-                                                                Id:               DisplayMessage_Id.NewRandom,
-                                                                Priority:         MessagePriority.NormalCycle,
-                                                                Message:          new MessageContent(
-                                                                                      Content:      Arguments[1],
-                                                                                      Language:     Language_Id.EN,
-                                                                                      Format:       MessageFormat.UTF8,
-                                                                                      CustomData:   null
-                                                                                  ),
-                                                                State:            MessageState.Idle,
-                                                                StartTimestamp:   Timestamp.Now,
-                                                                EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(1),
-                                                                TransactionId:    null,
-                                                                Display:          null
-                                                            )
+                var response = await cli.OCPP.OUT.DeleteCertificate(
+                                         new DeleteCertificateRequest(
+                                             Destination:           sourceRoute,
+                                             CertificateHashData:   new CertificateHashData(
+                                                                        HashAlgorithm:         HashAlgorithms.SHA256,
+                                                                        IssuerNameHash:        Arguments[2],
+                                                                        IssuerPublicKeyHash:   Arguments[3],
+                                                                        SerialNumber:          Arguments[4]
+                                                                    )
                                          )
                                      );
 
@@ -160,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 
             }
 
-            return [ $"Usage: {CommandName} <text>" ];
+            return [ $"Usage: {CommandName} <hash algorithm> <issuer name hash> <issuer public key hash> <serial number>" ];
 
         }
 
@@ -169,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
         #region Help()
 
         public override String Help()
-            => $"{CommandName} <text> - Unlock the given EVSE connector";
+            => $"{CommandName} <hash algorithm> <issuer name hash> <issuer public key hash> <serial number> - Delete the specified certificate";
 
         #endregion
 

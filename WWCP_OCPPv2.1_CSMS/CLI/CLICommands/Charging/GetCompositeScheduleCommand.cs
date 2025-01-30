@@ -18,9 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.CLI;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Diagnostics.Eventing.Reader;
 
 #endregion
 
@@ -28,13 +26,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
 {
 
     /// <summary>
-    /// Get logs
+    /// Get the composite schedule.
     /// </summary>
     /// <param name="CLI">The command line interface</param>
     //[CLIContext([ DefaultStrings.OCPPv2_0_1,
     //              DefaultStrings.OCPPv2_1 ])]
     public class GetCompositeScheduleCommand(ICSMSCLI CLI) : ACLICommand<ICSMSCLI>(CLI),
-                                                     ICLICommand
+                                                             ICLICommand
     {
 
         #region Data
@@ -126,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
             if (Arguments.Length >= 3)
             {
 
-                if (!UInt32.TryParse(Arguments[1], out var durationSeconds))
+                if (!UInt32. TryParse(Arguments[1], out var durationSeconds))
                     return [ $"Invalid duration in seconds '{Arguments[1]}'" ];
 
                 if (!EVSE_Id.TryParse(Arguments[2], out var evseId))
