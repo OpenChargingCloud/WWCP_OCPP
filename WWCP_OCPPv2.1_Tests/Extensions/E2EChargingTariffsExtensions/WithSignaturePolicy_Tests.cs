@@ -146,8 +146,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                              //EnergyMix:        null,
 
-                                             MinPrice:         null,
-                                             MaxPrice:         new Price(
+                                             MinCost:          null,
+                                             MaxCost:          new Price(
                                                                    ExcludingTaxes:  0.51M,
                                                                    IncludingTaxes:  0.53M
                                                                ),
@@ -473,8 +473,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                            //EnergyMix:        null,
 
-                                           MinPrice:         null,
-                                           MaxPrice:         new Price(
+                                           MinCost:          null,
+                                           MaxCost:          new Price(
                                                                  ExcludingTaxes:  0.51M,
                                                                  IncludingTaxes:  0.53M
                                                              ),
@@ -810,8 +810,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                            //EnergyMix:        null,
 
-                                           MinPrice:         null,
-                                           MaxPrice:         new Price(
+                                           MinCost:          null,
+                                           MaxCost:          new Price(
                                                                  ExcludingTaxes:  0.51M,
                                                                  IncludingTaxes:  0.53M
                                                              ),
@@ -1147,8 +1147,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                            //EnergyMix:        null,
 
-                                           MinPrice:         null,
-                                           MaxPrice:         new Price(
+                                           MinCost:          null,
+                                           MaxCost:          new Price(
                                                                  ExcludingTaxes:  0.51M,
                                                                  IncludingTaxes:  0.53M
                                                              ),
@@ -1487,8 +1487,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                            //EnergyMix:        null,
 
-                                           MinPrice:         null,
-                                           MaxPrice:         new Price(
+                                           MinCost:          null,
+                                           MaxCost:          new Price(
                                                                  ExcludingTaxes:  0.51M,
                                                                  IncludingTaxes:  0.53M
                                                              ),
@@ -1569,8 +1569,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //URL:              URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                            //EnergyMix:        null,
 
-                                           MinPrice:         null,
-                                           MaxPrice:         new Price(
+                                           MinCost:          null,
+                                           MaxCost:          new Price(
                                                                  ExcludingTaxes:  0.51M,
                                                                  IncludingTaxes:  0.53M
                                                              ),

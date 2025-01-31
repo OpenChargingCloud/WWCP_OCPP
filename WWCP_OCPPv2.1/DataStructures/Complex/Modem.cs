@@ -46,42 +46,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The ICCID of the modem’s SIM card. 20
+        /// The ICCID of the modem’s SIM card.
+        /// [max 20]
         /// </summary>
         [Optional]
-        public String? ICCID { get; } = ICCID;
+        public String? ICCID    { get; } = ICCID;
 
         /// <summary>
-        /// The IMSI of the modem’s SIM card. 20
+        /// The IMSI of the modem’s SIM card.
+        /// [max 20]
         /// </summary>
         [Optional]
-        public String? IMSI { get; } = IMSI;
+        public String? IMSI     { get; } = IMSI;
 
         #endregion
 
 
         #region Documentation
 
-        // "ModemType": {
-        //   "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.",
-        //   "javaType": "Modem",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "iccid": {
-        //       "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.",
-        //       "type": "string",
-        //       "maxLength": 20
-        //     },
-        //     "imsi": {
-        //       "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.",
-        //       "type": "string",
-        //       "maxLength": 20
+        // {
+        //     "description": "Defines parameters required for initiating and maintaining wireless communication with other devices.",
+        //     "javaType": "Modem",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "iccid": {
+        //             "description": "This contains the ICCID of the modem\u2019s SIM card.",
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "imsi": {
+        //             "description": "This contains the IMSI of the modem\u2019s SIM card.",
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   }
         // }
 
         #endregion

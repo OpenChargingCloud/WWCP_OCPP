@@ -77,10 +77,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "javaType": "PeriodicEventStreamParams",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "interval": {
+        //             "description": "Time in seconds after which stream data is sent.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "values": {
+        //             "description": "Number of items to be sent together in stream.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
@@ -98,8 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var periodicEventStreamParams,
                          out var errorResponse,
-                         CustomPeriodicEventStreamParametersParser) &&
-                periodicEventStreamParams is not null)
+                         CustomPeriodicEventStreamParametersParser))
             {
                 return periodicEventStreamParams;
             }
@@ -149,8 +166,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region MaxItems      [mandatory]
 
-                if (!JSON.ParseMandatory("maxItems",
-                                         "max items",
+                if (!JSON.ParseMandatory("values",
+                                         "values (max items)",
                                          out UInt32 MaxItems,
                                          out ErrorResponse))
                 {
@@ -161,8 +178,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region MaxTime       [optional]
 
-                if (JSON.ParseOptional("maxTime",
-                                       "max time",
+                if (JSON.ParseOptional("interval",
+                                       "interval (max time)",
                                        out TimeSpan? MaxTime,
                                        out ErrorResponse))
                 {
@@ -203,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 PeriodicEventStreamParameters  = default;
-                ErrorResponse              = "The given JSON representation of a periodic event stream parameters is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a periodic event stream parameters is invalid: " + e.Message;
                 return false;
             }
 
@@ -224,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("maxItems",     MaxItems),
+                                 new JProperty("values",       MaxItems),
 
                            MaxTime.HasValue
                                ? new JProperty("maxTime",      MaxTime.Value.TotalSeconds)

@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomTriggerMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a TriggerMessage request.
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a TriggerMessage request.

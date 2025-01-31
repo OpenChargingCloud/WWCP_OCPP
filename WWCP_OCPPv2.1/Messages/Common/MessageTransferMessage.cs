@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, MessageId, SourceRouting, NetworkPath, CustomDatagramRequestParser = null)
+        #region (static) Parse   (JSON, MessageId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a Datagram request.
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, MessageId, SourceRouting, NetworkPath, out MessageTransferMessage, out ErrorResponse, ...)
+        #region (static) TryParse(JSON, MessageId, Destination, NetworkPath, out MessageTransferMessage, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Datagram request.

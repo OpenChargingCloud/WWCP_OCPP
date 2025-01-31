@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomPullDynamicScheduleUpdateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomPullDynamicScheduleUpdateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a pull dynamic schedule update request.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out PullDynamicScheduleUpdateRequest, out ErrorResponse, CustomPullDynamicScheduleUpdateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PullDynamicScheduleUpdateRequest, out ErrorResponse, CustomPullDynamicScheduleUpdateRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a pull dynamic schedule update request.

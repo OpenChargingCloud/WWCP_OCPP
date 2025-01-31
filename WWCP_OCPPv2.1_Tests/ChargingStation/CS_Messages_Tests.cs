@@ -1358,7 +1358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var response = await chargingStation1.GetCertificateStatus(
                                          OCSPRequestData:   new OCSPRequestData(
-                                                                HashAlgorithm:    HashAlgorithms.SHA256,
+                                                                HashAlgorithm:    HashAlgorithm.SHA256,
                                                                 IssuerNameHash:   "0x1234",
                                                                 IssuerKeyHash:    "0x5678",
                                                                 SerialNumber:     "12345678",
@@ -1440,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var response = await chargingStation1.GetCRLRequest(
                                          GetCRLRequestId:       1,
                                          CertificateHashData:   new CertificateHashData(
-                                                                    HashAlgorithm:         HashAlgorithms.SHA256,
+                                                                    HashAlgorithm:         HashAlgorithm.SHA256,
                                                                     IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
                                                                     IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
                                                                     SerialNumber:         "23"
@@ -1597,7 +1597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var idToken   = IdToken.NewRandomRFID7();
                 var response  = await chargingStation1.Authorize(
                                           IdToken:                       idToken,
-                                          Certificate:                   null,
+                                          CertificateChain:                   null,
                                           ISO15118CertificateHashData:   null,
                                           CustomData:                    null
                                       );

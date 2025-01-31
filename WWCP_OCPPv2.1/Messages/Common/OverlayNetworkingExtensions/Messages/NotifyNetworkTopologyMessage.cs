@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyNetworkTopologyMessageParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyNetworkTopologyMessageParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyNetworkTopology request.
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyNetworkTopologyMessage, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyNetworkTopologyMessage, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyNetworkTopology request.

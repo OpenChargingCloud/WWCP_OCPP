@@ -179,12 +179,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this payment brand.
         /// </summary>
-        public PaymentBrand Clone
+        public PaymentBrand Clone()
 
             => new (
                    InternalId.CloneString()

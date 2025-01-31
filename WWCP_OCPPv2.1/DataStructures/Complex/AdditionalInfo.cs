@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -85,30 +87,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "AdditionalInfoType": {
-        //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //   "javaType": "AdditionalInfo",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //     "javaType": "AdditionalInfo",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "additionalIdToken": {
+        //             "description": "*(2.1)* This field specifies the additional IdToken.",
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "type": {
+        //             "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "additionalIdToken": {
-        //       "description": "This field specifies the additional IdToken.",
-        //       "type": "string",
-        //       "maxLength": 36
-        //     },
-        //     "type": {
-        //       "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     }
-        //   },
-        //   "required": [
-        //     "additionalIdToken",
-        //     "type"
-        //   ]
+        //     "required": [
+        //         "additionalIdToken",
+        //         "type"
+        //     ]
         // }
 
         #endregion
@@ -127,8 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var additionalInfo,
                          out var errorResponse,
-                         CustomAdditionalInfoParser) &&
-                additionalInfo is not null)
+                         CustomAdditionalInfoParser))
             {
                 return additionalInfo;
             }
@@ -150,9 +151,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AdditionalInfo">The parsed additional info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out AdditionalInfo?  AdditionalInfo,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out AdditionalInfo?  AdditionalInfo,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out AdditionalInfo,
@@ -168,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAdditionalInfoParser">A delegate to parse custom additional info JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out AdditionalInfo?                           AdditionalInfo,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out AdditionalInfo?      AdditionalInfo,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomJObjectParserDelegate<AdditionalInfo>?  CustomAdditionalInfoParser)
         {
 
@@ -182,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("additionalIdToken",
                                              "additional identification token",
-                                             out String AdditionalIdToken,
+                                             out String? AdditionalIdToken,
                                              out ErrorResponse))
                 {
                     return false;
@@ -194,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("type",
                                              "type",
-                                             out String Type,
+                                             out String? Type,
                                              out ErrorResponse))
                 {
                     return false;
@@ -274,13 +275,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this additional info.
         /// </summary>
         public AdditionalInfo Clone()
 
             => new (
-                   new String(AdditionalIdToken.ToCharArray()),
-                   new String(Type.             ToCharArray()),
+                   AdditionalIdToken.CloneString(),
+                   Type.             CloneString(),
                    CustomData
                );
 

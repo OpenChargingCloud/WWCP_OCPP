@@ -212,182 +212,169 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:CustomerInformationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:CustomerInformationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "HashAlgorithmEnumType": {
+        //             "description": "Used algorithms for the hashes provided.\r\n",
+        //             "javaType": "HashAlgorithmEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SHA256",
+        //                 "SHA384",
+        //                 "SHA512"
+        //             ]
+        //         },
+        //         "AdditionalInfoType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //             "javaType": "AdditionalInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalIdToken": {
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.\r\n\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "additionalIdToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "CertificateHashDataType": {
+        //             "javaType": "CertificateHashData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "hashAlgorithm": {
+        //                     "$ref": "#/definitions/HashAlgorithmEnumType"
+        //                 },
+        //                 "issuerNameHash": {
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.\r\n\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "issuerKeyHash": {
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "serialNumber": {
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 40
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "hashAlgorithm",
+        //                 "issuerNameHash",
+        //                 "issuerKeyHash",
+        //                 "serialNumber"
+        //             ]
+        //         },
+        //         "IdTokenType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //             "javaType": "IdToken",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalInfo": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalInfoType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "idToken": {
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.",
-        //       "javaType": "HashAlgorithmEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "SHA256",
-        //         "SHA384",
-        //         "SHA512"
-        //       ]
-        //     },
-        //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.",
-        //       "javaType": "IdTokenEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Central",
-        //         "eMAID",
-        //         "ISO14443",
-        //         "ISO15693",
-        //         "KeyCode",
-        //         "Local",
-        //         "MacAddress",
-        //         "NoAuthorization"
-        //       ]
-        //     },
-        //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "AdditionalInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "additionalIdToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "CertificateHashDataType": {
-        //       "javaType": "CertificateHashData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "hashAlgorithm": {
-        //           "$ref": "#/definitions/HashAlgorithmEnumType"
-        //         },
-        //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key\r\n",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "serialNumber": {
-        //           "description": "The serial number of the certificate.",
-        //           "type": "string",
-        //           "maxLength": 40
-        //         }
-        //       },
-        //       "required": [
-        //         "hashAlgorithm",
-        //         "issuerNameHash",
-        //         "issuerKeyHash",
-        //         "serialNumber"
-        //       ]
-        //     },
-        //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "IdToken",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalInfo": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/AdditionalInfoType"
-        //           },
-        //           "minItems": 1
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "customerCertificate": {
+        //             "$ref": "#/definitions/CertificateHashDataType"
         //         },
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //           "type": "string",
-        //           "maxLength": 36
+        //             "$ref": "#/definitions/IdTokenType"
         //         },
-        //         "type": {
-        //           "$ref": "#/definitions/IdTokenEnumType"
+        //         "requestId": {
+        //             "description": "The Id of the request.\r\n\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "report": {
+        //             "description": "Flag indicating whether the Charging Station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "clear": {
+        //             "description": "Flag indicating whether the Charging Station should clear all information about the customer referred to.\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "customerIdentifier": {
+        //             "description": "A (e.g. vendor specific) identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.\r\nOne of the possible identifiers (customerIdentifier, customerIdToken or customerCertificate) should be in the request message.\r\n",
+        //             "type": "string",
+        //             "maxLength": 64
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "idToken",
-        //         "type"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "customerCertificate": {
-        //       "$ref": "#/definitions/CertificateHashDataType"
-        //     },
-        //     "idToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of the request.\r\n\r\n",
-        //       "type": "integer"
-        //     },
-        //     "report": {
-        //       "description": "Flag indicating whether the Charging Station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.",
-        //       "type": "boolean"
-        //     },
-        //     "clear": {
-        //       "description": "Flag indicating whether the Charging Station should clear all information about the customer referred to.",
-        //       "type": "boolean"
-        //     },
-        //     "customerIdentifier": {
-        //       "description": "A (e.g. vendor specific) identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.\r\nOne of the possible identifiers (customerIdentifier, customerIdToken or customerCertificate) should be in the request message.",
-        //       "type": "string",
-        //       "maxLength": 64
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId",
-        //     "report",
-        //     "clear"
-        //   ]
+        //     "required": [
+        //         "requestId",
+        //         "report",
+        //         "clear"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomCustomerInformationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a CustomerInformation request.
@@ -402,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom CustomerInformation requests.</param>
         public static CustomerInformationRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       SourceRouting                                         Destination,
+                                                       SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -431,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out CustomerInformationRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out CustomerInformationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a CustomerInformation request.
@@ -448,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomerInformationRequestParser">A delegate to parse custom CustomerInformation requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       SourceRouting                                         Destination,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out CustomerInformationRequest?      CustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,

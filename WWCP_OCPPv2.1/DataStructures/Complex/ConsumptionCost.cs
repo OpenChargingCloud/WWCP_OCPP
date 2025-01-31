@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ConsumptionCostType": {
-        //   "description": "Consumption_ Cost\r\nurn:x-oca:ocpp:uid:2:233259\r\n",
+        //   "description": "Consumption_ Cost\r\nurn:x-oca:ocpp:uid:2:233259",
         //   "javaType": "ConsumptionCost",
         //   "type": "object",
         //   "additionalProperties": false,

@@ -3030,13 +3030,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearTariffs                (Destination, TariffIds = null, TariffKind = null, ...)
+        #region ClearTariffs                (Destination, TariffIds = null, ...)
 
         /// <summary>
         /// Clear the specified tariffs.
         /// </summary>
         /// <param name="TariffIds">An optional enumeration of tariff identifications to be cleared. When empty, clear all tariffs.</param>
-        /// <param name="TariffKind">When present only clear tariffs of this kind.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -3051,7 +3050,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             ClearTariffs(this ICSMSNode           CSMS,
                          SourceRouting            Destination,
                          IEnumerable<Tariff_Id>?  TariffIds             = null,
-                         TariffKinds?             TariffKind            = null,
 
                          IEnumerable<KeyPair>?    SignKeys              = null,
                          IEnumerable<SignInfo>?   SignInfos             = null,
@@ -3071,7 +3069,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        new ClearTariffsRequest(
                            Destination,
                            TariffIds,
-                           TariffKind,
 
                            SignKeys,
                            SignInfos,

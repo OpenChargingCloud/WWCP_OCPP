@@ -183,12 +183,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this message priority.
         /// </summary>
-        public MessagePriority Clone
+        public MessagePriority Clone()
 
             => new (
                    InternalId.CloneString()

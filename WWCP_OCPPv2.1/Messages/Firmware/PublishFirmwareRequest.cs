@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "type": "integer"
         //     },
         //     "checksum": {
-        //       "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. \r\n",
+        //       "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. ",
         //       "type": "string",
         //       "maxLength": 32
         //     },
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomPublishFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomPublishFirmwareRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a PublishFirmware request.
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out PublishFirmwareRequest, out ErrorResponse, CustomPublishFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PublishFirmwareRequest, out ErrorResponse, CustomPublishFirmwareRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a PublishFirmware request.

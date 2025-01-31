@@ -141,107 +141,108 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ClearVariableMonitoringResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClearVariableMonitoringResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ClearMonitoringStatusEnumType": {
+        //             "description": "Result of the clear request for this monitor, identified by its Id.\r\n\r\n",
+        //             "javaType": "ClearMonitoringStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "NotFound"
+        //             ]
+        //         },
+        //         "ClearMonitoringResultType": {
+        //             "javaType": "ClearMonitoringResult",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "status": {
+        //                     "$ref": "#/definitions/ClearMonitoringStatusEnumType"
+        //                 },
+        //                 "id": {
+        //                     "description": "Id of the monitor of which a clear was requested.\r\n\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "statusInfo": {
+        //                     "$ref": "#/definitions/StatusInfoType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "status",
+        //                 "id"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.\r\n",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ClearMonitoringStatusEnumType": {
-        //       "description": "Result of the clear request for this monitor, identified by its Id.\r\n\r\n",
-        //       "javaType": "ClearMonitoringStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected",
-        //         "NotFound"
-        //       ]
-        //     },
-        //     "ClearMonitoringResultType": {
-        //       "javaType": "ClearMonitoringResult",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "clearMonitoringResult": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ClearMonitoringResultType"
+        //             },
+        //             "minItems": 1
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "status": {
-        //           "$ref": "#/definitions/ClearMonitoringStatusEnumType"
-        //         },
-        //         "id": {
-        //           "description": "Id of the monitor of which a clear was requested.\r\n\r\n",
-        //           "type": "integer"
-        //         },
-        //         "statusInfo": {
-        //           "$ref": "#/definitions/StatusInfoType"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "status",
-        //         "id"
-        //       ]
         //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "clearMonitoringResult": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ClearMonitoringResultType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "clearMonitoringResult"
-        //   ]
+        //     "required": [
+        //         "clearMonitoringResult"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomClearVariableMonitoringResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ClearVariableMonitoring response.
@@ -251,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom ClearVariableMonitoring responses.</param>
         public static ClearVariableMonitoringResponse Parse(ClearVariableMonitoringRequest                                 Request,
                                                             JObject                                                        JSON,
-                                                            SourceRouting                                              Destination,
+                                                            SourceRouting                                                  Destination,
                                                             NetworkPath                                                    NetworkPath,
                                                             DateTime?                                                      ResponseTimestamp                             = null,
                                                             CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null,
@@ -284,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ClearVariableMonitoringResponse, out ErrorResponse, CustomClearVariableMonitoringResponseParser = null)
+        #region (static) TryParse(Request, JSON, out ClearVariableMonitoringResponse, Destination, NetworkPath, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ClearVariableMonitoring response.
@@ -296,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom ClearVariableMonitoring responses.</param>
         public static Boolean TryParse(ClearVariableMonitoringRequest                                 Request,
                                        JObject                                                        JSON,
-                                       SourceRouting                                              Destination,
+                                       SourceRouting                                                  Destination,
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out ClearVariableMonitoringResponse?      ClearVariableMonitoringResponse,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
@@ -465,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    Request,
                    [],
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -490,11 +491,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The ClearVariableMonitoring request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static ClearVariableMonitoringResponse FormationViolation(ClearVariableMonitoringRequest  Request,
-                                                                         String                               ErrorDescription)
+                                                                         String                          ErrorDescription)
 
             => new (Request,
                     [],
-                   OCPPv2_1.Result.FormationViolation(
+                    Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -505,11 +506,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The ClearVariableMonitoring request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static ClearVariableMonitoringResponse SignatureError(ClearVariableMonitoringRequest  Request,
-                                                                     String                               ErrorDescription)
+                                                                     String                          ErrorDescription)
 
             => new (Request,
                     [],
-                   OCPPv2_1.Result.SignatureError(
+                    Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -520,11 +521,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The ClearVariableMonitoring request.</param>
         /// <param name="Description">An optional error description.</param>
         public static ClearVariableMonitoringResponse Failed(ClearVariableMonitoringRequest  Request,
-                                                             String?                              Description   = null)
+                                                             String?                         Description   = null)
 
             => new (Request,
                     [],
-                    OCPPv2_1.Result.Server(Description));
+                    Result.Server(Description));
 
 
         /// <summary>
@@ -533,11 +534,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The ClearVariableMonitoring request.</param>
         /// <param name="Exception">The exception.</param>
         public static ClearVariableMonitoringResponse ExceptionOccured(ClearVariableMonitoringRequest  Request,
-                                                                       Exception                            Exception)
+                                                                       Exception                       Exception)
 
             => new (Request,
                     [],
-                    OCPPv2_1.Result.FromException(Exception));
+                    Result.FromException(Exception));
 
         #endregion
 

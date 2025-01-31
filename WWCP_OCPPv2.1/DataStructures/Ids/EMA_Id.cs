@@ -179,12 +179,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this e-mobility account identification.
         /// </summary>
-        public EMA_Id Clone
+        public EMA_Id Clone()
 
             => new (
                    InternalId.CloneString()

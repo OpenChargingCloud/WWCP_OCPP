@@ -182,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this monitor type.
         /// </summary>
-        public MonitorType Clone
+        public MonitorType Clone()
 
             => new (
                    InternalId.CloneString()

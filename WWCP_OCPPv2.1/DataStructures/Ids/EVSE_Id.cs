@@ -214,12 +214,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this EVSE identification.
         /// </summary>
-        public EVSE_Id Clone
+        public EVSE_Id Clone()
             => new (Value);
 
         #endregion

@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "MessageStateEnumType": {
-        //       "description": "If provided the Charging Station shall return Display Messages with the given state only. \r\n",
+        //       "description": "If provided the Charging Station shall return Display Messages with the given state only. ",
         //       "javaType": "MessageStateEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "id": {
-        //       "description": "If provided the Charging Station shall return Display Messages of the given ids. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-number-of-display-messages,NumberOfDisplayMessages.maxLimit&gt;&gt;\r\n\r\n",
+        //       "description": "If provided the Charging Station shall return Display Messages of the given ids. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-number-of-display-messages,NumberOfDisplayMessages.maxLimit&gt;&gt;",
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetDisplayMessagesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetDisplayMessages request.
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetDisplayMessagesRequest, out ErrorResponse, CustomGetDisplayMessagesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetDisplayMessagesRequest, out ErrorResponse, CustomGetDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetDisplayMessages request.

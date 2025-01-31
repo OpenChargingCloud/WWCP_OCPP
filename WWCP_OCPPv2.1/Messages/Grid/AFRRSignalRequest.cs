@@ -142,14 +142,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:AFRRSignalRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "timestamp": {
+        //             "description": "Time when signal becomes active.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "signal": {
+        //             "description": "Value of signal in _v2xSignalWattCurve_. ",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "timestamp",
+        //         "signal"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomAFRRSignalRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an AFRRSignal request.
@@ -164,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRRSignal requests.</param>
         public static AFRRSignalRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              SourceRouting                                Destination,
+                                              SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -193,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON,  RequestId, SourceRouting, NetworkPath, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out AFRRSignalRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an AFRRSignal request.
@@ -210,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRRSignal requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       SourceRouting                                Destination,
+                                       SourceRouting                                    Destination,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out AFRRSignalRequest?      AFRRSignalRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,

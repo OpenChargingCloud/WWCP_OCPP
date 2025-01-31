@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         certificateHashDataChain.Add(
                             new CertificateHashDataChain(
                                 new CertificateHashData(
-                                    HashAlgorithm:         HashAlgorithms.SHA256,
+                                    HashAlgorithm:         HashAlgorithm.SHA256,
                                     IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
                                     IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
                                     SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
@@ -457,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                Status:       //transactions.ContainsKey(request.TransactionId)
                                              //    ? TariffStatus.Accepted
                                              //    : TariffStatus.Rejected,
-                                             TariffStatus.Accepted,
+                                             TariffChangeStatus.Accepted,
                                StatusInfo:   null,
                                CustomData:   null
                            )
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ClearTariffsResults:   [
                                                           new ClearTariffsResult(
                                                               TariffId:    Tariff_Id.New(),
-                                                              Status:      TariffStatus.Accepted,
+                                                              Status:      TariffClearStatus.Accepted,
                                                               StatusInfo:  null
                                                           )
                                                       ],
@@ -508,11 +508,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return Task.FromResult(
                            new GetTariffsResponse(
                                Request:             request,
-                               Status:              TariffStatus.Accepted,
+                               Status:              TariffGetStatus.Accepted,
                                TariffAssignments:   [
                                                         new TariffAssignment(
                                                             TariffId:    Tariff_Id.New(),
-                                                            TariffKind:  TariffKinds.DefaultTariff,
+                                                            TariffKind:  TariffKind.DefaultTariff,
                                                             EVSEIds:     [ EVSE_Id.Parse(1), EVSE_Id.Parse(2)],
                                                             IdTokens:    [IdToken.NewRandomRFID4(), IdToken.NewRandomRFID7() ]
                                                         )
@@ -537,8 +537,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            new SetDefaultTariffResponse(
                                Request:      request,
                                Status:       request.EVSEId.Value <= 2
-                                                 ? TariffStatus.Accepted
-                                                 : TariffStatus.Rejected,
+                                                 ? TariffSetStatus.Accepted
+                                                 : TariffSetStatus.Rejected,
                                StatusInfo:   null,
                                CustomData:   null
                            )

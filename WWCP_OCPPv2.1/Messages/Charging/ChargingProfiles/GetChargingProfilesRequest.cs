@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ChargingProfilePurposeEnumType": {
-        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nDefines the purpose of the schedule transferred by this profile\r\n",
+        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nDefines the purpose of the schedule transferred by this profile",
         //       "javaType": "ChargingProfilePurposeEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "type": "integer"
         //         },
         //         "chargingProfileId": {
-        //           "description": "List of all the chargingProfileIds requested. Any ChargingProfile that matches one of these profiles will be reported. If omitted, the Charging Station SHALL not filter on chargingProfileId. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-charging-profile-entries,ChargingProfileEntries.maxLimit&gt;&gt;\r\n\r\n",
+        //           "description": "List of all the chargingProfileIds requested. Any ChargingProfile that matches one of these profiles will be reported. If omitted, the Charging Station SHALL not filter on chargingProfileId. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-charging-profile-entries,ChargingProfileEntries.maxLimit&gt;&gt;",
         //           "type": "array",
         //           "additionalItems": false,
         //           "items": {
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetChargingProfilesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetChargingProfilesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetChargingProfiles request.
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetChargingProfiles request.

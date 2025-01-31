@@ -64,12 +64,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         [Optional]
         public IEnumerable<Tariff_Id>  TariffIds     { get; }
 
-        /// <summary>
-        /// When present only clear tariffs of this kind.
-        /// </summary>
-        [Optional]
-        public TariffKinds?            TariffKind    { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -79,7 +73,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="TariffIds">An optional enumeration of tariff identifications to be cleared. When empty, clear all tariffs.</param>
-        /// <param name="TariffKind">When present only clear tariffs of this kind.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -92,7 +85,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ClearTariffsRequest(SourceRouting            Destination,
                                    IEnumerable<Tariff_Id>?  TariffIds             = null,
-                                   TariffKinds?             TariffKind            = null,
 
                                    IEnumerable<KeyPair>?    SignKeys              = null,
                                    IEnumerable<SignInfo>?   SignInfos             = null,
@@ -127,14 +119,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.TariffIds   = TariffIds?.Distinct() ?? [];
-            this.TariffKind  = TariffKind;
+            this.TariffIds = TariffIds?.Distinct() ?? [];
 
             unchecked
             {
-                hashCode = this.TariffIds.  CalcHashCode()      * 5 ^
-                          (this.TariffKind?.GetHashCode() ?? 0) * 3 ^
-                           base.            GetHashCode();
+                hashCode = this.TariffIds.CalcHashCode() * 3 ^
+                           base.          GetHashCode();
             }
 
         }
@@ -144,11 +134,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Documentation
 
-        // tba.
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClearTariffsRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "tariffIds": {
+        //             "description": "List of tariff Ids to clear. When absent clears all tariffs at _evseId_.",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "type": "string",
+        //                 "maxLength": 60
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "evseId": {
+        //             "description": "When present only clear tariffs matching _tariffIds_ at EVSE _evseId_.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomClearTariffsRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ClearTariffs request.
@@ -196,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ClearTariffsRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ClearTariffsRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ClearTariffs request.
@@ -244,20 +276,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region TariffKind    [optional]
-
-                if (JSON.ParseOptional("tariffKind",
-                                       "tariff kind",
-                                       TariffKindsExtensions.TryParse,
-                                       out TariffKinds? TariffKind,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
                 #region Signatures    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -291,7 +309,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                           Destination,
                                           TariffIds,
-                                          TariffKind,
 
                                           null,
                                           null,
@@ -349,9 +366,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("tariffIds",    new JArray(TariffIds. Select(tariffId  => tariffId. ToString())))
                                : null,
 
-                           TariffKind.HasValue
-                               ? new JProperty("tariffKind",   TariffKind.Value.    AsText())
-                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -443,11 +457,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => ClearTariffsRequest is not null &&
 
-               TariffIds.Count().Equals(ClearTariffsRequest.TariffIds.Count()) &&
+               TariffIds.Count(). Equals(ClearTariffsRequest.TariffIds.Count()) &&
                TariffIds.All(tariffId => ClearTariffsRequest.TariffIds.Contains(tariffId)) &&
-
-            ((!TariffKind.HasValue && !ClearTariffsRequest.TariffKind.HasValue) ||
-              (TariffKind.HasValue &&  ClearTariffsRequest.TariffKind.HasValue && TariffKind.Value.Equals(ClearTariffsRequest.TariffKind.Value))) &&
 
                base.GenericEquals(ClearTariffsRequest);
 
@@ -474,25 +485,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => !TariffIds.Any() && !TariffKind.HasValue
-                   ? "Clear all tariffs"
-                   : String.Concat(
-
-                         "Clear tariffs for",
-
-                         TariffIds.Any()
-                                ? $" tariffIds: '{TariffIds.AggregateWith(", ")}'"
-                                : "",
-
-                         TariffIds.Any() && TariffKind.HasValue
-                                ? " and"
-                                : "",
-
-                         TariffKind.HasValue
-                                ? $" tariff kind: '{TariffKind.Value}'"
-                                : ""
-
-                     );
+            => TariffIds.Any()
+                   ? $"Clear tariff Ids: '{TariffIds.AggregateWith(", ")}'"
+                   : "Clear all tariffs";
 
         #endregion
 

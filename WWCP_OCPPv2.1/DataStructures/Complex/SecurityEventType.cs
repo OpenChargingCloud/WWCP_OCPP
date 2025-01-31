@@ -179,16 +179,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this security event type.
         /// </summary>
-        public SecurityEventType Clone
+        public SecurityEventType Clone()
 
             => new (
-                   new String(Text?.       ToCharArray()),
-                   new String(Description?.ToCharArray()),
+                   Text.        CloneString(),
+                   Description?.CloneString(),
                    IsCritical
                );
 

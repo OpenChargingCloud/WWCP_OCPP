@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "value": {
-        //       "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.\r\n\r\n",
+        //       "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.",
         //       "type": "number"
         //     },
         //     "context": {

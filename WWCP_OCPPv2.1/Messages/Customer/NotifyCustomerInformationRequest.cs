@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "format": "date-time"
         //     },
         //     "requestId": {
-        //       "description": "The Id of the request.\r\n\r\n",
+        //       "description": "The Id of the request.",
         //       "type": "integer"
         //     }
         //   },
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyCustomerInformation request.
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyCustomerInformation request.

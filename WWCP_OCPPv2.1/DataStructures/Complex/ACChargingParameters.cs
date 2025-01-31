@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ACChargingParametersType": {
-        //   "description": "AC_ Charging_ Parameters\r\nurn:x-oca:ocpp:uid:2:233250\r\nEV AC charging parameters.\r\n\r\n",
+        //   "description": "AC_ Charging_ Parameters\r\nurn:x-oca:ocpp:uid:2:233250\r\nEV AC charging parameters.",
         //   "javaType": "ACChargingParameters",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "type": "integer"
         //     },
         //     "evMaxVoltage": {
-        //       "description": "AC_ Charging_ Parameters. EV_ Max. Voltage\r\nurn:x-oca:ocpp:uid:1:569214\r\nMaximum voltage supported by the electric vehicle\r\n",
+        //       "description": "AC_ Charging_ Parameters. EV_ Max. Voltage\r\nurn:x-oca:ocpp:uid:1:569214\r\nMaximum voltage supported by the electric vehicle",
         //       "type": "integer"
         //     }
         //   },

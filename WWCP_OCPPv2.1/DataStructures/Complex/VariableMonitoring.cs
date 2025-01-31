@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "type": "integer"
         //     },
         //     "transaction": {
-        //       "description": "Monitor only active when a transaction is ongoing on a component relevant to this transaction. \r\n",
+        //       "description": "Monitor only active when a transaction is ongoing on a component relevant to this transaction. ",
         //       "type": "boolean"
         //     },
         //     "value": {

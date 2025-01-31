@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomRequestStopTransactionRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomRequestStopTransactionRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a RequestStopTransaction request.
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out RequestStopTransactionRequest, out ErrorResponse, CustomRequestStopTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RequestStopTransactionRequest, out ErrorResponse, CustomRequestStopTransactionRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a RequestStopTransaction request.

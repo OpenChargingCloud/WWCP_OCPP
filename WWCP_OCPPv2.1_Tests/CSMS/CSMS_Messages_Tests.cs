@@ -5473,7 +5473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                              CustomData:            null
                                                                          ),
                                          CustomerCertificate:            new CertificateHashData(
-                                                                             HashAlgorithm:         HashAlgorithms.SHA256,
+                                                                             HashAlgorithm:         HashAlgorithm.SHA256,
                                                                              IssuerNameHash:        "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
                                                                              IssuerPublicKeyHash:   "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
                                                                              SerialNumber:          "23",

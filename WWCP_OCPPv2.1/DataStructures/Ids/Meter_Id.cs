@@ -162,12 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this meter identification.
         /// </summary>
-        public Meter_Id Clone
+        public Meter_Id Clone()
 
             => new (
                    InternalId.CloneString()

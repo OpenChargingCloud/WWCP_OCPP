@@ -225,12 +225,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this AFRR signal.
         /// </summary>
-        public AFRR_Signal Clone
+        public AFRR_Signal Clone()
 
             => new (Value);
 

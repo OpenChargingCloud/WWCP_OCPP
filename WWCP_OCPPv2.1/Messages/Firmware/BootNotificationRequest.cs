@@ -32,12 +32,8 @@ using cloud.charging.open.protocols.OCPP;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    // After start-up, every charging station SHALL send a request to the
-    // central system with information about its configuration
-    // (e.g.version, vendor, etc.).
-
     /// <summary>
-    /// A boot notification request.
+    /// A BootNotification request.
     /// </summary>
     public class BootNotificationRequest : ARequest<BootNotificationRequest>,
                                            IRequest
@@ -67,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public ChargingStation  ChargingStation    { get; }
 
         /// <summary>
-        /// The the reason for sending this boot notification to the CSMS.
+        /// The the reason for sending this BootNotification to the CSMS.
         /// </summary>
         [Mandatory]
         public BootReason       Reason             { get; }
@@ -77,11 +73,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new boot notification request.
+        /// Create a new BootNotification request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
-        /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
+        /// <param name="Reason">The the reason for sending this BootNotification to the CSMS.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -147,123 +143,123 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:BootNotificationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:BootNotificationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "BootReasonEnumType": {
+        //             "description": "This contains the reason for sending this message to the CSMS.",
+        //             "javaType": "BootReasonEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ApplicationReset",
+        //                 "FirmwareUpdate",
+        //                 "LocalReset",
+        //                 "PowerUp",
+        //                 "RemoteReset",
+        //                 "ScheduledReset",
+        //                 "Triggered",
+        //                 "Unknown",
+        //                 "Watchdog"
+        //             ]
+        //         },
+        //         "ChargingStationType": {
+        //             "description": "The physical system where an Electrical Vehicle (EV) can be charged.",
+        //             "javaType": "ChargingStation",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "serialNumber": {
+        //                     "description": "Vendor-specific device identifier.",
+        //                     "type": "string",
+        //                     "maxLength": 25
+        //                 },
+        //                 "model": {
+        //                     "description": "Defines the model of the device.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "modem": {
+        //                     "$ref": "#/definitions/ModemType"
+        //                 },
+        //                 "vendorName": {
+        //                     "description": "Identifies the vendor (not necessarily in a unique manner).",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "firmwareVersion": {
+        //                     "description": "This contains the firmware version of the Charging Station.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "model",
+        //                 "vendorName"
+        //             ]
+        //         },
+        //         "ModemType": {
+        //             "description": "Defines parameters required for initiating and maintaining wireless communication with other devices.",
+        //             "javaType": "Modem",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "iccid": {
+        //                     "description": "This contains the ICCID of the modem\u2019s SIM card.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "imsi": {
+        //                     "description": "This contains the IMSI of the modem\u2019s SIM card.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "BootReasonEnumType": {
-        //       "description": "This contains the reason for sending this message to the CSMS.",
-        //       "javaType": "BootReasonEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ApplicationReset",
-        //         "FirmwareUpdate",
-        //         "LocalReset",
-        //         "PowerUp",
-        //         "RemoteReset",
-        //         "ScheduledReset",
-        //         "Triggered",
-        //         "Unknown",
-        //         "Watchdog"
-        //       ]
-        //     },
-        //     "ChargingStationType": {
-        //       "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.",
-        //       "javaType": "ChargingStation",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "chargingStation": {
+        //             "$ref": "#/definitions/ChargingStationType"
+        //         },
+        //         "reason": {
+        //             "$ref": "#/definitions/BootReasonEnumType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "serialNumber": {
-        //           "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.",
-        //           "type": "string",
-        //           "maxLength": 25
-        //         },
-        //         "model": {
-        //           "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "modem": {
-        //           "$ref": "#/definitions/ModemType"
-        //         },
-        //         "vendorName": {
-        //           "description": "Identifies the vendor (not necessarily in a unique manner).",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "firmwareVersion": {
-        //           "description": "This contains the firmware version of the Charging Station.\r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 50
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "model",
-        //         "vendorName"
-        //       ]
         //     },
-        //     "ModemType": {
-        //       "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.",
-        //       "javaType": "Modem",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "iccid": {
-        //           "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "imsi": {
-        //           "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         }
-        //       }
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "chargingStation": {
-        //       "$ref": "#/definitions/ChargingStationType"
-        //     },
-        //     "reason": {
-        //       "$ref": "#/definitions/BootReasonEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "reason",
-        //     "chargingStation"
-        //   ]
+        //     "required": [
+        //         "reason",
+        //         "chargingStation"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON,   RequestId, SourceRouting, NetworkPath, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON,   RequestId, SourceRouting, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a BootNotification request.
@@ -317,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (Binary, RequestId, SourceRouting, NetworkPath, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (Binary, RequestId, SourceRouting, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given binary representation of a BootNotification request.
@@ -335,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static BootNotificationRequest Parse(Byte[]                                                 Binary,
                                                     Request_Id                                             RequestId,
-                                                    SourceRouting                                      Destination,
+                                                    SourceRouting                                          Destination,
                                                     NetworkPath                                            NetworkPath,
                                                     DateTime?                                              RequestTimestamp                      = null,
                                                     TimeSpan?                                              RequestTimeout                        = null,
@@ -469,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BootNotificationRequest = new BootNotificationRequest(
 
-                                          Destination,
+                                              Destination,
                                               ChargingStation,
                                               Reason,
 
@@ -525,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(Byte[]                                                 Binary,
                                        Request_Id                                             RequestId,
-                                       SourceRouting                                      Destination,
+                                       SourceRouting                                          Destination,
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationRequest?      BootNotificationRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
@@ -605,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BootNotificationRequest = new BootNotificationRequest(
 
-                                          Destination,
+                                              Destination,
                                               ChargingStation,
                                               Reason,
 
@@ -648,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
+        /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom BootNotification requests.</param>
         /// <param name="CustomChargingStationSerializer">A delegate to serialize custom ChargingStations.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -692,7 +688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
+        /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom BootNotification requests.</param>
         /// <param name="CustomChargingStationSerializer"></param>
         /// <param name="CustomBinarySignatureSerializer"></param>
         /// <param name="IncludeSignatures"></param>
@@ -732,10 +728,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (BootNotificationRequest1, BootNotificationRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two BootNotification requests for equality.
         /// </summary>
-        /// <param name="BootNotificationRequest1">A boot notification request.</param>
-        /// <param name="BootNotificationRequest2">Another boot notification request.</param>
+        /// <param name="BootNotificationRequest1">A BootNotification request.</param>
+        /// <param name="BootNotificationRequest2">Another BootNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (BootNotificationRequest? BootNotificationRequest1,
                                            BootNotificationRequest? BootNotificationRequest2)
@@ -758,10 +754,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (BootNotificationRequest1, BootNotificationRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for inequality.
+        /// Compares two BootNotification requests for inequality.
         /// </summary>
-        /// <param name="BootNotificationRequest1">A boot notification request.</param>
-        /// <param name="BootNotificationRequest2">Another boot notification request.</param>
+        /// <param name="BootNotificationRequest1">A BootNotification request.</param>
+        /// <param name="BootNotificationRequest2">Another BootNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (BootNotificationRequest? BootNotificationRequest1,
                                            BootNotificationRequest? BootNotificationRequest2)
@@ -777,9 +773,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two BootNotification requests for equality.
         /// </summary>
-        /// <param name="Object">A boot notification request to compare with.</param>
+        /// <param name="Object">A BootNotification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is BootNotificationRequest bootNotificationRequest &&
@@ -790,9 +786,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(BootNotificationRequest)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two BootNotification requests for equality.
         /// </summary>
-        /// <param name="BootNotificationRequest">A boot notification request to compare with.</param>
+        /// <param name="BootNotificationRequest">A BootNotification request to compare with.</param>
         public override Boolean Equals(BootNotificationRequest? BootNotificationRequest)
 
             => BootNotificationRequest is not null &&
@@ -825,7 +821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"Boot reason: {Reason}";
+            => $"'{ChargingStation.Model}' / '{ChargingStation.VendorName}' booted: '{Reason}'";
 
         #endregion
 

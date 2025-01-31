@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -63,13 +64,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The ChangeTransactionTariff status.
         /// </summary>
         [Mandatory]
-        public TariffStatus   Status        { get; }
+        public TariffChangeStatus  Status        { get; }
 
         /// <summary>
         /// An optional element providing more information about the ChangeTransactionTariff status.
         /// </summary>
         [Optional]
-        public StatusInfo?    StatusInfo    { get; }
+        public StatusInfo?         StatusInfo    { get; }
 
         #endregion
 
@@ -79,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new ChangeTransactionTariff response.
         /// </summary>
         /// <param name="Request">The ChangeTransactionTariff request leading to this response.</param>
-        /// <param name="Status">The ChangeTransactionTariff status.</param>
+        /// <param name="Status">A TariffChange status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the ChangeTransactionTariff status.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>
@@ -94,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChangeTransactionTariffResponse(ChangeTransactionTariffRequest  Request,
-                                               TariffStatus                    Status,
+                                               TariffChangeStatus              Status,
                                                StatusInfo?                     StatusInfo            = null,
 
                                                Result?                         Result                = null,
@@ -149,11 +150,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Documentation
 
-        // tba.
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ChangeTransactionTariffResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "TariffChangeStatusEnumType": {
+        //             "description": "Status of the operation",
+        //             "javaType": "TariffChangeStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "TooManyElements",
+        //                 "ConditionNotSupported",
+        //                 "TxNotFound",
+        //                 "NoCurrencyChange"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/TariffChangeStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomChangeTransactionTariffResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ChangeTransactionTariff response.
@@ -195,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ChangeTransactionTariffResponse, out ErrorResponse, CustomChangeTransactionTariffResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out ChangeTransactionTariffResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ChangeTransactionTariff response.
@@ -223,12 +298,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 ChangeTransactionTariffResponse = null;
 
-                #region Parse Status    [mandatory]
+                #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "ChangeTransactionTariff status",
-                                         TariffStatus.TryParse,
-                                         out TariffStatus Status,
+                                         "tariff change status",
+                                         TariffChangeStatus.TryParse,
+                                         out TariffChangeStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -236,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region StatusInfo      [optional]
+                #region StatusInfo    [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "status info",
@@ -250,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures      [optional, OCPP_CSE]
+                #region Signatures    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -264,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData      [optional]
+                #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -317,13 +392,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomChangeTransactionTariffResponseSerializer = null, CustomTariffAssignmentSerializer = null, ...)
+        #region ToJSON(CustomChangeTransactionTariffResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChangeTransactionTariffResponseSerializer">A delegate to serialize custom ChangeTransactionTariff responses.</param>
-        /// <param name="CustomTariffAssignmentSerializer">A delegate to serialize custom TariffAssignment JSON objects.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -340,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("status",       Status.              AsText()),
+                                 new JProperty("status",       Status.              ToString()),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.          ToJSON(CustomStatusInfoSerializer,
@@ -392,9 +466,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => new (
 
                    Request,
-                   TariffStatus.Rejected,
+                   TariffChangeStatus.Rejected,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -422,8 +496,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                          String                          ErrorDescription)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    TariffChangeStatus.Rejected,
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -437,8 +511,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                      String                          ErrorDescription)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    TariffChangeStatus.Rejected,
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -452,8 +526,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                              String?                         Description   = null)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    TariffChangeStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -465,8 +539,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                        Exception                       Exception)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    TariffChangeStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -571,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{Status.AsText()}{(StatusInfo is not null ? $", {StatusInfo}" : "")}";
+            => $"{Status}{(StatusInfo is not null ? $", {StatusInfo}" : "")}";
 
         #endregion
 

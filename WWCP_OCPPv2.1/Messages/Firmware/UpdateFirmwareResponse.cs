@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "UpdateFirmwareStatusEnumType": {
-        //       "description": "This field indicates whether the Charging Station was able to accept the request.\r\n\r\n",
+        //       "description": "This field indicates whether the Charging Station was able to accept the request.",
         //       "javaType": "UpdateFirmwareStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,

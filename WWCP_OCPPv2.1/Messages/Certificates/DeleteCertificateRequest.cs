@@ -178,12 +178,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/HashAlgorithmEnumType"
         //         },
         //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
+        //           "description": "Hashed value of the Issuer DN (Distinguished Name).",
         //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key\r\n",
+        //           "description": "Hashed value of the issuers public key",
         //           "type": "string",
         //           "maxLength": 128
         //         },
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomDeleteCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDeleteCertificateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a DeleteCertificate request.
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DeleteCertificateRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DeleteCertificateRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteCertificate request.

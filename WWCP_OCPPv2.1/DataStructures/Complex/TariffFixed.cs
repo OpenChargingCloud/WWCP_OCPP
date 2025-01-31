@@ -17,10 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -28,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An fixed tariff element.
+    /// A TariffFixed tariff element.
     /// </summary>
     public class TariffFixed : IEquatable<TariffFixed>
     {
@@ -54,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new fixed tariff element.
+        /// Create a new TariffFixed tariff element.
         /// </summary>
         /// <param name="Prices">An enumeration of tariff prices and conditions.</param>
         /// <param name="TaxRates">An optional enumeration of applicable tax percentages for this tariff dimension.</param>
@@ -84,23 +85,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "javaType":                "TariffFixed",
-        //     "type":                    "object",
-        //     "additionalProperties":     false,
+        //     "javaType": "TariffFixed",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
-        //         "fixedFee": {
-        //             "$ref":            "#/definitions/TariffFixedPriceType"
-        //         },
-        //         "taxRate": {
-        //             "type":            "array",
-        //             "additionalItems":  false,
+        //         "prices": {
+        //             "type": "array",
+        //             "additionalItems": false,
         //             "items": {
-        //                 "$ref":        "#/definitions/TaxRateType"
+        //                 "$ref": "#/definitions/TariffFixedPriceType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "taxRates": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/TaxRateType"
         //             },
         //             "minItems": 1,
         //             "maxItems": 5
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     }
+        //     },
+        //     "required": [
+        //         "prices"
+        //     ]
         // }
 
         #endregion
@@ -108,10 +120,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomTariffFixedParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a tariff element.
+        /// Parse the given JSON representation of a TariffFixed tariff element.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTariffFixedParser">An optional delegate to parse custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffFixedParser">An optional delegate to parse custom TariffFixed tariff element JSON objects.</param>
         public static TariffFixed Parse(JObject                                     JSON,
                                          CustomJObjectParserDelegate<TariffFixed>?  CustomTariffFixedParser   = null)
         {
@@ -124,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return tariffFixed;
             }
 
-            throw new ArgumentException("The given JSON representation of a tariff element is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TariffFixed tariff element is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -141,9 +153,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TariffFixed">The parsed tariff element.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                 JSON,
+        public static Boolean TryParse(JObject                                JSON,
                                        [NotNullWhen(true)]  out TariffFixed?  TariffFixed,
-                                       [NotNullWhen(false)] out String?        ErrorResponse)
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
                         out TariffFixed,
@@ -158,9 +170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TariffFixed">The parsed tariff element.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTariffFixedParser">An optional delegate to parse custom tariff element JSON objects.</param>
-        public static Boolean TryParse(JObject                                     JSON,
+        public static Boolean TryParse(JObject                                    JSON,
                                        [NotNullWhen(true)]  out TariffFixed?      TariffFixed,
-                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
                                        CustomJObjectParserDelegate<TariffFixed>?  CustomTariffFixedParser   = null)
         {
 
@@ -204,22 +216,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 TariffFixed = new TariffFixed(
-                                   Prices,
-                                   TaxRates
-                               );
+                                  Prices,
+                                  TaxRates
+                              );
 
 
                 if (CustomTariffFixedParser is not null)
                     TariffFixed = CustomTariffFixedParser(JSON,
-                                                            TariffFixed);
+                                                          TariffFixed);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                TariffFixed   = default;
-                ErrorResponse  = "The given JSON representation of a tariff fixed is invalid: " + e.Message;
+                TariffFixed    = default;
+                ErrorResponse  = "The given JSON representation of a TariffFixed tariff element is invalid: " + e.Message;
                 return false;
             }
 
@@ -264,13 +276,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this TariffFixed tariff element.
         /// </summary>
         public TariffFixed Clone()
 
             => new (
                    Prices.  Select(tariffFixedPrice => tariffFixedPrice.Clone()),
-                   TaxRates.Select(taxRate           => taxRate.          Clone())
+                   TaxRates.Select(taxRate          => taxRate.         Clone())
                );
 
         #endregion
@@ -283,8 +295,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffFixed1">A tariff fixed.</param>
-        /// <param name="TariffFixed2">Another tariff fixed.</param>
+        /// <param name="TariffFixed1">A TariffFixed tariff element.</param>
+        /// <param name="TariffFixed2">Another TariffFixed tariff element.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (TariffFixed? TariffFixed1,
                                            TariffFixed? TariffFixed2)
@@ -309,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffFixed1">A tariff fixed.</param>
-        /// <param name="TariffFixed2">Another tariff fixed.</param>
+        /// <param name="TariffFixed1">A TariffFixed tariff element.</param>
+        /// <param name="TariffFixed2">Another TariffFixed tariff element.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (TariffFixed? TariffFixed1,
                                            TariffFixed? TariffFixed2)
@@ -326,9 +338,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two tariff energies for equality.
+        /// Compares two TariffFixed tariff element for equality.
         /// </summary>
-        /// <param name="Object">A tariff fixed to compare with.</param>
+        /// <param name="Object">A TariffFixed tariff element to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TariffFixed tariffFixed &&
@@ -339,18 +351,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(TariffFixed)
 
         /// <summary>
-        /// Compares two tariff energies for equality.
+        /// Compares two TariffFixed tariff element for equality.
         /// </summary>
-        /// <param name="TariffFixed">A tariff fixed to compare with.</param>
+        /// <param name="TariffFixed">A TariffFixed tariff element to compare with.</param>
         public Boolean Equals(TariffFixed? TariffFixed)
 
             => TariffFixed is not null &&
 
                Prices.  Count().Equals(TariffFixed.Prices.  Count()) &&
-               Prices.  All(tariffFixedPrice => TariffFixed.Prices.  Contains(tariffFixedPrice)) &&
-
                TaxRates.Count().Equals(TariffFixed.TaxRates.Count()) &&
-               TaxRates.All(taxRate           => TariffFixed.TaxRates.Contains(taxRate));
+
+               Prices.  All(tariffFixedPrice => TariffFixed.Prices.  Contains(tariffFixedPrice)) &&
+               TaxRates.All(taxRate          => TariffFixed.TaxRates.Contains(taxRate));
 
         #endregion
 

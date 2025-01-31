@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "CompositeScheduleType": {
-        //   "description": "Composite_ Schedule\r\nurn:x-oca:ocpp:uid:2:233362\r\n",
+        //   "description": "Composite_ Schedule\r\nurn:x-oca:ocpp:uid:2:233362",
         //   "javaType": "CompositeSchedule",
         //   "type": "object",
         //   "additionalProperties": false,

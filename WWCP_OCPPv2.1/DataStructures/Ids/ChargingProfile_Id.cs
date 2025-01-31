@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging profile identification.
         /// </summary>
-        public ChargingProfile_Id Clone
+        public ChargingProfile_Id Clone()
 
             => new (Value);
 

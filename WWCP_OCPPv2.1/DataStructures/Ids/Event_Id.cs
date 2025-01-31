@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this event identification.
         /// </summary>
-        public Event_Id Clone
+        public Event_Id Clone()
 
             => new (Value);
 

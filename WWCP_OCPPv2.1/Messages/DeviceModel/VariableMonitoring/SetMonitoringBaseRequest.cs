@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "MonitoringBaseEnumType": {
-        //       "description": "Specify which monitoring base will be set\r\n",
+        //       "description": "Specify which monitoring base will be set",
         //       "javaType": "MonitoringBaseEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetMonitoringBaseRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetMonitoringBaseRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SetMonitoringBase request.
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetMonitoringBaseRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetMonitoringBaseRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetMonitoringBase request.

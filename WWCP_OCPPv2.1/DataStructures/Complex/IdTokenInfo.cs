@@ -42,46 +42,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The authorization status.
         /// </summary>
-        public AuthorizationStatus   Status                  { get; }
+        public AuthorizationStatus   Status                 { get; }
 
         /// <summary>
         /// The optional charging priority from a business point of view, ranging from -9 to 9 with a default value of 0.
         /// Higher values indicate a higher priority.
         /// </summary>
-        public Int16                 ChargingPriority        { get; }
+        public Int16                 ChargingPriority       { get; }
 
         /// <summary>
         /// The optional timestamp after which the token must be considered invalid.
         /// </summary>
-        public DateTime?             CacheExpiryDateTime     { get; }
+        public DateTime?             CacheExpiryDateTime    { get; }
 
         /// <summary>
         /// The identification token is only valid fot the given optional enumeration of EVSE identifications.
         /// </summary>
-        public IEnumerable<EVSE_Id>  ValidEVSEIds            { get; }
-
-
-        public Boolean?              HasChargingTariff       { get; }
+        public IEnumerable<EVSE_Id>  ValidEVSEIds           { get; }
 
         /// <summary>
         /// Additional identification token.
         /// </summary>
-        public IdToken?              GroupIdToken            { get; }
+        public IdToken?              GroupIdToken           { get; }
 
         /// <summary>
         /// The first optional preferred user interface language of identifier user. [max 8]
         /// </summary>
-        public Language_Id?          Language1               { get; }
+        public Language_Id?          Language1              { get; }
 
         /// <summary>
         /// The second optional preferred user interface language of identifier user. [max 8]
         /// </summary>
-        public Language_Id?          Language2               { get; }
+        public Language_Id?          Language2              { get; }
 
         /// <summary>
         /// The optional personal message to be displayed at a charging station.
+        /// [OCPP v2.1 allows only a single language!]
         /// </summary>
-        public MessageContents       PersonalMessage         { get; }
+        public MessageContents       PersonalMessage        { get; }
 
         #endregion
 
@@ -91,8 +89,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new status information about an identifier.
         /// </summary>
         /// <param name="Status">The authorization status.</param>
-        /// <param name="ChargingPriority">The optional charging priority from a business point of view, ranging from -9 to 9 with a default value of 0. Higher values indicate a higher priority.</param>
         /// <param name="CacheExpiryDateTime">The optional timestamp after which the token must be considered invalid.</param>
+        /// <param name="ChargingPriority">The optional charging priority from a business point of view, ranging from -9 to 9 with a default value of 0. Higher values indicate a higher priority.</param>
         /// <param name="ValidEVSEIds">The identification token is only valid fot the given optional enumeration of EVSE identifications.</param>
         /// <param name="GroupIdToken">Additional identification token.</param>
         /// <param name="Language1">The first optional preferred user interface language of identifier user.</param>
@@ -100,10 +98,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PersonalMessage">An optional personal message to be displayed at a charging station.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public IdTokenInfo(AuthorizationStatus    Status,
-                           Int16?                 ChargingPriority      = 0,
                            DateTime?              CacheExpiryDateTime   = null,
+                           Int16?                 ChargingPriority      = 0,
                            IEnumerable<EVSE_Id>?  ValidEVSEIds          = null,
-                           Boolean?               HasChargingTariff     = null,
                            IdToken?               GroupIdToken          = null,
                            Language_Id?           Language1             = null,
                            Language_Id?           Language2             = null,
@@ -118,7 +115,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ChargingPriority     = ChargingPriority         ?? 0;
             this.CacheExpiryDateTime  = CacheExpiryDateTime;
             this.ValidEVSEIds         = ValidEVSEIds?.Distinct() ?? [];
-            this.HasChargingTariff    = HasChargingTariff;
             this.GroupIdToken         = GroupIdToken;
             this.Language1            = Language1;
             this.Language2            = Language2;
@@ -127,16 +123,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.Status.              GetHashCode()       * 23 ^
-                           this.ChargingPriority.    GetHashCode()       * 19 ^
+                hashCode = this.Status.              GetHashCode()       * 19 ^
+                          (this.CacheExpiryDateTime?.GetHashCode() ?? 0) * 17 ^
+                           this.ChargingPriority.    GetHashCode()       * 13 ^
                            this.ValidEVSEIds.        CalcHashCode()      * 17 ^
-
-                          (this.CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
                           (this.GroupIdToken?.       GetHashCode() ?? 0) * 11 ^
                           (this.Language1?.          GetHashCode() ?? 0) *  7 ^
                           (this.Language2?.          GetHashCode() ?? 0) *  5 ^
                            this.PersonalMessage.     GetHashCode()       *  3 ^
-
                            base.                     GetHashCode();
 
             }
@@ -148,57 +142,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "IdTokenInfoType": {
-        //   "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.",
-        //   "javaType": "IdTokenInfo",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/AuthorizationStatusEnumType"
-        //     },
-        //     "cacheExpiryDateTime": {
-        //       "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "chargingPriority": {
-        //       "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. \r\n",
-        //       "type": "integer"
-        //     },
-        //     "language1": {
-        //       "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 8
-        //     },
-        //     "evseId": {
-        //       "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.\r\n\r\n",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "type": "integer"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "groupIdToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "language2": {
-        //       "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //       "type": "string",
-        //       "maxLength": 8
-        //     },
-        //     "personalMessage": {
-        //       "$ref": "#/definitions/MessageContentType"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
-        // }
+        // {
+        //    "description": "Contains status information about an identifier. It is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.",
+        //    "javaType": "IdTokenInfo",
+        //    "type": "object",
+        //    "additionalProperties": false,
+        //    "properties": {
+        //        "status": {
+        //            "$ref": "#/definitions/AuthorizationStatusEnumType"
+        //        },
+        //        "cacheExpiryDateTime": {
+        //            "description": "Date and Time after which the token must be considered invalid.",
+        //            "type": "string",
+        //            "format": "date-time"
+        //        },
+        //        "chargingPriority": {
+        //            "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. ",
+        //            "type": "integer"
+        //        },
+        //        "groupIdToken": {
+        //            "$ref": "#/definitions/IdTokenType"
+        //        },
+        //        "language1": {
+        //            "description": "Preferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //            "type": "string",
+        //            "maxLength": 8
+        //        },
+        //        "language2": {
+        //            "description": "Second preferred user interface language of identifier user. Don\u2019t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //            "type": "string",
+        //            "maxLength": 8
+        //        },
+        //        "evseId": {
+        //            "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.",
+        //            "type": "array",
+        //            "additionalItems": false,
+        //            "items": {
+        //                "type": "integer",
+        //                "minimum": 0.0
+        //            },
+        //            "minItems": 1
+        //        },
+        //        "personalMessage": {
+        //            "$ref": "#/definitions/MessageContentType"
+        //        },
+        //        "customData": {
+        //            "$ref": "#/definitions/CustomDataType"
+        //        }
+        //    },
+        //    "required": [
+        //        "status"
+        //    ]
+        //}
 
         #endregion
 
@@ -216,8 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var idTokenInfo,
                          out var errorResponse,
-                         CustomIdTokenInfoParser) &&
-                idTokenInfo is not null)
+                         CustomIdTokenInfoParser))
             {
                 return idTokenInfo;
             }
@@ -271,11 +265,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("status",
                                          "authorization status",
-                                         AuthorizationStatusExtensions.TryParse,
+                                         OCPPv2_1.AuthorizationStatus.TryParse,
                                          out AuthorizationStatus AuthorizationStatus,
                                          out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region CacheExpiryDateTime     [optional]
+
+                if (JSON.ParseOptional("cacheExpiryDateTime",
+                                       "cache expiry timestamp",
+                                       out DateTime? CacheExpiryDateTime,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -294,19 +301,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CacheExpiryDateTime     [optional]
-
-                if (JSON.ParseOptional("cacheExpiryDateTime",
-                                       "cache expiry timestamp",
-                                       out DateTime? CacheExpiryDateTime,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
                 #region ValidEVSEIds            [optional]
 
                 if (JSON.ParseOptionalHashSet("evseId",
@@ -314,19 +308,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               EVSE_Id.TryParse,
                                               out HashSet<EVSE_Id> ValidEVSEIds,
                                               out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region HasChargingTariff       [optional]
-
-                if (JSON.ParseOptional("hasTariff",
-                                       "has charging tariff",
-                                       out Boolean? HasChargingTariff,
-                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -426,10 +407,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 IdTokenInfo = new IdTokenInfo(
                                   AuthorizationStatus,
-                                  ChargingPriority,
                                   CacheExpiryDateTime,
+                                  ChargingPriority,
                                   ValidEVSEIds,
-                                  HasChargingTariff,
                                   GroupIdToken,
                                   Language1,
                                   Language2,
@@ -476,16 +456,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("status",                 Status.                   ToString()),
 
-                           ChargingPriority != 0
-                               ? new JProperty("chargingPriority",       ChargingPriority)
-                               : null,
-
                            CacheExpiryDateTime.HasValue
                                ? new JProperty("cacheExpiryDateTime",    CacheExpiryDateTime.Value.ToIso8601())
                                : null,
 
+                           ChargingPriority != 0
+                               ? new JProperty("chargingPriority",       ChargingPriority)
+                               : null,
+
                            ValidEVSEIds.Any()
-                               ? new JProperty("evseId",                 new JArray(ValidEVSEIds.Select(evseId => evseId.Value)))
+                               ? new JProperty("evseId",                 new JArray(ValidEVSEIds.   Select(evseId         => evseId.Value)))
                                : null,
 
                            GroupIdToken is not null
@@ -502,14 +482,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("language2",              Language2.          Value.ToString())
                                : null,
 
-                           PersonalMessage is not null && PersonalMessage.Any()
+                           PersonalMessage.Count > 0
                                ? new JProperty("personalMessage",        PersonalMessage.First().  ToJSON(CustomMessageContentSerializer,
                                                                                                           CustomCustomDataSerializer))
                                : null,
 
-                           PersonalMessage is not null && PersonalMessage.Count > 1
-                               ? new JProperty("personalMessageExtra",   new JArray(PersonalMessage.Skip(1).Select(messageContent => messageContent.ToJSON(CustomMessageContentSerializer,
-                                                                                                                                                           CustomCustomDataSerializer))))
+                           // OCPP v2.1 allows only a single language!
+                           PersonalMessage.Count > 0
+                               ? new JProperty("personalMessages",       new JArray(PersonalMessage.Select(messageContent => messageContent.ToJSON(CustomMessageContentSerializer,
+                                                                                                                                                   CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
@@ -526,43 +507,122 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this identification token info.
+        /// </summary>
+        public IdTokenInfo Clone()
+
+            => new (
+                   Status,
+                   CacheExpiryDateTime,
+                   ChargingPriority,
+                   ValidEVSEIds,
+                   GroupIdToken,
+                   Language1,
+                   Language2,
+                   PersonalMessage,
+                   CustomData
+               );
+
+        #endregion
+
 
         #region Static defaults
 
         /// <summary>
         /// Identifier is allowed for charging.
         /// </summary>
-        public static IdTokenInfo Accepted
+        public static IdTokenInfo  Accepted
             => new (AuthorizationStatus.Accepted);
 
         /// <summary>
         /// Identifier has been blocked. Not allowed for charging.
         /// </summary>
-        public static IdTokenInfo Blocked
-            => new(AuthorizationStatus.Blocked);
+        public static IdTokenInfo  Blocked
+            => new (AuthorizationStatus.Blocked);
 
         /// <summary>
         /// Identifier is already involved in another transaction
         /// and multiple transactions are not allowed.
         /// </summary>
-        public static IdTokenInfo ConcurrentTx
-            => new(AuthorizationStatus.ConcurrentTx);
+        public static IdTokenInfo  ConcurrentTx
+            => new (AuthorizationStatus.ConcurrentTx);
 
         /// <summary>
         /// Identifier has expired. Not allowed for charging.
         /// </summary>
-        public static IdTokenInfo Expired
-            => new(AuthorizationStatus.Expired);
+        public static IdTokenInfo  Expired
+            => new (AuthorizationStatus.Expired);
 
         /// <summary>
         /// Identifier is unknown. Not allowed for charging.
         /// </summary>
-        public static IdTokenInfo Invalid
-            => new(AuthorizationStatus.Invalid);
+        public static IdTokenInfo  Invalid
+            => new (AuthorizationStatus.Invalid);
+
+        /// <summary>
+        /// NoCredit
+        /// </summary>
+        public static IdTokenInfo  NoCredit
+            => new (AuthorizationStatus.NoCredit);
+
+        /// <summary>
+        /// NotAllowedTypeEVSE
+        /// </summary>
+        public static IdTokenInfo  NotAllowedTypeEVSE
+            => new (AuthorizationStatus.NotAllowedTypeEVSE);
+
+        /// <summary>
+        /// NotAtThisLocation
+        /// </summary>
+        public static IdTokenInfo  NotAtThisLocation
+            => new (AuthorizationStatus.NotAtThisLocation);
+
+        /// <summary>
+        /// NotAtThisTime
+        /// </summary>
+        public static IdTokenInfo  NotAtThisTime
+            => new (AuthorizationStatus.NotAtThisTime);
 
 
-        public static IdTokenInfo Error(AuthorizationStatus? Status = null)
-            => new (Status ?? AuthorizationStatus.Error);
+        // Not part of OCPP v2.1!
+
+        /// <summary>
+        /// Filtered
+        /// </summary>
+        public static IdTokenInfo  Filtered
+            => new (AuthorizationStatus.Filtered);
+
+        /// <summary>
+        /// Error
+        /// </summary>
+        public static IdTokenInfo  Error
+            => new (AuthorizationStatus.Error);
+
+        /// <summary>
+        /// RequestError
+        /// </summary>
+        public static IdTokenInfo  RequestError
+            => new (AuthorizationStatus.RequestError);
+
+        /// <summary>
+        /// ParsingError
+        /// </summary>
+        public static IdTokenInfo  ParsingError
+            => new (AuthorizationStatus.ParsingError);
+
+        /// <summary>
+        /// SignatureError
+        /// </summary>
+        public static IdTokenInfo  SignatureError
+            => new (AuthorizationStatus.SignatureError);
+
+
+
+        //public static IdTokenInfo Error(AuthorizationStatus? Status = null)
+        //    => new (Status ?? AuthorizationStatus.Error);
 
         #endregion
 

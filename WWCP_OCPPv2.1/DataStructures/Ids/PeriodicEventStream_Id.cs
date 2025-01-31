@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this periodic event stream identification.
         /// </summary>
-        public PeriodicEventStream_Id Clone
+        public PeriodicEventStream_Id Clone()
 
             => new (Value);
 

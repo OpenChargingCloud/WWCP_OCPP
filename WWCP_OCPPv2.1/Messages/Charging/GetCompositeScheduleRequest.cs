@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ChargingRateUnitEnumType": {
-        //       "description": "Can be used to force a power or current profile.\r\n\r\n",
+        //       "description": "Can be used to force a power or current profile.",
         //       "javaType": "ChargingRateUnitEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "duration": {
-        //       "description": "Length of the requested schedule in seconds.\r\n\r\n",
+        //       "description": "Length of the requested schedule in seconds.",
         //       "type": "integer"
         //     },
         //     "chargingRateUnit": {
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCompositeSchedule request.
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetCompositeSchedule request.

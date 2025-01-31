@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
         //   "$id": "urn:OCPP:Cp:2:2020:3:MeterValuesRequest",
-        //   "description": "Request_ Body\r\nurn:x-enexis:ecdm:uid:2:234744\r\n",
+        //   "description": "Request_ Body\r\nurn:x-enexis:ecdm:uid:2:234744",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "LocationEnumType": {
-        //       "description": "Sampled_ Value. Location. Location_ Code\r\nurn:x-oca:ocpp:uid:1:569265\r\nIndicates where the measured value has been sampled. Default =  \"Outlet\"\r\n\r\n",
+        //       "description": "Sampled_ Value. Location. Location_ Code\r\nurn:x-oca:ocpp:uid:1:569265\r\nIndicates where the measured value has been sampled. Default =  \"Outlet\"",
         //       "javaType": "LocationEnum",
         //       "type": "string",
         //       "default": "Outlet",
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "MeasurandEnumType": {
-        //       "description": "Sampled_ Value. Measurand. Measurand_ Code\r\nurn:x-oca:ocpp:uid:1:569263\r\nType of measurement. Default = \"Energy.Active.Import.Register\"\r\n",
+        //       "description": "Sampled_ Value. Measurand. Measurand_ Code\r\nurn:x-oca:ocpp:uid:1:569263\r\nType of measurement. Default = \"Energy.Active.Import.Register\"",
         //       "javaType": "MeasurandEnum",
         //       "type": "string",
         //       "default": "Energy.Active.Import.Register",
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ReadingContextEnumType": {
-        //       "description": "Sampled_ Value. Context. Reading_ Context_ Code\r\nurn:x-oca:ocpp:uid:1:569261\r\nType of detail value: start, end or sample. Default = \"Sample.Periodic\"\r\n",
+        //       "description": "Sampled_ Value. Context. Reading_ Context_ Code\r\nurn:x-oca:ocpp:uid:1:569261\r\nType of detail value: start, end or sample. Default = \"Sample.Periodic\"",
         //       "javaType": "ReadingContextEnum",
         //       "type": "string",
         //       "default": "Sample.Periodic",
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "value": {
-        //           "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.\r\n\r\n",
+        //           "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.",
         //           "type": "number"
         //         },
         //         "context": {
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "UnitOfMeasureType": {
-        //       "description": "Represents a UnitOfMeasure with a multiplier\r\n",
+        //       "description": "Represents a UnitOfMeasure with a multiplier",
         //       "javaType": "UnitOfMeasure",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomMeterValuesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomMeterValuesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a meter values request.
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a meter values request.

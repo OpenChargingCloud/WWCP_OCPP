@@ -39,19 +39,19 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Indicates whether this PEM encoded X.509 certificate is empty.
         /// </summary>
-        public Boolean IsEmpty
+        public Boolean  IsEmpty
             => !Certificates.Any();
 
         /// <summary>
         /// Indicates whether this PEM encoded X.509 certificate is NOT empty.
         /// </summary>
-        public Boolean IsNotEmpty
+        public Boolean  IsNotEmpty
             => Certificates.Any();
 
         /// <summary>
-        /// The length of the certificate chain.
+        /// The number of certificates within the chain.
         /// </summary>
-        public UInt64 Length
+        public UInt64  Length
             => (UInt64) Certificates.Count();
 
         #endregion

@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this mobility needs mode.
         /// </summary>
-        public MobilityNeedsMode Clone
+        public MobilityNeedsMode Clone()
 
             => new (
                    InternalId.CloneString()

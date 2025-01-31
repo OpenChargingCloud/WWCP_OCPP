@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this binary data transfer status.
         /// </summary>
-        public BinaryDataTransferStatus Clone
+        public BinaryDataTransferStatus Clone()
 
             => new (
                    InternalId.CloneString()

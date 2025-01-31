@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "CostType": {
-        //   "description": "Cost\r\nurn:x-oca:ocpp:uid:2:233258\r\n",
+        //   "description": "Cost\r\nurn:x-oca:ocpp:uid:2:233258",
         //   "javaType": "Cost",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -100,11 +100,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CostKindEnumType"
         //     },
         //     "amount": {
-        //       "description": "Cost. Amount. Amount\r\nurn:x-oca:ocpp:uid:1:569244\r\nThe estimated or actual cost per kWh\r\n",
+        //       "description": "Cost. Amount. Amount\r\nurn:x-oca:ocpp:uid:1:569244\r\nThe estimated or actual cost per kWh",
         //       "type": "integer"
         //     },
         //     "amountMultiplier": {
-        //       "description": "Cost. Amount_ Multiplier. Integer\r\nurn:x-oca:ocpp:uid:1:569245\r\nValues: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier\r\n",
+        //       "description": "Cost. Amount_ Multiplier. Integer\r\nurn:x-oca:ocpp:uid:1:569245\r\nValues: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
         //       "type": "integer"
         //     }
         //   },

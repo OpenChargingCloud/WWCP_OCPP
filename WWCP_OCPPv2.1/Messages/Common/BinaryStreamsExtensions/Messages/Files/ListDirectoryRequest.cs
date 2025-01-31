@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomListDirectoryRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomListDirectoryRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a ListDirectoryRequest request.
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out listDirectoryRequest, out ErrorResponse, CustomListDirectoryRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out listDirectoryRequest, out ErrorResponse, CustomListDirectoryRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ListDirectory request.

@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "RelativeTimeIntervalType": {
-        //   "description": "Relative_ Timer_ Interval\r\nurn:x-oca:ocpp:uid:2:233270\r\n",
+        //   "description": "Relative_ Timer_ Interval\r\nurn:x-oca:ocpp:uid:2:233270",
         //   "javaType": "RelativeTimeInterval",
         //   "type": "object",
         //   "additionalProperties": false,

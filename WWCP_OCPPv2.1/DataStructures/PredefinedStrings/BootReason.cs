@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this boot reason is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this boot reason is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the boot reason.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                   Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered boot reasons.
+        /// </summary>
+        public static    IEnumerable<BootReason>  All
+            => lookup.Values;
 
         #endregion
 
@@ -176,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this boot reason.
         /// </summary>
-        public BootReason Clone
+        public BootReason Clone()
 
             => new (
                    InternalId.CloneString()
@@ -195,55 +201,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Application reset
         /// </summary>
-        public static BootReason ApplicationReset    { get; }
+        public static BootReason  ApplicationReset    { get; }
             = Register("ApplicationReset");
 
         /// <summary>
         /// Firmware update
         /// </summary>
-        public static BootReason FirmwareUpdate      { get; }
+        public static BootReason  FirmwareUpdate      { get; }
             = Register("FirmwareUpdate");
 
         /// <summary>
         /// Local reset
         /// </summary>
-        public static BootReason LocalReset          { get; }
+        public static BootReason  LocalReset          { get; }
             = Register("LocalReset");
 
         /// <summary>
         /// Power up
         /// </summary>
-        public static BootReason PowerUp             { get; }
+        public static BootReason  PowerUp             { get; }
             = Register("PowerUp");
 
         /// <summary>
         /// Remote reset
         /// </summary>
-        public static BootReason RemoteReset         { get; }
+        public static BootReason  RemoteReset         { get; }
             = Register("RemoteReset");
 
         /// <summary>
         /// Scheduled reset
         /// </summary>
-        public static BootReason ScheduledReset      { get; }
+        public static BootReason  ScheduledReset      { get; }
             = Register("ScheduledReset");
 
         /// <summary>
         /// Triggered
         /// </summary>
-        public static BootReason Triggered           { get; }
+        public static BootReason  Triggered           { get; }
             = Register("Triggered");
 
         /// <summary>
         /// Unknown boot reason
         /// </summary>
-        public static BootReason Unknown             { get; }
+        public static BootReason  Unknown             { get; }
             = Register("Unknown");
 
         /// <summary>
         /// Watchdog
         /// </summary>
-        public static BootReason Watchdog            { get; }
+        public static BootReason  Watchdog            { get; }
             = Register("Watchdog");
 
         #endregion

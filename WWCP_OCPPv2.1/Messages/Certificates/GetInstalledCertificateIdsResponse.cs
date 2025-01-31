@@ -254,12 +254,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/HashAlgorithmEnumType"
         //         },
         //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
+        //           "description": "Hashed value of the Issuer DN (Distinguished Name).",
         //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key\r\n",
+        //           "description": "Hashed value of the issuers public key",
         //           "type": "string",
         //           "maxLength": 128
         //         },

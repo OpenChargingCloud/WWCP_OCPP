@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MessageContent">The message text.</param>
         public MessageContents Set(MessageContent MessageContent)
 
-            => Set(MessageContent.Language,
+            => Set(MessageContent.Language ?? Language_Id.EN,
                    MessageContent.Content);
 
         #endregion
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             foreach (var MessageContent in MessageContents)
-                Set(MessageContent.Language,
+                Set(MessageContent.Language ?? Language_Id.EN,
                     MessageContent.Content);
 
             GenerateHashCode();

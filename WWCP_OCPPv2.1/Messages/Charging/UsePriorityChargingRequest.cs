@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomUsePriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an UsePriorityCharging request.
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UsePriorityCharging request.

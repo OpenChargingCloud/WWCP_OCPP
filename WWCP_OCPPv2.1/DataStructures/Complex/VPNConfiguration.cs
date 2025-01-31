@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "VPNType": {
-        //   "description": "VPN\r\nurn:x-oca:ocpp:uid:2:233268\r\nVPN Configuration settings\r\n",
+        //   "description": "VPN\r\nurn:x-oca:ocpp:uid:2:233268\r\nVPN Configuration settings",
         //   "javaType": "VPN",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -124,12 +124,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "server": {
-        //       "description": "VPN. Server. URI\r\nurn:x-oca:ocpp:uid:1:569272\r\nVPN Server Address\r\n",
+        //       "description": "VPN. Server. URI\r\nurn:x-oca:ocpp:uid:1:569272\r\nVPN Server Address",
         //       "type": "string",
         //       "maxLength": 512
         //     },
         //     "user": {
-        //       "description": "VPN. User. User_ Name\r\nurn:x-oca:ocpp:uid:1:569273\r\nVPN User\r\n",
+        //       "description": "VPN. User. User_ Name\r\nurn:x-oca:ocpp:uid:1:569273\r\nVPN User",
         //       "type": "string",
         //       "maxLength": 20
         //     },

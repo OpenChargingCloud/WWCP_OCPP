@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/AttributeEnumType"
         //         },
         //         "attributeValue": {
-        //           "description": "Value to be assigned to attribute of variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. \r\n",
+        //           "description": "Value to be assigned to attribute of variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. ",
         //           "type": "string",
         //           "maxLength": 1000
         //         },
@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, ..., CustomSetVariablesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ..., CustomSetVariablesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SetVariables request.
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetVariablesRequest, out ErrorResponse, ..., CustomSetVariablesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetVariablesRequest, out ErrorResponse, ..., CustomSetVariablesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetVariables request.

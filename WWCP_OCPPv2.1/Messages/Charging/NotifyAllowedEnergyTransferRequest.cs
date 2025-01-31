@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyAllowedEnergyTransferRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyAllowedEnergyTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyAllowedEnergyTransfer request.
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyAllowedEnergyTransferRequest, out ErrorResponse, CustomNotifyAllowedEnergyTransferRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyAllowedEnergyTransferRequest, out ErrorResponse, CustomNotifyAllowedEnergyTransferRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyAllowedEnergyTransfer request.

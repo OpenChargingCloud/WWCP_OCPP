@@ -174,12 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this invoice number.
         /// </summary>
-        public InvoiceNumber Clone
+        public InvoiceNumber Clone()
 
             => new (
                    InternalId.CloneString()

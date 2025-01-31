@@ -182,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this get certificate id use.
         /// </summary>
-        public GetCertificateIdUse Clone
+        public GetCertificateIdUse Clone()
 
             => new (
                    InternalId.CloneString()

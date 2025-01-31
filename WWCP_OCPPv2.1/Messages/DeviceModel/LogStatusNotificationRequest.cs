@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomLogStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomLogStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a log status notification request.
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out LogStatusNotificationRequest, out ErrorResponse, ...)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out LogStatusNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a log status notification request.

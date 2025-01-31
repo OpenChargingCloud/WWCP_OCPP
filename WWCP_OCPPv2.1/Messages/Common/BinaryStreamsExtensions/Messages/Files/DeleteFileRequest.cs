@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomDeleteFileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDeleteFileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a DeleteFileRequest request.
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DeleteFileRequest, out ErrorResponse, CustomDeleteFileRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DeleteFileRequest, out ErrorResponse, CustomDeleteFileRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteFile request.

@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -29,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A clear charging profile object.
+    /// A ClearChargingProfile object.
     /// </summary>
     public class ClearChargingProfile : ACustomData,
                                         IEquatable<ClearChargingProfile>
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new clear charging profile object.
+        /// Create a new ClearChargingProfile object.
         /// </summary>
         /// <param name="EVSEId">The optional EVSE identification for which to clear the charging profiles. An EVSE identification of 0 specifies the charging profile for the overall charging station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
         /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
@@ -89,27 +90,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ClearChargingProfileType": {
-        //   "description": "Charging_ Profile\r\nurn:x-oca:ocpp:uid:2:233255\r\nA ChargingProfile consists of a ChargingSchedule, describing the amount of power or current that can be delivered per time interval.",
-        //   "javaType": "ClearChargingProfile",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "evseId": {
-        //       "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nSpecifies the id of the EVSE for which to clear charging profiles. An evseId of zero (0) specifies the charging profile for the overall Charging Station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.\r\n\r\n",
-        //       "type": "integer"
-        //     },
-        //     "chargingProfilePurpose": {
-        //       "$ref": "#/definitions/ChargingProfilePurposeEnumType"
-        //     },
-        //     "stackLevel": {
-        //       "description": "Charging_ Profile. Stack_ Level. Counter\r\nurn:x-oca:ocpp:uid:1:569230\r\nSpecifies the stackLevel for which charging profiles will be cleared, if they meet the other criteria in the request.",
-        //       "type": "integer"
+        // {
+        //     "description": "A ClearChargingProfileType is a filter for charging profiles to be cleared by ClearChargingProfileRequest.",
+        //     "javaType": "ClearChargingProfile",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evseId": {
+        //             "description": "Specifies the id of the EVSE for which to ClearChargingProfiles. An evseId of zero (0) specifies the charging profile for the overall Charging Station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "chargingProfilePurpose": {
+        //             "$ref": "#/definitions/ChargingProfilePurposeEnumType"
+        //         },
+        //         "stackLevel": {
+        //             "description": "Specifies the stackLevel for which charging profiles will be cleared, if they meet the other criteria in the request.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   }
         // }
 
         #endregion
@@ -117,24 +120,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomClearChargingProfileParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear charging profile object.
+        /// Parse the given JSON representation of a ClearChargingProfile object.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearChargingProfileParser">A delegate to parse custom clear charging profile objects.</param>
-        public static ClearChargingProfile Parse(JObject                                             JSON,
-                                                 CustomJObjectParserDelegate<ClearChargingProfile>?  CustomClearChargingProfileParser   = null)
+        /// <param name="CustomClearChargingProfileParser">A delegate to parse custom ClearChargingProfile objects.</param>
+        public static ClearChargingProfile? Parse(JObject                                             JSON,
+                                                  CustomJObjectParserDelegate<ClearChargingProfile>?  CustomClearChargingProfileParser   = null)
         {
 
             if (TryParse(JSON,
                          out var clearChargingProfile,
                          out var errorResponse,
-                         CustomClearChargingProfileParser) &&
-                clearChargingProfile is not null)
+                         CustomClearChargingProfileParser))
             {
                 return clearChargingProfile;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear charging profile object is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ClearChargingProfile object is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -146,14 +148,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear charging profile object.
+        /// Try to parse the given JSON representation of a ClearChargingProfile object.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearChargingProfile">The parsed clear charging profile object.</param>
+        /// <param name="ClearChargingProfile">The parsed ClearChargingProfile object.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       out ClearChargingProfile?  ClearChargingProfile,
-                                       out String?                ErrorResponse)
+        public static Boolean TryParse(JObject                                         JSON,
+                                                            out ClearChargingProfile?  ClearChargingProfile,
+                                       [NotNullWhen(false)] out String?                ErrorResponse)
 
             => TryParse(JSON,
                         out ClearChargingProfile,
@@ -162,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear charging profile object.
+        /// Try to parse the given JSON representation of a ClearChargingProfile object.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearChargingProfile">The parsed clear charging profile object.</param>
+        /// <param name="ClearChargingProfile">The parsed ClearChargingProfile object.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearChargingProfileParser">A delegate to parse custom clear charging profile object JSON objects.</param>
+        /// <param name="CustomClearChargingProfileParser">A delegate to parse custom ClearChargingProfile object JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
-                                       out ClearChargingProfile?                           ClearChargingProfile,
-                                       out String?                                         ErrorResponse,
+                                                            out ClearChargingProfile?      ClearChargingProfile,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<ClearChargingProfile>?  CustomClearChargingProfileParser)
         {
 
@@ -259,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 ClearChargingProfile  = default;
-                ErrorResponse         = "The given JSON representation of a clear charging profile object is invalid: " + e.Message;
+                ErrorResponse         = "The given JSON representation of a ClearChargingProfile object is invalid: " + e.Message;
                 return false;
             }
 
@@ -272,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom clear charging profile objects.</param>
+        /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom ClearChargingProfile objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfile>? CustomClearChargingProfileSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer             = null)
@@ -281,19 +283,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",                  EVSEId.                Value.Value)
+                               ? new JProperty("evseId",                   EVSEId.                Value.Value)
                                : null,
 
                            ChargingProfilePurpose.HasValue
-                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
+                               ? new JProperty("chargingProfilePurpose",   ChargingProfilePurpose.Value.ToString())
                                : null,
 
                            StackLevel.HasValue
-                               ? new JProperty("stackLevel",              StackLevel.            Value)
+                               ? new JProperty("stackLevel",               StackLevel.            Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.                  ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -314,8 +316,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ClearChargingProfile1">A clear charging profile object.</param>
-        /// <param name="ClearChargingProfile2">Another clear charging profile object.</param>
+        /// <param name="ClearChargingProfile1">A ClearChargingProfile object.</param>
+        /// <param name="ClearChargingProfile2">Another ClearChargingProfile object.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ClearChargingProfile? ClearChargingProfile1,
                                            ClearChargingProfile? ClearChargingProfile2)
@@ -340,8 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ClearChargingProfile1">A clear charging profile object.</param>
-        /// <param name="ClearChargingProfile2">Another clear charging profile object.</param>
+        /// <param name="ClearChargingProfile1">A ClearChargingProfile object.</param>
+        /// <param name="ClearChargingProfile2">Another ClearChargingProfile object.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ClearChargingProfile? ClearChargingProfile1,
                                            ClearChargingProfile? ClearChargingProfile2)
@@ -357,9 +359,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear charging profiles for equality.
+        /// Compares two ClearChargingProfiles for equality.
         /// </summary>
-        /// <param name="Object">A clear charging profile object to compare with.</param>
+        /// <param name="Object">A ClearChargingProfile object to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ClearChargingProfile clearChargingProfile &&
@@ -370,9 +372,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(ClearChargingProfile)
 
         /// <summary>
-        /// Compares two clear charging profiles for equality.
+        /// Compares two ClearChargingProfiles for equality.
         /// </summary>
-        /// <param name="ClearChargingProfile">A clear charging profile object to compare with.</param>
+        /// <param name="ClearChargingProfile">A ClearChargingProfile object to compare with.</param>
         public Boolean Equals(ClearChargingProfile? ClearChargingProfile)
 
             => ClearChargingProfile is not null &&

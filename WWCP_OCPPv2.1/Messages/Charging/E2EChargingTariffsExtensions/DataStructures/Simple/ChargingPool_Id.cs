@@ -278,16 +278,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging pool identification.
         /// </summary>
-        public ChargingPool_Id Clone
+        public ChargingPool_Id Clone()
 
-            => new (new String(RAW.   ToCharArray()),
-                    OperatorId.Clone,
-                    new String(Suffix.ToCharArray()));
+            => new (
+                   RAW.       CloneString(),
+                   OperatorId.Clone(),
+                   Suffix.    CloneString()
+               );
 
         #endregion
 

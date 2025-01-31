@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this cache entry replacement policy.
         /// </summary>
-        public CacheEntryReplacementPolicy Clone
+        public CacheEntryReplacementPolicy Clone()
 
             => new (
                    InternalId.CloneString()

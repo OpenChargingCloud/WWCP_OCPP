@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this measurement location.
         /// </summary>
-        public MeasurementLocation Clone
+        public MeasurementLocation Clone()
 
             => new (
                    InternalId.CloneString()

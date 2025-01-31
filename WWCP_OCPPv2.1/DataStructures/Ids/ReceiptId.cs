@@ -173,12 +173,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this receipt identification.
         /// </summary>
-        public ReceiptId Clone
+        public ReceiptId Clone()
 
             => new (Value);
 

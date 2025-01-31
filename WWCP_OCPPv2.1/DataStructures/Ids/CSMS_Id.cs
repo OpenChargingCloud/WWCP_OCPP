@@ -177,12 +177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this central system identification.
         /// </summary>
-        public CSMS_Id Clone
+        public CSMS_Id Clone()
 
             => new (
                    InternalId.CloneString()

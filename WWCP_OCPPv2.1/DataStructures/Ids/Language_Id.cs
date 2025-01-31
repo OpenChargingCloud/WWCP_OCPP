@@ -171,12 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this human language identifier
         /// </summary>
-        public Language_Id Clone
+        public Language_Id Clone()
 
             => new (
                    InternalId.CloneString()

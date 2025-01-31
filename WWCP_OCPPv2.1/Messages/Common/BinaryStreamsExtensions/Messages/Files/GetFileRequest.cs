@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetFileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetFileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetFileRequest request.
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out getFileRequest, out ErrorResponse, CustomGetFileRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out getFileRequest, out ErrorResponse, CustomGetFileRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetFile request.

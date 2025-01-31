@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomPublishFirmwareStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomPublishFirmwareStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a publish firmware status notification request.
@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out PublishFirmwareStatusNotificationRequest, out ErrorResponse, CustomPublishFirmwareStatusNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PublishFirmwareStatusNotificationRequest, out ErrorResponse, CustomPublishFirmwareStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a publish firmware status notification request.

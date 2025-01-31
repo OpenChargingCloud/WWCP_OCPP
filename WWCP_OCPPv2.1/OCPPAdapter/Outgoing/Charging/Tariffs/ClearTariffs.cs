@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new ClearTariffsResponse(
                                      Request,
-                                     Request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
+                                     Request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 

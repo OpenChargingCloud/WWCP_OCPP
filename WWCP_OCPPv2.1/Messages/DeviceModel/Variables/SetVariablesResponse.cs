@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,

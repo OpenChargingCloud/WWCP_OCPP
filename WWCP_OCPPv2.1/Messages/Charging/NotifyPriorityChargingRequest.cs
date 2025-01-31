@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyPriorityCharging request.
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyPriorityCharging request.

@@ -151,78 +151,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
-        //
-        //    <soap:Header>
-        //       ...
-        //    </soap:Header>
-        //
-        //    <soap:Body>
-        //       <ns:dataTransferRequest>
-        //
-        //          <ns:vendorId>?</ns:vendorId>
-        //
-        //          <!--Optional:-->
-        //          <ns:messageId>?</ns:messageId>
-        //
-        //          <!--Optional:-->
-        //          <ns:data>?</ns:data>
-        //
-        //       </ns:dataTransferRequest>
-        //    </soap:Body>
-        //
-        // </soap:Envelope>
-
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:DataTransferRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:DataTransferRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "messageId": {
+        //             "description": "May be used to indicate a specific message or implementation.\r\n",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "data": {
+        //             "description": "Data without specified length or format. This needs to be decided by both parties (Open to implementation).\r\n"
+        //         },
+        //         "vendorId": {
+        //             "description": "This identifies the Vendor specific implementation\r\n\r\n",
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
         //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "messageId": {
-        //       "description": "May be used to indicate a specific message or implementation.",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     },
-        //     "data": {
-        //       "description": "Data without specified length or format. This needs to be decided by both parties (Open to implementation).\r\n"
-        //     },
-        //     "vendorId": {
-        //       "description": "This identifies the Vendor specific implementation\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 255
-        //     }
-        //   },
-        //   "required": [
-        //     "vendorId"
-        //   ]
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a DataTransfer request.
@@ -237,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                SourceRouting                                  Destination,
+                                                SourceRouting                                      Destination,
                                                 NetworkPath                                        NetworkPath,
                                                 DateTime?                                          RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
@@ -266,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DataTransferRequest, out ErrorResponse, ...)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DataTransferRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DataTransfer request.
@@ -283,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       SourceRouting                                  Destination,
+                                       SourceRouting                                      Destination,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,

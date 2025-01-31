@@ -47,11 +47,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String         Content     { get; }
 
         /// <summary>
-        /// The message language identifier, as defined in rfc5646 (default: EN).
-        /// (Can not be null within this implementation!)
+        /// The optional message language identifier, as defined in rfc5646.
         /// </summary>
-        [Mandatory]
-        public Language_Id    Language    { get; }
+        [Optional]
+        public Language_Id?   Language    { get; }
 
         /// <summary>
         /// The message format (default: UTF8).
@@ -80,8 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             this.Content   = Content.Trim();
-            this.Language  = Language ?? Language_Id.EN;
-            this.Format    = Format   ?? MessageFormat.UTF8;
+            this.Language  = Language;
+            this.Format    = Format ?? MessageFormat.UTF8;
 
             if (this.Content.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Content), "The given message content must not be null or empty!");
@@ -104,33 +103,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "MessageContentType": {
-        //   "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.\r\n\r\n",
-        //   "javaType": "MessageContent",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Contains message details, for a message to be displayed on a Charging Station.",
+        //     "javaType": "MessageContent",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "format": {
+        //             "$ref": "#/definitions/MessageFormatEnumType"
+        //         },
+        //         "language": {
+        //             "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //             "type": "string",
+        //             "maxLength": 8
+        //         },
+        //         "content": {
+        //             "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].
+        //                             Maximum length defaults to 1024.",
+        //             "type": "string",
+        //             "maxLength": 1024
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "format": {
-        //       "$ref": "#/definitions/MessageFormatEnumType"
-        //     },
-        //     "language": {
-        //       "description": "Message_ Content. Language. Language_ Code\r\nurn:x-enexis:ecdm:uid:1:570849\r\nMessage language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //       "type": "string",
-        //       "maxLength": 8
-        //     },
-        //     "content": {
-        //       "description": "Message_ Content. Content. Message\r\nurn:x-enexis:ecdm:uid:1:570852\r\nMessage contents.\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 512
-        //     }
-        //   },
-        //   "required": [
-        //     "format",
-        //     "content"
-        //   ]
+        //     "required": [
+        //         "format",
+        //         "content"
+        //     ]
         // }
 
         #endregion
@@ -149,8 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var messageContent,
                          out var errorResponse,
-                         CustomMessageContentParser) &&
-                messageContent is not null)
+                         CustomMessageContentParser))
             {
                 return messageContent;
             }
@@ -294,11 +293,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("content",      Content),
-                                 new JProperty("language",     Language.  ToString()),
-                                 new JProperty("format",       Format.    ToString()),
+                                 new JProperty("format",       Format.        ToString()),
+
+                           Language.HasValue
+                               ? new JProperty("language",     Language.Value.ToString())
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.    ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -314,13 +316,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this multi-language text/string.
+        /// Clone this message content.
         /// </summary>
         public MessageContent Clone()
 
             => new (
-                   new String(Content.ToCharArray()),
-                   Language,
+                   Content.  CloneString(),
+                   Language?.Clone(),
                    Format,
                    CustomData
                );

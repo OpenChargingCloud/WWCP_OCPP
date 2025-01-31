@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "EVSEType": {
-        //   "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //   "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //   "javaType": "EVSE",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -283,8 +283,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public EVSE Clone()
 
             => new (
-                   Id.          Clone,
-                   ConnectorId?.Clone
+                   Id.          Clone(),
+                   ConnectorId?.Clone()
                );
 
         #endregion

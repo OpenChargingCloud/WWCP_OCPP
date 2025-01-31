@@ -42,47 +42,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The tariff identification.
-        /// </summary>
-        [Mandatory]
-        public Tariff_Id     TariffId      { get; }
-
-        /// <summary>
         /// The ClearTariffs status.
         /// </summary>
         [Mandatory]
-        public TariffStatus  Status        { get; }
+        public TariffClearStatus  Status        { get; }
+
+        /// <summary>
+        /// The tariff identification for which _status_ is reported.
+        /// If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.
+        /// </summary>
+        [Optional]
+        public Tariff_Id?         TariffId      { get; }
 
         /// <summary>
         /// An optional element providing more information about the ClearTariffs status.
         /// </summary>
         [Optional]
-        public StatusInfo?   StatusInfo    { get; }
+        public StatusInfo?        StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new assignments of tariffs to EVSEs or IdTokens.
+        /// Create a new ClearTariffs result.
         /// </summary>
-        /// <param name="TariffId">The tariff identification.</param>
+        /// <param name="TariffId">The tariff identification for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.</param>
         /// <param name="Status">The ClearTariffs status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the ClearTariffs status.</param>
-        public ClearTariffsResult(Tariff_Id     TariffId,
-                                  TariffStatus  Status,
-                                  StatusInfo?   StatusInfo = null)
+        public ClearTariffsResult(TariffClearStatus  Status,
+                                  Tariff_Id?         TariffId     = null,
+                                  StatusInfo?        StatusInfo   = null)
         {
 
-            this.TariffId    = TariffId;
             this.Status      = Status;
+            this.TariffId    = TariffId;
             this.StatusInfo  = StatusInfo;
 
             unchecked
             {
 
-                hashCode = this.TariffId.   GetHashCode() * 5 ^
-                           this.Status.     GetHashCode() * 3 ^
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.TariffId?.  GetHashCode() ?? 0) * 3 ^
                           (this.StatusInfo?.GetHashCode() ?? 0);
 
             }
@@ -91,6 +92,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region Documentation
+
+        // {
+        //     "javaType": "ClearTariffsResult",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "tariffId": {
+        //             "description": "Id of tariff for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.\r\n",
+        //             "type": "string",
+        //             "maxLength": 60
+        //         },
+        //         "status": {
+        //             "$ref": "#/definitions/TariffClearStatusEnumType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
+        #endregion
 
         #region (static) Parse    (JSON, CustomClearTariffsResultParser = null)
 
@@ -170,12 +200,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                #region Parse TariffId      [mandatory]
+                #region Parse Status        [mandatory]
 
-                if (!JSON.ParseMandatory("tariffId",
-                                         "tariff identification",
-                                         Tariff_Id.TryParse,
-                                         out Tariff_Id TariffId,
+                if (!JSON.ParseMandatory("status",
+                                         "ClearTariffs status",
+                                         TariffClearStatus.TryParse,
+                                         out TariffClearStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -183,15 +213,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse Status        [mandatory]
+                #region Parse TariffId      [optional]
 
-                if (!JSON.ParseMandatory("status",
-                                         "ClearTariffs status",
-                                         TariffStatus.TryParse,
-                                         out TariffStatus Status,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("tariffId",
+                                       "tariff identification",
+                                       Tariff_Id.TryParse,
+                                       out Tariff_Id? TariffId,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -212,8 +243,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 ClearTariffsResult = new ClearTariffsResult(
-                                         TariffId,
                                          Status,
+                                         TariffId,
                                          StatusInfo
                                      );
 
@@ -250,12 +281,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("tariffId",     TariffId.  ToString()),
-                                 new JProperty("status",       Status.    AsText()),
+                                 new JProperty("status",       Status.        ToString()),
+
+                           TariffId.HasValue
+                               ? new JProperty("tariffId",     TariffId.Value.ToString())
+                               : null,
+
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.    ToJSON(CustomStatusInfoSerializer,
+                                                                                     CustomCustomDataSerializer))
                                : null
 
                        );
@@ -276,8 +311,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ClearTariffsResult Clone()
 
             => new (
-                   TariffId.   Clone(),
                    Status,
+                   TariffId?.  Clone(),
                    StatusInfo?.Clone()
                );
 
@@ -422,13 +457,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (ClearTariffsResult is null)
                 throw new ArgumentNullException(nameof(ClearTariffsResult), "The given ClearTariffsResult must not be null!");
 
-            var c = TariffId.CompareTo(ClearTariffsResult.TariffId);
+            var c = Status.CompareTo(ClearTariffsResult.Status);
 
-            if (c == 0)
-                c = Status.  CompareTo(ClearTariffsResult.Status);
-
-            //if (c == 0 && StatusInfo is not null && ClearTariffsResult.StatusInfo is not null)
-            //    c = StatusInfo.CompareTo(ClearTariffsResult.StatusInfo);
+            if (c == 0 && TariffId.HasValue && ClearTariffsResult.TariffId.HasValue)
+                c = TariffId.Value.CompareTo(ClearTariffsResult.TariffId.Value);
 
             return c;
 
@@ -463,11 +495,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ClearTariffsResult is not null &&
 
-               TariffId.Equals(ClearTariffsResult.TariffId) &&
                Status.  Equals(ClearTariffsResult.Status)   &&
 
-             ((StatusInfo is     null && ClearTariffsResult.StatusInfo is     null)  ||
-              (StatusInfo is not null && ClearTariffsResult.StatusInfo is not null  && StatusInfo.Equals(ClearTariffsResult.StatusInfo)));
+            ((!TariffId.  HasValue    && !ClearTariffsResult.TariffId.  HasValue)    ||
+              (TariffId.  HasValue    &&  ClearTariffsResult.TariffId.  HasValue    && TariffId.  Equals(ClearTariffsResult.TariffId))) &&
+
+             ((StatusInfo is     null &&  ClearTariffsResult.StatusInfo is     null) ||
+              (StatusInfo is not null &&  ClearTariffsResult.StatusInfo is not null && StatusInfo.Equals(ClearTariffsResult.StatusInfo)));
 
         #endregion
 

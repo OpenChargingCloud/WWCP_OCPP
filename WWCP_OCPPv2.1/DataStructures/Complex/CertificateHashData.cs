@@ -44,25 +44,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The cryptographic hashing algorithm.
         /// </summary>
         [Mandatory]
-        public HashAlgorithms  HashAlgorithm          { get; }
+        public HashAlgorithm  HashAlgorithm          { get; }
 
         /// <summary>
         /// The hashed value of the the issuers name [max 128]
         /// </summary>
         [Mandatory]
-        public String          IssuerNameHash         { get; }
+        public String         IssuerNameHash         { get; }
 
         /// <summary>
         /// The hashed value of the issuers public key [max 128]
         /// </summary>
         [Mandatory]
-        public String          IssuerPublicKeyHash    { get; }
+        public String         IssuerPublicKeyHash    { get; }
 
         /// <summary>
         /// The serial number of the certificate [max 40].
         /// </summary>
         [Mandatory]
-        public String          SerialNumber           { get; }
+        public String         SerialNumber           { get; }
 
         #endregion
 
@@ -76,11 +76,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="IssuerPublicKeyHash">The hashed value of the issuers public key [max 128]</param>
         /// <param name="SerialNumber">The serial number of the certificate [max 40].</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public CertificateHashData(HashAlgorithms  HashAlgorithm,
-                                   String          IssuerNameHash,
-                                   String          IssuerPublicKeyHash,
-                                   String          SerialNumber,
-                                   CustomData?     CustomData   = null)
+        public CertificateHashData(HashAlgorithm  HashAlgorithm,
+                                   String         IssuerNameHash,
+                                   String         IssuerPublicKeyHash,
+                                   String         SerialNumber,
+                                   CustomData?    CustomData   = null)
 
             : base(CustomData)
 
@@ -121,12 +121,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/HashAlgorithmEnumType"
         //     },
         //     "issuerNameHash": {
-        //       "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
+        //       "description": "Hashed value of the Issuer DN (Distinguished Name).",
         //       "type": "string",
         //       "maxLength": 128
         //     },
         //     "issuerKeyHash": {
-        //       "description": "Hashed value of the issuers public key\r\n",
+        //       "description": "Hashed value of the issuers public key",
         //       "type": "string",
         //       "maxLength": 128
         //     },
@@ -211,22 +211,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CertificateHashData = null;
 
-// {
-//   "certificateHashData": {
-//     "hashAlgorithm": "SHA256",
-//     "issuerKeyHash": "89783f8f6ee47dc5e8f318fd4e8ef8d07fda19f99945e9b4da2884169662be05",
-//     "issuerNameHash": "d5780595f5221adba8bbf9ba76ceade403518cc7cb3d642180654d823b8fc8a2",
-//     "serialNumber": "6f973cf2da5ba83c"
-//   },
-//   "certificateType": "CSMSRootCertificate"
-// }
-
                 #region HashAlgorithm          [mandatory]
 
                 if (!JSON.ParseMandatory("hashAlgorithm",
                                          "hash algorithm",
-                                         HashAlgorithmsExtensions.TryParse,
-                                         out HashAlgorithms HashAlgorithm,
+                                         OCPPv2_1.HashAlgorithm.TryParse,
+                                         out HashAlgorithm HashAlgorithm,
                                          out ErrorResponse))
                 {
                     return false;
@@ -324,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("hashAlgorithm",    HashAlgorithm.AsText()),
+                                 new JProperty("hashAlgorithm",    HashAlgorithm.ToString()),
                                  new JProperty("issuerNameHash",   IssuerNameHash),
                                  new JProperty("issuerKeyHash",    IssuerPublicKeyHash),
                                  new JProperty("serialNumber",     SerialNumber),
@@ -444,9 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(HashAlgorithm,
-                             ", ",
-                             SerialNumber);
+            => $"{HashAlgorithm}, {SerialNumber}";
 
         #endregion
 

@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifySettlementRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifySettlementRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifySettlement request.
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifySettlementRequest, out ErrorResponse, CustomNotifySettlementRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifySettlementRequest, out ErrorResponse, CustomNotifySettlementRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifySettlement request.

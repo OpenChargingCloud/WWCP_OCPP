@@ -173,12 +173,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this payment reference.
         /// </summary>
-        public PaymentReference Clone
+        public PaymentReference Clone()
 
             => new (Value);
 

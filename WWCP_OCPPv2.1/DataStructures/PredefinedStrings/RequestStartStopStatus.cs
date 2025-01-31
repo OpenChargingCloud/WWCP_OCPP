@@ -119,8 +119,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static RequestStartStopStatus Parse(String Text)
         {
 
-            if (TryParse(Text, out var RequestStartStopStatus))
-                return RequestStartStopStatus;
+            if (TryParse(Text, out var requestStartStopStatus))
+                return requestStartStopStatus;
 
             throw new ArgumentException($"Invalid text representation of a RequestStartStop status: '{Text}'!",
                                         nameof(Text));
@@ -138,8 +138,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static RequestStartStopStatus? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var RequestStartStopStatus))
-                return RequestStartStopStatus;
+            if (TryParse(Text, out var requestStartStopStatus))
+                return requestStartStopStatus;
 
             return null;
 
@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this RequestStartStop status.
         /// </summary>
-        public RequestStartStopStatus Clone
+        public RequestStartStopStatus Clone()
 
             => new (
                    InternalId.CloneString()

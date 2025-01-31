@@ -162,12 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this file path.
         /// </summary>
-        public FilePath Clone
+        public FilePath Clone()
 
             => new (
                    InternalId.CloneString()

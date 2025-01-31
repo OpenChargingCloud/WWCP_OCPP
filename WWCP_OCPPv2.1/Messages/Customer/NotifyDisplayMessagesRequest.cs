@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "MessagePriorityEnumType": {
-        //       "description": "Message_ Info. Priority. Message_ Priority_ Code\r\nurn:x-enexis:ecdm:uid:1:569253\r\nWith what priority should this message be shown\r\n",
+        //       "description": "Message_ Info. Priority. Message_ Priority_ Code\r\nurn:x-enexis:ecdm:uid:1:569253\r\nWith what priority should this message be shown",
         //       "javaType": "MessagePriorityEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "MessageContentType": {
-        //       "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.\r\n\r\n",
+        //       "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.",
         //       "javaType": "MessageContent",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "maxLength": 8
         //         },
         //         "content": {
-        //           "description": "Message_ Content. Content. Message\r\nurn:x-enexis:ecdm:uid:1:570852\r\nMessage contents.\r\n\r\n",
+        //           "description": "Message_ Content. Content. Message\r\nurn:x-enexis:ecdm:uid:1:570852\r\nMessage contents.",
         //           "type": "string",
         //           "maxLength": 512
         //         }
@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyDisplayMessagesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyDisplayMessages request.
@@ -415,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyDisplayMessages request.

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The prices within an energy tariff element.
+    /// The prices within a TariffEnergy tariff element.
     /// </summary>
     public class TariffEnergyPrice
     {
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public WattHour?          StepSize      { get; }
 
         /// <summary>
-        /// The optional enumeration of tariff conditions
+        /// Optional tariff conditions.
         /// </summary>
         [Optional]
         public TariffConditions?  Conditions    { get;  }
@@ -97,25 +97,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":          "Tariff with optional conditions for an energy price.",
-        //     "javaType":             "TariffEnergyPrice",
-        //     "type":                 "object",
-        //     "additionalProperties":  false,
+        //     "description": "Tariff with optional conditions for an energy price.",
+        //     "javaType": "TariffEnergyPrice",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "priceKwh": {
-        //             "description":  "Price per kWh (excl. tax) for this element.",
-        //             "type":         "number"
-        //         },
-        //         "stepSize": {
-        //             "description":  "When absent, the exact amount is billed.
-        //                              When present, this type is billed in blocks of _stepSize_ of the base unit: Wh.
-        //                              Amounts are rounded up to a multiple of _stepSize_.",
-        //             "type":         "integer"
+        //             "description": "Price per kWh (excl. tax) for this element.",
+        //             "type": "number"
         //         },
         //         "conditions": {
-        //             "$ref":         "#/definitions/TariffConditionsType"
+        //             "$ref": "#/definitions/TariffConditionsType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     }
+        //     },
+        //     "required": [
+        //         "priceKwh"
+        //     ]
         // }
 
         #endregion
@@ -137,13 +137,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          out var tariffEnergyPrice,
                          out var errorResponse,
                          CustomTariffEnergyPriceParser,
-                         CustomTariffConditionsParser) &&
-                tariffEnergyPrice is not null)
+                         CustomTariffConditionsParser))
             {
                 return tariffEnergyPrice;
             }
 
-            throw new ArgumentException("The given JSON representation of a tariff energy price is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TariffEnergyPrice is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -224,11 +223,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse Conditions    [optional]
 
-                if (JSON.ParseOptionalJSON("conditions",
-                                           "tariff conditions",
-                                           TariffConditions.TryParse,
-                                           out TariffConditions? Conditions,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("conditions",
+                                                    "tariff conditions",
+                                                    TariffConditions.TryParse,
+                                                    out TariffConditions? Conditions,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -254,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 TariffEnergyPrice  = default;
-                ErrorResponse       = "The given JSON representation of a tariff element is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a TariffEnergyPrice is invalid: " + e.Message;
                 return false;
             }
 
@@ -298,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this TariffEnergyPrice.
         /// </summary>
         public TariffEnergyPrice Clone()
 
@@ -318,8 +317,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffEnergyPrices1">A tariff energy price.</param>
-        /// <param name="TariffEnergyPrices2">Another tariff energy price.</param>
+        /// <param name="TariffEnergyPrices1">A TariffEnergyPrice.</param>
+        /// <param name="TariffEnergyPrices2">Another TariffEnergyPrice.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (TariffEnergyPrice? TariffEnergyPrices1,
                                            TariffEnergyPrice? TariffEnergyPrices2)
@@ -344,8 +343,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffEnergyPrices1">A tariff energy price.</param>
-        /// <param name="TariffEnergyPrices2">Another tariff energy price.</param>
+        /// <param name="TariffEnergyPrices1">A TariffEnergyPrice.</param>
+        /// <param name="TariffEnergyPrices2">Another TariffEnergyPrice.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (TariffEnergyPrice? TariffEnergyPrices1,
                                            TariffEnergyPrice? TariffEnergyPrices2)
@@ -361,9 +360,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two tariff energy prices for equality.
+        /// Compares two TariffEnergyPrices for equality.
         /// </summary>
-        /// <param name="Object">A tariff energy price to compare with.</param>
+        /// <param name="Object">A TariffEnergyPrice to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TariffEnergyPrice tariffEnergyPrice &&
@@ -374,9 +373,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(TariffEnergyPrices)
 
         /// <summary>
-        /// Compares two tariff energy prices for equality.
+        /// Compares two TariffEnergyPrices for equality.
         /// </summary>
-        /// <param name="TariffEnergyPrice">A tariff energy price to compare with.</param>
+        /// <param name="TariffEnergyPrice">A TariffEnergyPrice to compare with.</param>
         public Boolean Equals(TariffEnergyPrice? TariffEnergyPrice)
 
             => TariffEnergyPrice is not null &&

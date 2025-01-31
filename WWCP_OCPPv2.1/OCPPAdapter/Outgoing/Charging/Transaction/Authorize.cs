@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new AuthorizeResponse(
                                      Request,
-                                     IdTokenInfo.Error(),
+                                     IdTokenInfo.Error,
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 

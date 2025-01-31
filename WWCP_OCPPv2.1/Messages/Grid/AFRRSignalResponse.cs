@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The success or failure of the AFRR signal request.
+        /// The success or failure of the AFRRSignal request.
         /// </summary>
         public GenericStatus  Status        { get; }
 
@@ -77,8 +77,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new AFRRSignal response.
         /// </summary>
-        /// <param name="Request">The AFRR signal request leading to this response.</param>
-        /// <param name="Status">The success or failure of the AFRR signal request.</param>
+        /// <param name="Request">The AFRRSignal request leading to this response.</param>
+        /// <param name="Status">The success or failure of the AFRRSignal request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>
@@ -146,24 +146,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:AFRRSignalResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "GenericStatusEnumType": {
+        //             "javaType": "GenericStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/GenericStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomAFRRSignalResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of an AFRR signal response.
+        /// Parse the given JSON representation of an AFRRSignal response.
         /// </summary>
-        /// <param name="Request">The AFRR signal request leading to this response.</param>
+        /// <param name="Request">The AFRRSignal request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAFRRSignalResponseParser">A delegate to parse custom AFRR signal responses.</param>
+        /// <param name="CustomAFRRSignalResponseParser">A delegate to parse custom AFRRSignal responses.</param>
         public static AFRRSignalResponse Parse(AFRRSignalRequest                                 Request,
                                                JObject                                           JSON,
-                                               SourceRouting                                 Destination,
+                                               SourceRouting                                     Destination,
                                                NetworkPath                                       NetworkPath,
                                                DateTime?                                         ResponseTimestamp                = null,
                                                CustomJObjectParserDelegate<AFRRSignalResponse>?  CustomAFRRSignalResponseParser   = null,
@@ -187,26 +255,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return afrrSignalResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of an AFRR signal response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an AFRRSignal response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out AFRRSignalResponse, out ErrorResponse, CustomAFRRSignalResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out AFRRSignalResponse, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an AFRR signal response.
+        /// Try to parse the given JSON representation of an AFRRSignal response.
         /// </summary>
-        /// <param name="Request">The AFRR signal request leading to this response.</param>
+        /// <param name="Request">The AFRRSignal request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="AFRRSignalResponse">The parsed AFRR signal response.</param>
+        /// <param name="AFRRSignalResponse">The parsed AFRRSignal response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAFRRSignalResponseParser">A delegate to parse custom AFRR signal responses.</param>
+        /// <param name="CustomAFRRSignalResponseParser">A delegate to parse custom AFRRSignal responses.</param>
         public static Boolean TryParse(AFRRSignalRequest                                 Request,
                                        JObject                                           JSON,
-                                       SourceRouting                                 Destination,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out AFRRSignalResponse?      AFRRSignalResponse,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
@@ -308,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 AFRRSignalResponse  = null;
-                ErrorResponse       = "The given JSON representation of an AFRR signal response is invalid: " + e.Message;
+                ErrorResponse       = "The given JSON representation of an AFRRSignal response is invalid: " + e.Message;
                 return false;
             }
 
@@ -321,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAFRRSignalResponseSerializer">A delegate to serialize custom AFRR signal responses.</param>
+        /// <param name="CustomAFRRSignalResponseSerializer">A delegate to serialize custom AFRRSignal responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -392,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Request,
                    GenericStatus.Rejected,
                    null,
-                   OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -421,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -436,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -474,10 +542,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (AFRRSignalResponse1, AFRRSignalResponse2)
 
         /// <summary>
-        /// Compares two AFRR signal responses for equality.
+        /// Compares two AFRRSignal responses for equality.
         /// </summary>
-        /// <param name="AFRRSignalResponse1">An AFRR signal response.</param>
-        /// <param name="AFRRSignalResponse2">Another AFRR signal response.</param>
+        /// <param name="AFRRSignalResponse1">An AFRRSignal response.</param>
+        /// <param name="AFRRSignalResponse2">Another AFRRSignal response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AFRRSignalResponse? AFRRSignalResponse1,
                                            AFRRSignalResponse? AFRRSignalResponse2)
@@ -500,10 +568,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (AFRRSignalResponse1, AFRRSignalResponse2)
 
         /// <summary>
-        /// Compares two AFRR signal responses for inequality.
+        /// Compares two AFRRSignal responses for inequality.
         /// </summary>
-        /// <param name="AFRRSignalResponse1">An AFRR signal response.</param>
-        /// <param name="AFRRSignalResponse2">Another AFRR signal response.</param>
+        /// <param name="AFRRSignalResponse1">An AFRRSignal response.</param>
+        /// <param name="AFRRSignalResponse2">Another AFRRSignal response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AFRRSignalResponse? AFRRSignalResponse1,
                                            AFRRSignalResponse? AFRRSignalResponse2)
@@ -519,9 +587,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two AFRR signal responses for equality.
+        /// Compares two AFRRSignal responses for equality.
         /// </summary>
-        /// <param name="AFRRSignalResponse">An AFRR signal response to compare with.</param>
+        /// <param name="AFRRSignalResponse">An AFRRSignal response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AFRRSignalResponse afrrSignalResponse &&
@@ -532,9 +600,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(AFRRSignalResponse)
 
         /// <summary>
-        /// Compares two AFRR signal responses for equality.
+        /// Compares two AFRRSignal responses for equality.
         /// </summary>
-        /// <param name="AFRRSignalResponse">An AFRR signal response to compare with.</param>
+        /// <param name="AFRRSignalResponse">An AFRRSignal response to compare with.</param>
         public override Boolean Equals(AFRRSignalResponse? AFRRSignalResponse)
 
             => AFRRSignalResponse is not null &&

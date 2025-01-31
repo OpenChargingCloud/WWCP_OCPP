@@ -211,12 +211,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this price schedule identification.
         /// </summary>
-        public PriceSchedule_Id Clone
+        public PriceSchedule_Id Clone()
 
             => new (Value);
 

@@ -143,101 +143,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:dataTransferResponse>
-        //
-        //          <ns:status>?</ns:status>
-        //
-        //          <!--Optional:-->
-        //          <ns:data>?</ns:data>
-        //
-        //       </ns:dataTransferResponse>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:DataTransferResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:DataTransferResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "DataTransferStatusEnumType": {
+        //             "description": "This indicates the success or failure of the data transfer.\r\n",
+        //             "javaType": "DataTransferStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "UnknownMessageId",
+        //                 "UnknownVendorId"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.\r\n",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "DataTransferStatusEnumType": {
-        //       "description": "This indicates the success or failure of the DataTransfer.",
-        //       "javaType": "DataTransferStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected",
-        //         "UnknownMessageId",
-        //         "UnknownVendorId"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/DataTransferStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "data": {
+        //             "description": "Data without specified length or format, in response to request.\r\n"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/DataTransferStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     },
-        //     "data": {
-        //       "description": "Data without specified length or format, in response to request.\r\n"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomDataTransferResponseSerializer = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a DataTransfer response.
@@ -247,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom DataTransfer responses.</param>
         public static DataTransferResponse Parse(DataTransferRequest                                 Request,
                                                  JObject                                             JSON,
-                                                 SourceRouting                                   Destination,
+                                                 SourceRouting                                       Destination,
                                                  NetworkPath                                         NetworkPath,
                                                  DateTime?                                           ResponseTimestamp                 = null,
                                                  CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null,
@@ -258,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (TryParse(Request,
                          JSON,
-                     Destination,
+                         Destination,
                          NetworkPath,
                          out var dataTransferResponse,
                          out var errorResponse,
@@ -278,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out DataTransferResponse, out ErrorResponse, CustomDataTransferResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out DataTransferResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DataTransfer response.
@@ -293,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom DataTransfer responses.</param>
         public static Boolean TryParse(DataTransferRequest                                 Request,
                                        JObject                                             JSON,
-                                       SourceRouting                                   Destination,
+                                       SourceRouting                                       Destination,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferResponse?      DataTransferResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
@@ -494,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    DataTransferStatus.Rejected,
                    null,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -523,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     DataTransferStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -538,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     DataTransferStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -553,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     DataTransferStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -566,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     DataTransferStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -685,10 +670,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public override String ToString()
 
             => String.Concat(
+
                    Status,
+
                    Data is not null
-                       ? ", " + Data
+                       ? $", {Data}"
                        : ""
+
                );
 
         #endregion

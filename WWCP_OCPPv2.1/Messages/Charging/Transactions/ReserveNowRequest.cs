@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomReserveNowRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomReserveNowRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a ReserveNow request.
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ReserveNow request.

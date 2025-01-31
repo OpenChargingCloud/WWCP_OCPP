@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using System;
 
 #endregion
 
@@ -95,6 +96,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Type             = Type;
             this.AdditionalInfos  = AdditionalInfos?.Distinct() ?? [];
 
+            unchecked
+            {
+
+                hashCode = this.Value.          GetHashCode()  * 7 ^
+                           this.Type.           GetHashCode()  * 5 ^
+                           this.AdditionalInfos.CalcHashCode() * 3 ^
+                           base.                GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -102,36 +113,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "IdTokenType": {
-        //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //   "javaType": "IdToken",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //     "javaType": "IdToken",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "additionalInfo": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/AdditionalInfoType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "idToken": {
+        //             "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "type": {
+        //             "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "additionalInfo": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/AdditionalInfoType"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "idToken": {
-        //       "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //       "type": "string",
-        //       "maxLength": 36
-        //     },
-        //     "type": {
-        //       "$ref": "#/definitions/IdTokenEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "idToken",
-        //     "type"
-        //   ]
+        //     "required": [
+        //         "idToken",
+        //         "type"
+        //     ]
         // }
 
         #endregion
@@ -620,7 +633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this identification token.
         /// </summary>
         public IdToken Clone()
 
@@ -755,23 +768,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Value.          GetHashCode()  * 7 ^
-                       Type.           GetHashCode()  * 5 ^
-                       AdditionalInfos.CalcHashCode() * 3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -782,7 +785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Value, " (", Type, ")");
+            => $"{Value} ({Type})";
 
         #endregion
 

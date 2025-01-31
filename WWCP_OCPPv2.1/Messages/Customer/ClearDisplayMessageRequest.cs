@@ -133,44 +133,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ClearDisplayMessageRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClearDisplayMessageRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "id": {
-        //       "description": "Id of the message that SHALL be removed from the Charging Station.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "id"
-        //   ]
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "Id of the message that SHALL be removed from the Charging Station.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "id"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomClearDisplayMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ClearDisplayMessage request.
@@ -185,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearDisplayMessageRequestParser">A delegate to parse custom ClearDisplayMessage requests.</param>
         public static ClearDisplayMessageRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       SourceRouting                                         Destination,
+                                                       SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -214,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ClearDisplayMessageRequest, out ErrorResponse, CustomClearDisplayMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ClearDisplayMessageRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ClearDisplayMessage request.
@@ -230,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearDisplayMessageRequestParser">A delegate to parse custom ClearDisplayMessage requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       SourceRouting                                         Destination,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out ClearDisplayMessageRequest?      ClearDisplayMessageRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -245,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ClearDisplayMessageRequest = null;
 
-                #region Id                   [mandatory]
+                #region Id            [mandatory]
 
                 if (JSON.ParseMandatory("id",
                                         "display message identification",
@@ -259,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -273,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",

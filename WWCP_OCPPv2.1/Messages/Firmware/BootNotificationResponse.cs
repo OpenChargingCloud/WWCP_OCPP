@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public RegistrationStatus  Status        { get; }
 
         /// <summary>
-        /// The current time at the central system. [UTC]
+        /// The current time at the CSMS as UTC.
         /// </summary>
         [Mandatory]
         public DateTime            CurrentTime   { get; }
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The BootNotification request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
-        /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
+        /// <param name="CurrentTime">The current time at the CSMS as UTC.</param>
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// 
@@ -179,92 +179,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:BootNotificationResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:BootNotificationResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "RegistrationStatusEnumType": {
+        //             "description": "This contains whether the Charging Station has been registered\r\nwithin the CSMS.",
+        //             "javaType": "RegistrationStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Pending",
+        //                 "Rejected"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "RegistrationStatusEnumType": {
-        //       "description": "This contains whether the Charging Station has been registered\r\nwithin the CSMS.",
-        //       "javaType": "RegistrationStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Pending",
-        //         "Rejected"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "currentTime": {
+        //             "description": "This contains the CSMS\u2019s current time.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "interval": {
+        //             "description": "When &lt;&lt;cmn_registrationstatusenumtype,Status&gt;&gt; is Accepted, this contains the heartbeat interval in seconds. If the CSMS returns something other than Accepted, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.",
+        //             "type": "integer"
+        //         },
+        //         "status": {
+        //             "$ref": "#/definitions/RegistrationStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "currentTime": {
-        //       "description": "This contains the CSMS’s current time.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "interval": {
-        //       "description": "When &lt;&lt;cmn_registrationstatusenumtype,Status&gt;&gt; is Accepted, this contains the heartbeat interval in seconds. If the CSMS returns something other than Accepted, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.",
-        //       "type": "integer"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/RegistrationStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "currentTime",
-        //     "interval",
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "currentTime",
+        //         "interval",
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON,   ...)
+        #region (static) Parse   (Request, JSON,   Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a BootNotification response.
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (Request, Binary, ...)
+        #region (static) Parse   (Request, Binary, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a BootNotification response.
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static BootNotificationResponse Parse(BootNotificationRequest                                 Request,
                                                      Byte[]                                                  Binary,
-                                                     SourceRouting                                       Destination,
+                                                     SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(Request,
                          Binary,
-                     Destination,
+                         Destination,
                          NetworkPath,
                          out var bootNotificationResponse,
                          out var errorResponse,
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON,   out BootNotificationResponse, out ErrorResponse, ...)
+        #region (static) TryParse(Request, JSON,   Destination, NetworkPath, out BootNotificationResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a BootNotification response.
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, Binary, out BootNotificationResponse, out ErrorResponse, ...)
+        #region (static) TryParse(Request, Binary, Destination, NetworkPath, out BootNotificationResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a BootNotification response.
@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(BootNotificationRequest                                 Request,
                                        Byte[]                                                  Binary,
-                                       SourceRouting                                       Destination,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -688,7 +688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomBootNotificationResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON   (CustomBootNotificationResponseSerializer = null,       CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -738,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomBinaryBootNotificationResponseSerializer = null, CustomBinaryStatusInfoSerializer = null, ...)
+        #region ToBinary (CustomBinaryBootNotificationResponseSerializer = null, CustomBinaryStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -840,7 +840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.Rejected,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:              Result.FormationViolation(
+                    Result:               Result.FormationViolation(
                                               $"Invalid data format: {ErrorDescription}"
                                           ),
                     SerializationFormat:  Request.SerializationFormat);
@@ -858,7 +858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     RegistrationStatus.SignatureError,
                     Timestamp.Now,
                     DefaultInterval,
-                    Result:              Result.SignatureError(
+                    Result:               Result.SignatureError(
                                               $"Invalid signature(s): {ErrorDescription}"
                                           ),
                     SerializationFormat:  Request.SerializationFormat);
@@ -1000,7 +1000,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"{Status} ({CurrentTime.ToIso8601()}, {Interval.TotalSeconds} sec(s))";
+            => String.Concat(
+
+                   $"'{Status}', current time: {CurrentTime}, ",
+
+                   Status == RegistrationStatus.Accepted
+                       ? $"heartbeat interval: {Interval.TotalSeconds} seconds"
+                       : $"reconnect in: {Interval.TotalSeconds} seconds"
+
+               );
 
         #endregion
 

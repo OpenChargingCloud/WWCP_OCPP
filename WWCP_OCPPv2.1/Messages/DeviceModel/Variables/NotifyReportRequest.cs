@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/AttributeEnumType"
         //         },
         //         "value": {
-        //           "description": "Value of the attribute. May only be omitted when mutability is set to 'WriteOnly'.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n",
+        //           "description": "Value of the attribute. May only be omitted when mutability is set to 'WriteOnly'.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
         //           "type": "string",
         //           "maxLength": 2500
         //         },
@@ -386,12 +386,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "type": "number"
         //         },
         //         "valuesList": {
-        //           "description": "Allowed values when variable is Option/Member/SequenceList. \r\n\r\n* OptionList: The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.\r\n\r\n* MemberList: The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.\r\n\r\n* SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.\r\n\r\nThis is a comma separated list.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. \r\n\r\n",
+        //           "description": "Allowed values when variable is Option/Member/SequenceList. \r\n\r\n* OptionList: The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.\r\n\r\n* MemberList: The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.\r\n\r\n* SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.\r\n\r\nThis is a comma separated list.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. ",
         //           "type": "string",
         //           "maxLength": 1000
         //         },
         //         "supportsMonitoring": {
-        //           "description": "Flag indicating if this variable supports monitoring. \r\n",
+        //           "description": "Flag indicating if this variable supports monitoring. ",
         //           "type": "boolean"
         //         }
         //       },
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "requestId": {
-        //       "description": "The id of the GetReportRequest  or GetBaseReportRequest that requested this report\r\n",
+        //       "description": "The id of the GetReportRequest  or GetBaseReportRequest that requested this report",
         //       "type": "integer"
         //     },
         //     "generatedAt": {
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "minItems": 1
         //     },
         //     "tbc": {
-        //       "description": "“to be continued” indicator. Indicates whether another part of the report follows in an upcoming notifyReportRequest message. Default value when omitted is false.\r\n\r\n",
+        //       "description": "“to be continued” indicator. Indicates whether another part of the report follows in an upcoming notifyReportRequest message. Default value when omitted is false.",
         //       "type": "boolean",
         //       "default": false
         //     },
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify report request.
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyReportRequest, out ErrorResponse, CustomNotifyReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyReportRequest, out ErrorResponse, CustomNotifyReportRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify report request.

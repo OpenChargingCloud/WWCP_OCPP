@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this connector status.
         /// </summary>
-        public ConnectorStatus Clone
+        public ConnectorStatus Clone()
 
             => new (
                    InternalId.CloneString()

@@ -165,12 +165,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this version identification.
         /// </summary>
-        public Version_Id Clone
+        public Version_Id Clone()
 
             => new (
                    InternalId.CloneString()

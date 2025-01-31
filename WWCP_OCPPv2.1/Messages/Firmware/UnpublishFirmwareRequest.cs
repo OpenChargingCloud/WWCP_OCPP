@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "checksum": {
-        //       "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. \r\n",
+        //       "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. ",
         //       "type": "string",
         //       "maxLength": 32
         //     }
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomUnpublishFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUnpublishFirmwareRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an UnpublishFirmware request.
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out UnpublishFirmwareRequest, out ErrorResponse, CustomUnpublishFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UnpublishFirmwareRequest, out ErrorResponse, CustomUnpublishFirmwareRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UnpublishFirmware request.

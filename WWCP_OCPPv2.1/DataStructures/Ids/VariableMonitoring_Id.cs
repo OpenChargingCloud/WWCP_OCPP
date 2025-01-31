@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this variable monitoring identification.
         /// </summary>
-        public VariableMonitoring_Id Clone
+        public VariableMonitoring_Id Clone()
 
             => new (Value);
 

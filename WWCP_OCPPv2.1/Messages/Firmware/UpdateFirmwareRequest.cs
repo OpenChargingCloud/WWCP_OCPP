@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "type": "integer"
         //     },
         //     "requestId": {
-        //       "description": "The Id of this request\r\n",
+        //       "description": "The Id of this request",
         //       "type": "integer"
         //     },
         //     "firmware": {
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomUpdateFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an update firmware request.
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an update firmware request.

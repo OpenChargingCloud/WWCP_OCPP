@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this time source.
         /// </summary>
-        public TimeSource Clone
+        public TimeSource Clone()
 
             => new (
                    InternalId.CloneString()

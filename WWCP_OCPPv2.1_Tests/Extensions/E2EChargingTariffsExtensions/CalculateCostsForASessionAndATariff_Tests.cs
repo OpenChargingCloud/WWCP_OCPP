@@ -128,8 +128,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                          //EnergyMix:                 null,
 
-                                         MinPrice:                  null,
-                                         MaxPrice:                  new Price(
+                                         MinCost:                   null,
+                                         MaxCost:                   new Price(
                                                                         ExcludingTaxes:  0.51M,
                                                                         IncludingTaxes:  0.53M
                                                                     ),
@@ -416,8 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                          //EnergyMix:                 null,
 
-                                         MinPrice:                  null,
-                                         MaxPrice:                  new Price(
+                                         MinCost:                   null,
+                                         MaxCost:                   new Price(
                                                                         ExcludingTaxes:  0.51M,
                                                                         IncludingTaxes:  0.53M
                                                                     ),
@@ -708,8 +708,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                          //EnergyMix:                 null,
 
-                                         MinPrice:                  null,
-                                         MaxPrice:                  new Price(
+                                         MinCost:                   null,
+                                         MaxCost:                   new Price(
                                                                         ExcludingTaxes:  0.51M,
                                                                         IncludingTaxes:  0.53M
                                                                     ),
@@ -976,15 +976,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                             new TariffEnergyPrice(
                                                                                 PriceKWh:     0.40M,
                                                                                 Conditions:   new TariffConditions(
-                                                                                                  StartTimeOfDay:   Time.FromHourMin( 8, 0),
-                                                                                                  EndTimeOfDay:     Time.FromHourMin(18, 0)
+                                                                                                  StartTimeOfDay:   new TimeOnly( 8, 0),
+                                                                                                  EndTimeOfDay:     new TimeOnly(18, 0)
                                                                                               )
                                                                             ),
                                                                             new TariffEnergyPrice(
                                                                                 PriceKWh:     0.25M,
                                                                                 Conditions:   new TariffConditions(
-                                                                                                  StartTimeOfDay:   Time.FromHourMin(18, 0),
-                                                                                                  EndTimeOfDay:     Time.FromHourMin( 8, 0)
+                                                                                                  StartTimeOfDay:   new TimeOnly(18, 0),
+                                                                                                  EndTimeOfDay:     new TimeOnly( 8, 0)
                                                                                               )
                                                                             )
                                                                         ],
@@ -995,8 +995,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                             new TariffTimePrice(
                                                                                 PriceMinute:  10.00M,
                                                                                 Conditions:   new TariffConditions(
-                                                                                                  StartTimeOfDay:   Time.FromHourMin( 8, 0),
-                                                                                                  EndTimeOfDay:     Time.FromHourMin(18, 0)
+                                                                                                  StartTimeOfDay:   new TimeOnly( 8, 0),
+                                                                                                  EndTimeOfDay:     new TimeOnly(18, 0)
                                                                                               )
                                                                             )
                                                                         ],
@@ -1049,8 +1049,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                          //EnergyMix:                 null,
 
-                                         MinPrice:                  null,
-                                         MaxPrice:                  null,
+                                         MinCost:                   null,
+                                         MaxCost:                   null,
                                          //NotBefore:                 timeReference,
                                          //NotAfter:                  null,
 
@@ -1337,8 +1337,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                 PriceMinute:  5.00M,
                                                                                 StepSize:     TimeSpan.FromSeconds(300),
                                                                                 Conditions:   new TariffConditions(
-                                                                                                  StartTimeOfDay:   Time.FromHourMin( 9,00),
-                                                                                                  EndTimeOfDay:     Time.FromHourMin(18,00),
+                                                                                                  StartTimeOfDay:   new TimeOnly( 9,00),
+                                                                                                  EndTimeOfDay:     new TimeOnly(18,00),
                                                                                                   DaysOfWeek:       [
                                                                                                                         DayOfWeek.Monday,
                                                                                                                         DayOfWeek.Tuesday,
@@ -1363,8 +1363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                          //EnergyMix:                 null,
 
-                                         MinPrice:                  null,
-                                         MaxPrice:                  null,
+                                         MinCost:                   null,
+                                         MaxCost:                   null,
                                          //NotBefore:                 timeReference,
                                          //NotAfter:                  null,
 
@@ -1673,8 +1673,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
                                          //EnergyMix:                 null,
 
-                                         MinPrice:                  null,
-                                         MaxPrice:                  new Price(
+                                         MinCost:                   null,
+                                         MaxCost:                   new Price(
                                                                         ExcludingTaxes:  0.51M,
                                                                         IncludingTaxes:  0.53M
                                                                     ),

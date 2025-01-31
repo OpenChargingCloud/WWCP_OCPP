@@ -18,11 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.CLI;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using System;
-using System.Diagnostics.Eventing.Reader;
-using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 #endregion
 
@@ -145,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                                                         Format:     MessageFormat.UTF8
                                                                                     )
                                                                                 ),
-                                                                MinPrice:       new Price(
+                                                                MinCost:        new Price(
                                                                                     ExcludingTaxes:   1.0M,
                                                                                     IncludingTaxes:   2.5M,
                                                                                     TaxRates:         [
@@ -155,15 +151,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                                                                            )
                                                                                                       ]
                                                                                 ),
-                                                                MaxPrice:       null,
+                                                                MaxCost:        null,
                                                                 Energy:         new TariffEnergy(
                                                                                     Prices: [ 
                                                                                                 new TariffEnergyPrice(
                                                                                                     PriceKWh:     2.5M,
                                                                                                     StepSize:     WattHour.ParseKWh(1.0M),
                                                                                                     Conditions:   new TariffConditions(
-                                                                                                                      NotBefore:      Timestamp.Now,
-                                                                                                                      NotAfter:       Timestamp.Now + TimeSpan.FromDays(3),
+
+                                                                                                                      ValidFrom:      Timestamp.NowDate,
+                                                                                                                      ValidTo:        Timestamp.NowDate.AddDays(3),
 
                                                                                                                       DaysOfWeek:      null,
                                                                                                                       StartTimeOfDay:      null,
@@ -184,13 +181,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                                                                                       MinChargingTime:      null,
                                                                                                                       MaxChargingTime:      null,
                                                                                                                       MinIdleTime:      null,
-                                                                                                                      MaxIdleTime:      null,
+                                                                                                                      MaxIdleTime:      null
 
-
-                                                                                                                      TariffKind:      null,
-                                                                                                                      PaymentBrand:      null,
-                                                                                                                      PaymentRecognition:      null,
-                                                                                                                      IsReservation:      null
                                                                                                                   )
                                                                                                 )
                                                                                         ],

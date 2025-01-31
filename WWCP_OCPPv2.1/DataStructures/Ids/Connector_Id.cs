@@ -211,12 +211,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this connector identification.
         /// </summary>
-        public Connector_Id Clone
+        public Connector_Id Clone()
 
             => new (Value);
 

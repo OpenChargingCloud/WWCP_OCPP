@@ -1152,12 +1152,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this charging ticket.
         /// </summary>
         public ChargingTicket Clone()
 
             => new (Id,
-                    ProviderId.             Clone,
+                    ProviderId.             Clone(),
                     ProviderName.           Clone(),
                     DriverPublicKey.        Clone(),
                     Tariffs,
@@ -1169,14 +1169,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     NotAfter,
                     null,
 
-                    ValidOperators.         Select(operatorId        => operatorId.       Clone).ToArray(),
-                    ValidChargingPools.     Select(chargingPoolId    => chargingPoolId.   Clone).ToArray(),
-                    ValidChargingStations.  Select(chargingStationId => chargingStationId.Clone).ToArray(),
-                    ValidEVSEs.             Select(evseId            => evseId.           Clone).ToArray(),
+                    ValidOperators.         Select(operatorId        => operatorId.       Clone()).ToArray(),
+                    ValidChargingPools.     Select(chargingPoolId    => chargingPoolId.   Clone()).ToArray(),
+                    ValidChargingStations.  Select(chargingStationId => chargingStationId.Clone()).ToArray(),
+                    ValidEVSEs.             Select(evseId            => evseId.           Clone()).ToArray(),
 
-                    InvalidChargingPools.   Select(chargingPoolId    => chargingPoolId.   Clone).ToArray(),
-                    InvalidChargingStations.Select(chargingStationId => chargingStationId.Clone).ToArray(),
-                    InvalidEVSEs.           Select(evseId            => evseId.           Clone).ToArray(),
+                    InvalidChargingPools.   Select(chargingPoolId    => chargingPoolId.   Clone()).ToArray(),
+                    InvalidChargingStations.Select(chargingStationId => chargingStationId.Clone()).ToArray(),
+                    InvalidEVSEs.           Select(evseId            => evseId.           Clone()).ToArray(),
 
                     EVSEKind,
                     MaxEnergy,

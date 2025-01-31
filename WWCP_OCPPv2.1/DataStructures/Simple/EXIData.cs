@@ -171,12 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this EXI data.
         /// </summary>
-        public EXIData Clone
+        public EXIData Clone()
 
             => new (
                    InternalId.CloneString()

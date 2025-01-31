@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this sales tariff identification.
         /// </summary>
-        public SalesTariff_Id Clone
+        public SalesTariff_Id Clone()
 
             => new (Value);
 

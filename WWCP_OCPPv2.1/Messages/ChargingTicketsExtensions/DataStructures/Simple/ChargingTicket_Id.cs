@@ -179,12 +179,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging ticket identification.
         /// </summary>
-        public ChargingTicket_Id Clone
+        public ChargingTicket_Id Clone()
 
             => new (
                    InternalId.CloneString()

@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "GenericStatusEnumType": {
-        //       "description": "The Charging Station will indicate if it was\r\nable to process the request\r\n",
+        //       "description": "The Charging Station will indicate if it was\r\nable to process the request",
         //       "javaType": "GenericStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "type": "integer"
         //         },
         //         "phaseToUse": {
-        //           "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.\r\n\r\n",
+        //           "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.",
         //           "type": "integer"
         //         }
         //       },
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "CompositeScheduleType": {
-        //       "description": "Composite_ Schedule\r\nurn:x-oca:ocpp:uid:2:233362\r\n",
+        //       "description": "Composite_ Schedule\r\nurn:x-oca:ocpp:uid:2:233362",
         //       "javaType": "CompositeSchedule",
         //       "type": "object",
         //       "additionalProperties": false,

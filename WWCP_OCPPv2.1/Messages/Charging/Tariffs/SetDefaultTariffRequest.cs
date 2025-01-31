@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetDefaultTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetDefaultTariffRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an setDefaultTariffs request.
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetDefaultTariffRequest, out ErrorResponse, CustomSetDefaultTariffRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetDefaultTariffRequest, out ErrorResponse, CustomSetDefaultTariffRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetDefaultTariff request.

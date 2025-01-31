@@ -174,12 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging station identification.
         /// </summary>
-        public ChargingStation_Id Clone
+        public ChargingStation_Id Clone()
 
             => new (
                    InternalId.CloneString()

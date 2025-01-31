@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "DCChargingParametersType": {
-        //   "description": "DC_ Charging_ Parameters\r\nurn:x-oca:ocpp:uid:2:233251\r\nEV DC charging parameters\r\n\r\n\r\n",
+        //   "description": "DC_ Charging_ Parameters\r\nurn:x-oca:ocpp:uid:2:233251\r\nEV DC charging parameters",
         //   "javaType": "DCChargingParameters",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "type": "integer"
         //     },
         //     "evMaxVoltage": {
-        //       "description": "DC_ Charging_ Parameters. EV_ Max. Voltage\r\nurn:x-oca:ocpp:uid:1:569216\r\nMaximum voltage supported by the electric vehicle\r\n",
+        //       "description": "DC_ Charging_ Parameters. EV_ Max. Voltage\r\nurn:x-oca:ocpp:uid:1:569216\r\nMaximum voltage supported by the electric vehicle",
         //       "type": "integer"
         //     },
         //     "energyAmount": {
@@ -177,23 +177,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "type": "integer"
         //     },
         //     "stateOfCharge": {
-        //       "description": "DC_ Charging_ Parameters. State_ Of_ Charge. Numeric\r\nurn:x-oca:ocpp:uid:1:569219\r\nEnergy available in the battery (in percent of the battery capacity)\r\n",
+        //       "description": "DC_ Charging_ Parameters. State_ Of_ Charge. Numeric\r\nurn:x-oca:ocpp:uid:1:569219\r\nEnergy available in the battery (in percent of the battery capacity)",
         //       "type": "integer",
         //       "minimum": 0.0,
         //       "maximum": 100.0
         //     },
         //     "evEnergyCapacity": {
-        //       "description": "DC_ Charging_ Parameters. EV_ Energy_ Capacity. Numeric\r\nurn:x-oca:ocpp:uid:1:569220\r\nCapacity of the electric vehicle battery (in Wh)\r\n",
+        //       "description": "DC_ Charging_ Parameters. EV_ Energy_ Capacity. Numeric\r\nurn:x-oca:ocpp:uid:1:569220\r\nCapacity of the electric vehicle battery (in Wh)",
         //       "type": "integer"
         //     },
         //     "fullSoC": {
-        //       "description": "DC_ Charging_ Parameters. Full_ SOC. Percentage\r\nurn:x-oca:ocpp:uid:1:569221\r\nPercentage of SoC at which the EV considers the battery fully charged. (possible values: 0 - 100)\r\n",
+        //       "description": "DC_ Charging_ Parameters. Full_ SOC. Percentage\r\nurn:x-oca:ocpp:uid:1:569221\r\nPercentage of SoC at which the EV considers the battery fully charged. (possible values: 0 - 100)",
         //       "type": "integer",
         //       "minimum": 0.0,
         //       "maximum": 100.0
         //     },
         //     "bulkSoC": {
-        //       "description": "DC_ Charging_ Parameters. Bulk_ SOC. Percentage\r\nurn:x-oca:ocpp:uid:1:569222\r\nPercentage of SoC at which the EV considers a fast charging process to end. (possible values: 0 - 100)\r\n",
+        //       "description": "DC_ Charging_ Parameters. Bulk_ SOC. Percentage\r\nurn:x-oca:ocpp:uid:1:569222\r\nPercentage of SoC at which the EV considers a fast charging process to end. (possible values: 0 - 100)",
         //       "type": "integer",
         //       "minimum": 0.0,
         //       "maximum": 100.0

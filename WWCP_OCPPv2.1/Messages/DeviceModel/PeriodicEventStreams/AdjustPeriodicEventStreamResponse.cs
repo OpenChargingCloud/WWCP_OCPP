@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
-
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -33,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A AdjustPeriodicEventStream response.
+    /// An AdjustPeriodicEventStream response.
     /// </summary>
     public class AdjustPeriodicEventStreamResponse : AResponse<AdjustPeriodicEventStreamRequest,
                                                                AdjustPeriodicEventStreamResponse>,
@@ -45,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/throttlePeriodicEventStreamResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/adjustPeriodicEventStreamResponse");
 
         #endregion
 
@@ -76,9 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region AdjustPeriodicEventStreamResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new open periodic event stream response.
+        /// Create a new AdjustPeriodicEventStream response.
         /// </summary>
-        /// <param name="Request">The open periodic event stream request leading to this response.</param>
+        /// <param name="Request">The AdjustPeriodicEventStream request leading to this response.</param>
         /// <param name="Status">An optional response status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the response status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
@@ -88,16 +87,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public AdjustPeriodicEventStreamResponse(CSMS.AdjustPeriodicEventStreamRequest  Request,
-                                                   GenericStatus                            Status,
-                                                   StatusInfo?                              StatusInfo          = null,
-                                                   DateTime?                                ResponseTimestamp   = null,
+        public AdjustPeriodicEventStreamResponse(AdjustPeriodicEventStreamRequest  Request,
+                                                 GenericStatus                     Status,
+                                                 StatusInfo?                       StatusInfo          = null,
+                                                 DateTime?                         ResponseTimestamp   = null,
 
-                                                   IEnumerable<KeyPair>?                    SignKeys            = null,
-                                                   IEnumerable<SignInfo>?                   SignInfos           = null,
-                                                   IEnumerable<Signature>?                  Signatures          = null,
+                                                 IEnumerable<KeyPair>?             SignKeys            = null,
+                                                 IEnumerable<SignInfo>?            SignInfos           = null,
+                                                 IEnumerable<Signature>?           Signatures          = null,
 
-                                                   CustomData?                              CustomData          = null)
+                                                 CustomData?                       CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -133,12 +132,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region AdjustPeriodicEventStreamResponse(Request, Result)
 
         /// <summary>
-        /// Create a new open periodic event stream response.
+        /// Create a new AdjustPeriodicEventStream response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public AdjustPeriodicEventStreamResponse(CSMS.AdjustPeriodicEventStreamRequest  Request,
-                                                   Result                                   Result)
+        public AdjustPeriodicEventStreamResponse(AdjustPeriodicEventStreamRequest  Request,
+                                                 Result                            Result)
 
             : base(Request,
                    Result)
@@ -154,38 +153,106 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:AdjustPeriodicEventStreamResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "GenericStatusEnumType": {
+        //             "description": "Status of operation.",
+        //             "javaType": "GenericStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/GenericStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
 
         #endregion
 
         #region (static) Parse   (Request, JSON, CustomAdjustPeriodicEventStreamResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get periodic event streams response.
+        /// Parse the given JSON representation of an AdjustPeriodicEventStream response.
         /// </summary>
-        /// <param name="Request">The open periodic event stream request leading to this response.</param>
+        /// <param name="Request">The AdjustPeriodicEventStream request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static AdjustPeriodicEventStreamResponse Parse(CSMS.AdjustPeriodicEventStreamRequest                            Request,
-                                                                JObject                                                            JSON,
-                                                                CustomJObjectParserDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseParser   = null)
+        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to parse custom AdjustPeriodicEventStream responses.</param>
+        public static AdjustPeriodicEventStreamResponse Parse(AdjustPeriodicEventStreamRequest                                 Request,
+                                                              JObject                                                          JSON,
+                                                              CustomJObjectParserDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseParser   = null)
         {
 
 
             if (TryParse(Request,
                          JSON,
-                         out var throttlePeriodicEventStreamResponse,
+                         out var adjustPeriodicEventStreamResponse,
                          out var errorResponse,
-                         CustomAdjustPeriodicEventStreamResponseParser) &&
-                throttlePeriodicEventStreamResponse is not null)
+                         CustomAdjustPeriodicEventStreamResponseParser))
             {
-                return throttlePeriodicEventStreamResponse;
+                return adjustPeriodicEventStreamResponse;
             }
 
-            throw new ArgumentException("The given JSON representation of a get periodic event streams response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an AdjustPeriodicEventStream response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -195,17 +262,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region (static) TryParse(Request, JSON, out AdjustPeriodicEventStreamResponse, out ErrorResponse, CustomAdjustPeriodicEventStreamResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get periodic event streams response.
+        /// Try to parse the given JSON representation of an AdjustPeriodicEventStream response.
         /// </summary>
-        /// <param name="Request">The open periodic event stream request leading to this response.</param>
+        /// <param name="Request">The AdjustPeriodicEventStream request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="AdjustPeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse">The parsed AdjustPeriodicEventStream response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static Boolean TryParse(CSMS.AdjustPeriodicEventStreamRequest                            Request,
-                                       JObject                                                            JSON,
+        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to parse custom AdjustPeriodicEventStream responses.</param>
+        public static Boolean TryParse(AdjustPeriodicEventStreamRequest                                 Request,
+                                       JObject                                                          JSON,
                                        [NotNullWhen(true)]  out AdjustPeriodicEventStreamResponse?      AdjustPeriodicEventStreamResponse,
-                                       [NotNullWhen(false)] out String?                                   ErrorResponse,
+                                       [NotNullWhen(false)] out String?                                 ErrorResponse,
                                        CustomJObjectParserDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseParser   = null)
         {
 
@@ -296,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 AdjustPeriodicEventStreamResponse  = null;
-                ErrorResponse                        = "The given JSON representation of a AdjustPeriodicEventStreamResponse is invalid: " + e.Message;
+                ErrorResponse                      = "The given JSON representation of an AdjustPeriodicEventStreamResponse is invalid: " + e.Message;
                 return false;
             }
 
@@ -309,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAdjustPeriodicEventStreamResponseSerializer">A delegate to serialize custom open periodic event stream responses.</param>
+        /// <param name="CustomAdjustPeriodicEventStreamResponseSerializer">A delegate to serialize custom AdjustPeriodicEventStream responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
@@ -356,9 +423,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Static methods
 
         /// <summary>
-        /// The open periodic event stream failed.
+        /// The AdjustPeriodicEventStream failed.
         /// </summary>
-        public static AdjustPeriodicEventStreamResponse Failed(CSMS.AdjustPeriodicEventStreamRequest Request)
+        public static AdjustPeriodicEventStreamResponse Failed(AdjustPeriodicEventStreamRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -371,10 +438,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (AdjustPeriodicEventStreamResponse1, AdjustPeriodicEventStreamResponse2)
 
         /// <summary>
-        /// Compares two open periodic event stream responses for equality.
+        /// Compares two AdjustPeriodicEventStream responses for equality.
         /// </summary>
-        /// <param name="AdjustPeriodicEventStreamResponse1">A get periodic event streams response.</param>
-        /// <param name="AdjustPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse1">An AdjustPeriodicEventStream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse2">Another AdjustPeriodicEventStream response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse1,
                                            AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse2)
@@ -397,10 +464,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (AdjustPeriodicEventStreamResponse1, AdjustPeriodicEventStreamResponse2)
 
         /// <summary>
-        /// Compares two open periodic event stream responses for inequality.
+        /// Compares two AdjustPeriodicEventStream responses for inequality.
         /// </summary>
-        /// <param name="AdjustPeriodicEventStreamResponse1">A get periodic event streams response.</param>
-        /// <param name="AdjustPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse1">An AdjustPeriodicEventStream response.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse2">Another AdjustPeriodicEventStream response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse1,
                                            AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse2)
@@ -416,22 +483,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two open periodic event stream responses for equality.
+        /// Compares two AdjustPeriodicEventStream responses for equality.
         /// </summary>
-        /// <param name="Object">A get periodic event streams response to compare with.</param>
+        /// <param name="Object">An AdjustPeriodicEventStream response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is AdjustPeriodicEventStreamResponse throttlePeriodicEventStreamResponse &&
-                   Equals(throttlePeriodicEventStreamResponse);
+            => Object is AdjustPeriodicEventStreamResponse adjustPeriodicEventStreamResponse &&
+                   Equals(adjustPeriodicEventStreamResponse);
 
         #endregion
 
         #region Equals(AdjustPeriodicEventStreamResponse)
 
         /// <summary>
-        /// Compares two open periodic event stream responses for equality.
+        /// Compares two AdjustPeriodicEventStream responses for equality.
         /// </summary>
-        /// <param name="AdjustPeriodicEventStreamResponse">A get periodic event streams response to compare with.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse">An AdjustPeriodicEventStream response to compare with.</param>
         public override Boolean Equals(AdjustPeriodicEventStreamResponse? AdjustPeriodicEventStreamResponse)
 
             => AdjustPeriodicEventStreamResponse is not null &&

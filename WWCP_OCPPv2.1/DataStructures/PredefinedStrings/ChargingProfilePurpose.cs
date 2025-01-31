@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this charging profile purpose is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                              IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this charging profile purpose is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                              IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the charging profile purpose.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                               Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered charging profile purposes.
+        /// </summary>
+        public static    IEnumerable<ChargingProfilePurpose>  All
+            => lookup.Values;
 
         #endregion
 
@@ -176,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging profile purpose.
         /// </summary>
-        public ChargingProfilePurpose Clone
+        public ChargingProfilePurpose Clone()
 
             => new (
                    InternalId.CloneString()
@@ -196,34 +202,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Additional constraints that will be incorporated into a local power schedule. Only valid for a charging station.
         /// Therefore the EVSE identification MUST be 0 in the SetChargingProfileRequest message.
         /// </summary>
-        public static ChargingProfilePurpose ChargingStationExternalConstraints    { get; }
+        public static ChargingProfilePurpose  ChargingStationExternalConstraints    { get; }
             = Register("ChargingStationExternalConstraints");
 
         /// <summary>
         /// Configuration for the maximum power or current available
         /// for an entire charging station.
         /// </summary>
-        public static ChargingProfilePurpose ChargePointMaxProfile                 { get; }
-            = Register("ChargePointMaxProfile");
-
-        /// <summary>
-        /// This profile is used in place of a Tx(Default)Profile when priority charging is requested,
-        /// either locally on the charging station or by an UsePriorityChargingRequest from the CSMS.
-        /// </summary>
-        public static ChargingProfilePurpose PriorityCharging                      { get; }
-            = Register("ApplicationReset");
-
-        /// <summary>
-        /// This profile adds capacity from local generation. Its capacity is added on top of other
-        /// charging profiles.
-        /// </summary>
-        public static ChargingProfilePurpose LocalGeneration                       { get; }
-            = Register("LocalGeneration");
+        public static ChargingProfilePurpose  ChargingStationMaxProfile             { get; }
+            = Register("ChargingStationMaxProfile");
 
         /// <summary>
         /// Default profile to be used for new transactions.
         /// </summary>
-        public static ChargingProfilePurpose TxDefaultProfile                      { get; }
+        public static ChargingProfilePurpose  TxDefaultProfile                      { get; }
             = Register("TxDefaultProfile");
 
         /// <summary>
@@ -231,8 +223,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// on the current transaction. A profile with this purpose
         /// SHALL cease to be valid when the transaction terminates.
         /// </summary>
-        public static ChargingProfilePurpose TxProfile                             { get; }
+        public static ChargingProfilePurpose  TxProfile                             { get; }
             = Register("TxProfile");
+
+        /// <summary>
+        /// This profile is used in place of a Tx(Default)Profile when priority charging is requested,
+        /// either locally on the charging station or by an UsePriorityChargingRequest from the CSMS.
+        /// </summary>
+        public static ChargingProfilePurpose  PriorityCharging                      { get; }
+            = Register("PriorityCharging");
+
+        /// <summary>
+        /// This profile adds capacity from local generation. Its capacity is added on top of other
+        /// charging profiles.
+        /// </summary>
+        public static ChargingProfilePurpose  LocalGeneration                       { get; }
+            = Register("LocalGeneration");
 
         #endregion
 

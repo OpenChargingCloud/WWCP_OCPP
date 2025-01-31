@@ -214,12 +214,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this cost dimension volume.
         /// </summary>
         public CostDimensionVolume Clone()
 
             => new (
-                   Type.Clone,
+                   Type.Clone(),
                    Volume
                );
 

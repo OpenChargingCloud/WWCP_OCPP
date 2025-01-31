@@ -143,59 +143,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ClearedChargingLimitRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClearedChargingLimitRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ChargingLimitSourceEnumType": {
-        //       "description": "Source of the charging limit.",
-        //       "javaType": "ChargingLimitSourceEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "EMS",
-        //         "Other",
-        //         "SO",
-        //         "CSO"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "chargingLimitSource": {
+        //             "description": "Source of the charging limit. Allowed values defined in Appendix as ChargingLimitSourceEnumStringType.",
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "evseId": {
+        //             "description": "EVSE Identifier.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "chargingLimitSource": {
-        //       "$ref": "#/definitions/ChargingLimitSourceEnumType"
-        //     },
-        //     "evseId": {
-        //       "description": "EVSE Identifier.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "chargingLimitSource"
-        //   ]
+        //     "required": [
+        //         "chargingLimitSource"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomClearedChargingLimitRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a cleared charging limit request.
@@ -210,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearedChargingLimitRequestParser">A delegate to parse custom cleared charging limit requests.</param>
         public static ClearedChargingLimitRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        SourceRouting                                          Destination,
+                                                        SourceRouting                                              Destination,
                                                         NetworkPath                                                NetworkPath,
                                                         DateTime?                                                  RequestTimestamp                          = null,
                                                         TimeSpan?                                                  RequestTimeout                            = null,
@@ -239,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ClearedChargingLimitRequest, out ErrorResponse, CustomClearedChargingLimitRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ClearedChargingLimitRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a cleared charging limit request.
@@ -256,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearedChargingLimitRequestParser">A delegate to parse custom cleared charging limit requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       SourceRouting                                          Destination,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out ClearedChargingLimitRequest?      ClearedChargingLimitRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
@@ -516,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ChargingLimitSource.ToString(),
 
                    EVSEId.HasValue
-                       ? " at " + EVSEId.Value
+                       ? $" at EVSE Id '{EVSEId.Value}'"
                        : ""
 
                );

@@ -182,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this monitoring base.
         /// </summary>
-        public MonitoringBase Clone
+        public MonitoringBase Clone()
 
             => new (
                    InternalId.CloneString()

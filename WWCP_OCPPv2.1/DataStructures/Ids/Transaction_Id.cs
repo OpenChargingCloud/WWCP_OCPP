@@ -173,12 +173,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this transaction identification.
         /// </summary>
-        public Transaction_Id Clone
+        public Transaction_Id Clone()
 
             => new (Value);
 

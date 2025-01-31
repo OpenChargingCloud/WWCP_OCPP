@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EventNotificationEnumType": {
-        //       "description": "Specifies the event notification type of the message.\r\n\r\n",
+        //       "description": "Specifies the event notification type of the message.",
         //       "javaType": "EventNotificationEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EventTriggerEnumType": {
-        //       "description": "Type of monitor that triggered this event, e.g. exceeding a threshold value.\r\n\r\n",
+        //       "description": "Type of monitor that triggered this event, e.g. exceeding a threshold value.",
         //       "javaType": "EventTriggerEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "eventId": {
-        //           "description": "Identifies the event. This field can be referred to as a cause by other events.\r\n\r\n",
+        //           "description": "Identifies the event. This field can be referred to as a cause by other events.",
         //           "type": "integer"
         //         },
         //         "timestamp": {
@@ -266,11 +266,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/EventTriggerEnumType"
         //         },
         //         "cause": {
-        //           "description": "Refers to the Id of an event that is considered to be the cause for this event.\r\n\r\n",
+        //           "description": "Refers to the Id of an event that is considered to be the cause for this event.",
         //           "type": "integer"
         //         },
         //         "actualValue": {
-        //           "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
+        //           "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
         //           "type": "string",
         //           "maxLength": 2500
         //         },
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "maxLength": 500
         //         },
         //         "cleared": {
-        //           "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. \r\n\r\n",
+        //           "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. ",
         //           "type": "boolean"
         //         },
         //         "transactionId": {
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "format": "date-time"
         //     },
         //     "tbc": {
-        //       "description": "“to be continued” indicator. Indicates whether another part of the report follows in an upcoming notifyEventRequest message. Default value when omitted is false. \r\n",
+        //       "description": "“to be continued” indicator. Indicates whether another part of the report follows in an upcoming notifyEventRequest message. Default value when omitted is false. ",
         //       "type": "boolean",
         //       "default": false
         //     },
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyEventRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify event request.
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify event request.

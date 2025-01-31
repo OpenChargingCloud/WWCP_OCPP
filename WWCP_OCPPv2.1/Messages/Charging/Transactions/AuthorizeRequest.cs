@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// An authorize request.
+    /// An Authorize request.
     /// </summary>
     public class AuthorizeRequest : ARequest<AuthorizeRequest>,
                                     IRequest
@@ -63,11 +63,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public IdToken                       IdToken                        { get; }
 
         /// <summary>
-        /// The optional X.509 certificated presented by the electric vehicle/user (PEM format).
-        /// [max 5500]
+        /// The X.509 certificate chain presented by EV and encoded in PEM format.
+        /// Order of certificates in chain is from leaf up to (but excluding) root certificate.
+        /// Only needed in case of central contract validation when Charging Station cannot validate the contract certificate (PEM format).
         /// </summary>
         [Optional]
-        public OCPP.Certificate?             Certificate                    { get; }
+        public OCPP.CertificateChain?        CertificateChain               { get; }
 
         /// <summary>
         /// Optional information to verify the electric vehicle/user contract certificate via OCSP.
@@ -85,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
-        /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
+        /// <param name="CertificateChain">The X.509 certificate chain presented by EV and encoded in PEM format. Order of certificates in chain is from leaf up to (but excluding) root certificate. Only needed in case of central contract validation when Charging Station cannot validate the contract certificate (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -99,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AuthorizeRequest(SourceRouting                  Destination,
                                 IdToken                        IdToken,
-                                OCPP.Certificate?              Certificate                   = null,
+                                OCPP.CertificateChain?         CertificateChain              = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
                                 IEnumerable<KeyPair>?          SignKeys                      = null,
@@ -136,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             this.IdToken                      = IdToken;
-            this.Certificate                  = Certificate;
+            this.CertificateChain             = CertificateChain;
             this.ISO15118CertificateHashData  = ISO15118CertificateHashData?.Distinct() ?? [];
 
 
@@ -144,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 hashCode = this.IdToken.                    GetHashCode()       * 7 ^
-                          (this.Certificate?.               GetHashCode() ?? 0) * 5 ^
+                          (this.CertificateChain?.          GetHashCode() ?? 0) * 5 ^
                            this.ISO15118CertificateHashData.CalcHashCode()      * 3 ^
                            base.                            GetHashCode();
 
@@ -158,183 +159,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:AuthorizeRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:AuthorizeRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "HashAlgorithmEnumType": {
+        //             "description": "Used algorithms for the hashes provided.",
+        //             "javaType": "HashAlgorithmEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SHA256",
+        //                 "SHA384",
+        //                 "SHA512"
+        //             ]
+        //         },
+        //         "AdditionalInfoType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "AdditionalInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalIdToken": {
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "additionalIdToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "IdTokenType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "IdToken",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalInfo": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalInfoType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "idToken": {
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "OCSPRequestDataType": {
+        //             "description": "Information about a certificate for an OCSP check.",
+        //             "javaType": "OCSPRequestData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "hashAlgorithm": {
+        //                     "$ref": "#/definitions/HashAlgorithmEnumType"
+        //                 },
+        //                 "issuerNameHash": {
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "issuerKeyHash": {
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "serialNumber": {
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //                     "type": "string",
+        //                     "maxLength": 40
+        //                 },
+        //                 "responderURL": {
+        //                     "description": "This contains the responder URL (Case insensitive). ",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "hashAlgorithm",
+        //                 "issuerNameHash",
+        //                 "issuerKeyHash",
+        //                 "serialNumber",
+        //                 "responderURL"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.",
-        //       "javaType": "HashAlgorithmEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "SHA256",
-        //         "SHA384",
-        //         "SHA512"
-        //       ]
-        //     },
-        //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.",
-        //       "javaType": "IdTokenEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Central",
-        //         "eMAID",
-        //         "ISO14443",
-        //         "ISO15693",
-        //         "KeyCode",
-        //         "Local",
-        //         "MacAddress",
-        //         "NoAuthorization"
-        //       ]
-        //     },
-        //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "AdditionalInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "additionalIdToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "IdToken",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalInfo": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/AdditionalInfoType"
-        //           },
-        //           "minItems": 1
-        //         },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //           "type": "string",
-        //           "maxLength": 36
+        //             "$ref": "#/definitions/IdTokenType"
         //         },
-        //         "type": {
-        //           "$ref": "#/definitions/IdTokenEnumType"
-        //         }
-        //       },
-        //       "required": [
-        //         "idToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "OCSPRequestDataType": {
-        //       "javaType": "OCSPRequestData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //         "certificate": {
+        //             "description": "*(2.1)* The X.509 certificate chain presented by EV and encoded in PEM format. Order of certificates in chain is from leaf up to (but excluding) root certificate. +\r\nOnly needed in case of central contract validation when Charging Station cannot validate the contract certificate.",
+        //             "type": "string",
+        //             "maxLength": 10000
+        //         },
+        //         "iso15118CertificateHashData": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/OCSPRequestDataType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 4
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "hashAlgorithm": {
-        //           "$ref": "#/definitions/HashAlgorithmEnumType"
-        //         },
-        //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key\r\n",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "serialNumber": {
-        //           "description": "The serial number of the certificate.",
-        //           "type": "string",
-        //           "maxLength": 40
-        //         },
-        //         "responderURL": {
-        //           "description": "This contains the responder URL (Case insensitive). \r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "hashAlgorithm",
-        //         "issuerNameHash",
-        //         "issuerKeyHash",
-        //         "serialNumber",
-        //         "responderURL"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "idToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "certificate": {
-        //       "description": "The X.509 certificated presented by EV and encoded in PEM format.",
-        //       "type": "string",
-        //       "maxLength": 5500
-        //     },
-        //     "iso15118CertificateHashData": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/OCSPRequestDataType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 4
-        //     }
-        //   },
-        //   "required": [
-        //     "idToken"
-        //   ]
+        //     "required": [
+        //         "idToken"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomAuthorizeRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
-        /// Parse the given JSON representation of an authorize request.
+        /// Parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -346,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             SourceRouting                               Destination,
+                                             SourceRouting                                   Destination,
                                              NetworkPath                                     NetworkPath,
                                              DateTime?                                       RequestTimestamp               = null,
                                              TimeSpan?                                       RequestTimeout                 = null,
@@ -368,17 +356,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return authorizeRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of an authorize request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an Authorize request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out AuthorizeRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an authorize request.
+        /// Try to parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -392,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       SourceRouting                               Destination,
+                                       SourceRouting                                   Destination,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out AuthorizeRequest?      AuthorizeRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,
@@ -420,12 +408,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Certificate                    [optional]
+                #region CertificateChain               [optional]
 
                 if (JSON.ParseOptional("certificate",
-                                       "PEM encoded electric vehicle/user certificate",
-                                       OCPP.Certificate.TryParse,
-                                       out OCPP.Certificate? Certificate,
+                                       "PEM encoded electric vehicle/user certificate chain",
+                                       OCPP.CertificateChain.TryParse,
+                                       out OCPP.CertificateChain? CertificateChain,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -481,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                        Destination,
                                        IdToken,
-                                       Certificate,
+                                       CertificateChain,
                                        ISO15118CertificateHashData,
 
                                        null,
@@ -508,7 +496,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 AuthorizeRequest  = null;
-                ErrorResponse     = "The given JSON representation of an authorize request is invalid: " + e.Message;
+                ErrorResponse     = "The given JSON representation of an Authorize request is invalid: " + e.Message;
                 return false;
             }
 
@@ -546,8 +534,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                             CustomAdditionalInfoSerializer,
                                                                                                             CustomCustomDataSerializer)),
 
-                           Certificate is not null
-                               ? new JProperty("certificate",                   Certificate.         ToString())
+                           CertificateChain is not null
+                               ? new JProperty("certificate",                   CertificateChain.    ToString())
                                : null,
 
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
@@ -580,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator == (AuthorizeRequest1, AuthorizeRequest2)
 
         /// <summary>
-        /// Compares two authorize requests for equality.
+        /// Compares two Authorize requests for equality.
         /// </summary>
         /// <param name="AuthorizeRequest1">A authorize request.</param>
         /// <param name="AuthorizeRequest2">Another authorize request.</param>
@@ -606,7 +594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Operator != (AuthorizeRequest1, AuthorizeRequest2)
 
         /// <summary>
-        /// Compares two authorize requests for inequality.
+        /// Compares two Authorize requests for inequality.
         /// </summary>
         /// <param name="AuthorizeRequest1">A authorize request.</param>
         /// <param name="AuthorizeRequest2">Another authorize request.</param>
@@ -625,9 +613,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two authorize requests for equality.
+        /// Compares two Authorize requests for equality.
         /// </summary>
-        /// <param name="Object">An authorize request to compare with.</param>
+        /// <param name="Object">An Authorize request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AuthorizeRequest authorizeRequest &&
@@ -638,17 +626,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Equals(AuthorizeRequest)
 
         /// <summary>
-        /// Compares two authorize requests for equality.
+        /// Compares two Authorize requests for equality.
         /// </summary>
-        /// <param name="AuthorizeRequest">An authorize request to compare with.</param>
+        /// <param name="AuthorizeRequest">An Authorize request to compare with.</param>
         public override Boolean Equals(AuthorizeRequest? AuthorizeRequest)
 
             => AuthorizeRequest is not null &&
 
                IdToken.Equals(AuthorizeRequest.IdToken) &&
 
-             ((Certificate is     null && AuthorizeRequest.Certificate is     null) ||
-              (Certificate is not null && AuthorizeRequest.Certificate is not null && Certificate.Equals(AuthorizeRequest.Certificate))) &&
+             ((CertificateChain is     null && AuthorizeRequest.CertificateChain is     null) ||
+              (CertificateChain is not null && AuthorizeRequest.CertificateChain is not null && CertificateChain.Equals(AuthorizeRequest.CertificateChain))) &&
 
                ISO15118CertificateHashData.Count().Equals(AuthorizeRequest.ISO15118CertificateHashData.Count())     &&
                ISO15118CertificateHashData.All(data =>    AuthorizeRequest.ISO15118CertificateHashData.Contains(data)) &&
@@ -678,7 +666,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => IdToken.ToString();
+            => String.Concat(
+
+                   IdToken.ToString(),
+
+                   CertificateChain is not null
+                       ? $", with {CertificateChain.Length} certificates"
+                       : "",
+
+                   ISO15118CertificateHashData is not null
+                       ? $", with {ISO15118CertificateHashData.Count()} OCSP request data"
+                       : ""
+
+               );
 
         #endregion
 

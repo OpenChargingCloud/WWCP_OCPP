@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new ClearTariffsResponse(
                                        request,
-                                       request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
+                                       request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
                                        Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 

@@ -1164,14 +1164,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
 
-                   Id.                   Clone,
-                   ProviderId.           Clone,
+                   Id.                   Clone(),
+                   ProviderId.           Clone(),
                    ProviderName.         Clone(),
 
                    CSOOperatorId,
                    EVSEId,
-                   ChargingStationIds?.Select(chargingStationId => chargingStationId.Clone).   ToArray(),
-                   ChargingPoolIds?.   Select(chargingPoolId    => chargingPoolId.   Clone).   ToArray(),
+                   ChargingStationIds?.Select(chargingStationId => chargingStationId.Clone()).   ToArray(),
+                   ChargingPoolIds?.   Select(chargingPoolId    => chargingPoolId.   Clone()).   ToArray(),
                    MeteringValues.     Select(meteringValue     => meteringValue.    Clone()). ToArray(),
 
                    TotalFixedCost.       Clone(),
@@ -1197,8 +1197,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Currency,
 
                    Created,
-                   Replaces.       Select(cdrId          => cdrId.         Clone).  ToArray(),
-                   References.     Select(cdrId          => cdrId.         Clone).  ToArray(),
+                   Replaces.       Select(cdrId          => cdrId.         Clone()).  ToArray(),
+                   References.     Select(cdrId          => cdrId.         Clone()).  ToArray(),
                    ChargingTariff,
                    ChargingPeriods.Select(chargingPeriod => chargingPeriod.Clone()).ToArray(),
 

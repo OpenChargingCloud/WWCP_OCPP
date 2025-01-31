@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "$ref": "#/definitions/LogEnumType"
         //     },
         //     "requestId": {
-        //       "description": "The Id of this request\r\n",
+        //       "description": "The Id of this request",
         //       "type": "integer"
         //     },
         //     "retries": {
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetLogRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetLogRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetLog request.
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetLog request.

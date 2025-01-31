@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "eventId": {
-        //       "description": "Identifies the event. This field can be referred to as a cause by other events.\r\n\r\n",
+        //       "description": "Identifies the event. This field can be referred to as a cause by other events.",
         //       "type": "integer"
         //     },
         //     "timestamp": {
@@ -239,11 +239,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/EventTriggerEnumType"
         //     },
         //     "cause": {
-        //       "description": "Refers to the Id of an event that is considered to be the cause for this event.\r\n\r\n",
+        //       "description": "Refers to the Id of an event that is considered to be the cause for this event.",
         //       "type": "integer"
         //     },
         //     "actualValue": {
-        //       "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
+        //       "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
         //       "type": "string",
         //       "maxLength": 2500
         //     },
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "maxLength": 500
         //     },
         //     "cleared": {
-        //       "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. \r\n\r\n",
+        //       "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. ",
         //       "type": "boolean"
         //     },
         //     "transactionId": {

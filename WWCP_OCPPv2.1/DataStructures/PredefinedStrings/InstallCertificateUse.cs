@@ -182,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this install certificate use.
         /// </summary>
-        public InstallCertificateUse Clone
+        public InstallCertificateUse Clone()
 
             => new (
                    InternalId.CloneString()

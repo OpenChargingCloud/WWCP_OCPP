@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this transaction stop point.
         /// </summary>
-        public TxStopPoint Clone
+        public TxStopPoint Clone()
 
             => new (
                    InternalId.CloneString()

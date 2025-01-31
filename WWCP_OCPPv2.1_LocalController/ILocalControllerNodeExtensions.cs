@@ -990,13 +990,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region Authorize                             (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
+        #region Authorize                             (IdToken, CertificateChain = null, ISO15118CertificateHashData = null, ...)
 
         /// <summary>
         /// Authorize the given token.
         /// </summary>
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
-        /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
+        /// <param name="CertificateChain">The X.509 certificate chain presented by EV and encoded in PEM format. Order of certificates in chain is from leaf up to (but excluding) root certificate. Only needed in case of central contract validation when Charging Station cannot validate the contract certificate (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
@@ -1010,7 +1010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
             Authorize(this ILocalControllerNode      LocalController,
 
                       IdToken                        IdToken,
-                      OCPP.Certificate?              Certificate                   = null,
+                      OCPP.CertificateChain?         CertificateChain              = null,
                       IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
                       CustomData?                    CustomData                    = null,
@@ -1036,7 +1036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            Destination ?? SourceRouting.CSMS,
 
                            IdToken,
-                           Certificate,
+                           CertificateChain,
                            ISO15118CertificateHashData,
 
                            SignKeys,

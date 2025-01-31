@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this network interface.
         /// </summary>
-        public NetworkInterface Clone
+        public NetworkInterface Clone()
 
             => new (
                    InternalId.CloneString()

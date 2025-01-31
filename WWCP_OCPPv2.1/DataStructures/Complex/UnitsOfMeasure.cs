@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //   "$schema": "http://json-schema.org/draft-06/schema#",
         //   "$id": "urn:OCPP:Cp:2:2020:3:UnitsOfMeasureType",
         //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Represents a UnitOfMeasure with a multiplier\r\n",
+        //   "description": "Represents a UnitOfMeasure with a multiplier",
         //   "javaType": "UnitsOfMeasure",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public UnitsOfMeasure Clone()
 
             => new (
-                   Unit.Clone,
+                   Unit.Clone(),
                    Multiplier,
                    CustomData
                );

@@ -17,13 +17,14 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -43,31 +44,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The used hash algorithm.
         /// </summary>
         [Mandatory]
-        public HashAlgorithms  HashAlgorithm     { get; }
+        public HashAlgorithm  HashAlgorithm     { get; }
 
         /// <summary>
-        /// The hashed value of the issuer distinguished name (DN). [max 128]
+        /// The hash of the issuer's distinguished name (DN), that must be calculated over
+        /// the DER encoding of the issuer's name field in the certificate being checked.
+        /// [max 128]
         /// </summary>
         [Mandatory]
-        public String          IssuerNameHash    { get; }
+        public String         IssuerNameHash    { get; }
 
         /// <summary>
-        /// The hashed value of the issuers public key. [max 128]
+        /// The hash of the DER encoded public key: the value (excluding tag and length) of the subject public key field in the issuer's certificate.
+        /// [max 128]
         /// </summary>
         [Mandatory]
-        public String          IssuerKeyHash     { get; }
+        public String         IssuerKeyHash     { get; }
 
         /// <summary>
-        /// The serial number of the certificate to verify. [max 40]
+        /// The string representation of the hexadecimal value of the serial number without the '0x'-prefix and without leading zeroes.
+        /// [max 40]
         /// </summary>
         [Mandatory]
-        public String          SerialNumber      { get; }
+        public String         SerialNumber      { get; }
 
         /// <summary>
-        /// The case-insensitive responder URL. [max 512]
+        /// The case-insensitive responder URL.
+        /// [max 2000]
         /// </summary>
         [Mandatory]
-        public URL             ResponderURL      { get; }
+        public URL            ResponderURL      { get; }
 
         #endregion
 
@@ -77,17 +83,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create new OCSP request data.
         /// </summary>
         /// <param name="HashAlgorithm">The used hash algorithm.</param>
-        /// <param name="IssuerNameHash">The hashed value of the issuer distinguished name (DN).</param>
-        /// <param name="IssuerKeyHash">The hashed value of the issuers public key.</param>
-        /// <param name="SerialNumber">The serial number of the certificate to verify.</param>
+        /// <param name="IssuerNameHash">The hash of the issuer's distinguished name (DN), that must be calculated over the DER encoding of the issuer's name field in the certificate being checked.</param>
+        /// <param name="IssuerKeyHash">The hash of the DER encoded public key: the value (excluding tag and length) of the subject public key field in the issuer's certificate.</param>
+        /// <param name="SerialNumber">The string representation of the hexadecimal value of the serial number without the '0x'-prefix and without leading zeroes.</param>
         /// <param name="ResponderURL">The case-insensitive responder URL.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public OCSPRequestData(HashAlgorithms  HashAlgorithm,
-                               String          IssuerNameHash,
-                               String          IssuerKeyHash,
-                               String          SerialNumber,
-                               URL             ResponderURL,
-                               CustomData?     CustomData   = null)
+        public OCSPRequestData(HashAlgorithm  HashAlgorithm,
+                               String         IssuerNameHash,
+                               String         IssuerKeyHash,
+                               String         SerialNumber,
+                               URL            ResponderURL,
+                               CustomData?    CustomData   = null)
 
             : base(CustomData)
 
@@ -115,45 +121,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "OCSPRequestDataType": {
-        //   "javaType": "OCSPRequestData",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Information about a certificate for an OCSP check.",
+        //     "javaType": "OCSPRequestData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "hashAlgorithm": {
+        //             "$ref": "#/definitions/HashAlgorithmEnumType"
+        //         },
+        //         "issuerNameHash": {
+        //             "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //             "type": "string",
+        //             "maxLength": 128
+        //         },
+        //         "issuerKeyHash": {
+        //             "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //             "type": "string",
+        //             "maxLength": 128
+        //         },
+        //         "serialNumber": {
+        //             "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //             "type": "string",
+        //             "maxLength": 40
+        //         },
+        //         "responderURL": {
+        //             "description": "This contains the responder URL (Case insensitive). ",
+        //             "type": "string",
+        //             "maxLength": 2000
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "hashAlgorithm": {
-        //       "$ref": "#/definitions/HashAlgorithmEnumType"
-        //     },
-        //     "issuerNameHash": {
-        //       "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 128
-        //     },
-        //     "issuerKeyHash": {
-        //       "description": "Hashed value of the issuers public key\r\n",
-        //       "type": "string",
-        //       "maxLength": 128
-        //     },
-        //     "serialNumber": {
-        //       "description": "The serial number of the certificate.",
-        //       "type": "string",
-        //       "maxLength": 40
-        //     },
-        //     "responderURL": {
-        //       "description": "This contains the responder URL (Case insensitive). \r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 512
-        //     }
-        //   },
-        //   "required": [
-        //     "hashAlgorithm",
-        //     "issuerNameHash",
-        //     "issuerKeyHash",
-        //     "serialNumber",
-        //     "responderURL"
-        //   ]
+        //     "required": [
+        //         "hashAlgorithm",
+        //         "issuerNameHash",
+        //         "issuerKeyHash",
+        //         "serialNumber",
+        //         "responderURL"
+        //     ]
         // }
 
         #endregion
@@ -172,8 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var ocspRequestData,
                          out var errorResponse,
-                         CustomOCSPRequestDataParser) &&
-                ocspRequestData is not null)
+                         CustomOCSPRequestDataParser))
             {
                 return ocspRequestData;
             }
@@ -227,8 +233,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("hashAlgorithm",
                                          "hash algorithm",
-                                         HashAlgorithmsExtensions.TryParse,
-                                         out HashAlgorithms HashAlgorithm,
+                                         OCPPv2_1.HashAlgorithm.TryParse,
+                                         out HashAlgorithm HashAlgorithm,
                                          out ErrorResponse))
                 {
                     return false;
@@ -240,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("issuerNameHash",
                                              "issuer name hash",
-                                             out String IssuerNameHash,
+                                             out String? IssuerNameHash,
                                              out ErrorResponse))
                 {
                     return false;
@@ -252,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("issuerKeyHash",
                                              "issuer key hash",
-                                             out String IssuerKeyHash,
+                                             out String? IssuerKeyHash,
                                              out ErrorResponse))
                 {
                     return false;
@@ -264,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("serialNumber",
                                              "certificate serial number",
-                                             out String SerialNumber,
+                                             out String? SerialNumber,
                                              out ErrorResponse))
                 {
                     return false;
@@ -340,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("hashAlgorithm",    HashAlgorithm.AsText()),
+                                 new JProperty("hashAlgorithm",    HashAlgorithm.ToString()),
                                  new JProperty("issuerNameHash",   IssuerNameHash),
                                  new JProperty("issuerKeyHash",    IssuerKeyHash),
                                  new JProperty("serialNumber",     SerialNumber),

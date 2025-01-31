@@ -166,12 +166,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this cost dimension.
         /// </summary>
-        public CostDimension Clone
+        public CostDimension Clone()
 
             => new (
                    InternalId.CloneString()

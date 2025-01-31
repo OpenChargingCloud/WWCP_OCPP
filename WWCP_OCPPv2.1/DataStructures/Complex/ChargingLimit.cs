@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "ChargingLimitType": {
-        //   "description": "Charging_ Limit\r\nurn:x-enexis:ecdm:uid:2:234489\r\n",
+        //   "description": "Charging_ Limit\r\nurn:x-enexis:ecdm:uid:2:234489",
         //   "javaType": "ChargingLimit",
         //   "type": "object",
         //   "additionalProperties": false,

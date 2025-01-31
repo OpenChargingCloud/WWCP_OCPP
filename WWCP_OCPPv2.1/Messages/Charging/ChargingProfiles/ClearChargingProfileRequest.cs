@@ -88,23 +88,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearChargingProfileRequest(SourceRouting                 Destination,
-                                           ChargingProfile_Id?           ChargingProfileId         = null,
-                                           ClearChargingProfile?         ChargingProfileCriteria   = null,
+        public ClearChargingProfileRequest(SourceRouting            Destination,
+                                           ChargingProfile_Id?      ChargingProfileId         = null,
+                                           ClearChargingProfile?    ChargingProfileCriteria   = null,
 
-                                           IEnumerable<KeyPair>?         SignKeys                  = null,
-                                           IEnumerable<SignInfo>?        SignInfos                 = null,
-                                           IEnumerable<Signature>?       Signatures                = null,
+                                           IEnumerable<KeyPair>?    SignKeys                  = null,
+                                           IEnumerable<SignInfo>?   SignInfos                 = null,
+                                           IEnumerable<Signature>?  Signatures                = null,
 
-                                           CustomData?                   CustomData                = null,
+                                           CustomData?              CustomData                = null,
 
-                                           Request_Id?                   RequestId                 = null,
-                                           DateTime?                     RequestTimestamp          = null,
-                                           TimeSpan?                     RequestTimeout            = null,
-                                           EventTracking_Id?             EventTrackingId           = null,
-                                           NetworkPath?                  NetworkPath               = null,
-                                           SerializationFormats?         SerializationFormat       = null,
-                                           CancellationToken             CancellationToken         = default)
+                                           Request_Id?              RequestId                 = null,
+                                           DateTime?                RequestTimestamp          = null,
+                                           TimeSpan?                RequestTimeout            = null,
+                                           EventTracking_Id?        EventTrackingId           = null,
+                                           NetworkPath?             NetworkPath               = null,
+                                           SerializationFormats?    SerializationFormat       = null,
+                                           CancellationToken        CancellationToken         = default)
 
             : base(Destination,
                    nameof(ClearChargingProfileRequest)[..^7],
@@ -143,78 +143,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ClearChargingProfileRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClearChargingProfileRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ChargingProfilePurposeEnumType": {
+        //             "description": "Specifies to purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.",
+        //             "javaType": "ChargingProfilePurposeEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ChargingStationExternalConstraints",
+        //                 "ChargingStationMaxProfile",
+        //                 "TxDefaultProfile",
+        //                 "TxProfile",
+        //                 "PriorityCharging",
+        //                 "LocalGeneration"
+        //             ]
+        //         },
+        //         "ClearChargingProfileType": {
+        //             "description": "A ClearChargingProfileType is a filter for charging profiles to be cleared by ClearChargingProfileRequest.",
+        //             "javaType": "ClearChargingProfile",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evseId": {
+        //                     "description": "Specifies the id of the EVSE for which to clear charging profiles. An evseId of zero (0) specifies the charging profile for the overall Charging Station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "chargingProfilePurpose": {
+        //                     "$ref": "#/definitions/ChargingProfilePurposeEnumType"
+        //                 },
+        //                 "stackLevel": {
+        //                     "description": "Specifies the stackLevel for which charging profiles will be cleared, if they meet the other criteria in the request.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ChargingProfilePurposeEnumType": {
-        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nSpecifies to purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.",
-        //       "javaType": "ChargingProfilePurposeEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ChargingStationExternalConstraints",
-        //         "ChargingStationMaxProfile",
-        //         "TxDefaultProfile",
-        //         "TxProfile"
-        //       ]
-        //     },
-        //     "ClearChargingProfileType": {
-        //       "description": "Charging_ Profile\r\nurn:x-oca:ocpp:uid:2:233255\r\nA ChargingProfile consists of a ChargingSchedule, describing the amount of power or current that can be delivered per time interval.",
-        //       "javaType": "ClearChargingProfile",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "chargingProfileId": {
+        //             "description": "The Id of the charging profile to clear.",
+        //             "type": "integer"
+        //         },
+        //         "chargingProfileCriteria": {
+        //             "$ref": "#/definitions/ClearChargingProfileType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evseId": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nSpecifies the id of the EVSE for which to ClearChargingProfiles. An evseId of zero (0) specifies the charging profile for the overall Charging Station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.\r\n\r\n",
-        //           "type": "integer"
-        //         },
-        //         "chargingProfilePurpose": {
-        //           "$ref": "#/definitions/ChargingProfilePurposeEnumType"
-        //         },
-        //         "stackLevel": {
-        //           "description": "Charging_ Profile. Stack_ Level. Counter\r\nurn:x-oca:ocpp:uid:1:569230\r\nSpecifies the stackLevel for which charging profiles will be cleared, if they meet the other criteria in the request.",
-        //           "type": "integer"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       }
         //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "chargingProfileId": {
-        //       "description": "The Id of the charging profile to clear.",
-        //       "type": "integer"
-        //     },
-        //     "chargingProfileCriteria": {
-        //       "$ref": "#/definitions/ClearChargingProfileType"
-        //     }
-        //   }
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomClearChargingProfileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ClearChargingProfile request.
@@ -229,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom ClearChargingProfile requests.</param>
         public static ClearChargingProfileRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        SourceRouting                                          Destination,
+                                                        SourceRouting                                              Destination,
                                                         NetworkPath                                                NetworkPath,
                                                         DateTime?                                                  RequestTimestamp                          = null,
                                                         TimeSpan?                                                  RequestTimeout                            = null,
@@ -258,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ClearChargingProfileRequest, out ErrorResponse, CustomClearChargingProfileRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ClearChargingProfileRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ClearChargingProfile request.
@@ -274,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom ClearChargingProfile requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       SourceRouting                                          Destination,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out ClearChargingProfileRequest?      ClearChargingProfileRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,

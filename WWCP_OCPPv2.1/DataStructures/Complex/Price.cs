@@ -93,35 +93,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":             "Price with and without tax\r\n",
-        //     "javaType":                "Price",
-        //     "type":                    "object",
-        //     "additionalProperties":     false,
+        //     "description": "Price with and without tax. At least one of _exclTax_, _inclTax_ must be present.",
+        //     "javaType": "Price",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "exclTax": {
-        //             "description":     "Price/cost excluding tax.\r\n",
-        //             "type":            "integer",
-        //             "minimum":          0.0
+        //             "description": "Price/cost excluding tax. Can be absent if _inclTax_ is present.",
+        //             "type": "number"
         //         },
         //         "inclTax": {
-        //             "description":     "Price/cost including tax\r\n",
-        //             "type":            "integer",
-        //             "minimum":          0.0
+        //             "description": "Price/cost including tax. Can be absent if _exclTax_ is present.",
+        //             "type": "number"
         //         },
-        //         "taxRate": {
-        //             "type":            "array",
-        //             "additionalItems":  false,
+        //         "taxRates": {
+        //             "type": "array",
+        //             "additionalItems": false,
         //             "items": {
-        //                 "$ref":        "#/definitions/TaxRateType"
+        //                 "$ref": "#/definitions/TaxRateType"
         //             },
         //             "minItems": 1,
         //             "maxItems": 5
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     },
-        //     "required": [
-        //         "exclTax",
-        //         "inclTax"
-        //     ]
+        //     }
         // }
 
         #endregion
@@ -296,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this price.
         /// </summary>
         public Price Clone()
 
@@ -309,8 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public static Price Zero
+        #region Static definitions
+
+        /// <summary>
+        /// Zero
+        /// </summary>
+        public static Price Zero { get; }
             = new (0, 0);
+
+        #endregion
 
 
         #region Operator overloading

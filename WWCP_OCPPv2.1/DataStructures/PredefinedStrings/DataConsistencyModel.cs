@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this data consistency model.
         /// </summary>
-        public DataConsistencyModel Clone
+        public DataConsistencyModel Clone()
 
             => new (
                    InternalId.CloneString()

@@ -139,7 +139,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Documentation
 
-        // tba.
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClearTariffsResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "TariffClearStatusEnumType": {
+        //             "javaType": "TariffClearStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "NoTariff"
+        //             ]
+        //         },
+        //         "ClearTariffsResultType": {
+        //             "javaType": "ClearTariffsResult",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "statusInfo": {
+        //                     "$ref": "#/definitions/StatusInfoType"
+        //                 },
+        //                 "tariffId": {
+        //                     "description": "Id of tariff for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 60
+        //                 },
+        //                 "status": {
+        //                     "$ref": "#/definitions/TariffClearStatusEnumType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.\r\n",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "clearTariffsResult": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ClearTariffsResultType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "clearTariffsResult"
+        //     ]
+        // }
 
         #endregion
 
@@ -369,8 +465,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => new (
 
                    Request,
-                   Request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -398,8 +494,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                               String               ErrorDescription)
 
             => new (Request,
-                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -413,8 +509,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                           String               ErrorDescription)
 
             => new (Request,
-                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -428,8 +524,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   String?              Description   = null)
 
             => new (Request,
-                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -441,8 +537,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                             Exception            Exception)
 
             => new (Request,
-                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(tariffId, TariffStatus.Rejected)),
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Request.TariffIds.Select(tariffId => new ClearTariffsResult(TariffClearStatus.Rejected, tariffId)),
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

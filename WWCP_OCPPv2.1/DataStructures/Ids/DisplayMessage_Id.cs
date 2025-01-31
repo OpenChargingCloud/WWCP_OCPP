@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this display message identification.
         /// </summary>
-        public DisplayMessage_Id Clone
+        public DisplayMessage_Id Clone()
 
             => new (Value);
 

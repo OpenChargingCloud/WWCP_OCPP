@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this identification token type is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                   IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification token type is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                   IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the identification token type.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                    Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered identification token types.
+        /// </summary>
+        public static    IEnumerable<IdTokenType>  All
+            => lookup.Values;
 
         #endregion
 
@@ -176,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this identification token type.
         /// </summary>
-        public IdTokenType Clone
+        public IdTokenType Clone()
 
             => new (
                    InternalId.CloneString()
@@ -198,13 +204,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// A centrally, in the CSMS (or other server) generated id (for example used for a remotely started
         /// transaction that is activated by SMS). No format defined, might be an UUID.
         /// </summary>
-        public static IdTokenType Central            { get; }
+        public static IdTokenType  Central            { get; }
             = Register("Central");
 
         /// <summary>
         /// An electro-mobility account identification, as defined in ISO 15118.
         /// </summary>
-        public static IdTokenType eMAID              { get; }
+        public static IdTokenType  eMAID              { get; }
             = Register("eMAID");
 
         /// <summary>
@@ -212,48 +218,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// For ISO 15118-2  this is the MAC address of the communication controller.
         /// For ISO 15118-20 this is an identifier up to 255 characters.
         /// </summary>
-        public static IdTokenType EVCCID             { get; }
+        public static IdTokenType  EVCCID             { get; }
             = Register("EVCCID");
 
         /// <summary>
         /// ISO14443 UID of an RFID card.
         /// It is represented as an array of 4 or 7 bytes in hexadecimal representation.
         /// </summary>
-        public static IdTokenType ISO14443           { get; }
+        public static IdTokenType  ISO14443           { get; }
             = Register("ISO14443");
 
         /// <summary>
         /// ISO15693 UID of RFID card.
         /// It is represented as an array of 8 bytes in hexadecimal representation.
         /// </summary>
-        public static IdTokenType ISO15693           { get; }
+        public static IdTokenType  ISO15693           { get; }
             = Register("ISO15693");
 
         /// <summary>
         /// A private key-code to authorize a charging transaction.
         /// For example: PIN-code.
         /// </summary>
-        public static IdTokenType KeyCode            { get; }
+        public static IdTokenType  KeyCode            { get; }
             = Register("KeyCode");
 
         /// <summary>
         /// A locally generated id (e.g. internal id created by the charging station).
         /// Needs no checking by CSMS. No format defined, might e.g. be an UUID.
         /// </summary>
-        public static IdTokenType Local              { get; }
+        public static IdTokenType  Local              { get; }
             = Register("Local");
 
         /// <summary>
         /// The MAC Address of the EVCC (electric vehicle communication controller) that is connected to the EVSE.
         /// Used when MAC address is used for authorization (AutoCharge).
         /// </summary>
-        public static IdTokenType MACAddress         { get; }
+        public static IdTokenType  MACAddress         { get; }
             = Register("MacAddress");
 
         /// <summary>
         /// NEMA EVSE1 2018 token.
         /// </summary>
-        public static IdTokenType NEMA               { get; }
+        public static IdTokenType  NEMA               { get; }
             = Register("NEMA");
 
         /// <summary>

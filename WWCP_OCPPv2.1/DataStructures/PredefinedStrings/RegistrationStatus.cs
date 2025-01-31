@@ -69,25 +69,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this registration status is null or empty.
         /// </summary>
-        public readonly Boolean                        IsNullOrEmpty
+        public readonly  Boolean                          IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this registration status is NOT null or empty.
         /// </summary>
-        public readonly Boolean                        IsNotNullOrEmpty
+        public readonly  Boolean                          IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the registration status.
         /// </summary>
-        public readonly UInt64                         Length
+        public readonly  UInt64                           Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         /// <summary>
         /// All registered reset types.
         /// </summary>
-        public static IEnumerable<RegistrationStatus>  All
+        public static    IEnumerable<RegistrationStatus>  All
             => lookup.Values;
 
         #endregion
@@ -199,12 +199,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this registration status.
         /// </summary>
-        public RegistrationStatus Clone
+        public RegistrationStatus Clone()
 
             => new (
                    InternalId.CloneString()
@@ -218,14 +218,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Unknown registration status.
         /// </summary>
-        public static RegistrationStatus Unknown      { get; }
+        public static RegistrationStatus  Unknown           { get; }
             = Register("Unknown");
 
 
         /// <summary>
         /// Charge point is accepted by the central system.
         /// </summary>
-        public static RegistrationStatus Accepted          { get; }
+        public static RegistrationStatus  Accepted          { get; }
             = Register("Accepted");
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// charging station. The central system may send messages
         /// to retrieve information or prepare the charging station.
         /// </summary>
-        public static RegistrationStatus Pending           { get; }
+        public static RegistrationStatus  Pending           { get; }
             = Register("Pending");
 
         /// <summary>
@@ -241,14 +241,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This may happen when the charging station identification
         /// is not (yet) known by the central system.
         /// </summary>
-        public static RegistrationStatus Rejected          { get; }
+        public static RegistrationStatus  Rejected          { get; }
             = Register("Rejected");
 
 
-        public static RegistrationStatus Error             { get; }
+        public static RegistrationStatus  Error             { get; }
             = Register("Error");
 
-        public static RegistrationStatus SignatureError    { get; }
+        public static RegistrationStatus  SignatureError    { get; }
             = Register("SignatureError");
 
         #endregion

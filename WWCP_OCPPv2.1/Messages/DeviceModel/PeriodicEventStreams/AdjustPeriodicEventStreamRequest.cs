@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A AdjustPeriodicEventStream request.
+    /// The AdjustPeriodicEventStream request.
     /// </summary>
     public class AdjustPeriodicEventStreamRequest : ARequest<AdjustPeriodicEventStreamRequest>,
                                                       IRequest
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get periodic event stream request.
+        /// Create a new AdjustPeriodicEventStream request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="StreamId">The unique identification of the data stream to adjust.</param>
@@ -89,22 +89,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AdjustPeriodicEventStreamRequest(SourceRouting                  Destination,
-                                                  PeriodicEventStream_Id         StreamId,
-                                                  PeriodicEventStreamParameters  Parameters,
+                                                PeriodicEventStream_Id         StreamId,
+                                                PeriodicEventStreamParameters  Parameters,
 
-                                                  IEnumerable<KeyPair>?          SignKeys              = null,
-                                                  IEnumerable<SignInfo>?         SignInfos             = null,
-                                                  IEnumerable<Signature>?        Signatures            = null,
+                                                IEnumerable<KeyPair>?          SignKeys              = null,
+                                                IEnumerable<SignInfo>?         SignInfos             = null,
+                                                IEnumerable<Signature>?        Signatures            = null,
 
-                                                  CustomData?                    CustomData            = null,
+                                                CustomData?                    CustomData            = null,
 
-                                                  Request_Id?                    RequestId             = null,
-                                                  DateTime?                      RequestTimestamp      = null,
-                                                  TimeSpan?                      RequestTimeout        = null,
-                                                  EventTracking_Id?              EventTrackingId       = null,
-                                                  NetworkPath?                   NetworkPath           = null,
-                                                  SerializationFormats?          SerializationFormat   = null,
-                                                  CancellationToken              CancellationToken     = default)
+                                                Request_Id?                    RequestId             = null,
+                                                DateTime?                      RequestTimestamp      = null,
+                                                TimeSpan?                      RequestTimeout        = null,
+                                                EventTracking_Id?              EventTrackingId       = null,
+                                                NetworkPath?                   NetworkPath           = null,
+                                                SerializationFormats?          SerializationFormat   = null,
+                                                CancellationToken              CancellationToken     = default)
 
             : base(Destination,
                    nameof(AdjustPeriodicEventStreamRequest)[..^7],
@@ -140,14 +140,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:AdjustPeriodicEventStreamRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "PeriodicEventStreamParamsType": {
+        //             "javaType": "PeriodicEventStreamParams",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "interval": {
+        //                     "description": "Time in seconds after which stream data is sent.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "values": {
+        //                     "description": "Number of items to be sent together in stream.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "params": {
+        //             "$ref": "#/definitions/PeriodicEventStreamParamsType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "id",
+        //         "params"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomAdjustPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an AdjustPeriodicEventStreams request.
@@ -157,11 +214,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomAdjustPeriodicEventStreamRequestParser">A delegate to parse custom AdjustPeriodicEventStreams requests.</param>
-        public static AdjustPeriodicEventStreamRequest Parse(JObject                                                           JSON,
-                                                               Request_Id                                                        RequestId,
-                                                               SourceRouting                                                 Destination,
-                                                               NetworkPath                                                       NetworkPath,
-                                                               CustomJObjectParserDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestParser   = null)
+        public static AdjustPeriodicEventStreamRequest Parse(JObject                                                         JSON,
+                                                             Request_Id                                                      RequestId,
+                                                             SourceRouting                                                   Destination,
+                                                             NetworkPath                                                     NetworkPath,
+                                                             DateTime?                                                       RequestTimestamp                               = null,
+                                                             TimeSpan?                                                       RequestTimeout                                 = null,
+                                                             EventTracking_Id?                                               EventTrackingId                                = null,
+                                                             CustomJObjectParserDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestParser   = null)
         {
 
 
@@ -171,25 +231,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var adjustPeriodicEventStreamsRequest,
                          out var errorResponse,
-                         CustomAdjustPeriodicEventStreamRequestParser) &&
-                adjustPeriodicEventStreamsRequest is not null)
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
+                         CustomAdjustPeriodicEventStreamRequestParser))
             {
                 return adjustPeriodicEventStreamsRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a AdjustPeriodicEventStreams request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an AdjustPeriodicEventStream request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out AdjustPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out AdjustPeriodicEventStreamRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a AdjustPeriodicEventStreams request.
+        /// Try to parse the given JSON representation of an AdjustPeriodicEventStream request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -197,39 +257,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AdjustPeriodicEventStreamRequest">The parsed AdjustPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                                       JSON,
-                                       Request_Id                                                    RequestId,
-                                       SourceRouting                                             Destination,
-                                       NetworkPath                                                   NetworkPath,
-                                       [NotNullWhen(true)]  out AdjustPeriodicEventStreamRequest?  AdjustPeriodicEventStreamRequest,
-                                       [NotNullWhen(false)] out String?                              ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        Destination,
-                        NetworkPath,
-                        out AdjustPeriodicEventStreamRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a AdjustPeriodicEventStreams request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AdjustPeriodicEventStreamRequest">The parsed AdjustPeriodicEventStreams request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CustomAdjustPeriodicEventStreamRequestParser">A delegate to parse custom AdjustPeriodicEventStreams requests.</param>
-        public static Boolean TryParse(JObject                                                           JSON,
-                                       Request_Id                                                        RequestId,
-                                       SourceRouting                                                 Destination,
-                                       NetworkPath                                                       NetworkPath,
+        public static Boolean TryParse(JObject                                                         JSON,
+                                       Request_Id                                                      RequestId,
+                                       SourceRouting                                                   Destination,
+                                       NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out AdjustPeriodicEventStreamRequest?      AdjustPeriodicEventStreamRequest,
-                                       [NotNullWhen(false)] out String?                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestParser)
+                                       [NotNullWhen(false)] out String?                                ErrorResponse,
+                                       DateTime?                                                       RequestTimestamp                               = null,
+                                       TimeSpan?                                                       RequestTimeout                                 = null,
+                                       EventTracking_Id?                                               EventTrackingId                                = null,
+                                       CustomJObjectParserDelegate<AdjustPeriodicEventStreamRequest>?  CustomAdjustPeriodicEventStreamRequestParser   = null)
         {
 
             try
@@ -253,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region Parameters    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("parameters",
+                if (!JSON.ParseMandatoryJSON("params",
                                              "event stream parameters",
                                              PeriodicEventStreamParameters.TryParse,
                                              out PeriodicEventStreamParameters? Parameters,
@@ -306,16 +347,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     CustomData,
 
                                                     RequestId,
-                                                    null,
-                                                    null,
-                                                    null,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
                                                     NetworkPath
 
                                                 );
 
                 if (CustomAdjustPeriodicEventStreamRequestParser is not null)
                     AdjustPeriodicEventStreamRequest = CustomAdjustPeriodicEventStreamRequestParser(JSON,
-                                                                                              AdjustPeriodicEventStreamRequest);
+                                                                                                    AdjustPeriodicEventStreamRequest);
 
                 return true;
 
@@ -323,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 AdjustPeriodicEventStreamRequest  = null;
-                ErrorResponse                  = "The given JSON representation of a AdjustPeriodicEventStreams request is invalid: " + e.Message;
+                ErrorResponse                     = "The given JSON representation of an AdjustPeriodicEventStream request is invalid: " + e.Message;
                 return false;
             }
 
@@ -384,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Compares two AdjustPeriodicEventStreams requests for equality.
         /// </summary>
-        /// <param name="AdjustPeriodicEventStreamRequest1">A AdjustPeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest1">An AdjustPeriodicEventStreams request.</param>
         /// <param name="AdjustPeriodicEventStreamRequest2">Another AdjustPeriodicEventStreams request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest1,
@@ -410,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Compares two AdjustPeriodicEventStreams requests for inequality.
         /// </summary>
-        /// <param name="AdjustPeriodicEventStreamRequest1">A AdjustPeriodicEventStreams request.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest1">An AdjustPeriodicEventStreams request.</param>
         /// <param name="AdjustPeriodicEventStreamRequest2">Another AdjustPeriodicEventStreams request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest1,
@@ -429,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Compares two AdjustPeriodicEventStreams requests for equality.
         /// </summary>
-        /// <param name="Object">A AdjustPeriodicEventStreams request to compare with.</param>
+        /// <param name="Object">An AdjustPeriodicEventStreams request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AdjustPeriodicEventStreamRequest AdjustPeriodicEventStreamsRequest &&
@@ -442,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Compares two AdjustPeriodicEventStreams requests for equality.
         /// </summary>
-        /// <param name="AdjustPeriodicEventStreamRequest">A AdjustPeriodicEventStreams request to compare with.</param>
+        /// <param name="AdjustPeriodicEventStreamRequest">An AdjustPeriodicEventStreams request to compare with.</param>
         public override Boolean Equals(AdjustPeriodicEventStreamRequest? AdjustPeriodicEventStreamRequest)
 
             => AdjustPeriodicEventStreamRequest is not null &&

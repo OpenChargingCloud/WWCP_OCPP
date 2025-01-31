@@ -53,44 +53,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                 return [];
             }
 
-            //if (Arguments.Length == 2 &&
-            //    CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
-            //{
+            if (Arguments.Length == 2 &&
+                CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
+            {
 
-            //    foreach (var reportBase in ReportBase.All)
-            //    {
+                foreach (var hashAlgorithm in HashAlgorithm.All)
+                {
 
-            //        if (reportBase.ToString().Equals    (Arguments[1], StringComparison.OrdinalIgnoreCase))
-            //            return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {reportBase.ToString().ToLower()}") ];
+                    if (hashAlgorithm.ToString().Equals    (Arguments[1], StringComparison.OrdinalIgnoreCase))
+                        return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {hashAlgorithm.ToString().ToLower()}") ];
 
-            //        if (reportBase.ToString().StartsWith(Arguments[1], StringComparison.OrdinalIgnoreCase))
-            //            return [ SuggestionResponse.ParameterPrefix   ($"{Arguments[0]} {reportBase.ToString().ToLower()}") ];
+                    if (hashAlgorithm.ToString().StartsWith(Arguments[1], StringComparison.OrdinalIgnoreCase))
+                        return [ SuggestionResponse.ParameterPrefix   ($"{Arguments[0]} {hashAlgorithm.ToString().ToLower()}") ];
 
-            //    }
+                }
 
-            //    return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {Arguments[1]}") ];
+                return [ SuggestionResponse.ParameterCompleted($"{Arguments[0]} {Arguments[1]}") ];
 
-            //}
-
-            //if (Arguments.Length == 3 &&
-            //    CommandName.Equals(Arguments[0], StringComparison.OrdinalIgnoreCase))
-            //{
-
-            //    foreach (var componentCriteria in ComponentCriteriaExtensions.All)
-            //    {
-
-            //        if (componentCriteria.ToString().Equals(Arguments[1], StringComparison.OrdinalIgnoreCase))
-            //            return [SuggestionResponse.ParameterCompleted($"{Arguments[0]} {componentCriteria.ToString().ToLower()}")];
-
-            //        if (componentCriteria.ToString().StartsWith(Arguments[1], StringComparison.OrdinalIgnoreCase))
-            //            return [SuggestionResponse.ParameterPrefix($"{Arguments[0]} {componentCriteria.ToString().ToLower()}")];
-
-            //    }
-
-            //    return [SuggestionResponse.ParameterCompleted($"{Arguments[0]} {Arguments[1]}")];
-
-            //}
-
+            }
 
             if (Arguments.Length == 1)
             {
@@ -124,17 +104,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
             if (Arguments.Length >= 5)
             {
 
-                if (!HashAlgorithmsExtensions.TryParse(Arguments[1], out var hashAlgorithm))
+                if (!HashAlgorithm.TryParse(Arguments[1], out var hashAlgorithm))
                     return [ $"Invalid hash algorithm '{Arguments[1]}'" ];
 
                 var response = await cli.OCPP.OUT.DeleteCertificate(
                                          new DeleteCertificateRequest(
                                              Destination:           sourceRoute,
                                              CertificateHashData:   new CertificateHashData(
-                                                                        HashAlgorithm:         HashAlgorithms.SHA256,
-                                                                        IssuerNameHash:        Arguments[2],
-                                                                        IssuerPublicKeyHash:   Arguments[3],
-                                                                        SerialNumber:          Arguments[4]
+                                                                        HashAlgorithm:        hashAlgorithm,
+                                                                        IssuerNameHash:       Arguments[2],
+                                                                        IssuerPublicKeyHash:  Arguments[3],
+                                                                        SerialNumber:         Arguments[4]
                                                                     )
                                          )
                                      );

@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyEVChargingScheduleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyEVChargingScheduleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify EV charging schedule request.
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyEVChargingScheduleRequest, out ErrorResponse, CustomNotifyEVChargingScheduleRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyEVChargingScheduleRequest, out ErrorResponse, CustomNotifyEVChargingScheduleRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify EV charging schedule request.

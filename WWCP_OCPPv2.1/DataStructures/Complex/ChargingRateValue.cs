@@ -223,15 +223,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging rate value.
         /// </summary>
-        public ChargingRateValue Clone
+        public ChargingRateValue Clone()
 
-            => new (Value,
-                    Unit);
+            => new (
+                   Value,
+                   Unit
+               );
 
         #endregion
 

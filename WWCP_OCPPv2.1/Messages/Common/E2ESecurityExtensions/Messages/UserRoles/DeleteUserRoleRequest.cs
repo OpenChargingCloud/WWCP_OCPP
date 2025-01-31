@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //           "maxLength": 50
         //         },
         //         "firmwareVersion": {
-        //           "description": "This contains the firmware version of the Charging Station.\r\n\r\n",
+        //           "description": "This contains the firmware version of the Charging Station.",
         //           "type": "string",
         //           "maxLength": 50
         //         }
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomDeleteUserRoleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDeleteUserRoleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a DeleteUserRole request.
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteUserRole request.

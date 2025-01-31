@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomHeartbeatRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomHeartbeatRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a Heartbeat request.
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out HeartbeatRequest, out ErrorResponse, CustomHeartbeatRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out HeartbeatRequest, out ErrorResponse, CustomHeartbeatRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Heartbeat request.

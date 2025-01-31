@@ -174,12 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "$ref": "#/definitions/HashAlgorithmEnumType"
         //         },
         //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
+        //           "description": "Hashed value of the Issuer DN (Distinguished Name).",
         //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key\r\n",
+        //           "description": "Hashed value of the issuers public key",
         //           "type": "string",
         //           "maxLength": 128
         //         },
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "maxLength": 40
         //         },
         //         "responderURL": {
-        //           "description": "This contains the responder URL (Case insensitive). \r\n\r\n",
+        //           "description": "This contains the responder URL (Case insensitive). ",
         //           "type": "string",
         //           "maxLength": 512
         //         }
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetCertificateStatusRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetCertificateStatusRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCertificateStatus request.
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetCertificateStatusRequest, out ErrorResponse, ...)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetCertificateStatusRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetCertificateStatus request.

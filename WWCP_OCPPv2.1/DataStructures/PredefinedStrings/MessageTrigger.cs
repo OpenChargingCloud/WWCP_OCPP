@@ -182,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this message trigger.
         /// </summary>
-        public MessageTrigger Clone
+        public MessageTrigger Clone()
 
             => new (
                    InternalId.CloneString()

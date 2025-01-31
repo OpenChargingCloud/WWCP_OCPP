@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this file transfer protocol.
         /// </summary>
-        public FileTransferProtocol Clone
+        public FileTransferProtocol Clone()
 
             => new (
                    InternalId.CloneString()

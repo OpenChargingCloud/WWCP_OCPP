@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "iso15118SchemaVersion": {
-        //       "description": "Schema version currently used for the 15118 session between EV and Charging Station. Needed for parsing of the EXI stream by the CSMS.\r\n\r\n",
+        //       "description": "Schema version currently used for the 15118 session between EV and Charging Station. Needed for parsing of the EXI stream by the CSMS.",
         //       "type": "string",
         //       "maxLength": 50
         //     },
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGet15118EVCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGet15118EVCertificateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a Get15118EVCertificate request.
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out Get15118EVCertificateRequest, out ErrorResponse, ...)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out Get15118EVCertificateRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Get15118EVCertificate request.

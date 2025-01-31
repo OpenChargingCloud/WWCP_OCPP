@@ -145,50 +145,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:CostUpdatedRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:CostUpdatedRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "totalCost": {
-        //       "description": "Current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [&lt;&lt;configkey-currency, Currency&gt;&gt;]\r\n\r\n",
-        //       "type": "number"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "totalCost": {
+        //             "description": "Current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [&lt;&lt;configkey-currency, Currency&gt;&gt;]\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "transactionId": {
+        //             "description": "Transaction Id of the transaction the current cost are asked for.\r\n\r\n",
+        //             "type": "string",
+        //             "maxLength": 36
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "transactionId": {
-        //       "description": "Transaction Id of the transaction the current cost are asked for.\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 36
-        //     }
-        //   },
-        //   "required": [
-        //     "totalCost",
-        //     "transactionId"
-        //   ]
+        //     "required": [
+        //         "totalCost",
+        //         "transactionId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomCostUpdatedRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a CostUpdated request.
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom CostUpdated requests.</param>
         public static CostUpdatedRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               SourceRouting                                 Destination,
+                                               SourceRouting                                     Destination,
                                                NetworkPath                                       NetworkPath,
                                                DateTime?                                         RequestTimestamp                 = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out CostUpdatedRequest, out ErrorResponse, CustomCostUpdatedRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out CostUpdatedRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a CostUpdated request.
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom CostUpdated requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       SourceRouting                                 Destination,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out CostUpdatedRequest?      CostUpdatedRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,

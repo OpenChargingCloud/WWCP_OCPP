@@ -17,12 +17,13 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
-using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 
 #endregion
 
@@ -39,22 +40,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// Maximum transactionLimits allowed transactionLimits(s) for this transaction in currency used for transaction.
+        /// The maximum transactionLimits allowed transactionLimits(s) for this transaction in currency used for transaction.
         /// </summary>
         [Mandatory]
-        public Decimal?   MaxCost      { get; }
+        public Decimal?     MaxCost      { get; }
 
         /// <summary>
-        /// Maximum energy allowed to charge during this transaction.
+        /// The maximum energy allowed to charge during this transaction.
         /// </summary>
         [Mandatory]
-        public WattHour?  MaxEnergy    { get; }
+        public WattHour?    MaxEnergy    { get; }
 
         /// <summary>
-        /// Maximum time allowed to charge during this transaction.
+        /// The maximum time allowed to charge during this transaction.
         /// </summary>
         [Optional]
-        public TimeSpan?  MaxTime      { get; }
+        public TimeSpan?    MaxTime      { get; }
+
+        /// <summary>
+        /// The maximum state-of-charge allowed to charge during this transaction.
+        /// </summary>
+        [Optional]
+        public Percentage?  MaxSoC       { get; }
 
         #endregion
 
@@ -63,13 +70,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create new transaction limits.
         /// </summary>
-        /// <param name="MaxCost">Maximum transactionLimits allowed transactionLimits(s) for this transaction in currency used for transaction.</param>
-        /// <param name="MaxEnergy">Maximum energy allowed to charge during this transaction.</param>
-        /// <param name="MaxTime">Maximum time allowed to charge during this transaction.</param>
+        /// <param name="MaxCost">The maximum transactionLimits allowed transactionLimits(s) for this transaction in currency used for transaction.</param>
+        /// <param name="MaxEnergy">The maximum energy allowed to charge during this transaction.</param>
+        /// <param name="MaxTime">The maximum time allowed to charge during this transaction.</param>
+        /// <param name="MaxSoC">The maximum state-of-charge allowed to charge during this transaction.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public TransactionLimits(Decimal?     MaxCost      = null,
                                  WattHour?    MaxEnergy    = null,
                                  TimeSpan?    MaxTime      = null,
+                                 Percentage?  MaxSoC       = null,
                                  CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -79,15 +88,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MaxCost    = MaxCost;
             this.MaxEnergy  = MaxEnergy;
             this.MaxTime    = MaxTime;
-
+            this.MaxSoC     = MaxSoC;
 
             unchecked
             {
 
-                hashCode = (MaxCost?.  GetHashCode() ?? 0) * 7 ^
-                           (MaxEnergy?.GetHashCode() ?? 0) * 5 ^
-                           (MaxTime?.  GetHashCode() ?? 0) * 3 ^
-
+                hashCode = (MaxCost?.  GetHashCode() ?? 0) * 11 ^
+                           (MaxEnergy?.GetHashCode() ?? 0) *  7 ^
+                           (MaxTime?.  GetHashCode() ?? 0) *  5 ^
+                           (MaxSoC?.   GetHashCode() ?? 0) *  3 ^
                            base.       GetHashCode();
 
             }
@@ -119,8 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var transactionLimits,
                          out var errorResponse,
-                         CustomTransactionLimitsParser) &&
-                transactionLimits is not null)
+                         CustomTransactionLimitsParser))
             {
                 return transactionLimits;
             }
@@ -141,9 +149,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="TransactionLimits">The parsed transactionLimits.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out TransactionLimits?  TransactionLimits,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out TransactionLimits?  TransactionLimits,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out TransactionLimits,
@@ -158,8 +166,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TransactionLimits">The parsed transactionLimits.</param>
         /// <param name="CustomTransactionLimitsParser">An optional delegate to parse custom transaction limits.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out TransactionLimits?                           TransactionLimits,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out TransactionLimits?      TransactionLimits,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<TransactionLimits>?  CustomTransactionLimitsParser   = null)
         {
 
@@ -175,7 +183,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        out Decimal? MaxCost,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 //var MaxCost = MaxCostNumber.HasValue
@@ -191,7 +200,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        out Decimal? MaxEnergyNumber,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 var MaxEnergy = MaxEnergyNumber.HasValue
@@ -207,7 +217,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        out TimeSpan? MaxTime,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxSoC        [optional]
+
+                if (JSON.ParseOptional("maxSoC",
+                                       "maximum state-of-charge",
+                                       out Percentage? MaxSoC,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -233,6 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         MaxCost,
                                         MaxEnergy,
                                         MaxTime,
+                                        MaxSoC,
 
                                         CustomData
 
@@ -279,6 +304,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            MaxTime.  HasValue
                                ? new JProperty("maxTime",      MaxTime.  Value.TotalSeconds)
+                               : null,
+
+                           MaxSoC.   HasValue
+                               ? new JProperty("maxSoC",       MaxSoC.   Value.Value)
                                : null,
 
                            CustomData is not null
@@ -375,6 +404,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             ((!MaxTime.  HasValue && !TransactionLimits.MaxTime.  HasValue) ||
                MaxTime.  HasValue &&  TransactionLimits.MaxTime.  HasValue && MaxTime.  Value.Equals(TransactionLimits.MaxTime.  Value)) &&
 
+            ((!MaxSoC.   HasValue && !TransactionLimits.MaxSoC.   HasValue) ||
+               MaxSoC.   HasValue &&  TransactionLimits.MaxSoC.   HasValue && MaxSoC.   Value.Equals(TransactionLimits.MaxSoC.   Value)) &&
+
                base.Equals(TransactionLimits);
 
         #endregion
@@ -412,6 +444,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    MaxTime.HasValue
                        ? $"max. {MaxTime.Value.TotalSeconds} seconds"
+                       : "",
+
+                   MaxSoC. HasValue
+                       ? $"max. {MaxSoC.Value.Value}% SoC"
                        : ""
 
                }.AggregateWith(", ");

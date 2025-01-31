@@ -203,12 +203,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charge detail record identification.
         /// </summary>
-        public CDR_Id Clone
+        public CDR_Id Clone()
 
             => new (
                    InternalId.CloneString()

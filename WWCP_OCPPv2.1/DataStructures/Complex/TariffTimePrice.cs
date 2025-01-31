@@ -97,25 +97,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":          "Tariff with optional conditions for a time duration price.",
-        //     "javaType":             "TariffTimePrice",
-        //     "type":                 "object",
-        //     "additionalProperties":  false,
+        //     "description": "Tariff with optional conditions for a time duration price.",
+        //     "javaType": "TariffTimePrice",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "priceMinute": {
-        //             "description":  "Price per minute (excl. tax) for this element.",
-        //             "type":         "number"
-        //         },
-        //         "stepSize": {
-        //             "description":  "When absent, the exact amount is billed.
-        //                              When present, this type is billed in blocks of _stepSize_ of the base unit: seconds.
-        //                              Amounts are rounded up to a multiple of _stepSize_.",
-        //             "type":         "integer"
+        //             "description": "Price per minute (excl. tax) for this element.",
+        //             "type": "number"
         //         },
         //         "conditions": {
-        //             "$ref":         "#/definitions/TariffConditionsType"
+        //             "$ref": "#/definitions/TariffConditionsType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     }
+        //     },
+        //     "required": [
+        //         "priceMinute"
+        //     ]
         // }
 
         #endregion
@@ -136,8 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var tariffTimePrice,
                          out var errorResponse,
-                         CustomTariffTimePricesParser) &&
-                tariffTimePrice is not null)
+                         CustomTariffTimePricesParser))
             {
                 return tariffTimePrice;
             }
@@ -226,11 +225,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse Conditions     [optional]
 
-                if (JSON.ParseOptionalJSON("conditions",
-                                           "tariff conditions",
-                                           TariffConditions.TryParse,
-                                           out TariffConditions? Conditions,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("conditions",
+                                                    "tariff conditions",
+                                                    TariffConditions.TryParse,
+                                                    out TariffConditions? Conditions,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -300,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this TariffTimePrice.
         /// </summary>
         public TariffTimePrice Clone()
 

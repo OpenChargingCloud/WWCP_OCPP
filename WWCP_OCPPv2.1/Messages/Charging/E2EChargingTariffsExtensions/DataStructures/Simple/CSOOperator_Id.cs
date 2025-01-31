@@ -281,16 +281,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging station operator identification.
         /// </summary>
-        public CSOOperator_Id Clone
+        public CSOOperator_Id Clone()
 
-            => new (CountryCode,
-                    new String(Suffix.ToCharArray()),
-                    Separator);
+            => new (
+                   CountryCode,
+                   Suffix.CloneString(),
+                   Separator
+               );
 
         #endregion
 

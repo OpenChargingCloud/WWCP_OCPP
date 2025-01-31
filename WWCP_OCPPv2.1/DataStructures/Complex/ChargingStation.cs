@@ -41,30 +41,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The model of the charging station. 20
+        /// The model of the charging station.
+        /// [max 20]
         /// </summary>
         [Mandatory]
         public String   Model              { get; }
 
         /// <summary>
-        /// The vendor name/identification (not necessarily unique). 50
+        /// The vendor name/identification (not necessarily unique).
+        /// [max 50]
         /// </summary>
         [Mandatory]
         public String   VendorName         { get; }
 
         /// <summary>
-        /// A vendor-specific charging station identifier.
-        /// It must match the "Common Name" within the TLS client certificate.   25
+        /// The optional vendor-specific charging station identifier.
+        /// It must match the "Common Name" within the TLS client certificate.
+        /// [max 25]
         /// </summary>
         public String?  SerialNumber       { get; }
 
         /// <summary>
-        /// The wireless communication module.
+        /// The optional (wireless) communication module.
         /// </summary>
         public Modem?   Modem              { get; }
 
         /// <summary>
-        /// The firmware version of the charging station. 50
+        /// The optional firmware version of the charging station. 50
+        /// [max 50]
         /// </summary>
         public String?  FirmwareVersion    { get; }
 
@@ -78,8 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Model">The model of the charging station.</param>
         /// <param name="VendorName">The vendor name/identification (not necessarily unique).</param>
         /// <param name="SerialNumber">An optional vendor-specific charging station identifier.</param>
-        /// <param name="FirmwareVersion">The optional firmware version of the charging station.</param>
-        /// <param name="Modem">An optional wireless communication module.</param>
+        /// <param name="FirmwareVersion">An optional firmware version of the charging station.</param>
+        /// <param name="Modem">An optional (wireless) communication module.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public ChargingStation(String       Model,
                                String       VendorName,
@@ -117,43 +121,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ChargingStationType": {
-        //   "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.",
-        //   "javaType": "ChargingStation",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "The physical system where an Electrical Vehicle (EV) can be charged.",
+        //     "javaType": "ChargingStation",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "serialNumber": {
+        //             "description": "Vendor-specific device identifier.",
+        //             "type": "string",
+        //             "maxLength": 25
+        //         },
+        //         "model": {
+        //             "description": "Defines the model of the device.",
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "modem": {
+        //             "$ref": "#/definitions/ModemType"
+        //         },
+        //         "vendorName": {
+        //             "description": "Identifies the vendor (not necessarily in a unique manner).",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "firmwareVersion": {
+        //             "description": "This contains the firmware version of the Charging Station.",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "serialNumber": {
-        //       "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.",
-        //       "type": "string",
-        //       "maxLength": 25
-        //     },
-        //     "model": {
-        //       "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.",
-        //       "type": "string",
-        //       "maxLength": 20
-        //     },
-        //     "modem": {
-        //       "$ref": "#/definitions/ModemType"
-        //     },
-        //     "vendorName": {
-        //       "description": "Identifies the vendor (not necessarily in a unique manner).",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     },
-        //     "firmwareVersion": {
-        //       "description": "This contains the firmware version of the Charging Station.\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     }
-        //   },
-        //   "required": [
-        //     "model",
-        //     "vendorName"
-        //   ]
+        //     "required": [
+        //         "model",
+        //         "vendorName"
+        //     ]
         // }
 
         #endregion
@@ -174,8 +178,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingStation,
                          out var errorResponse,
-                         CustomChargingStationParser) &&
-                chargingStation is not null)
+                         CustomChargingStationParser,
+                         CustomCustomDataParser))
             {
                 return chargingStation;
             }

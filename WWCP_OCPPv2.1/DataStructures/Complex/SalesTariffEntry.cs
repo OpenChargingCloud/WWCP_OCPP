@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "SalesTariffEntryType": {
-        //   "description": "Sales_ Tariff_ Entry\r\nurn:x-oca:ocpp:uid:2:233271\r\n",
+        //   "description": "Sales_ Tariff_ Entry\r\nurn:x-oca:ocpp:uid:2:233271",
         //   "javaType": "SalesTariffEntry",
         //   "type": "object",
         //   "additionalProperties": false,

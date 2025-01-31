@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -56,16 +58,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The registration status.
-        /// </summary>
-        [Mandatory]
-        public GenericStatus   Status        { get; }
-
-        /// <summary>
         /// An optional element providing more information about the registration status.
         /// </summary>
         [Optional]
-        public StatusInfo?     StatusInfo    { get; }
+        public StatusInfo?    StatusInfo    { get; }
 
         #endregion
 
@@ -77,7 +73,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new close periodic event stream response.
         /// </summary>
         /// <param name="Request">The close periodic event stream request leading to this response.</param>
-        /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -86,16 +81,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public ClosePeriodicEventStreamResponse(CS.ClosePeriodicEventStreamRequest  Request,
-                                                GenericStatus                       Status,
-                                                StatusInfo?                         StatusInfo          = null,
-                                                DateTime?                           ResponseTimestamp   = null,
+        public ClosePeriodicEventStreamResponse(ClosePeriodicEventStreamRequest  Request,
+                                                StatusInfo?                      StatusInfo          = null,
+                                                DateTime?                        ResponseTimestamp   = null,
 
-                                                IEnumerable<KeyPair>?               SignKeys            = null,
-                                                IEnumerable<SignInfo>?              SignInfos           = null,
-                                                IEnumerable<Signature>?             Signatures          = null,
+                                                IEnumerable<KeyPair>?            SignKeys            = null,
+                                                IEnumerable<SignInfo>?           SignInfos           = null,
+                                                IEnumerable<Signature>?          Signatures          = null,
 
-                                                CustomData?                         CustomData          = null)
+                                                CustomData?                      CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -112,8 +106,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.Status      = Status;
             this.StatusInfo  = StatusInfo;
+
+            unchecked
+            {
+
+                hashCode = (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                            base.            GetHashCode();
+
+            }
 
         }
 
@@ -126,27 +127,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public ClosePeriodicEventStreamResponse(CS.ClosePeriodicEventStreamRequest  Request,
-                                                Result                              Result)
+        public ClosePeriodicEventStreamResponse(ClosePeriodicEventStreamRequest  Request,
+                                                Result                           Result)
 
             : base(Request,
                    Result)
 
-        {
-
-            this.Status = GenericStatus.Rejected;
-
-        }
+        { }
 
         #endregion
 
         #endregion
 
-
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClosePeriodicEventStreamResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
@@ -158,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The close periodic event stream request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClosePeriodicEventStreamResponseParser">A delegate to parse custom close periodic event stream responses.</param>
-        public static ClosePeriodicEventStreamResponse Parse(CS.ClosePeriodicEventStreamRequest                              Request,
+        public static ClosePeriodicEventStreamResponse Parse(ClosePeriodicEventStreamRequest                                 Request,
                                                              JObject                                                         JSON,
                                                              CustomJObjectParserDelegate<ClosePeriodicEventStreamResponse>?  CustomClosePeriodicEventStreamResponseParser   = null)
         {
@@ -168,8 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var closePeriodicEventStreamResponse,
                          out var errorResponse,
-                         CustomClosePeriodicEventStreamResponseParser) &&
-                closePeriodicEventStreamResponse is not null)
+                         CustomClosePeriodicEventStreamResponseParser))
             {
                 return closePeriodicEventStreamResponse;
             }
@@ -191,10 +213,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ClosePeriodicEventStreamResponse">The parsed close periodic event stream response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClosePeriodicEventStreamResponseParser">A delegate to parse custom close periodic event stream responses.</param>
-        public static Boolean TryParse(CS.ClosePeriodicEventStreamRequest                              Request,
+        public static Boolean TryParse(ClosePeriodicEventStreamRequest                                 Request,
                                        JObject                                                         JSON,
-                                       out ClosePeriodicEventStreamResponse?                           ClosePeriodicEventStreamResponse,
-                                       out String?                                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out ClosePeriodicEventStreamResponse?      ClosePeriodicEventStreamResponse,
+                                       [NotNullWhen(false)] out String?                                ErrorResponse,
                                        CustomJObjectParserDelegate<ClosePeriodicEventStreamResponse>?  CustomClosePeriodicEventStreamResponseParser   = null)
         {
 
@@ -202,25 +224,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 ClosePeriodicEventStreamResponse = null;
-
-                #region Status         [mandatory]
-
-                if (!JSON.ParseMandatory("status",
-                                         "registration status",
-                                         GenericStatusExtensions.TryParse,
-                                         out GenericStatus RegistrationStatus,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                if (RegistrationStatus == GenericStatus.Unknown)
-                {
-                    ErrorResponse = "Unknown registration status '" + (JSON["status"]?.Value<String>() ?? "") + "' received!";
-                    return false;
-                }
-
-                #endregion
 
                 #region StatusInfo     [optional]
 
@@ -267,7 +270,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ClosePeriodicEventStreamResponse = new ClosePeriodicEventStreamResponse(
                                                        Request,
-                                                       RegistrationStatus,
                                                        StatusInfo,
                                                        null,
                                                        null,
@@ -313,23 +315,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var json = JSONObject.Create(
 
                            IncludeJSONLDContext
-                               ? new JProperty("@context",      DefaultJSONLDContext.ToString())
+                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("status",        Status.              AsText()),
-
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",    StatusInfo.          ToJSON(CustomStatusInfoSerializer,
-                                                                                            CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.          ToJSON(CustomStatusInfoSerializer,
+                                                                                           CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                           CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.          ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The close periodic event stream failed.
         /// </summary>
-        public static ClosePeriodicEventStreamResponse Failed(CS.ClosePeriodicEventStreamRequest Request)
+        public static ClosePeriodicEventStreamResponse Failed(ClosePeriodicEventStreamRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -426,8 +426,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => ClosePeriodicEventStreamResponse is not null &&
 
-               Status.Equals(ClosePeriodicEventStreamResponse.Status) &&
-
              ((StatusInfo is     null && ClosePeriodicEventStreamResponse.StatusInfo is     null) ||
               (StatusInfo is not null && ClosePeriodicEventStreamResponse.StatusInfo is not null && StatusInfo.Equals(ClosePeriodicEventStreamResponse.StatusInfo))) &&
 
@@ -439,22 +437,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -465,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => Status.AsText();
+            => base.ToString();
 
         #endregion
 

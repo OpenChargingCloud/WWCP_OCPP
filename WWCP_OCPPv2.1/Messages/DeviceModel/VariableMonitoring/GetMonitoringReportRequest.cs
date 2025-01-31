@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       "type": "integer"
         //     },
         //     "monitoringCriteria": {
-        //       "description": "This field contains criteria for components for which a monitoring report is requested\r\n",
+        //       "description": "This field contains criteria for components for which a monitoring report is requested",
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetMonitoringReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetMonitoringReport request.
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetMonitoringReportRequest, out ErrorResponse, CustomGetMonitoringReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetMonitoringReportRequest, out ErrorResponse, CustomGetMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetMonitoringReport request.

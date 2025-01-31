@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "MonitorEnumType": {
-        //       "description": "The type of this monitor, e.g. a threshold, delta or periodic monitor. \r\n",
+        //       "description": "The type of this monitor, e.g. a threshold, delta or periodic monitor. ",
         //       "javaType": "MonitorEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "ComponentType": {
-        //       "description": "A physical or logical component\r\n",
+        //       "description": "A physical or logical component",
         //       "javaType": "Component",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       ]
         //     },
         //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
         //       "javaType": "EVSE",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //           "type": "integer"
         //         },
         //         "transaction": {
-        //           "description": "Monitor only active when a transaction is ongoing on a component relevant to this transaction. \r\n",
+        //           "description": "Monitor only active when a transaction is ongoing on a component relevant to this transaction. ",
         //           "type": "boolean"
         //         },
         //         "value": {
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //       "minItems": 1
         //     },
         //     "requestId": {
-        //       "description": "The id of the GetMonitoringRequest that requested this report.\r\n\r\n",
+        //       "description": "The id of the GetMonitoringRequest that requested this report.",
         //       "type": "integer"
         //     },
         //     "tbc": {
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyMonitoringReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify monitoring report request.
@@ -444,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyMonitoringReportRequest, out ErrorResponse, CustomNotifyMonitoringReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyMonitoringReportRequest, out ErrorResponse, CustomNotifyMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify monitoring report request.

@@ -265,14 +265,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this component access right.
         /// </summary>
         public ComponentAccessRights Clone()
 
             => new (
 
                    Component.   Clone(),
-                   AccessRights.Select(accessRight => accessRight.Clone),
+                   AccessRights.Select(accessRight => accessRight.Clone()),
 
                    CustomData
 

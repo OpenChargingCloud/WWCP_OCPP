@@ -212,12 +212,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this energy source.
         /// </summary>
         public EnergySource Clone()
 
-            => new (Source.Clone,
-                    Percentage);
+            => new (
+                   Source.Clone(),
+                   Percentage
+               );
 
         #endregion
 

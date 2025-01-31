@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ChargingProfilePurposeEnumType": {
-        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nDefines the purpose of the schedule transferred by this profile\r\n",
+        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nDefines the purpose of the schedule transferred by this profile",
         //       "javaType": "ChargingProfilePurposeEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "CostKindEnumType": {
-        //       "description": "Cost. Cost_ Kind. Cost_ Kind_ Code\r\nurn:x-oca:ocpp:uid:1:569243\r\nThe kind of cost referred to in the message element amount\r\n",
+        //       "description": "Cost. Cost_ Kind. Cost_ Kind_ Code\r\nurn:x-oca:ocpp:uid:1:569243\r\nThe kind of cost referred to in the message element amount",
         //       "javaType": "CostKindEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "type": "integer"
         //         },
         //         "phaseToUse": {
-        //           "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.\r\n\r\n",
+        //           "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.",
         //           "type": "integer"
         //         }
         //       },
@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ChargingScheduleType": {
-        //       "description": "Charging_ Schedule\r\nurn:x-oca:ocpp:uid:2:233256\r\nCharging schedule structure defines a list of charging periods, as used in: GetCompositeSchedule.conf and ChargingProfile. \r\n",
+        //       "description": "Charging_ Schedule\r\nurn:x-oca:ocpp:uid:2:233256\r\nCharging schedule structure defines a list of charging periods, as used in: GetCompositeSchedule.conf and ChargingProfile. ",
         //       "javaType": "ChargingSchedule",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "maxItems": 1024
         //         },
         //         "minChargingRate": {
-        //           "description": "Charging_ Schedule. Min_ Charging_ Rate. Numeric\r\nurn:x-oca:ocpp:uid:1:569239\r\nMinimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. Accepts at most one digit fraction (e.g. 8.1)\r\n",
+        //           "description": "Charging_ Schedule. Min_ Charging_ Rate. Numeric\r\nurn:x-oca:ocpp:uid:1:569239\r\nMinimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. Accepts at most one digit fraction (e.g. 8.1)",
         //           "type": "number"
         //         },
         //         "salesTariff": {
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "ConsumptionCostType": {
-        //       "description": "Consumption_ Cost\r\nurn:x-oca:ocpp:uid:2:233259\r\n",
+        //       "description": "Consumption_ Cost\r\nurn:x-oca:ocpp:uid:2:233259",
         //       "javaType": "ConsumptionCost",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "CostType": {
-        //       "description": "Cost\r\nurn:x-oca:ocpp:uid:2:233258\r\n",
+        //       "description": "Cost\r\nurn:x-oca:ocpp:uid:2:233258",
         //       "javaType": "Cost",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -396,11 +396,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CostKindEnumType"
         //         },
         //         "amount": {
-        //           "description": "Cost. Amount. Amount\r\nurn:x-oca:ocpp:uid:1:569244\r\nThe estimated or actual cost per kWh\r\n",
+        //           "description": "Cost. Amount. Amount\r\nurn:x-oca:ocpp:uid:1:569244\r\nThe estimated or actual cost per kWh",
         //           "type": "integer"
         //         },
         //         "amountMultiplier": {
-        //           "description": "Cost. Amount_ Multiplier. Integer\r\nurn:x-oca:ocpp:uid:1:569245\r\nValues: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier\r\n",
+        //           "description": "Cost. Amount_ Multiplier. Integer\r\nurn:x-oca:ocpp:uid:1:569245\r\nValues: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
         //           "type": "integer"
         //         }
         //       },
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "RelativeTimeIntervalType": {
-        //       "description": "Relative_ Timer_ Interval\r\nurn:x-oca:ocpp:uid:2:233270\r\n",
+        //       "description": "Relative_ Timer_ Interval\r\nurn:x-oca:ocpp:uid:2:233270",
         //       "javaType": "RelativeTimeInterval",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "SalesTariffEntryType": {
-        //       "description": "Sales_ Tariff_ Entry\r\nurn:x-oca:ocpp:uid:2:233271\r\n",
+        //       "description": "Sales_ Tariff_ Entry\r\nurn:x-oca:ocpp:uid:2:233271",
         //       "javaType": "SalesTariffEntry",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetChargingProfileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetChargingProfileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SetChargingProfile request.
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetChargingProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetChargingProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetChargingProfile request.

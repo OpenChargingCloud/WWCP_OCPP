@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyCRLRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyCRLRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyCRL request.
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyCRLRequest, out ErrorResponse, CustomNotifyCRLRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyCRLRequest, out ErrorResponse, CustomNotifyCRLRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyCRL request.

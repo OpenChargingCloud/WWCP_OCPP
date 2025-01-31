@@ -260,15 +260,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this secure data transfer status.
         /// </summary>
-        public SecureDataTransferStatus Clone
+        public SecureDataTransferStatus Clone()
 
             => new (
-                   new String(TextId?.ToCharArray()),
+                   TextId.CloneString(),
                    NumericId
                );
 

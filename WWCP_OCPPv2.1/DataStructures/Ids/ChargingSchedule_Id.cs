@@ -222,12 +222,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this charging schedule identification.
         /// </summary>
-        public ChargingSchedule_Id Clone
+        public ChargingSchedule_Id Clone()
 
             => new (Value);
 

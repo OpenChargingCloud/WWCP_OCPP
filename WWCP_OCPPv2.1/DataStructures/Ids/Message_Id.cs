@@ -286,15 +286,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this message identification.
         /// </summary>
-        public Message_Id Clone
+        public Message_Id Clone()
 
             => new (
-                   new String(TextId?.ToCharArray()),
+                   TextId.CloneString(),
                    NumericId
                );
 

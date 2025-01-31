@@ -162,12 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this price algorithm identification.
         /// </summary>
-        public PriceAlgorithm_Id Clone
+        public PriceAlgorithm_Id Clone()
 
             => new (
                    InternalId.CloneString()

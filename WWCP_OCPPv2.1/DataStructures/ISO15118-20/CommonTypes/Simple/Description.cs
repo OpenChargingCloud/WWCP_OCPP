@@ -163,12 +163,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this description.
         /// </summary>
-        public Description Clone
+        public Description Clone()
 
             => new (
                    InternalId.CloneString()

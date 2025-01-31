@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The prices within an fixed tariff element.
+    /// The prices within a TariffFixed tariff element.
     /// </summary>
     public class TariffFixedPrice
     {
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Decimal            PriceFixed    { get; }
 
         /// <summary>
-        /// The optional enumeration of tariff conditions
+        /// Optional tariff conditions.
         /// </summary>
         [Optional]
         public TariffConditions?  Conditions    { get;  }
@@ -80,19 +80,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":          "Tariff with optional conditions for a fixed price.",
-        //     "javaType":             "TariffFixedPrice",
-        //     "type":                 "object",
-        //     "additionalProperties":  false,
+        //     "description": "Tariff with optional conditions for a fixed price.",
+        //     "javaType": "TariffFixedPrice",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "conditions": {
-        //             "$ref":         "#/definitions/TariffConditionsType"
+        //             "$ref": "#/definitions/TariffConditionsFixedType"
         //         },
         //         "priceFixed": {
-        //             "description":  "Fixed price for this element e.g. a start fee.",
-        //             "type":         "number"
+        //             "description": "Fixed price  for this element e.g. a start fee.",
+        //             "type": "number"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     }
+        //     },
+        //     "required": [
+        //         "priceFixed"
+        //     ]
         // }
 
         #endregion
@@ -114,13 +120,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          out var tariffFixedPrice,
                          out var errorResponse,
                          CustomTariffFixedPriceParser,
-                         CustomTariffConditionsParser) &&
-                tariffFixedPrice is not null)
+                         CustomTariffConditionsParser))
             {
                 return tariffFixedPrice;
             }
 
-            throw new ArgumentException("The given JSON representation of a tariff fixed price is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TariffFixedPrice is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -187,11 +192,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse Conditions    [optional]
 
-                if (JSON.ParseOptionalJSON("conditions",
-                                           "tariff conditions",
-                                           TariffConditions.TryParse,
-                                           out TariffConditions? Conditions,
-                                           out ErrorResponse))
+                if (JSON.ParseOptionalJSONMayBeNull("conditions",
+                                                    "tariff conditions",
+                                                    TariffConditions.TryParse,
+                                                    out TariffConditions? Conditions,
+                                                    out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -256,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this TariffFixedPrice.
         /// </summary>
         public TariffFixedPrice Clone()
 
@@ -275,8 +280,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffFixedPrices1">A tariff fixed price.</param>
-        /// <param name="TariffFixedPrices2">Another tariff fixed price.</param>
+        /// <param name="TariffFixedPrices1">A TariffFixedPrice.</param>
+        /// <param name="TariffFixedPrices2">Another TariffFixedPrice.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (TariffFixedPrice? TariffFixedPrices1,
                                            TariffFixedPrice? TariffFixedPrices2)
@@ -301,8 +306,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffFixedPrices1">A tariff fixed price.</param>
-        /// <param name="TariffFixedPrices2">Another tariff fixed price.</param>
+        /// <param name="TariffFixedPrices1">A TariffFixedPrice.</param>
+        /// <param name="TariffFixedPrices2">Another TariffFixedPrice.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (TariffFixedPrice? TariffFixedPrices1,
                                            TariffFixedPrice? TariffFixedPrices2)
@@ -318,9 +323,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two tariff fixed prices for equality.
+        /// Compares two TariffFixedPrices for equality.
         /// </summary>
-        /// <param name="Object">A tariff fixed price to compare with.</param>
+        /// <param name="Object">A TariffFixedPrice to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TariffFixedPrice tariffFixedPrice &&
@@ -331,9 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(TariffFixedPrices)
 
         /// <summary>
-        /// Compares two tariff fixed prices for equality.
+        /// Compares two TariffFixedPrices for equality.
         /// </summary>
-        /// <param name="TariffFixedPrice">A tariff fixed price to compare with.</param>
+        /// <param name="TariffFixedPrice">A TariffFixedPrice to compare with.</param>
         public Boolean Equals(TariffFixedPrice? TariffFixedPrice)
 
             => TariffFixedPrice is not null &&

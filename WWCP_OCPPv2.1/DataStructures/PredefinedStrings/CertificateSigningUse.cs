@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this certificate signing use is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                             IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this certificate signing use is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                             IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the certificate signing use.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                              Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered certificate signing uses.
+        /// </summary>
+        public static    IEnumerable<CertificateSigningUse>  All
+            => lookup.Values;
 
         #endregion
 
@@ -176,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this certificate signing use.
         /// </summary>
-        public CertificateSigningUse Clone
+        public CertificateSigningUse Clone()
 
             => new (
                    InternalId.CloneString()
@@ -195,14 +201,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Client side certificate used by the Charging Station to connect the the CSMS.
         /// </summary>
-        public static CertificateSigningUse ChargingStationCertificate    { get; }
+        public static CertificateSigningUse  ChargingStationCertificate    { get; }
             = Register("ChargingStationCertificate");
 
         /// <summary>
-        /// Use for certificate for 15118 connections.
+        /// Use for certificate for 15118-2 connections.
         /// This means that the certificate should be derived from the V2G root.
         /// </summary>
-        public static CertificateSigningUse V2GCertificate                { get; }
+        public static CertificateSigningUse  V2GCertificate                { get; }
+            = Register("V2GCertificate");
+
+        /// <summary>
+        /// Use for certificate for 15118-20 connections.
+        /// This means that the certificate should be derived from the V2G root.
+        /// </summary>
+        public static CertificateSigningUse  V2G20Certificate              { get; }
             = Register("V2GCertificate");
 
         #endregion

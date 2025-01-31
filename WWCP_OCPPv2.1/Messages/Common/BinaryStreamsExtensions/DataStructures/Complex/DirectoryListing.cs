@@ -426,12 +426,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this directory listing.
         /// </summary>
-        public DirectoryListing Clone
+        public DirectoryListing Clone()
 
             => new (
                    

@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Preconditioning status.
         /// </summary>
-        public PreconditioningStatus Clone
+        public PreconditioningStatus Clone()
 
             => new (
                    InternalId.CloneString()

@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this event notification type.
         /// </summary>
-        public EventNotificationType Clone
+        public EventNotificationType Clone()
 
             => new (
                    InternalId.CloneString()

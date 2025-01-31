@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new GetTariffsResponse(
                                      Request,
-                                     TariffStatus.Rejected,
+                                     TariffGetStatus.Rejected,
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 

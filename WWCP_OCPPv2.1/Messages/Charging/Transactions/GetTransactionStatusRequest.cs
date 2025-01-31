@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomGetTransactionStatusRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetTransactionStatusRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetTransactionStatus request.
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out GetTransactionStatusRequest, out ErrorResponse, CustomGetTransactionStatusRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetTransactionStatusRequest, out ErrorResponse, CustomGetTransactionStatusRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetTransactionStatus request.

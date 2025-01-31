@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this reading context.
         /// </summary>
-        public ReadingContext Clone
+        public ReadingContext Clone()
 
             => new (
                    InternalId.CloneString()

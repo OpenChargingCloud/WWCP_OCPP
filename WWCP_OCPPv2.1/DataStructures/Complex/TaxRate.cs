@@ -42,36 +42,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Type of this tax, e.g. "VAT", "State", "Federal".
         /// </summary>
         [Mandatory]
-        public TaxType     Type    { get; }
+        public TaxType     Type     { get; }
 
         /// <summary>
         /// The tax percentage.
         /// </summary>
         [Mandatory]
-        public Percentage  Tax     { get; }
+        public Percentage  Tax      { get; }
+
+        /// <summary>
+        /// The stack level.
+        /// </summary>
+        [Optional]
+        public UInt32?     Stack    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new tax rate.
+        /// Create a new TaxRate.
         /// </summary>
         /// <param name="Type">The type of this tax, e.g. "VAT", "State", "Federal".</param>
         /// <param name="Tax">The tax percentage.</param>
+        /// <param name="Stack">The optional stack level for this type of tax.</param>
         public TaxRate(TaxType     Type,
-                       Percentage  Tax)
+                       Percentage  Tax,
+                       UInt32?     Stack = null)
         {
 
-            this.Type  = Type;
-            this.Tax   = Tax;
+            this.Type   = Type;
+            this.Tax    = Tax;
+            this.Stack  = Stack;
 
             unchecked
             {
 
-                hashCode = this.Type.GetHashCode() * 5 ^
-                           this.Tax. GetHashCode() * 3 ^
-                           base.     GetHashCode();
+                hashCode = this.Type.  GetHashCode()       * 7 ^
+                           this.Tax.   GetHashCode()       * 5 ^
+                          (this.Stack?.GetHashCode() ?? 0) * 3 ^
+                           base.       GetHashCode();
 
             }
 
@@ -83,19 +93,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":           "Tax percentage",
-        //     "javaType":              "TaxRate",
-        //     "type":                  "object",
-        //     "additionalProperties":   false,
+        //     "description": "Tax percentage",
+        //     "javaType": "TaxRate",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "type": {
-        //             "description":  "Type of this tax, e.g. "Federal", "State", for information on receipt.",
-        //             "type":         "string",
-        //             "maxLength":     20
+        //             "description": "Type of this tax, e.g.  \"Federal \",  \"State\", for information on receipt.",
+        //             "type": "string",
+        //             "maxLength": 20
         //         },
         //         "tax": {
-        //             "description":  "Tax percentage",
-        //             "type":         "number"
+        //             "description": "Tax percentage",
+        //             "type": "number"
+        //         },
+        //         "stack": {
+        //             "description": "Stack level for this type of tax. Default value, when absent, is 0.
+        //                             _stack_ = 0: tax on net price;
+        //                             _stack_ = 1: tax added on top of _stack_ 0;
+        //                             _stack_ = 2: tax added on top of _stack_ 1, etc. ",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
         //     },
         //     "required": [
@@ -109,10 +130,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomTaxRateParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a tax rate.
+        /// Parse the given JSON representation of a TaxRate.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTaxRateParser">An optional delegate to parse custom tax rate JSON objects.</param>
+        /// <param name="CustomTaxRateParser">An optional delegate to parse custom TaxRate JSON objects.</param>
         public static TaxRate Parse(JObject                                JSON,
                                     CustomJObjectParserDelegate<TaxRate>?  CustomTaxRateParser   = null)
         {
@@ -125,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return taxRate;
             }
 
-            throw new ArgumentException("The given JSON representation of a tax rate is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TaxRate is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -137,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a tax rate.
+        /// Try to parse the given JSON representation of a TaxRate.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TaxRate">The parsed connector.</param>
@@ -153,12 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a tax rate.
+        /// Try to parse the given JSON representation of a TaxRate.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TaxRate">The parsed connector.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTaxRateParser">An optional delegate to parse custom tax rate JSON objects.</param>
+        /// <param name="CustomTaxRateParser">An optional delegate to parse custom TaxRate JSON objects.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        [NotNullWhen(true)]  out TaxRate       TaxRate,
                                        [NotNullWhen(false)] out String?       ErrorResponse,
@@ -176,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                #region Parse Type    [mandatory]
+                #region Parse Type     [mandatory]
 
                 if (!JSON.ParseMandatory("type",
                                          "tax type",
@@ -189,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse Tax     [mandatory]
+                #region Parse Tax      [mandatory]
 
                 if (!JSON.ParseMandatory("tax",
                                          "tax percentage",
@@ -202,10 +223,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse Stack    [optional]
+
+                if (JSON.ParseOptional("stack",
+                                       "stack level",
+                                       out UInt32? Stack,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 TaxRate = new TaxRate(
                               Type,
-                              Tax
+                              Tax,
+                              Stack
                           );
 
 
@@ -219,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 TaxRate        = default;
-                ErrorResponse  = "The given JSON representation of a tax rate is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a TaxRate is invalid: " + e.Message;
                 return false;
             }
 
@@ -232,13 +267,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom tax rate JSON objects.</param>
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom TaxRate JSON objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<TaxRate>? CustomTaxRateSerializer = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("type",  Type.ToString()),
-                           new JProperty("tax",   Tax. Value)
+
+                                 new JProperty("type",    Type. ToString()),
+                                 new JProperty("tax",     Tax.  Value),
+
+                           Stack.HasValue
+                               ? new JProperty("stack",   Stack.Value)
+                               : null
+
                        );
 
             return CustomTaxRateSerializer is not null
@@ -252,13 +293,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this tax rate.
         /// </summary>
         public TaxRate Clone()
 
             => new (
                    Type.Clone(),
-                   Tax. Clone()
+                   Tax. Clone(),
+                   Stack
                );
 
         #endregion
@@ -333,8 +375,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TaxRate1">A tax rate.</param>
-        /// <param name="TaxRate2">Another tax rate.</param>
+        /// <param name="TaxRate1">A TaxRate.</param>
+        /// <param name="TaxRate2">Another TaxRate.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (TaxRate TaxRate1,
                                            TaxRate TaxRate2)
@@ -348,8 +390,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TaxRate1">A tax rate.</param>
-        /// <param name="TaxRate2">Another tax rate.</param>
+        /// <param name="TaxRate1">A TaxRate.</param>
+        /// <param name="TaxRate2">Another TaxRate.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (TaxRate TaxRate1,
                                            TaxRate TaxRate2)
@@ -363,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TaxRate1">A tax rate.</param>
-        /// <param name="TaxRate2">Another tax rate.</param>
+        /// <param name="TaxRate1">A TaxRate.</param>
+        /// <param name="TaxRate2">Another TaxRate.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (TaxRate TaxRate1,
                                           TaxRate TaxRate2)
@@ -378,8 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TaxRate1">A tax rate.</param>
-        /// <param name="TaxRate2">Another tax rate.</param>
+        /// <param name="TaxRate1">A TaxRate.</param>
+        /// <param name="TaxRate2">Another TaxRate.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (TaxRate TaxRate1,
                                            TaxRate TaxRate2)
@@ -393,8 +435,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TaxRate1">A tax rate.</param>
-        /// <param name="TaxRate2">Another tax rate.</param>
+        /// <param name="TaxRate1">A TaxRate.</param>
+        /// <param name="TaxRate2">Another TaxRate.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (TaxRate TaxRate1,
                                           TaxRate TaxRate2)
@@ -408,8 +450,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TaxRate1">A tax rate.</param>
-        /// <param name="TaxRate2">Another tax rate.</param>
+        /// <param name="TaxRate1">A TaxRate.</param>
+        /// <param name="TaxRate2">Another TaxRate.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (TaxRate TaxRate1,
                                            TaxRate TaxRate2)
@@ -425,14 +467,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two tax rates.
+        /// Compares two TaxRates.
         /// </summary>
-        /// <param name="Object">A tax rate to compare with.</param>
+        /// <param name="Object">A TaxRate to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is TaxRate taxRate
                    ? CompareTo(taxRate)
-                   : throw new ArgumentException("The given object is not a tax rate!",
+                   : throw new ArgumentException("The given object is not a TaxRate!",
                                                  nameof(Object));
 
         #endregion
@@ -440,16 +482,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(TaxRate)
 
         /// <summary>
-        /// Compares two tax rates.
+        /// Compares two TaxRates.
         /// </summary>
-        /// <param name="TaxRate">A tax rate to compare with.</param>
+        /// <param name="TaxRate">A TaxRate to compare with.</param>
         public Int32 CompareTo(TaxRate TaxRate)
         {
 
-            var c = Type.CompareTo(TaxRate.Type);
+            var c = Type.   CompareTo(TaxRate.Type);
 
             if (c == 0)
-                c = Tax. CompareTo(TaxRate.Tax);
+                c = Tax.    CompareTo(TaxRate.Tax);
+
+            if (c == 0 && Stack.HasValue && TaxRate.Stack.HasValue)
+                Stack.Value.CompareTo(TaxRate.Stack.Value);
 
             return c;
 
@@ -464,9 +509,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two tax rates for equality.
+        /// Compares two TaxRates for equality.
         /// </summary>
-        /// <param name="Object">A tax rate to compare with.</param>
+        /// <param name="Object">A TaxRate to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TaxRate taxRate &&
@@ -477,13 +522,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(TaxRate)
 
         /// <summary>
-        /// Compares two tax rates for equality.
+        /// Compares two TaxRates for equality.
         /// </summary>
-        /// <param name="TaxRate">A tax rate to compare with.</param>
+        /// <param name="TaxRate">A TaxRate to compare with.</param>
         public Boolean Equals(TaxRate TaxRate)
 
-            => Type.Equals(TaxRate.Type) &&
-               Tax. Equals(TaxRate.Tax);
+            => Type. Equals(TaxRate.Type) &&
+               Tax.  Equals(TaxRate.Tax)  &&
+
+            ((!Stack.HasValue && !TaxRate.Stack.HasValue) ||
+              (Stack.HasValue &&  TaxRate.Stack.HasValue && Stack.Value == TaxRate.Stack.Value));
 
         #endregion
 
@@ -508,7 +556,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Tax}% {Type}";
+            => String.Concat(
+
+                   $"{Tax}% {Type}",
+
+                   Stack.HasValue
+                       ? $", stack: {Stack.Value}"
+                       : ""
+
+               );
 
         #endregion
 

@@ -171,12 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this OCSP result.
         /// </summary>
-        public OCSPResult Clone
+        public OCSPResult Clone()
 
             => new (
                    InternalId.CloneString()

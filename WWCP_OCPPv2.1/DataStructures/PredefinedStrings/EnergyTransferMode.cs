@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this energy transfer mode is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                           IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this energy transfer mode is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                           IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the energy transfer mode.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                            Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered transfer modes.
+        /// </summary>
+        public static    IEnumerable<EnergyTransferMode>  All
+            => lookup.Values;
 
         #endregion
 
@@ -176,12 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this energy transfer mode.
         /// </summary>
-        public EnergyTransferMode Clone
+        public EnergyTransferMode Clone()
 
             => new (
                    InternalId.CloneString()
@@ -195,67 +201,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// AC single phase charging according to IEC 62196.
         /// </summary>
-        public static EnergyTransferMode AC_SinglePhase         { get; }
+        public static EnergyTransferMode  AC_SinglePhase         { get; }
             = Register("AC_single_phase");
 
         /// <summary>
         /// AC two phase charging according to IEC 62196.
         /// </summary>
-        public static EnergyTransferMode AC_TwoPhases           { get; }
+        public static EnergyTransferMode  AC_TwoPhases           { get; }
             = Register("AC_two_phase");
 
         /// <summary>
         /// AC three phase charging according to IEC 62196.
         /// </summary>
-        public static EnergyTransferMode AC_ThreePhases         { get; }
+        public static EnergyTransferMode  AC_ThreePhases         { get; }
             = Register("AC_three_phase");
 
         /// <summary>
         /// DC charging.
         /// </summary>
-        public static EnergyTransferMode DC                     { get; }
+        public static EnergyTransferMode  DC                     { get; }
             = Register("DC");
 
         /// <summary>
         /// DC charging via ACDP (pantograph)
         /// </summary>
-        public static EnergyTransferMode DC_ACDP                { get; }
+        public static EnergyTransferMode  DC_ACDP                { get; }
             = Register("DC_ACDP");
 
         /// <summary>
         /// Wireless power transfer
         /// </summary>
-        public static EnergyTransferMode WPT                    { get; }
+        public static EnergyTransferMode  WPT                    { get; }
             = Register("WPT");
 
         /// <summary>
         /// AC bidirectional 1 phase
         /// </summary>
-        public static EnergyTransferMode AC_single_phase_BPT    { get; }
+        public static EnergyTransferMode  AC_single_phase_BPT    { get; }
             = Register("AC_single_phase_BPT");
 
         /// <summary>
         /// AC bidirectional 2 phase
         /// </summary>
-        public static EnergyTransferMode AC_two_phase_BPT       { get; }
+        public static EnergyTransferMode  AC_two_phase_BPT       { get; }
             = Register("AC_two_phase_BPT");
 
         /// <summary>
         /// AC bidirectional 3 phase
         /// </summary>
-        public static EnergyTransferMode AC_three_phase_BPT     { get; }
+        public static EnergyTransferMode  AC_three_phase_BPT     { get; }
             = Register("AC_three_phase_BPT");
 
         /// <summary>
         /// DC bidirectional
         /// </summary>
-        public static EnergyTransferMode DC_BPT                 { get; }
+        public static EnergyTransferMode  DC_BPT                 { get; }
             = Register("DC_BPT");
 
         /// <summary>
         /// DC bidirectional charging via ACDP (pantograph)
         /// </summary>
-        public static EnergyTransferMode DC_ACDP_BPT            { get; }
+        public static EnergyTransferMode  DC_ACDP_BPT            { get; }
             = Register("DC_ACDP_BPT");
 
         #endregion

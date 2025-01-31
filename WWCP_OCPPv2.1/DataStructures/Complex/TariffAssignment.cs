@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The tariff kind (user|default).
         /// </summary>
         [Mandatory]
-        public TariffKinds           TariffKind    { get; }
+        public TariffKind            TariffKind    { get; }
 
         /// <summary>
         /// The optional enumeration of EVSE identifications this tariff applies to.
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EVSEIds">An optional enumeration of EVSE identifications this tariff applies to.</param>
         /// <param name="IdTokens">An optional enumeration of IdTokens this tariff applies to.</param>
         public TariffAssignment(Tariff_Id              TariffId,
-                                TariffKinds            TariffKind,
+                                TariffKind             TariffKind,
                                 IEnumerable<EVSE_Id>?  EVSEIds    = null,
                                 IEnumerable<IdToken>?  IdTokens   = null)
         {
@@ -189,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("tariffKind",
                                          "EVSE identifications",
-                                         TariffKindsExtensions.TryParse,
-                                         out TariffKinds TariffKind,
+                                         OCPPv2_1.TariffKind.TryParse,
+                                         out TariffKind TariffKind,
                                          out ErrorResponse))
                 {
                     return false;
@@ -301,10 +301,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public TariffAssignment Clone()
 
             => new (
-                   TariffId.Clone(),
-                   TariffKind,
-                   EVSEIds. Select(evseId  => evseId. Clone),
-                   IdTokens.Select(idToken => idToken.Clone())
+                   TariffId.  Clone(),
+                   TariffKind.Clone(),
+                   EVSEIds.   Select(evseId  => evseId. Clone()),
+                   IdTokens.  Select(idToken => idToken.Clone())
                );
 
         #endregion

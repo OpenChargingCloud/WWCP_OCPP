@@ -132,7 +132,7 @@
 
 //        #endregion
 
-//        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomNotifyNetworkTopologyRequestParser = null)
+//        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyNetworkTopologyRequestParser = null)
 
 //        /// <summary>
 //        /// Parse the given JSON representation of a NotifyNetworkTopology request.
@@ -177,7 +177,7 @@
 
 //        #endregion
 
-//        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out NotifyNetworkTopologyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+//        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyNetworkTopologyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
 //        /// <summary>
 //        /// Try to parse the given JSON representation of a NotifyNetworkTopology request.

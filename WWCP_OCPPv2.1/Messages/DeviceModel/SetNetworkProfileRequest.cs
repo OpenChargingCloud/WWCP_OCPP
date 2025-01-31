@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "VPNEnumType": {
-        //       "description": "VPN. Type. VPN_ Code\r\nurn:x-oca:ocpp:uid:1:569277\r\nType of VPN\r\n",
+        //       "description": "VPN. Type. VPN_ Code\r\nurn:x-oca:ocpp:uid:1:569277\r\nType of VPN",
         //       "javaType": "VPNEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //       ]
         //     },
         //     "VPNType": {
-        //       "description": "VPN\r\nurn:x-oca:ocpp:uid:2:233268\r\nVPN Configuration settings\r\n",
+        //       "description": "VPN\r\nurn:x-oca:ocpp:uid:2:233268\r\nVPN Configuration settings",
         //       "javaType": "VPN",
         //       "type": "object",
         //       "additionalProperties": false,
@@ -328,12 +328,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //           "$ref": "#/definitions/CustomDataType"
         //         },
         //         "server": {
-        //           "description": "VPN. Server. URI\r\nurn:x-oca:ocpp:uid:1:569272\r\nVPN Server Address\r\n",
+        //           "description": "VPN. Server. URI\r\nurn:x-oca:ocpp:uid:1:569272\r\nVPN Server Address",
         //           "type": "string",
         //           "maxLength": 512
         //         },
         //         "user": {
-        //           "description": "VPN. User. User_ Name\r\nurn:x-oca:ocpp:uid:1:569273\r\nVPN User\r\n",
+        //           "description": "VPN. User. User_ Name\r\nurn:x-oca:ocpp:uid:1:569273\r\nVPN User",
         //           "type": "string",
         //           "maxLength": 20
         //         },
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomSetNetworkProfileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetNetworkProfileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a SetNetworkProfile request.
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out SetNetworkProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetNetworkProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetNetworkProfile request.

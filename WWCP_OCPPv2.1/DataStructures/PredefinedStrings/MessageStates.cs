@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this message state.
         /// </summary>
-        public MessageState Clone
+        public MessageState Clone()
 
             => new (
                    InternalId.CloneString()

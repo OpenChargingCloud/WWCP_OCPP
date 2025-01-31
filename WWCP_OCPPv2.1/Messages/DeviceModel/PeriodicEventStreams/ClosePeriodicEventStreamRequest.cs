@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -128,14 +130,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ClosePeriodicEventStreamRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "Id of stream to close.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "id"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomClosePeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an ClosePeriodicEventStream request.
@@ -147,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClosePeriodicEventStreamRequestParser">A delegate to parse custom ClosePeriodicEventStream requests.</param>
         public static ClosePeriodicEventStreamRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
-                                                            SourceRouting                                              Destination,
+                                                            SourceRouting                                                  Destination,
                                                             NetworkPath                                                    NetworkPath,
                                                             CustomJObjectParserDelegate<ClosePeriodicEventStreamRequest>?  CustomClosePeriodicEventStreamRequestParser   = null)
         {
@@ -159,8 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var closePeriodicEventStreamRequest,
                          out var errorResponse,
-                         CustomClosePeriodicEventStreamRequestParser) &&
-                closePeriodicEventStreamRequest is not null)
+                         CustomClosePeriodicEventStreamRequestParser))
             {
                 return closePeriodicEventStreamRequest;
             }
@@ -172,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ClosePeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ClosePeriodicEventStreamRequest, out ErrorResponse, ...)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -185,12 +220,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClosePeriodicEventStreamRequest">The parsed ClosePeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                               JSON,
-                                       Request_Id                            RequestId,
-                                       SourceRouting                     Destination,
-                                       NetworkPath                           NetworkPath,
-                                       out ClosePeriodicEventStreamRequest?  ClosePeriodicEventStreamRequest,
-                                       out String?                           ErrorResponse)
+        public static Boolean TryParse(JObject                                                    JSON,
+                                       Request_Id                                                 RequestId,
+                                       SourceRouting                                              Destination,
+                                       NetworkPath                                                NetworkPath,
+                                       [NotNullWhen(true)]  out ClosePeriodicEventStreamRequest?  ClosePeriodicEventStreamRequest,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -213,10 +248,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClosePeriodicEventStreamRequestParser">A delegate to parse custom ClosePeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                        JSON,
                                        Request_Id                                                     RequestId,
-                                       SourceRouting                                              Destination,
+                                       SourceRouting                                                  Destination,
                                        NetworkPath                                                    NetworkPath,
-                                       out ClosePeriodicEventStreamRequest?                           ClosePeriodicEventStreamRequest,
-                                       out String?                                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out ClosePeriodicEventStreamRequest?      ClosePeriodicEventStreamRequest,
+                                       [NotNullWhen(false)] out String?                               ErrorResponse,
                                        CustomJObjectParserDelegate<ClosePeriodicEventStreamRequest>?  CustomClosePeriodicEventStreamRequestParser)
         {
 

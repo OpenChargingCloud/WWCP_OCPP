@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this remote start identification.
         /// </summary>
-        public RemoteStart_Id Clone
+        public RemoteStart_Id Clone()
 
             => new (Value);
 

@@ -224,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this reservation identification.
         /// </summary>
-        public Reservation_Id Clone
+        public Reservation_Id Clone()
 
             => new (Value);
 

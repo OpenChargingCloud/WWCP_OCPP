@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var rejectResponse  = forwardingDecision?.RejectResponse ??
                                           new AuthorizeResponse(
                                               request,
-                                              IdTokenInfo.Error(AuthorizationStatus.Filtered),
+                                              IdTokenInfo.Filtered,
                                               Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                           );
 

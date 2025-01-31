@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetTariffs status.
         /// </summary>
         [Mandatory]
-        public TariffStatus                   Status              { get; }
+        public TariffGetStatus                Status              { get; }
 
         /// <summary>
         /// The optional map of installed default and user-specific tariffs per EVSE.
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public GetTariffsResponse(GetTariffsRequest               Request,
-                                  TariffStatus                    Status,
+                                  TariffGetStatus                 Status,
                                   IEnumerable<TariffAssignment>?  TariffAssignments     = null,
                                   StatusInfo?                     StatusInfo            = null,
 
@@ -242,12 +242,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 GetTariffsResponse = null;
 
-                #region Parse Status         [mandatory]
+                #region Status               [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "GetTariffs status",
-                                         TariffStatus.TryParse,
-                                         out TariffStatus Status,
+                                         TariffGetStatus.TryParse,
+                                         out TariffGetStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",            DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("status",              Status.              AsText()),
+                                 new JProperty("status",              Status.              ToString()),
 
                            TariffAssignments.Any()
                                ? new JProperty("tariffAssignments",   new JArray (TariffAssignments.Select(tariffAssignment => tariffAssignment.ToJSON(CustomTariffAssignmentSerializer,
@@ -438,10 +438,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => new (
 
                    Request,
-                   TariffStatus.Rejected,
+                   TariffGetStatus.Rejected,
                    null,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -469,8 +469,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                             String             ErrorDescription)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    TariffGetStatus.Rejected,
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -484,8 +484,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                         String             ErrorDescription)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    TariffGetStatus.Rejected,
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -499,8 +499,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 String?            Description   = null)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    TariffGetStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -512,8 +512,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                           Exception          Exception)
 
             => new (Request,
-                    TariffStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    TariffGetStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{Status.AsText()}{(StatusInfo is not null ? $", {StatusInfo}" : "")}{(TariffAssignments.Any() ? $", {TariffAssignments.Select(tariffAssignment => $"'{tariffAssignment.TariffId}' ({tariffAssignment.TariffKind.AsText()}) => '{tariffAssignment.EVSEIds.AggregateWith(",")}', '{tariffAssignment.IdTokens.AggregateWith(",")}'")}" : "")}";
+            => $"{Status}{(StatusInfo is not null ? $", {StatusInfo}" : "")}{(TariffAssignments.Any() ? $", {TariffAssignments.Select(tariffAssignment => $"'{tariffAssignment.TariffId}' => '{tariffAssignment.EVSEIds.AggregateWith(",")}', '{tariffAssignment.IdTokens.AggregateWith(",")}'")}" : "")}";
 
         #endregion
 

@@ -17,10 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -28,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An energy tariff element.
+    /// A TariffEnergy tariff element.
     /// </summary>
     public class TariffEnergy : IEquatable<TariffEnergy>
     {
@@ -54,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new energy tariff element.
+        /// Create a new TariffEnergy tariff element.
         /// </summary>
         /// <param name="Prices">An enumeration of tariff prices and conditions.</param>
         /// <param name="TaxRates">An optional enumeration of applicable tax percentages for this tariff dimension.</param>
@@ -84,29 +85,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":          "Price elements and tax for energy",
-        //     "javaType":             "TariffEnergy",
-        //     "type":                 "object",
-        //     "additionalProperties":  false,
+        //     "description": "Price elements and tax for energy",
+        //     "javaType": "TariffEnergy",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "prices": {
-        //             "type":            "array",
-        //             "additionalItems":  false,
+        //             "type": "array",
+        //             "additionalItems": false,
         //             "items": {
         //                 "$ref": "#/definitions/TariffEnergyPriceType"
         //             },
         //             "minItems": 1
         //         },
-        //         "taxRate": {
-        //             "type":            "array",
-        //             "additionalItems":  false,
+        //         "taxRates": {
+        //             "type": "array",
+        //             "additionalItems": false,
         //             "items": {
         //                 "$ref": "#/definitions/TaxRateType"
         //             },
         //             "minItems": 1,
         //             "maxItems": 5
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     }
+        //     },
+        //     "required": [
+        //         "prices"
+        //     ]
         // }
 
         #endregion
@@ -114,10 +121,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomTariffEnergyParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a tariff element.
+        /// Parse the given JSON representation of a TariffEnergy tariff element.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTariffEnergyParser">An optional delegate to parse custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffEnergyParser">An optional delegate to parse custom TariffEnergy tariff element JSON objects.</param>
         public static TariffEnergy Parse(JObject                                     JSON,
                                          CustomJObjectParserDelegate<TariffEnergy>?  CustomTariffEnergyParser   = null)
         {
@@ -130,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return tariffEnergy;
             }
 
-            throw new ArgumentException("The given JSON representation of a tariff element is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TariffEnergy tariff element is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -225,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 TariffEnergy   = default;
-                ErrorResponse  = "The given JSON representation of a tariff energy is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a TariffEnergy tariff element is invalid: " + e.Message;
                 return false;
             }
 
@@ -270,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this TariffEnergy tariff element.
         /// </summary>
         public TariffEnergy Clone()
 
@@ -289,8 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffEnergy1">A tariff energy.</param>
-        /// <param name="TariffEnergy2">Another tariff energy.</param>
+        /// <param name="TariffEnergy1">A TariffEnergy tariff element.</param>
+        /// <param name="TariffEnergy2">Another TariffEnergy tariff element.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (TariffEnergy? TariffEnergy1,
                                            TariffEnergy? TariffEnergy2)
@@ -315,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffEnergy1">A tariff energy.</param>
-        /// <param name="TariffEnergy2">Another tariff energy.</param>
+        /// <param name="TariffEnergy1">A TariffEnergy tariff element.</param>
+        /// <param name="TariffEnergy2">Another TariffEnergy tariff element.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (TariffEnergy? TariffEnergy1,
                                            TariffEnergy? TariffEnergy2)
@@ -332,9 +339,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two tariff energies for equality.
+        /// Compares two TariffEnergy tariff elements for equality.
         /// </summary>
-        /// <param name="Object">A tariff energy to compare with.</param>
+        /// <param name="Object">A TariffEnergy tariff element to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TariffEnergy tariffEnergy &&
@@ -345,17 +352,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(TariffEnergy)
 
         /// <summary>
-        /// Compares two tariff energies for equality.
+        /// Compares two TariffEnergy tariff elements for equality.
         /// </summary>
-        /// <param name="TariffEnergy">A tariff energy to compare with.</param>
+        /// <param name="TariffEnergy">A TariffEnergy tariff element to compare with.</param>
         public Boolean Equals(TariffEnergy? TariffEnergy)
 
             => TariffEnergy is not null &&
 
                Prices.  Count().Equals(TariffEnergy.Prices.  Count()) &&
-               Prices.  All(tariffEnergyPrice => TariffEnergy.Prices.  Contains(tariffEnergyPrice)) &&
-
                TaxRates.Count().Equals(TariffEnergy.TaxRates.Count()) &&
+
+               Prices.  All(tariffEnergyPrice => TariffEnergy.Prices.  Contains(tariffEnergyPrice)) &&
                TaxRates.All(taxRate           => TariffEnergy.TaxRates.Contains(taxRate));
 
         #endregion

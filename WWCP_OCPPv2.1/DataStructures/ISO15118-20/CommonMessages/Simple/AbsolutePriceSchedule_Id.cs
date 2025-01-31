@@ -166,12 +166,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this absolute price schedule identification.
         /// </summary>
-        public AbsolutePriceSchedule_Id Clone
+        public AbsolutePriceSchedule_Id Clone()
 
             => new (
                    InternalId.CloneString()

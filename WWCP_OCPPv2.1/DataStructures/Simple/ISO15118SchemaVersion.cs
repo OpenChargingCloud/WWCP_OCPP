@@ -171,12 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this ISO 15118 schema version.
         /// </summary>
-        public ISO15118SchemaVersion Clone
+        public ISO15118SchemaVersion Clone()
 
             => new (
                    InternalId.CloneString()

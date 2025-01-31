@@ -76,6 +76,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ClearMessageStatus = ClearMessageStatus.Accepted;
                     return true;
 
+                case "Rejected":
+                    ClearMessageStatus = ClearMessageStatus.Rejected;
+                    return true;
+
                 default:
                     ClearMessageStatus = ClearMessageStatus.Unknown;
                     return false;
@@ -92,6 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ClearMessageStatus switch {
                    ClearMessageStatus.Accepted  => "Accepted",
+                   ClearMessageStatus.Rejected  => "Rejected",
                    _                            => "Unknown"
                };
 
@@ -114,7 +119,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Request has been accepted and will be executed.
         /// </summary>
-        Accepted
+        Accepted,
+
+        /// <summary>
+        /// Request has been rejected.
+        /// </summary>
+        Rejected
 
     }
 

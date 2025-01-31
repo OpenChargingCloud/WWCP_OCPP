@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -87,29 +88,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ClearMonitoringResultType": {
-        //   "javaType": "ClearMonitoringResult",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "ClearMonitoringResult",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/ClearMonitoringStatusEnumType"
+        //         },
+        //         "id": {
+        //             "description": "Id of the monitor of which a clear was requested.\r\n\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/ClearMonitoringStatusEnumType"
-        //     },
-        //     "id": {
-        //       "description": "Id of the monitor of which a clear was requested.\r\n\r\n",
-        //       "type": "integer"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "status",
-        //     "id"
-        //   ]
+        //     "required": [
+        //         "status",
+        //         "id"
+        //     ]
         // }
 
         #endregion
@@ -121,15 +123,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClearMonitoringResultParser">A delegate to parse custom clear monitoring results.</param>
-        public static ClearMonitoringResult Parse(JObject                                             JSON,
+        public static ClearMonitoringResult Parse(JObject                                              JSON,
                                                   CustomJObjectParserDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultParser   = null)
         {
 
             if (TryParse(JSON,
                          out var clearMonitoringResult,
                          out var errorResponse,
-                         CustomClearMonitoringResultParser) &&
-                clearMonitoringResult is not null)
+                         CustomClearMonitoringResultParser))
             {
                 return clearMonitoringResult;
             }
@@ -151,9 +152,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearMonitoringResult">The parsed clear monitoring result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       out ClearMonitoringResult?  ClearMonitoringResult,
-                                       out String?                 ErrorResponse)
+        public static Boolean TryParse(JObject                                          JSON,
+                                       [NotNullWhen(true)]  out ClearMonitoringResult?  ClearMonitoringResult,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         out ClearMonitoringResult,
@@ -169,8 +170,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearMonitoringResultParser">A delegate to parse custom clear monitoring result JSON objects.</param>
         public static Boolean TryParse(JObject                                              JSON,
-                                       out ClearMonitoringResult?                           ClearMonitoringResult,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out ClearMonitoringResult?      ClearMonitoringResult,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultParser)
         {
 
@@ -183,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("status",
                                          "clear variable monitor status",
-                                         ClearMonitoringStatusExtensions.TryParse,
+                                         ClearMonitoringStatus.TryParse,
                                          out ClearMonitoringStatus Status,
                                          out ErrorResponse))
                 {
@@ -238,10 +239,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ClearMonitoringResult = new ClearMonitoringResult(Status,
-                                                                  Id.Value,
-                                                                  StatusInfo,
-                                                                  CustomData);
+                ClearMonitoringResult = new ClearMonitoringResult(
+                                            Status,
+                                            Id.Value,
+                                            StatusInfo,
+                                            CustomData
+                                        );
 
                 if (CustomClearMonitoringResultParser is not null)
                     ClearMonitoringResult = CustomClearMonitoringResultParser(JSON,
@@ -276,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",       Status.    AsText()),
+                                 new JProperty("status",       Status.    ToString()),
                                  new JProperty("id",           Id.        Value),
 
                            StatusInfo is not null

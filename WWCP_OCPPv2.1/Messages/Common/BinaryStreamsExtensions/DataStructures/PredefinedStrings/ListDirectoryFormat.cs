@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this list directory format.
         /// </summary>
-        public ListDirectoryFormat Clone
+        public ListDirectoryFormat Clone()
 
             => new (
                    InternalId.CloneString()

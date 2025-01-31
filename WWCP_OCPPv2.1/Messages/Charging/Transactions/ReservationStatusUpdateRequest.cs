@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, SourceRouting, NetworkPath, CustomReservationStatusUpdateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomReservationStatusUpdateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a ReservationStatusUpdate request.
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, SourceRouting, NetworkPath, out ReservationStatusUpdateRequest, out ErrorResponse, CustomReservationStatusUpdateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReservationStatusUpdateRequest, out ErrorResponse, CustomReservationStatusUpdateRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ReservationStatusUpdate request.

@@ -17,10 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -28,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An time tariff element.
+    /// A TariffTime tariff element.
     /// </summary>
     public class TariffTime : IEquatable<TariffTime>
     {
@@ -54,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new time tariff element.
+        /// Create a new TariffTime tariff element.
         /// </summary>
         /// <param name="Prices">An enumeration of tariff prices and conditions.</param>
         /// <param name="TaxRates">An optional enumeration of applicable tax percentages for this tariff dimension.</param>
@@ -84,29 +85,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description":          "Price elements and tax for time\r\n",
-        //     "javaType":             "TariffTime",
-        //     "type":                 "object",
-        //     "additionalProperties":  false,
+        //     "description": "Price elements and tax for time",
+        //     "javaType": "TariffTime",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "prices": {
-        //             "type":            "array",
-        //             "additionalItems":  false,
+        //             "type": "array",
+        //             "additionalItems": false,
         //             "items": {
         //                 "$ref": "#/definitions/TariffTimePriceType"
         //             },
         //             "minItems": 1
         //         },
-        //         "taxRate": {
-        //             "type":            "array",
-        //             "additionalItems":  false,
+        //         "taxRates": {
+        //             "type": "array",
+        //             "additionalItems": false,
         //             "items": {
         //                 "$ref": "#/definitions/TaxRateType"
         //             },
         //             "minItems": 1,
         //             "maxItems": 5
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //     }
+        //     },
+        //     "required": [
+        //         "prices"
+        //     ]
         // }
 
         #endregion
@@ -114,10 +121,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomTariffTimeParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a tariff element.
+        /// Parse the given JSON representation of a TariffTime tariff element.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTariffTimeParser">An optional delegate to parse custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffTimeParser">An optional delegate to parse custom TariffTime tariff element JSON objects.</param>
         public static TariffTime Parse(JObject                                     JSON,
                                          CustomJObjectParserDelegate<TariffTime>?  CustomTariffTimeParser   = null)
         {
@@ -130,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return tariffTime;
             }
 
-            throw new ArgumentException("The given JSON representation of a tariff element is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a TariffTime tariff element is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -225,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 TariffTime     = default;
-                ErrorResponse  = "The given JSON representation of a tariff time is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a TariffTime tariff element is invalid: " + e.Message;
                 return false;
             }
 
@@ -270,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this TariffTime tariff element.
         /// </summary>
         public TariffTime Clone()
 
@@ -289,8 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffTime1">A tariff time.</param>
-        /// <param name="TariffTime2">Another tariff time.</param>
+        /// <param name="TariffTime1">A TariffTime tariff element.</param>
+        /// <param name="TariffTime2">Another TariffTime tariff element.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (TariffTime? TariffTime1,
                                            TariffTime? TariffTime2)
@@ -315,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffTime1">A tariff time.</param>
-        /// <param name="TariffTime2">Another tariff time.</param>
+        /// <param name="TariffTime1">A TariffTime tariff element.</param>
+        /// <param name="TariffTime2">Another TariffTime tariff element.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (TariffTime? TariffTime1,
                                            TariffTime? TariffTime2)
@@ -332,9 +339,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two tariff energies for equality.
+        /// Compares two TariffTime tariff elements for equality.
         /// </summary>
-        /// <param name="Object">A tariff time to compare with.</param>
+        /// <param name="Object">A TariffTime tariff element to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is TariffTime tariffTime &&
@@ -345,17 +352,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(TariffTime)
 
         /// <summary>
-        /// Compares two tariff energies for equality.
+        /// Compares two TariffTime tariff elements for equality.
         /// </summary>
-        /// <param name="TariffTime">A tariff time to compare with.</param>
+        /// <param name="TariffTime">A TariffTime tariff element to compare with.</param>
         public Boolean Equals(TariffTime? TariffTime)
 
             => TariffTime is not null &&
 
                Prices.  Count().Equals(TariffTime.Prices.  Count()) &&
-               Prices.  All(tariffTimePrice => TariffTime.Prices.  Contains(tariffTimePrice)) &&
-
                TaxRates.Count().Equals(TariffTime.TaxRates.Count()) &&
+
+               Prices.  All(tariffTimePrice => TariffTime.Prices.  Contains(tariffTimePrice)) &&
                TaxRates.All(taxRate         => TariffTime.TaxRates.Contains(taxRate));
 
         #endregion
