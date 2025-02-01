@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The success or failure of the InstallCertificate request.
         /// </summary>
         [Mandatory]
-        public CertificateStatus  Status        { get; }
+        public InstallCertificateStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public InstallCertificateResponse(CSMS.InstallCertificateRequest  Request,
-                                          CertificateStatus               Status,
+                                          InstallCertificateStatus        Status,
                                           StatusInfo?                     StatusInfo            = null,
 
                                           Result?                         Result                = null,
@@ -150,81 +150,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:InstallCertificateResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:InstallCertificateResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "InstallCertificateStatusEnumType": {
+        //             "description": "Charging Station indicates if installation was successful.\r\n",
+        //             "javaType": "InstallCertificateStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "Failed"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.\r\n",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "InstallCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if installation was successful.",
-        //       "javaType": "InstallCertificateStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected",
-        //         "Failed"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/InstallCertificateStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/InstallCertificateStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an InstallCertificate response.
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom InstallCertificate responses.</param>
         public static InstallCertificateResponse Parse(CSMS.InstallCertificateRequest                            Request,
                                                        JObject                                                   JSON,
-                                                       SourceRouting                                         Destination,
+                                                       SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 ResponseTimestamp                        = null,
                                                        CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out InstallCertificateResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an InstallCertificate response.
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom InstallCertificate responses.</param>
         public static Boolean TryParse(CSMS.InstallCertificateRequest                            Request,
                                        JObject                                                   JSON,
-                                       SourceRouting                                         Destination,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out InstallCertificateResponse?      InstallCertificateResponse,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -297,8 +297,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "InstallCertificate status",
-                                         CertificateStatusExtensions.TryParse,
-                                         out CertificateStatus Status,
+                                         InstallCertificateStatus.TryParse,
+                                         out InstallCertificateStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -442,28 +442,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The InstallCertificate failed because of a request error.
         /// </summary>
         /// <param name="Request">The InstallCertificate request.</param>
-        public static InstallCertificateResponse RequestError(CSMS.InstallCertificateRequest  Request,
-                                                              EventTracking_Id                EventTrackingId,
-                                                              ResultCode                      ErrorCode,
-                                                              String?                         ErrorDescription    = null,
-                                                              JObject?                        ErrorDetails        = null,
-                                                              DateTime?                       ResponseTimestamp   = null,
+        public static InstallCertificateResponse RequestError(InstallCertificateRequest  Request,
+                                                              EventTracking_Id           EventTrackingId,
+                                                              ResultCode                 ErrorCode,
+                                                              String?                    ErrorDescription    = null,
+                                                              JObject?                   ErrorDetails        = null,
+                                                              DateTime?                  ResponseTimestamp   = null,
 
-                                                              SourceRouting?                  Destination         = null,
-                                                              NetworkPath?                    NetworkPath         = null,
+                                                              SourceRouting?             Destination         = null,
+                                                              NetworkPath?               NetworkPath         = null,
 
-                                                              IEnumerable<KeyPair>?           SignKeys            = null,
-                                                              IEnumerable<SignInfo>?          SignInfos           = null,
-                                                              IEnumerable<Signature>?         Signatures          = null,
+                                                              IEnumerable<KeyPair>?      SignKeys            = null,
+                                                              IEnumerable<SignInfo>?     SignInfos           = null,
+                                                              IEnumerable<Signature>?    Signatures          = null,
 
-                                                              CustomData?                     CustomData          = null)
+                                                              CustomData?                CustomData          = null)
 
             => new (
 
                    Request,
-                   CertificateStatus.Failed,
+                   InstallCertificateStatus.Failed,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -491,8 +491,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                     String                          ErrorDescription)
 
             => new (Request,
-                    CertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    InstallCertificateStatus.Failed,
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -506,8 +506,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                 String                          ErrorDescription)
 
             => new (Request,
-                    CertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    InstallCertificateStatus.Failed,
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -521,8 +521,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                         String?                         Description   = null)
 
             => new (Request,
-                    CertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    InstallCertificateStatus.Failed,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -534,8 +534,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                   Exception                       Exception)
 
             => new (Request,
-                    CertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    InstallCertificateStatus.Failed,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

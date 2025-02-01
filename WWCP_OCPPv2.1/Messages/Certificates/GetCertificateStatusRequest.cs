@@ -133,94 +133,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetCertificateStatusRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetCertificateStatusRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "HashAlgorithmEnumType": {
+        //             "description": "Used algorithms for the hashes provided.",
+        //             "javaType": "HashAlgorithmEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SHA256",
+        //                 "SHA384",
+        //                 "SHA512"
+        //             ]
+        //         },
+        //         "OCSPRequestDataType": {
+        //             "description": "Information about a certificate for an OCSP check.",
+        //             "javaType": "OCSPRequestData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "hashAlgorithm": {
+        //                     "$ref": "#/definitions/HashAlgorithmEnumType"
+        //                 },
+        //                 "issuerNameHash": {
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "issuerKeyHash": {
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "serialNumber": {
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //                     "type": "string",
+        //                     "maxLength": 40
+        //                 },
+        //                 "responderURL": {
+        //                     "description": "This contains the responder URL (Case insensitive). ",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "hashAlgorithm",
+        //                 "issuerNameHash",
+        //                 "issuerKeyHash",
+        //                 "serialNumber",
+        //                 "responderURL"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.",
-        //       "javaType": "HashAlgorithmEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "SHA256",
-        //         "SHA384",
-        //         "SHA512"
-        //       ]
-        //     },
-        //     "OCSPRequestDataType": {
-        //       "javaType": "OCSPRequestData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "ocspRequestData": {
+        //             "$ref": "#/definitions/OCSPRequestDataType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "hashAlgorithm": {
-        //           "$ref": "#/definitions/HashAlgorithmEnumType"
-        //         },
-        //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "serialNumber": {
-        //           "description": "The serial number of the certificate.",
-        //           "type": "string",
-        //           "maxLength": 40
-        //         },
-        //         "responderURL": {
-        //           "description": "This contains the responder URL (Case insensitive). ",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "hashAlgorithm",
-        //         "issuerNameHash",
-        //         "issuerKeyHash",
-        //         "serialNumber",
-        //         "responderURL"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "ocspRequestData": {
-        //       "$ref": "#/definitions/OCSPRequestDataType"
-        //     }
-        //   },
-        //   "required": [
-        //     "ocspRequestData"
-        //   ]
+        //     "required": [
+        //         "ocspRequestData"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetCertificateStatusRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCertificateStatus request.
@@ -235,11 +236,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom GetCertificateStatus requests.</param>
         public static GetCertificateStatusRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        SourceRouting                                          Destination,
+                                                        SourceRouting                                              Destination,
                                                         NetworkPath                                                NetworkPath,
-                                                        DateTime?                                                  RequestTimestamp            = null,
-                                                        TimeSpan?                                                  RequestTimeout              = null,
-                                                        EventTracking_Id?                                          EventTrackingId             = null,
+                                                        DateTime?                                                  RequestTimestamp                          = null,
+                                                        TimeSpan?                                                  RequestTimeout                            = null,
+                                                        EventTracking_Id?                                          EventTrackingId                           = null,
                                                         CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser   = null)
         {
 
@@ -281,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom GetCertificateStatus requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       SourceRouting                                          Destination,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetCertificateStatusRequest?      GetCertificateStatusRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
@@ -302,8 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              "OCSP request data",
                                              OCPPv2_1.OCSPRequestData.TryParse,
                                              out OCSPRequestData? OCSPRequestData,
-                                             out ErrorResponse) ||
-                     OCSPRequestData is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -518,8 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat("GetCertificateStatus: ",
-                             OCSPRequestData.SerialNumber);
+            => $"GetCertificateStatus: {OCSPRequestData.SerialNumber}";
 
         #endregion
 

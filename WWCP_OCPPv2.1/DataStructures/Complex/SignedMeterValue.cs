@@ -113,41 +113,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "SignedMeterValueType": {
-        //     "description":           "Signed_ Meter_ Value
-        //                               urn:x-enexis:ecdm:uid:2:236397
-        //                               Represent a signed version of the meter value.",
-        //     "javaType":              "SignedMeterValue",
-        //     "type":                  "object",
-        //     "additionalProperties":   false,
+        // {
+        //     "description": "Represent a signed version of the meter value.\r\n",
+        //     "javaType": "SignedMeterValue",
+        //     "type": "object",
+        //     "additionalProperties": false,
         //     "properties": {
         //         "signedMeterData": {
-        //             "description": "Signed_ Meter_ Value. Signed_ Meter_ Data. Base64String2500Type
-        //                             urn:x-enexis:ecdm:uid:1:572635
-        //                             Base64 encoded, contains the signed data which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.",
-        //             "type":        "string",
-        //             "maxLength":    2500
+        //             "description": "Base64 encoded, contains the signed data from the meter in the format specified in _encodingMethod_,
+        //                             which might contain more then just the meter value. It can contain information like timestamps,
+        //                             reference to a customer etc.\r\n",
+        //             "type": "string",
+        //             "maxLength": 32768
         //         },
         //         "signingMethod": {
-        //             "description": "Signed_ Meter_ Value. Signing_ Method. CI50_ Text
-        //                             urn:x-enexis:ecdm:uid:1:572636
-        //                             *(2.1)* Method used to create the digital signature. Optional, if already included in _signedMeterData_.",
-        //             "type":        "string",
-        //             "maxLength":    50
+        //             "description": "*(2.1)* Method used to create the digital signature. Optional, if already included in _signedMeterData_.
+        //                             Standard values for this are defined in Appendix as SigningMethodEnumStringType.\r\n",
+        //             "type": "string",
+        //             "maxLength": 50
         //         },
         //         "encodingMethod": {
-        //             "description": "Signed_ Meter_ Value. Encoding_ Method. CI50_ Text
-        //                             urn:x-enexis:ecdm:uid:1:572634
-        //                             Method used to encode the meter values before applying the digital signature algorithm.",
-        //             "type":        "string",
-        //             "maxLength":    50
+        //             "description": "Format used by the energy meter to encode the meter data. For example: OCMF or EDL.\r\n",
+        //             "type": "string",
+        //             "maxLength": 50
         //         },
         //         "publicKey": {
-        //             "description": "Signed_ Meter_ Value. Public_ Key. Base64String2500Type
-        //                             urn:x-enexis:ecdm:uid:1:572633
-        //                             *(2.1)* Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_",
-        //             "type":        "string",
-        //             "maxLength":    2500
+        //             "description": "*(2.1)* Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.\r\n",
+        //             "type": "string",
+        //             "maxLength": 2500
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
         //     },
         //     "required": [

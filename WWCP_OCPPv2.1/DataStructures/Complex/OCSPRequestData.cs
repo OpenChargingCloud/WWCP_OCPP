@@ -131,22 +131,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/HashAlgorithmEnumType"
         //         },
         //         "issuerNameHash": {
-        //             "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //             "description": "The hash of the issuer\u2019s distinguished name (DN), that must be calculated over the DER
+        //                             encoding of the issuer\u2019s name field in the certificate being checked.",
         //             "type": "string",
         //             "maxLength": 128
         //         },
         //         "issuerKeyHash": {
-        //             "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //             "description": "The hash of the DER encoded public key:
+        //                             the value (excluding tag and length) of the subject
+        //                             public key field in the issuer\u2019s certificate.",
         //             "type": "string",
         //             "maxLength": 128
         //         },
         //         "serialNumber": {
-        //             "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //             "description": "The string representation of the hexadecimal value of the serial number without the
+        //                             prefix \"0x\" and without leading zeroes.",
         //             "type": "string",
         //             "maxLength": 40
         //         },
         //         "responderURL": {
-        //             "description": "This contains the responder URL (Case insensitive). ",
+        //             "description": "This contains the responder URL (Case insensitive).",
         //             "type": "string",
         //             "maxLength": 2000
         //         },

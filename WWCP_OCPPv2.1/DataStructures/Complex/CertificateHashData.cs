@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create new certificate hash data.
+        /// Create new CertificateHashData.
         /// </summary>
         /// <param name="HashAlgorithm">The cryptographic hashing algorithm.</param>
         /// <param name="IssuerNameHash">The hashed value of the the issuers name [max 128]</param>
@@ -109,39 +109,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "CertificateHashDataType": {
-        //   "javaType": "CertificateHashData",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "CertificateHashData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "hashAlgorithm": {
+        //             "$ref": "#/definitions/HashAlgorithmEnumType"
+        //         },
+        //         "issuerNameHash": {
+        //             "description": "The hash of the issuer\u2019s distinguished
+        //                             name (DN), that must be calculated over the DER
+        //                             encoding of the issuer\u2019s name field in the certificate being checked.",
+        //             "type": "string",
+        //             "maxLength": 128
+        //         },
+        //         "issuerKeyHash": {
+        //             "description": "The hash of the DER encoded public key:
+        //                             the value (excluding tag and length) of the subject public key field in the issuer\u2019s certificate.",
+        //             "type": "string",
+        //             "maxLength": 128
+        //         },
+        //         "serialNumber": {
+        //             "description": "The string representation of the hexadecimal value of the serial number without the prefix \"0x\" and without leading zeroes.",
+        //             "type": "string",
+        //             "maxLength": 40
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "hashAlgorithm": {
-        //       "$ref": "#/definitions/HashAlgorithmEnumType"
-        //     },
-        //     "issuerNameHash": {
-        //       "description": "Hashed value of the Issuer DN (Distinguished Name).",
-        //       "type": "string",
-        //       "maxLength": 128
-        //     },
-        //     "issuerKeyHash": {
-        //       "description": "Hashed value of the issuers public key",
-        //       "type": "string",
-        //       "maxLength": 128
-        //     },
-        //     "serialNumber": {
-        //       "description": "The serial number of the certificate.",
-        //       "type": "string",
-        //       "maxLength": 40
-        //     }
-        //   },
-        //   "required": [
-        //     "hashAlgorithm",
-        //     "issuerNameHash",
-        //     "issuerKeyHash",
-        //     "serialNumber"
-        //   ]
+        //     "required": [
+        //         "hashAlgorithm",
+        //         "issuerNameHash",
+        //         "issuerKeyHash",
+        //         "serialNumber"
+        //     ]
         // }
 
         #endregion
@@ -149,10 +152,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomCertificateHashDataParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of certificate hash data.
+        /// Parse the given JSON representation of CertificateHashData.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCertificateHashDataParser">A delegate to parse custom certificate hash datas.</param>
+        /// <param name="CustomCertificateHashDataParser">A delegate to parse custom CertificateHashDatas.</param>
         public static CertificateHashData Parse(JObject                                            JSON,
                                                 CustomJObjectParserDelegate<CertificateHashData>?  CustomCertificateHashDataParser   = null)
         {
@@ -160,13 +163,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var certificateHashData,
                          out var errorResponse,
-                         CustomCertificateHashDataParser) &&
-                certificateHashData is not null)
+                         CustomCertificateHashDataParser))
             {
                 return certificateHashData;
             }
 
-            throw new ArgumentException("The given JSON representation of certificate hash data is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of CertificateHashData is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -178,10 +180,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of certificate hash data.
+        /// Try to parse the given JSON representation of CertificateHashData.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CertificateHashData">The parsed certificate hash data.</param>
+        /// <param name="CertificateHashData">The parsed CertificateHashData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        [NotNullWhen(true)]  out CertificateHashData?  CertificateHashData,
@@ -194,10 +196,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of certificate hash data.
+        /// Try to parse the given JSON representation of CertificateHashData.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CertificateHashData">The parsed certificate hash data.</param>
+        /// <param name="CertificateHashData">The parsed CertificateHashData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCertificateHashDataParser">A delegate to parse custom CertificateHashDatas.</param>
         public static Boolean TryParse(JObject                                            JSON,
@@ -293,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 CertificateHashData  = default;
-                ErrorResponse        = "The given JSON representation of certificate hash data is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of CertificateHashData is invalid: " + e.Message;
                 return false;
             }
 
@@ -306,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
+        /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom CertificateHashDatas.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateHashData>?  CustomCertificateHashDataSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
@@ -342,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="CertificateHashData1">Certificate hash data.</param>
-        /// <param name="CertificateHashData2">Other certificate hash data.</param>
+        /// <param name="CertificateHashData2">Other CertificateHashData.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (CertificateHashData? CertificateHashData1,
                                            CertificateHashData? CertificateHashData2)
@@ -368,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="CertificateHashData1">Certificate hash data.</param>
-        /// <param name="CertificateHashData2">Other certificate hash data.</param>
+        /// <param name="CertificateHashData2">Other CertificateHashData.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (CertificateHashData? CertificateHashData1,
                                            CertificateHashData? CertificateHashData2)
@@ -384,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two certificate hash datas for equality.
+        /// Compares two CertificateHashDatas for equality.
         /// </summary>
         /// <param name="Object">Certificate hash data to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -397,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(CertificateHashData)
 
         /// <summary>
-        /// Compares two certificate hash datas for equality.
+        /// Compares two CertificateHashDatas for equality.
         /// </summary>
         /// <param name="CertificateHashData">Certificate hash data to compare with.</param>
         public Boolean Equals(CertificateHashData? CertificateHashData)

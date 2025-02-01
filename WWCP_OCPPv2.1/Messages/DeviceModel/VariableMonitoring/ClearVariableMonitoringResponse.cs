@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "ClearMonitoringStatusEnumType": {
-        //             "description": "Result of the clear request for this monitor, identified by its Id.\r\n\r\n",
+        //             "description": "Result of the clear request for this monitor, identified by its Id.",
         //             "javaType": "ClearMonitoringStatusEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/ClearMonitoringStatusEnumType"
         //                 },
         //                 "id": {
-        //                     "description": "Id of the monitor of which a clear was requested.\r\n\r\n",
+        //                     "description": "Id of the monitor of which a clear was requested.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -182,18 +182,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "StatusInfoType": {
-        //             "description": "Element providing more information about the status.\r\n",
+        //             "description": "Element providing more information about the status.",
         //             "javaType": "StatusInfo",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "reasonCode": {
-        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
         //                 "additionalInfo": {
-        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "description": "Additional text to provide detailed information.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },

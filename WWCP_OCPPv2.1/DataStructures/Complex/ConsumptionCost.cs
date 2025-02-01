@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -84,33 +86,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ConsumptionCostType": {
-        //   "description": "Consumption_ Cost\r\nurn:x-oca:ocpp:uid:2:233259",
-        //   "javaType": "ConsumptionCost",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "ConsumptionCost",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "startValue": {
+        //             "description": "The lowest level of consumption that defines the starting point of this consumption block.
+        //                             The block interval extends to the start of the next interval.\r\n",
+        //             "type": "number"
+        //         },
+        //         "cost": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/CostType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 3
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "startValue": {
-        //       "description": "Consumption_ Cost. Start_ Value. Numeric\r\nurn:x-oca:ocpp:uid:1:569246\r\nThe lowest level of consumption that defines the starting point of this consumption block. The block interval extends to the start of the next interval.",
-        //       "type": "number"
-        //     },
-        //     "cost": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/CostType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 3
-        //     }
-        //   },
-        //   "required": [
-        //     "startValue",
-        //     "cost"
-        //   ]
+        //     "required": [
+        //         "startValue",
+        //         "cost"
+        //     ]
         // }
 
         #endregion
@@ -129,8 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var consumptionCost,
                          out var errorResponse,
-                         CustomConsumptionCostParser) &&
-                consumptionCost is not null)
+                         CustomConsumptionCostParser))
             {
                 return consumptionCost;
             }
@@ -151,9 +152,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ConsumptionCost">The parsed consumption cost.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out ConsumptionCost?  ConsumptionCost,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ConsumptionCost?  ConsumptionCost,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out ConsumptionCost,
@@ -168,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ConsumptionCost">The parsed consumption cost.</param>
         /// <param name="CustomConsumptionCostParser">An optional delegate to parse custom consumption costs.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out ConsumptionCost?                           ConsumptionCost,
-                                       out String?                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out ConsumptionCost?      ConsumptionCost,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
                                        CustomJObjectParserDelegate<ConsumptionCost>?  CustomConsumptionCostParser   = null)
         {
 

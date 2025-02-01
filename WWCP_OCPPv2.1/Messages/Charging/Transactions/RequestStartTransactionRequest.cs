@@ -890,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
-        /// <param name="CustomLimitBeyondSoCSerializer">A delegate to serialize custom charging schedules.</param>
+        /// <param name="CustomLimitAtSoCSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
@@ -921,7 +921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   = null,
                               CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  = null,
-                              CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   = null,
+                              CustomJObjectSerializerDelegate<LimitAtSoC>?                                      CustomLimitAtSoCSerializer                   = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           = null,
                               CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 = null,
@@ -938,7 +938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalSelectedService>?        CustomAdditionalServiceSerializer                = null,
 
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          = null,
@@ -966,7 +966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            ChargingProfile is not null
                                ? new JProperty("chargingProfile",    ChargingProfile.     ToJSON(CustomChargingProfileSerializer,
-                                                                                                 CustomLimitBeyondSoCSerializer,
+                                                                                                 CustomLimitAtSoCSerializer,
                                                                                                  CustomChargingScheduleSerializer,
                                                                                                  CustomChargingSchedulePeriodSerializer,
                                                                                                  CustomV2XFreqWattEntrySerializer,

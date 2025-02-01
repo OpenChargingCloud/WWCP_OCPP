@@ -133,58 +133,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetInstalledCertificateIdsRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetInstalledCertificateIdsRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "GetCertificateIdUseEnumType": {
+        //             "javaType": "GetCertificateIdUseEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "V2GRootCertificate",
+        //                 "MORootCertificate",
+        //                 "CSMSRootCertificate",
+        //                 "V2GCertificateChain",
+        //                 "ManufacturerRootCertificate",
+        //                 "OEMRootCertificate"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "GetCertificateIdUseEnumType": {
-        //       "javaType": "GetCertificateIdUseEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "V2GRootCertificate",
-        //         "MORootCertificate",
-        //         "CSMSRootCertificate",
-        //         "V2GCertificateChain",
-        //         "ManufacturerRootCertificate"
-        //       ]
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "certificateType": {
+        //             "description": "Indicates the type of certificates requested. When omitted, all certificate types are requested.",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/GetCertificateIdUseEnumType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "certificateType": {
-        //       "description": "Indicates the type of certificates requested. When omitted, all certificate types are requested.",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/GetCertificateIdUseEnumType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   }
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetInstalledCertificateIdsRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetInstalledCertificateIds request.
@@ -199,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom GetInstalledCertificateIds requests.</param>
         public static GetInstalledCertificateIdsRequest Parse(JObject                                                          JSON,
                                                               Request_Id                                                       RequestId,
-                                                              SourceRouting                                                Destination,
+                                                              SourceRouting                                                    Destination,
                                                               NetworkPath                                                      NetworkPath,
                                                               DateTime?                                                        RequestTimestamp                                = null,
                                                               TimeSpan?                                                        RequestTimeout                                  = null,
@@ -228,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetInstalledCertificateIdsRequest, out ErrorResponse, CustomGetInstalledCertificateIdsRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetInstalledCertificateIdsRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetInstalledCertificateIds request.
@@ -245,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom GetInstalledCertificateIds requests.</param>
         public static Boolean TryParse(JObject                                                          JSON,
                                        Request_Id                                                       RequestId,
-                                       SourceRouting                                                Destination,
+                                       SourceRouting                                                    Destination,
                                        NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out GetInstalledCertificateIdsRequest?      GetInstalledCertificateIdsRequest,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,

@@ -93,24 +93,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public DeleteCertificateResponse(CSMS.DeleteCertificateRequest  Request,
-                                         DeleteCertificateStatus        Status,
-                                         StatusInfo?                    StatusInfo            = null,
+        public DeleteCertificateResponse(DeleteCertificateRequest  Request,
+                                         DeleteCertificateStatus   Status,
+                                         StatusInfo?               StatusInfo            = null,
 
-                                         Result?                        Result                = null,
-                                         DateTime?                      ResponseTimestamp     = null,
+                                         Result?                   Result                = null,
+                                         DateTime?                 ResponseTimestamp     = null,
 
-                                         SourceRouting?                 Destination           = null,
-                                         NetworkPath?                   NetworkPath           = null,
+                                         SourceRouting?            Destination           = null,
+                                         NetworkPath?              NetworkPath           = null,
 
-                                         IEnumerable<KeyPair>?          SignKeys              = null,
-                                         IEnumerable<SignInfo>?         SignInfos             = null,
-                                         IEnumerable<Signature>?        Signatures            = null,
+                                         IEnumerable<KeyPair>?     SignKeys              = null,
+                                         IEnumerable<SignInfo>?    SignInfos             = null,
+                                         IEnumerable<Signature>?   Signatures            = null,
 
-                                         CustomData?                    CustomData            = null,
+                                         CustomData?               CustomData            = null,
 
-                                         SerializationFormats?          SerializationFormat   = null,
-                                         CancellationToken              CancellationToken     = default)
+                                         SerializationFormats?     SerializationFormat   = null,
+                                         CancellationToken         CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -150,81 +150,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:DeleteCertificateResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:DeleteCertificateResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "DeleteCertificateStatusEnumType": {
+        //             "description": "Charging Station indicates if it can process the request.",
+        //             "javaType": "DeleteCertificateStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Failed",
+        //                 "NotFound"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "DeleteCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if it can process the request.",
-        //       "javaType": "DeleteCertificateStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Failed",
-        //         "NotFound"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/DeleteCertificateStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/DeleteCertificateStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomDeleteCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a DeleteCertificate response.
@@ -232,9 +232,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The DeleteCertificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom DeleteCertificate responses.</param>
-        public static DeleteCertificateResponse Parse(CSMS.DeleteCertificateRequest                            Request,
+        public static DeleteCertificateResponse Parse(DeleteCertificateRequest                                 Request,
                                                       JObject                                                  JSON,
-                                                      SourceRouting                                        Destination,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                ResponseTimestamp                       = null,
                                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out DeleteCertificateResponse, out ErrorResponse, CustomDeleteCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out DeleteCertificateResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteCertificate response.
@@ -275,9 +275,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="DeleteCertificateResponse">The parsed DeleteCertificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom DeleteCertificate responses.</param>
-        public static Boolean TryParse(CSMS.DeleteCertificateRequest                            Request,
+        public static Boolean TryParse(DeleteCertificateRequest                                 Request,
                                        JObject                                                  JSON,
-                                       SourceRouting                                        Destination,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out DeleteCertificateResponse?      DeleteCertificateResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "DeleteCertificate status",
-                                         DeleteCertificateStatusExtensions.TryParse,
+                                         DeleteCertificateStatus.TryParse,
                                          out DeleteCertificateStatus Status,
                                          out ErrorResponse))
                 {
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("status",       Status.              AsText()),
+                                 new JProperty("status",       Status.              ToString()),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.          ToJSON(CustomStatusInfoSerializer,
@@ -442,28 +442,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The DeleteCertificate failed because of a request error.
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
-        public static DeleteCertificateResponse RequestError(CSMS.DeleteCertificateRequest  Request,
-                                                             EventTracking_Id               EventTrackingId,
-                                                             ResultCode                     ErrorCode,
-                                                             String?                        ErrorDescription    = null,
-                                                             JObject?                       ErrorDetails        = null,
-                                                             DateTime?                      ResponseTimestamp   = null,
+        public static DeleteCertificateResponse RequestError(DeleteCertificateRequest  Request,
+                                                             EventTracking_Id          EventTrackingId,
+                                                             ResultCode                ErrorCode,
+                                                             String?                   ErrorDescription    = null,
+                                                             JObject?                  ErrorDetails        = null,
+                                                             DateTime?                 ResponseTimestamp   = null,
 
-                                                             SourceRouting?                 Destination         = null,
-                                                             NetworkPath?                   NetworkPath         = null,
+                                                             SourceRouting?            Destination         = null,
+                                                             NetworkPath?              NetworkPath         = null,
 
-                                                             IEnumerable<KeyPair>?          SignKeys            = null,
-                                                             IEnumerable<SignInfo>?         SignInfos           = null,
-                                                             IEnumerable<Signature>?        Signatures          = null,
+                                                             IEnumerable<KeyPair>?     SignKeys            = null,
+                                                             IEnumerable<SignInfo>?    SignInfos           = null,
+                                                             IEnumerable<Signature>?   Signatures          = null,
 
-                                                             CustomData?                    CustomData          = null)
+                                                             CustomData?               CustomData          = null)
 
             => new (
 
                    Request,
                    DeleteCertificateStatus.Failed,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -487,12 +487,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static DeleteCertificateResponse FormationViolation(CSMS.DeleteCertificateRequest  Request,
-                                                                   String                         ErrorDescription)
+        public static DeleteCertificateResponse FormationViolation(DeleteCertificateRequest  Request,
+                                                                   String                    ErrorDescription)
 
             => new (Request,
                     DeleteCertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -502,12 +502,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static DeleteCertificateResponse SignatureError(CSMS.DeleteCertificateRequest  Request,
-                                                               String                         ErrorDescription)
+        public static DeleteCertificateResponse SignatureError(DeleteCertificateRequest  Request,
+                                                               String                    ErrorDescription)
 
             => new (Request,
                     DeleteCertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -517,12 +517,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static DeleteCertificateResponse Failed(CSMS.DeleteCertificateRequest  Request,
-                                                       String?                        Description   = null)
+        public static DeleteCertificateResponse Failed(DeleteCertificateRequest  Request,
+                                                       String?                   Description   = null)
 
             => new (Request,
                     DeleteCertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -530,12 +530,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DeleteCertificateResponse ExceptionOccured(CSMS.DeleteCertificateRequest  Request,
-                                                                 Exception                      Exception)
+        public static DeleteCertificateResponse ExceptionOccured(DeleteCertificateRequest  Request,
+                                                                 Exception                 Exception)
 
             => new (Request,
                     DeleteCertificateStatus.Failed,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -640,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => Status.AsText();
+            => Status.ToString();
 
         #endregion
 

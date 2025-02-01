@@ -860,67 +860,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #region GetCRLRequest                         (GetCRLRequestId, CertificateHashData, ...)
 
-        /// <summary>
-        /// Get a certificate revocation list from CSMS for the specified certificate.
-        /// </summary>
-        /// 
-        /// <param name="GetCRLRequestId">The identification of this request.</param>
-        /// <param name="CertificateHashData">Certificate hash data.</param>
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<GetCRLResponse>
+        ///// <summary>
+        ///// Get a certificate revocation list from CSMS for the specified certificate.
+        ///// </summary>
+        ///// 
+        ///// <param name="GetCRLRequestId">The identification of this request.</param>
+        ///// <param name="CertificateHashData">Certificate hash data.</param>
+        ///// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        ///// 
+        ///// <param name="RequestId">An optional request identification.</param>
+        ///// <param name="RequestTimestamp">An optional request timestamp.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        //public static Task<GetCRLResponse>
 
-            GetCRLRequest(this ILocalControllerNode     LocalController,
+        //    GetCRLRequest(this ILocalControllerNode     LocalController,
 
-                          UInt32                        GetCRLRequestId,
-                          CertificateHashData           CertificateHashData,
+        //                  UInt32                        GetCRLRequestId,
+        //                  CertificateHashData           CertificateHashData,
 
-                          CustomData?                   CustomData            = null,
+        //                  CustomData?                   CustomData            = null,
 
-                          SourceRouting?                Destination           = null,
-                          NetworkPath?                  NetworkPath           = null,
+        //                  SourceRouting?                Destination           = null,
+        //                  NetworkPath?                  NetworkPath           = null,
 
-                          IEnumerable<KeyPair>?         SignKeys              = null,
-                          IEnumerable<SignInfo>?        SignInfos             = null,
-                          IEnumerable<Signature>?       Signatures            = null,
+        //                  IEnumerable<KeyPair>?         SignKeys              = null,
+        //                  IEnumerable<SignInfo>?        SignInfos             = null,
+        //                  IEnumerable<Signature>?       Signatures            = null,
 
-                          Request_Id?                   RequestId             = null,
-                          DateTime?                     RequestTimestamp      = null,
-                          TimeSpan?                     RequestTimeout        = null,
-                          EventTracking_Id?             EventTrackingId       = null,
-                          SerializationFormats?         SerializationFormat   = null,
-                          CancellationToken             CancellationToken     = default)
+        //                  Request_Id?                   RequestId             = null,
+        //                  DateTime?                     RequestTimestamp      = null,
+        //                  TimeSpan?                     RequestTimeout        = null,
+        //                  EventTracking_Id?             EventTrackingId       = null,
+        //                  SerializationFormats?         SerializationFormat   = null,
+        //                  CancellationToken             CancellationToken     = default)
 
 
-                => LocalController.OCPP.OUT.GetCRL(
-                       new GetCRLRequest(
+        //        => LocalController.OCPP.OUT.GetCRL(
+        //               new GetCRLRequest(
 
-                           Destination ?? SourceRouting.CSMS,
+        //                   Destination ?? SourceRouting.CSMS,
 
-                           GetCRLRequestId,
-                           CertificateHashData,
+        //                   GetCRLRequestId,
+        //                   CertificateHashData,
 
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
+        //                   SignKeys,
+        //                   SignInfos,
+        //                   Signatures,
 
-                           CustomData,
+        //                   CustomData,
 
-                           RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath      ?? NetworkPath.From(LocalController.Id),
-                           SerializationFormat,
-                           CancellationToken
+        //                   RequestId        ?? LocalController.OCPP.NextRequestId,
+        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
+        //                   EventTrackingId  ?? EventTracking_Id.New,
+        //                   NetworkPath      ?? NetworkPath.From(LocalController.Id),
+        //                   SerializationFormat,
+        //                   CancellationToken
 
-                       )
-                   );
+        //               )
+        //           );
 
         #endregion
 
@@ -2319,14 +2319,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region GetLog                      (Destination, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                      (Destination, LogRequestId, LogType, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Destination">The local controller identification.</param>
-        /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
+        /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
@@ -2343,8 +2343,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             GetLog(this ILocalControllerNode     LocalController,
                    SourceRouting                 Destination,
-                   LogType                       LogType,
                    Int32                         LogRequestId,
+                   LogType                       LogType,
                    LogParameters                 Log,
                    Byte?                         Retries               = null,
                    TimeSpan?                     RetryInterval         = null,
@@ -2368,8 +2368,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                 => LocalController.OCPP.OUT.GetLog(
                        new GetLogRequest(
                            Destination,
-                           LogType,
                            LogRequestId,
+                           LogType,
                            Log,
                            Retries,
                            RetryInterval,

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -88,36 +90,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "SalesTariffEntryType": {
-        //   "description": "Sales_ Tariff_ Entry\r\nurn:x-oca:ocpp:uid:2:233271",
-        //   "javaType": "SalesTariffEntry",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "SalesTariffEntry",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "relativeTimeInterval": {
+        //             "$ref": "#/definitions/RelativeTimeIntervalType"
+        //         },
+        //         "ePriceLevel": {
+        //             "description": "Defines the price level of this SalesTariffEntry (referring to NumEPriceLevels).
+        //                             Small values for the EPriceLevel represent a cheaper TariffEntry.
+        //                             Large values for the EPriceLevel represent a more expensive TariffEntry.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "consumptionCost": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ConsumptionCostType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 3
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "relativeTimeInterval": {
-        //       "$ref": "#/definitions/RelativeTimeIntervalType"
-        //     },
-        //     "ePriceLevel": {
-        //       "description": "Sales_ Tariff_ Entry. E_ Price_ Level. Unsigned_ Integer\r\nurn:x-oca:ocpp:uid:1:569281\r\nDefines the price level of this SalesTariffEntry (referring to NumEPriceLevels). Small values for the EPriceLevel represent a cheaper TariffEntry. Large values for the EPriceLevel represent a more expensive TariffEntry.",
-        //       "type": "integer",
-        //       "minimum": 0.0
-        //     },
-        //     "consumptionCost": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ConsumptionCostType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 3
-        //     }
-        //   },
-        //   "required": [
-        //     "relativeTimeInterval"
-        //   ]
+        //     "required": [
+        //         "relativeTimeInterval"
+        //     ]
         // }
 
         #endregion
@@ -136,8 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var salesTariffEntry,
                          out var errorResponse,
-                         CustomSalesTariffEntryParser) &&
-                salesTariffEntry is not null)
+                         CustomSalesTariffEntryParser))
             {
                 return salesTariffEntry;
             }
@@ -158,9 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SalesTariffEntry">The parsed connector type.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out SalesTariffEntry?  SalesTariffEntry,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out SalesTariffEntry?  SalesTariffEntry,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
 
             => TryParse(JSON,
                         out SalesTariffEntry,
@@ -175,8 +177,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SalesTariffEntry">The parsed connector type.</param>
         /// <param name="CustomSalesTariffEntryParser">An optional delegate to parse custom sales tariff entries.</param>
         public static Boolean TryParse(JObject                                         JSON,
-                                       out SalesTariffEntry?                           SalesTariffEntry,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out SalesTariffEntry?      SalesTariffEntry,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<SalesTariffEntry>?  CustomSalesTariffEntryParser   = null)
         {
 
@@ -244,10 +246,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                SalesTariffEntry = new SalesTariffEntry(RelativeTimeInterval,
-                                                        EPriceLevel,
-                                                        ConsumptionCosts,
-                                                        CustomData);
+                SalesTariffEntry = new SalesTariffEntry(
+                                       RelativeTimeInterval,
+                                       EPriceLevel,
+                                       ConsumptionCosts,
+                                       CustomData
+                                   );
 
                 if (CustomSalesTariffEntryParser is not null)
                     SalesTariffEntry = CustomSalesTariffEntryParser(JSON,

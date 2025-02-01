@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "HashAlgorithmEnumType": {
-        //             "description": "Used algorithms for the hashes provided.\r\n",
+        //             "description": "Used algorithms for the hashes provided.",
         //             "javaType": "HashAlgorithmEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -228,18 +228,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             ]
         //         },
         //         "AdditionalInfoType": {
-        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //             "javaType": "AdditionalInfo",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "additionalIdToken": {
-        //                     "description": "*(2.1)* This field specifies the additional IdToken.\r\n",
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
         //                     "type": "string",
         //                     "maxLength": 255
         //                 },
         //                 "type": {
-        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.\r\n\r\n",
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
@@ -261,17 +261,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //                     "$ref": "#/definitions/HashAlgorithmEnumType"
         //                 },
         //                 "issuerNameHash": {
-        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.\r\n\r\n",
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
         //                     "type": "string",
         //                     "maxLength": 128
         //                 },
         //                 "issuerKeyHash": {
-        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.\r\n",
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
         //                     "type": "string",
         //                     "maxLength": 128
         //                 },
         //                 "serialNumber": {
-        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.\r\n",
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
         //                     "type": "string",
         //                     "maxLength": 40
         //                 },
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             ]
         //         },
         //         "IdTokenType": {
-        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
         //             "javaType": "IdToken",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -301,12 +301,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //                     "minItems": 1
         //                 },
         //                 "idToken": {
-        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.\r\n",
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //                     "type": "string",
         //                     "maxLength": 255
         //                 },
         //                 "type": {
-        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.\r\n",
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
@@ -344,20 +344,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "$ref": "#/definitions/IdTokenType"
         //         },
         //         "requestId": {
-        //             "description": "The Id of the request.\r\n\r\n",
+        //             "description": "The Id of the request.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "report": {
-        //             "description": "Flag indicating whether the Charging Station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.\r\n",
+        //             "description": "Flag indicating whether the Charging Station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.",
         //             "type": "boolean"
         //         },
         //         "clear": {
-        //             "description": "Flag indicating whether the Charging Station should clear all information about the customer referred to.\r\n",
+        //             "description": "Flag indicating whether the Charging Station should clear all information about the customer referred to.",
         //             "type": "boolean"
         //         },
         //         "customerIdentifier": {
-        //             "description": "A (e.g. vendor specific) identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.\r\nOne of the possible identifiers (customerIdentifier, customerIdToken or customerCertificate) should be in the request message.\r\n",
+        //             "description": "A (e.g. vendor specific) identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.\r\nOne of the possible identifiers (customerIdentifier, customerIdToken or customerCertificate) should be in the request message.",
         //             "type": "string",
         //             "maxLength": 64
         //         },

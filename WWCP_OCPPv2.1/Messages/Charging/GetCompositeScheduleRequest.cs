@@ -157,62 +157,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetCompositeScheduleRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetCompositeScheduleRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ChargingRateUnitEnumType": {
+        //             "description": "Can be used to force a power or current profile.",
+        //             "javaType": "ChargingRateUnitEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "W",
+        //                 "A"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ChargingRateUnitEnumType": {
-        //       "description": "Can be used to force a power or current profile.",
-        //       "javaType": "ChargingRateUnitEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "W",
-        //         "A"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "duration": {
+        //             "description": "Length of the requested schedule in seconds.",
+        //             "type": "integer"
+        //         },
+        //         "chargingRateUnit": {
+        //             "$ref": "#/definitions/ChargingRateUnitEnumType"
+        //         },
+        //         "evseId": {
+        //             "description": "The ID of the EVSE for which the schedule is requested. When evseid=0, the Charging Station will calculate the expected consumption for the grid connection.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "duration": {
-        //       "description": "Length of the requested schedule in seconds.",
-        //       "type": "integer"
-        //     },
-        //     "chargingRateUnit": {
-        //       "$ref": "#/definitions/ChargingRateUnitEnumType"
-        //     },
-        //     "evseId": {
-        //       "description": "The ID of the EVSE for which the schedule is requested. When evseid=0, the Charging Station will calculate the expected consumption for the grid connection.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "duration",
-        //     "evseId"
-        //   ]
+        //     "required": [
+        //         "duration",
+        //         "evseId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetCompositeSchedule request.
@@ -227,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom GetCompositeSchedule requests.</param>
         public static GetCompositeScheduleRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        SourceRouting                                          Destination,
+                                                        SourceRouting                                              Destination,
                                                         NetworkPath                                                NetworkPath,
                                                         DateTime?                                                  RequestTimestamp                          = null,
                                                         TimeSpan?                                                  RequestTimeout                            = null,
@@ -256,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetCompositeSchedule request.
@@ -273,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom GetCompositeSchedule requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       SourceRouting                                          Destination,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out GetCompositeScheduleRequest?      GetCompositeScheduleRequest,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,

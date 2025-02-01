@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// shall apply the charging schedule without additional limits.
         /// </summary>
         [Optional]
-        public LimitBeyondSoC?                      LimitBeyondSoC             { get; }
+        public LimitAtSoC?                          LimitAtSoC                 { get; }
 
         /// <summary>
         /// Optional sales tariff associated with this charging schedule.
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String?                              DigestValue                { get; }
 
         /// <summary>
-        /// The power tolerance when following the EV power profile.
+        /// The power tolerance when following the EVPowerProfile.
         /// </summary>
         public Decimal?                             PowerTolerance             { get; }
 
@@ -153,14 +153,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Duration">Optional duration of the charging schedule. If the duration is left empty, the last period will continue indefinitely or until end of the transaction if chargingProfilePurpose = TxProfile.</param>
         /// <param name="MinChargingRate">The optional minimal charging rate supported by the EV.</param>
         /// <param name="UseLocalTime">Optional indication whether to ignore the time zone offset in the dateTime fields of the charging schedule and to use the unqualified local time at the charging station instead.</param>
-        /// <param name="RandomizedDelay">Optional indication whether to delay the start of each charging schedule period by a randomly chosen number of seconds between 0 and randomizedDelay.</param>
-        /// <param name="LimitBeyondSoC">When defined, any setpoint/limit in the charging schedule must be capped by this charging rate limit when state-of-charge measurements are greater than or equal to the state-of-charge limit.</param>
+        /// <param name="RandomizedDelay">Optional indication whether to delay the start of each charging schedule period by a randomly chosen number of seconds between 0 and randomizedDelay. Only allowed for TxProfile and TxDefaultProfile.</param>
+        /// <param name="LimitAtSoC">When defined, any setpoint/limit in the charging schedule must be capped by this charging rate limit when state-of-charge measurements are greater than or equal to the state-of-charge limit.</param>
         /// <param name="SalesTariff">Optional sales tariff associated with this charging schedule.</param>
         /// <param name="AbsolutePriceSchedule">An ISO 15118-20 absolute price schedule.</param>
         /// <param name="PriceLevelSchedule">An ISO 15118-20 price level schedule.</param>
         /// <param name="SignatureId">An identification of this element for referencing in a digital signature.</param>
         /// <param name="DigestValue">An Base64-encoded cryptographical hash value (SHA256 for 15118-2, SHA512 for 15118-20) of the EXI price schedule element.</param>
-        /// <param name="PowerTolerance">The power tolerance when following the EV power profile.</param>
+        /// <param name="PowerTolerance">The power tolerance when following the EVPowerProfile.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingSchedule(ChargingSchedule_Id                  Id,
                                 ChargingRateUnits                    ChargingRateUnit,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ChargingRateValue?                   MinChargingRate         = null,
                                 Boolean?                             UseLocalTime            = null,
                                 TimeSpan?                            RandomizedDelay         = null,
-                                LimitBeyondSoC?                      LimitBeyondSoC          = null,
+                                LimitAtSoC?                          LimitAtSoC              = null,
                                 SalesTariff?                         SalesTariff             = null,
                                 AbsolutePriceSchedule?               AbsolutePriceSchedule   = null,
                                 PriceLevelSchedule?                  PriceLevelSchedule      = null,
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MinChargingRate          = MinChargingRate;
             this.UseLocalTime             = UseLocalTime;
             this.RandomizedDelay          = RandomizedDelay;
-            this.LimitBeyondSoC           = LimitBeyondSoC;
+            this.LimitAtSoC               = LimitAtSoC;
             this.SalesTariff              = SalesTariff;
             this.AbsolutePriceSchedule    = AbsolutePriceSchedule;
             this.PriceLevelSchedule       = PriceLevelSchedule;
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                           (UseLocalTime?.          GetHashCode() ?? 0) * 31 ^
                           (RandomizedDelay?.       GetHashCode() ?? 0) * 29 ^
-                          (LimitBeyondSoC?.        GetHashCode() ?? 0) * 23 ^
+                          (LimitAtSoC?.            GetHashCode() ?? 0) * 23 ^
                           (SalesTariff?.           GetHashCode() ?? 0) * 19 ^
                           (AbsolutePriceSchedule?. GetHashCode() ?? 0) * 13 ^
                           (PriceLevelSchedule?.    GetHashCode() ?? 0) * 11 ^
@@ -232,10 +232,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Charging schedule structure defines a list of charging periods, as used in: NotifyEVChargingScheduleRequest and ChargingProfileType.
+        //                     When used in a NotifyEVChargingScheduleRequest only _duration_ and _chargingSchedulePeriod_ are relevant and _chargingRateUnit_
+        //                     must be 'W'.
+        //                     An ISO 15118-20 session may provide either an _absolutePriceSchedule_ or a _priceLevelSchedule_.
+        //                     An ISO 15118-2 session can only provide a_salesTariff_ element.
+        //                     The field _digestValue_ is used when price schedule or sales tariff are signed.
+        //
+        //                     image::images/ChargingSchedule-Simple.png[]\r\n\r\n\r\n",
+        //
+        //     "javaType": "ChargingSchedule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "type": "integer"
+        //         },
+        //         "limitAtSoC": {
+        //             "$ref": "#/definitions/LimitAtSoCType"
+        //         },
+        //         "startSchedule": {
+        //             "description": "Starting point of an absolute schedule or recurring schedule.\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "duration": {
+        //             "description": "Duration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction in case startSchedule is absent.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "chargingRateUnit": {
+        //             "$ref": "#/definitions/ChargingRateUnitEnumType"
+        //         },
+        //         "minChargingRate": {
+        //             "description": "Minimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. \r\n",
+        //             "type": "number"
+        //         },
+        //         "powerTolerance": {
+        //             "description": "*(2.1)* Power tolerance when following EVPowerProfile.\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "signatureId": {
+        //             "description": "*(2.1)* Id of this element for referencing in a signature.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "digestValue": {
+        //             "description": "*(2.1)* Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.\r\n",
+        //             "type": "string",
+        //             "maxLength": 88
+        //         },
+        //         "useLocalTime": {
+        //             "description": "*(2.1)* Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.\r\n\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "chargingSchedulePeriod": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ChargingSchedulePeriodType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 1024
+        //         },
+        //         "randomizedDelay": {
+        //             "description": "*(2.1)* Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.\r\n\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "salesTariff": {
+        //             "$ref": "#/definitions/SalesTariffType"
+        //         },
+        //         "absolutePriceSchedule": {
+        //             "$ref": "#/definitions/AbsolutePriceScheduleType"
+        //         },
+        //         "priceLevelSchedule": {
+        //             "$ref": "#/definitions/PriceLevelScheduleType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "id",
+        //         "chargingRateUnit",
+        //         "chargingSchedulePeriod"
+        //     ]
+        // }
 
         #endregion
 
@@ -416,8 +501,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("limitBeyondSoC",
                                            "limit beyond state-of-charge",
-                                           OCPPv2_1.LimitBeyondSoC.TryParse,
-                                           out LimitBeyondSoC? LimitBeyondSoC,
+                                           OCPPv2_1.LimitAtSoC.TryParse,
+                                           out LimitAtSoC? LimitBeyondSoC,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -559,13 +644,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomChargingScheduleSerializer = null, CustomLimitBeyondSoCSerializer = null, ...)
+        #region ToJSON(CustomChargingScheduleSerializer = null, CustomLimitAtSoCSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
-        /// <param name="CustomLimitBeyondSoCSerializer">A delegate to serialize custom charging schedules.</param>
+        /// <param name="CustomLimitAtSoCSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
         /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X Signal-Watt entrys.</param>
@@ -589,7 +674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedule>?         CustomChargingScheduleSerializer          = null,
-                              CustomJObjectSerializerDelegate<LimitBeyondSoC>?           CustomLimitBeyondSoCSerializer            = null,
+                              CustomJObjectSerializerDelegate<LimitAtSoC>?           CustomLimitAtSoCSerializer            = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?   CustomChargingSchedulePeriodSerializer    = null,
                               CustomJObjectSerializerDelegate<V2XFreqWattEntry>?         CustomV2XFreqWattEntrySerializer          = null,
                               CustomJObjectSerializerDelegate<V2XSignalWattEntry>?       CustomV2XSignalWattEntrySerializer        = null,
@@ -606,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<TaxRule>?                  CustomTaxRuleSerializer                   = null,
                               CustomJObjectSerializerDelegate<OverstayRuleList>?         CustomOverstayRuleListSerializer          = null,
                               CustomJObjectSerializerDelegate<OverstayRule>?             CustomOverstayRuleSerializer              = null,
-                              CustomJObjectSerializerDelegate<AdditionalService>?        CustomAdditionalServiceSerializer         = null,
+                              CustomJObjectSerializerDelegate<AdditionalSelectedService>?        CustomAdditionalServiceSerializer         = null,
 
                               CustomJObjectSerializerDelegate<PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer        = null,
                               CustomJObjectSerializerDelegate<PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer   = null,
@@ -640,8 +725,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("randomizedDelay",          (Int32) RandomizedDelay.Value.TotalSeconds)
                                : null,
 
-                           LimitBeyondSoC is not null
-                               ? new JProperty("limitBeyondSoC",           LimitBeyondSoC.       ToJSON(CustomLimitBeyondSoCSerializer,
+                           LimitAtSoC is not null
+                               ? new JProperty("limitBeyondSoC",           LimitAtSoC.       ToJSON(CustomLimitAtSoCSerializer,
                                                                                                         CustomCustomDataSerializer))
                                : null,
 
@@ -774,8 +859,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                Id.              Equals(ChargingSchedule.Id)               &&
                ChargingRateUnit.Equals(ChargingSchedule.ChargingRateUnit) &&
 
-             ((LimitBeyondSoC        is     null &&  ChargingSchedule.LimitBeyondSoC        is     null) ||
-              (LimitBeyondSoC        is not null &&  ChargingSchedule.LimitBeyondSoC        is not null && LimitBeyondSoC.       Equals(ChargingSchedule.LimitBeyondSoC)))           &&
+             ((LimitAtSoC        is     null &&  ChargingSchedule.LimitAtSoC        is     null) ||
+              (LimitAtSoC        is not null &&  ChargingSchedule.LimitAtSoC        is not null && LimitAtSoC.       Equals(ChargingSchedule.LimitAtSoC)))           &&
 
                ChargingSchedulePeriods.Count().Equals(ChargingSchedule.ChargingSchedulePeriods.Count())     &&
                ChargingSchedulePeriods.All(chargingSchedulePeriod => ChargingSchedule.ChargingSchedulePeriods.Contains(chargingSchedulePeriod)) &&
@@ -832,15 +917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   Id,
-                   " / ",
-                   ChargingRateUnit.AsText(),
-
-                   " with ", ChargingSchedulePeriods.Count(), " charging schedule periods"
-
-               );
+            => $"{Id} / {ChargingRateUnit.AsText()} with {ChargingSchedulePeriods.Count()} charging schedule periods";
 
         #endregion
 

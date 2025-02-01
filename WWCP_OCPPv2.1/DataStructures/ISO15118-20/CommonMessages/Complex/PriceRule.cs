@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -38,37 +40,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// The power range start.
         /// </summary>
         [Mandatory]
-        public Decimal         PowerRangeStart                  { get; }
+        public RationalNumber     PowerRangeStart                  { get; }
 
         /// <summary>
         /// The energy fee.
         /// </summary>
         [Mandatory]
-        public Decimal         EnergyFee                        { get; }
+        public RationalNumber     EnergyFee                        { get; }
 
         /// <summary>
         /// The optional parking fee.
         /// </summary>
         [Optional]
-        public Decimal?        ParkingFee                       { get; }
+        public RationalNumber?    ParkingFee                       { get; }
 
         /// <summary>
         /// The optional parking fee period.
         /// </summary>
         [Optional]
-        public TimeSpan?       ParkingFeePeriod                 { get; }
+        public TimeSpan?          ParkingFeePeriod                 { get; }
 
         /// <summary>
         /// The optional carbon dioxide emission.
         /// </summary>
         [Optional]
-        public UInt16?         CarbonDioxideEmission            { get; }
+        public UInt16?            CarbonDioxideEmission            { get; }
 
         /// <summary>
         /// The optional renewable generation percentage.
         /// </summary>
         [Optional]
-        public PercentageByte?  RenewableGenerationPercentage    { get; }
+        public PercentageDouble?  RenewableGenerationPercentage    { get; }
 
         #endregion
 
@@ -83,12 +85,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ParkingFeePeriod">An optional parking fee period.</param>
         /// <param name="CarbonDioxideEmission">An optional carbon dioxide emission.</param>
         /// <param name="RenewableGenerationPercentage">An optional renewable generation percentage.</param>
-        public PriceRule(Decimal         PowerRangeStart,
-                         Decimal         EnergyFee,
-                         Decimal?        ParkingFee                      = null,
-                         TimeSpan?       ParkingFeePeriod                = null,
-                         UInt16?         CarbonDioxideEmission           = null,
-                         PercentageByte?  RenewableGenerationPercentage   = null)
+        public PriceRule(RationalNumber     PowerRangeStart,
+                         RationalNumber     EnergyFee,
+                         RationalNumber?    ParkingFee                      = null,
+                         TimeSpan?          ParkingFeePeriod                = null,
+                         UInt16?            CarbonDioxideEmission           = null,
+                         PercentageDouble?  RenewableGenerationPercentage   = null)
         {
 
             this.PowerRangeStart                = PowerRangeStart;
@@ -117,10 +119,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "javaType": "PriceRule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "parkingFeePeriod": {
+        //             "description": "The duration of the parking fee period (in seconds).\r\nWhen the time enters into a ParkingFeePeriod, the ParkingFee will apply to the session. .\r\n",
+        //             "type": "integer"
+        //         },
+        //         "carbonDioxideEmission": {
+        //             "description": "Number of grams of CO2 per kWh.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "renewableGenerationPercentage": {
+        //             "description": "Percentage of the power that is created by renewable resources.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "energyFee": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "parkingFee": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "powerRangeStart": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "energyFee",
+        //         "powerRangeStart"
+        //     ]
+        // }
 
         #endregion
 
@@ -138,8 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var priceRule,
                          out var errorResponse,
-                         CustomPriceRuleParser) &&
-                priceRule is not null)
+                         CustomPriceRuleParser))
             {
                 return priceRule;
             }
@@ -161,9 +199,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PriceRule">The parsed price rule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject         JSON,
-                                       out PriceRule?  PriceRule,
-                                       out String?     ErrorResponse)
+        public static Boolean TryParse(JObject                              JSON,
+                                       [NotNullWhen(true)]  out PriceRule?  PriceRule,
+                                       [NotNullWhen(false)] out String?     ErrorResponse)
 
             => TryParse(JSON,
                         out PriceRule,
@@ -179,8 +217,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPriceRuleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                  JSON,
-                                       out PriceRule?                           PriceRule,
-                                       out String?                              ErrorResponse,
+                                       [NotNullWhen(true)]  out PriceRule?      PriceRule,
+                                       [NotNullWhen(false)] out String?         ErrorResponse,
                                        CustomJObjectParserDelegate<PriceRule>?  CustomPriceRuleParser)
         {
 
@@ -191,10 +229,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region PowerRangeStart                  [mandatory]
 
-                if (!JSON.ParseMandatory("powerRangeStart",
-                                         "power range start",
-                                         out Decimal PowerRangeStart,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("powerRangeStart",
+                                             "power range start",
+                                             RationalNumber.TryParse,
+                                             out RationalNumber? PowerRangeStart,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -203,10 +242,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region EnergyFee                        [mandatory]
 
-                if (!JSON.ParseMandatory("energyFee",
-                                         "energy fee",
-                                         out Decimal EnergyFee,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("energyFee",
+                                             "energy fee",
+                                             RationalNumber.TryParse,
+                                             out RationalNumber? EnergyFee,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -215,10 +255,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region ParkingFee                       [optional]
 
-                if (JSON.ParseOptional("parkingFee",
-                                       "parking fee",
-                                       out Decimal? ParkingFee,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("parkingFee",
+                                           "parking fee",
+                                           RationalNumber.TryParse,
+                                           out RationalNumber? ParkingFee,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -256,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 if (JSON.ParseOptional("renewableGenerationPercentage",
                                        "renewable generation percentage",
-                                       out PercentageByte? RenewableGenerationPercentage,
+                                       out PercentageDouble? RenewableGenerationPercentage,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -304,15 +345,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                 new JProperty("powerRangeStart",                 PowerRangeStart),
-                                 new JProperty("energyFee",                       EnergyFee),
+                                 new JProperty("powerRangeStart",                 PowerRangeStart.ToJSON()),
+                                 new JProperty("energyFee",                       EnergyFee.      ToJSON()),
 
                            ParkingFee is not null
-                               ? new JProperty("parkingFee",                      ParkingFee.Value)
+                               ? new JProperty("parkingFee",                      ParkingFee.     ToJSON())
                                : null,
 
                            ParkingFeePeriod.HasValue
-                               ? new JProperty("parkingFeePeriod",                (UInt64) Math.Round(ParkingFeePeriod.Value.TotalSeconds, 0))
+                               ? new JProperty("parkingFeePeriod",                (UInt32) Math.Round(ParkingFeePeriod.Value.TotalSeconds, 0))
                                : null,
 
                            CarbonDioxideEmission.HasValue
@@ -320,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                : null,
 
                            RenewableGenerationPercentage.HasValue
-                               ? new JProperty("renewableGenerationPercentage",   RenewableGenerationPercentage.Value)
+                               ? new JProperty("renewableGenerationPercentage",   RenewableGenerationPercentage.Value.Value)
                                : null
 
                        );

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -40,49 +42,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// The unique identification of the tax rule.
         /// </summary>
         [Mandatory]
-        public TaxRule_Id  TaxRuleId                      { get; }
+        public TaxRule_Id      TaxRuleId                      { get; }
 
         /// <summary>
-        /// The optional name of the tax rule.
+        /// The optional human readable string to identify the tax rule.
         /// </summary>
         [Optional]
-        public Name?       TaxRuleName                    { get; }
+        public String?         TaxRuleName                    { get; }
 
         /// <summary>
         /// The tax rate.
         /// </summary>
         [Mandatory]
-        public Decimal     TaxRate                        { get; }
+        public RationalNumber  TaxRate                        { get; }
 
         /// <summary>
         /// Whether the tax is included within the price.
         /// </summary>
         [Optional]
-        public Boolean?    TaxIncludedInPrice             { get; }
+        public Boolean?        TaxIncludedInPrice             { get; }
 
         /// <summary>
         /// Whether the tax applies to the energy fee.
         /// </summary>
         [Mandatory]
-        public Boolean     AppliesToEnergyFee             { get; }
+        public Boolean         AppliesToEnergyFee             { get; }
 
         /// <summary>
         /// Whether the tax applies to the parking fee.
         /// </summary>
         [Mandatory]
-        public Boolean     AppliesToParkingFee            { get; }
+        public Boolean         AppliesToParkingFee            { get; }
 
         /// <summary>
         /// Whether the tax applies to the overstay fee.
         /// </summary>
         [Mandatory]
-        public Boolean     AppliesToOverstayFee           { get; }
+        public Boolean         AppliesToOverstayFee           { get; }
 
         /// <summary>
         /// Whether the tax applies to minimum/maximum cost.
         /// </summary>
         [Mandatory]
-        public Boolean     AppliesToMinimumMaximumCost    { get; }
+        public Boolean         AppliesToMinimumMaximumCost    { get; }
 
         #endregion
 
@@ -92,21 +94,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Create a new tax rule.
         /// </summary>
         /// <param name="TaxRuleId">An unique identification of the tax rule.</param>
-        /// <param name="TaxRate">An tax rate.</param>
+        /// <param name="TaxRate">A tax rate.</param>
         /// <param name="AppliesToEnergyFee">Whether the tax applies to the energy fee.</param>
         /// <param name="AppliesToParkingFee">Whether the tax applies to the parking fee.</param>
         /// <param name="AppliesToOverstayFee">Whether the tax applies to the overstay fee.</param>
         /// <param name="AppliesToMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
-        /// <param name="TaxRuleName">An optional name of the tax rule.</param>
+        /// <param name="TaxRuleName">An optional human readable string to identify the tax rule.</param>
         /// <param name="TaxIncludedInPrice">Whether the tax is included within the price.</param>
-        public TaxRule(TaxRule_Id  TaxRuleId,
-                       Decimal     TaxRate,
-                       Boolean     AppliesToEnergyFee,
-                       Boolean     AppliesToParkingFee,
-                       Boolean     AppliesToOverstayFee,
-                       Boolean     AppliesToMinimumMaximumCost,
-                       Name?       TaxRuleName          = null,
-                       Boolean?    TaxIncludedInPrice   = null)
+        public TaxRule(TaxRule_Id      TaxRuleId,
+                       RationalNumber  TaxRate,
+                       Boolean         AppliesToEnergyFee,
+                       Boolean         AppliesToParkingFee,
+                       Boolean         AppliesToOverstayFee,
+                       Boolean         AppliesToMinimumMaximumCost,
+                       String?         TaxRuleName          = null,
+                       Boolean?        TaxIncludedInPrice   = null)
 
         {
 
@@ -122,16 +124,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             unchecked
             {
 
-                hashCode = this.TaxRuleId.                GetHashCode()       * 23 ^
-                           this.TaxRate.                  GetHashCode()       * 19 ^
-                           this.AppliesToEnergyFee.       GetHashCode()       * 17 ^
-                           this.AppliesToParkingFee.      GetHashCode()       * 13 ^
-                           this.AppliesToOverstayFee.     GetHashCode()       * 11 ^
+                hashCode = this.TaxRuleId.                  GetHashCode()       * 23 ^
+                           this.TaxRate.                    GetHashCode()       * 19 ^
+                           this.AppliesToEnergyFee.         GetHashCode()       * 17 ^
+                           this.AppliesToParkingFee.        GetHashCode()       * 13 ^
+                           this.AppliesToOverstayFee.       GetHashCode()       * 11 ^
                            this.AppliesToMinimumMaximumCost.GetHashCode()       *  7 ^
-                          (this.TaxRuleName?.             GetHashCode() ?? 0) *  5 ^
-                          (this.TaxIncludedInPrice?.      GetHashCode() ?? 0) *  3 ^
-
-                           base.                          GetHashCode();
+                          (this.TaxRuleName?.               GetHashCode() ?? 0) *  5 ^
+                          (this.TaxIncludedInPrice?.        GetHashCode() ?? 0) *  3 ^
+                           base.                            GetHashCode();
 
             }
 
@@ -140,10 +141,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "javaType": "TaxRule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "taxRuleID": {
+        //             "description": "Id for the tax rule.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "taxRuleName": {
+        //             "description": "Human readable string to identify the tax rule.\r\n",
+        //             "type": "string",
+        //             "maxLength": 100
+        //         },
+        //         "taxIncludedInPrice": {
+        //             "description": "Indicates whether the tax is included in any price or not.\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "appliesToEnergyFee": {
+        //             "description": "Indicates whether this tax applies to Energy Fees.\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "appliesToParkingFee": {
+        //             "description": "Indicates whether this tax applies to Parking Fees.\r\n\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "appliesToOverstayFee": {
+        //             "description": "Indicates whether this tax applies to Overstay Fees.\r\n\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "appliesToMinimumMaximumCost": {
+        //             "description": "Indicates whether this tax applies to Minimum/Maximum Cost.\r\n\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "taxRate": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "taxRuleID",
+        //         "appliesToEnergyFee",
+        //         "appliesToParkingFee",
+        //         "appliesToOverstayFee",
+        //         "appliesToMinimumMaximumCost",
+        //         "taxRate"
+        //     ]
+        // }
 
         #endregion
 
@@ -161,8 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var taxRule,
                          out var errorResponse,
-                         CustomTaxRuleParser) &&
-                taxRule is not null)
+                         CustomTaxRuleParser))
             {
                 return taxRule;
             }
@@ -184,9 +234,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="TaxRule">The parsed tax rule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject       JSON,
-                                       out TaxRule?  TaxRule,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out TaxRule?  TaxRule,
+                                       [NotNullWhen(false)] out String?   ErrorResponse)
 
             => TryParse(JSON,
                         out TaxRule,
@@ -202,8 +252,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTaxRuleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       out TaxRule?                           TaxRule,
-                                       out String?                            ErrorResponse,
+                                       [NotNullWhen(true)]  out TaxRule?      TaxRule,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
                                        CustomJObjectParserDelegate<TaxRule>?  CustomTaxRuleParser)
         {
 
@@ -214,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region TaxRuleId                      [mandatory]
 
-                if (!JSON.ParseMandatory("taxRuleId",
+                if (!JSON.ParseMandatory("taxRuleID",
                                          "tax rule identification",
                                          TaxRule_Id.TryParse,
                                          out TaxRule_Id TaxRuleId,
@@ -227,10 +277,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region TaxRate                        [mandatory]
 
-                if (!JSON.ParseMandatory("taxRate",
-                                         "tax rate",
-                                         out Decimal TaxRate,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("taxRate",
+                                             "tax rate",
+                                             RationalNumber.TryParse,
+                                             out RationalNumber? TaxRate,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -287,15 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region TaxRuleName                    [optional]
 
-                if (JSON.ParseOptional("taxRuleName",
-                                       "tax rule name",
-                                       Name.TryParse,
-                                       out Name? TaxRuleName,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                var TaxRuleName = JSON["taxRuleName"]?.Value<String>();
 
                 #endregion
 
@@ -355,14 +398,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             var json = JSONObject.Create(
 
                                   new JProperty("taxRuleID",                     TaxRuleId.        ToString()),
-                                  new JProperty("taxRate",                       TaxRate),
+                                  new JProperty("taxRate",                       TaxRate.          ToJSON()),
                                   new JProperty("appliesToEnergyFee",            AppliesToEnergyFee),
                                   new JProperty("appliesToParkingFee",           AppliesToParkingFee),
                                   new JProperty("appliesToOverstayFee",          AppliesToOverstayFee),
                                   new JProperty("appliesToMinimumMaximumCost",   AppliesToMinimumMaximumCost),
 
-                           TaxRuleName.HasValue
-                                ? new JProperty("taxRuleName",                   TaxRuleName.Value.ToString())
+                           TaxRuleName.IsNotNullOrEmpty()
+                                ? new JProperty("taxRuleName",                   TaxRuleName)
                                 : null,
 
                            TaxIncludedInPrice.HasValue
@@ -457,11 +500,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                AppliesToOverstayFee.       Equals(TaxRule.AppliesToOverstayFee)        &&
                AppliesToMinimumMaximumCost.Equals(TaxRule.AppliesToMinimumMaximumCost) &&
 
-            ((!TaxRuleName.       HasValue && !TaxRule.TaxRuleName.       HasValue) ||
-              (TaxRuleName.       HasValue &&  TaxRule.TaxRuleName.       HasValue && TaxRuleName.       Value.Equals(TaxRule.TaxRuleName.       Value))) &&
+             ((TaxRuleName        is     null &&  TaxRule.TaxRuleName        is     null) ||
+              (TaxRuleName        is not null &&  TaxRule.TaxRuleName        is not null && TaxRuleName.             Equals(TaxRule.TaxRuleName))) &&
 
-            ((!TaxIncludedInPrice.HasValue && !TaxRule.TaxIncludedInPrice.HasValue) ||
-              (TaxIncludedInPrice.HasValue &&  TaxRule.TaxIncludedInPrice.HasValue && TaxIncludedInPrice.Value.Equals(TaxRule.TaxIncludedInPrice.Value)));
+            ((!TaxIncludedInPrice.HasValue    && !TaxRule.TaxIncludedInPrice.HasValue) ||
+              (TaxIncludedInPrice.HasValue    &&  TaxRule.TaxIncludedInPrice.HasValue    && TaxIncludedInPrice.Value.Equals(TaxRule.TaxIncludedInPrice.Value)));
 
         #endregion
 
@@ -488,8 +531,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             => String.Concat(
 
-                   TaxRuleName.HasValue
-                       ? TaxRuleName.Value + " (" + TaxRuleId + ") "
+                   TaxRuleName.IsNotNullOrEmpty()
+                       ? TaxRuleName + " (" + TaxRuleId + ") "
                        : TaxRuleId,
 
                    TaxRate

@@ -143,59 +143,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetBaseReportRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetBaseReportRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ReportBaseEnumType": {
+        //             "description": "This field specifies the report base.",
+        //             "javaType": "ReportBaseEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ConfigurationInventory",
+        //                 "FullInventory",
+        //                 "SummaryInventory"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ReportBaseEnumType": {
-        //       "description": "This field specifies the report base.",
-        //       "javaType": "ReportBaseEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ConfigurationInventory",
-        //         "FullInventory",
-        //         "SummaryInventory"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "requestId": {
+        //             "description": "The Id of the request.",
+        //             "type": "integer"
+        //         },
+        //         "reportBase": {
+        //             "$ref": "#/definitions/ReportBaseEnumType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "requestId": {
-        //       "description": "The Id of the request.",
-        //       "type": "integer"
-        //     },
-        //     "reportBase": {
-        //       "$ref": "#/definitions/ReportBaseEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId",
-        //     "reportBase"
-        //   ]
+        //     "required": [
+        //         "requestId",
+        //         "reportBase"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetBaseReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetBaseReport request.
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom GetBaseReport requests.</param>
         public static GetBaseReportRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 SourceRouting                                   Destination,
+                                                 SourceRouting                                       Destination,
                                                  NetworkPath                                         NetworkPath,
                                                  DateTime?                                           RequestTimestamp                   = null,
                                                  TimeSpan?                                           RequestTimeout                     = null,
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetBaseReportRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetBaseReportRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetBaseReport request.
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom GetBaseReport requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       SourceRouting                                   Destination,
+                                       SourceRouting                                       Destination,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out GetBaseReportRequest?      GetBaseReportRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"{ReportBase} / {GetBaseReportRequestId}";
+            => $"'{ReportBase}' ({GetBaseReportRequestId})";
 
         #endregion
 

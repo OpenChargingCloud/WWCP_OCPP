@@ -67,25 +67,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this report base is null or empty.
         /// </summary>
-        public readonly  Boolean               IsNullOrEmpty
+        public readonly  Boolean                  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this report base is NOT null or empty.
         /// </summary>
-        public readonly  Boolean               IsNotNullOrEmpty
+        public readonly  Boolean                  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the report base.
         /// </summary>
-        public readonly  UInt64                Length
+        public readonly  UInt64                   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         /// <summary>
         /// All registered report bases.
         /// </summary>
-        public static IEnumerable<ReportBase>  All
+        public static    IEnumerable<ReportBase>  All
             => lookup.Values;
 
         #endregion
@@ -202,20 +202,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// A (configuration) report that lists all components/variables that can be set
         /// by the operator.
         /// </summary>
-        public static ReportBase ConfigurationInventory    { get; }
+        public static ReportBase  ConfigurationInventory    { get; }
             = Register("ConfigurationInventory");
 
         /// <summary>
         /// A (full) report that lists everything except monitoring settings.
         /// </summary>
-        public static ReportBase FullInventory             { get; }
+        public static ReportBase  FullInventory             { get; }
             = Register("FullInventory");
 
         /// <summary>
         /// A (summary) report that lists components/variables relating to the charging station’s
         /// current charging availability, and to any existing problem conditions.
         /// </summary>
-        public static ReportBase SummaryInventory          { get; }
+        public static ReportBase  SummaryInventory          { get; }
             = Register("SummaryInventory");
 
         #endregion

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -42,19 +44,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The URL of the location at the remote system where the log should be stored.
         /// </summary>
         [Mandatory]
-        public URL        RemoteLocation     { get; }
+        public URL RemoteLocation { get; }
 
         /// <summary>
         /// The optional timestamp of the oldest logging information to include in the diagnostics.
         /// </summary>
         [Optional]
-        public DateTime?  OldestTimestamp    { get; }
+        public DateTime? OldestTimestamp { get; }
 
         /// <summary>
         /// The optional timestamp of the latest logging information to include in the diagnostics.
         /// </summary>
         [Optional]
-        public DateTime?  LatestTimestamp    { get; }
+        public DateTime? LatestTimestamp { get; }
 
         #endregion
 
@@ -67,18 +69,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="OldestTimestamp">An optional timestamp of the oldest logging information to include in the diagnostics.</param>
         /// <param name="LatestTimestamp">An optional timestamp of the latest logging information to include in the diagnostics.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public LogParameters(URL          RemoteLocation,
-                             DateTime?    OldestTimestamp   = null,
-                             DateTime?    LatestTimestamp   = null,
-                             CustomData?  CustomData        = null)
+        public LogParameters(URL RemoteLocation,
+                             DateTime? OldestTimestamp = null,
+                             DateTime? LatestTimestamp = null,
+                             CustomData? CustomData = null)
 
             : base(CustomData)
 
         {
 
-            this.RemoteLocation   = RemoteLocation;
-            this.OldestTimestamp  = OldestTimestamp;
-            this.LatestTimestamp  = LatestTimestamp;
+            this.RemoteLocation = RemoteLocation;
+            this.OldestTimestamp = OldestTimestamp;
+            this.LatestTimestamp = LatestTimestamp;
+
+            unchecked
+            {
+
+                hashCode = this.RemoteLocation.GetHashCode() * 7 ^
+                          (this.OldestTimestamp?.GetHashCode() ?? 0) * 5 ^
+                          (this.LatestTimestamp?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
 
         }
 
@@ -87,34 +99,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "LogParametersType": {
-        //   "description": "Log\r\nurn:x-enexis:ecdm:uid:2:233373\r\nGeneric class for the configuration of logging entries.",
-        //   "javaType": "LogParameters",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Generic class for the configuration of logging entries.",
+        //     "javaType": "LogParameters",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "remoteLocation": {
+        //             "description": "The URL of the location at the remote system where the log should be stored.",
+        //             "type": "string",
+        //             "maxLength": 2000
+        //         },
+        //         "oldestTimestamp": {
+        //             "description": "This contains the date and time of the oldest logging information to include in the diagnostics.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "latestTimestamp": {
+        //             "description": "This contains the date and time of the latest logging information to include in the diagnostics.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "remoteLocation": {
-        //       "description": "Log. Remote_ Location. URI\r\nurn:x-enexis:ecdm:uid:1:569484\r\nThe URL of the location at the remote system where the log should be stored.",
-        //       "type": "string",
-        //       "maxLength": 512
-        //     },
-        //     "oldestTimestamp": {
-        //       "description": "Log. Oldest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569477\r\nThis contains the date and time of the oldest logging information to include in the diagnostics.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "latestTimestamp": {
-        //       "description": "Log. Latest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569482\r\nThis contains the date and time of the latest logging information to include in the diagnostics.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     }
-        //   },
-        //   "required": [
-        //     "remoteLocation"
-        //   ]
+        //     "required": [
+        //         "remoteLocation"
+        //     ]
         // }
 
         #endregion
@@ -126,8 +138,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomLogParametersParser">A delegate to parse custom LogParameterss.</param>
-        public static LogParameters Parse(JObject                                      JSON,
-                                          CustomJObjectParserDelegate<LogParameters>?  CustomLogParametersParser   = null)
+        public static LogParameters Parse(JObject JSON,
+                                          CustomJObjectParserDelegate<LogParameters>? CustomLogParametersParser = null)
         {
 
             if (TryParse(JSON,
@@ -156,9 +168,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="LogParameters">The parsed log parameters.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out LogParameters?  LogParameters,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject JSON,
+                                       [NotNullWhen(true)] out LogParameters? LogParameters,
+                                       [NotNullWhen(false)] out String? ErrorResponse)
 
             => TryParse(JSON,
                         out LogParameters,
@@ -173,10 +185,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="LogParameters">The parsed log parameters.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomLogParametersParser">A delegate to parse custom LogParameterss.</param>
-        public static Boolean TryParse(JObject                                      JSON,
-                                       out LogParameters?                           LogParameters,
-                                       out String?                                  ErrorResponse,
-                                       CustomJObjectParserDelegate<LogParameters>?  CustomLogParametersParser)
+        public static Boolean TryParse(JObject JSON,
+                                       [NotNullWhen(true)] out LogParameters? LogParameters,
+                                       [NotNullWhen(false)] out String? ErrorResponse,
+                                       CustomJObjectParserDelegate<LogParameters>? CustomLogParametersParser)
         {
 
             try
@@ -238,10 +250,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                LogParameters = new LogParameters(RemoteLocation,
-                                                  OldestTimestamp,
-                                                  LatestTimestamp,
-                                                  CustomData);
+                LogParameters = new LogParameters(
+                                    RemoteLocation,
+                                    OldestTimestamp,
+                                    LatestTimestamp,
+                                    CustomData
+                                );
 
                 if (CustomLogParametersParser is not null)
                     LogParameters = CustomLogParametersParser(JSON,
@@ -252,8 +266,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
             catch (Exception e)
             {
-                LogParameters  = default;
-                ErrorResponse  = "The given JSON representation of log parameters is invalid: " + e.Message;
+                LogParameters = default;
+                ErrorResponse = "The given JSON representation of log parameters is invalid: " + e.Message;
                 return false;
             }
 
@@ -268,24 +282,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<LogParameters>? CustomLogParametersSerializer = null,
+                              CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataSerializer = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("remoteLocation",    RemoteLocation.       ToString()),
+                                 new JProperty("remoteLocation", RemoteLocation.ToString()),
 
                            OldestTimestamp.HasValue
-                               ? new JProperty("oldestTimestamp",   OldestTimestamp.Value.ToIso8601())
+                               ? new JProperty("oldestTimestamp", OldestTimestamp.Value.ToIso8601())
                                : null,
 
                            LatestTimestamp.HasValue
-                               ? new JProperty("latestTimestamp",   LatestTimestamp.Value.ToIso8601())
+                               ? new JProperty("latestTimestamp", LatestTimestamp.Value.ToIso8601())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.           ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -309,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="LogParameters1">Log parameters.</param>
         /// <param name="LogParameters2">Other log parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (LogParameters? LogParameters1,
+        public static Boolean operator ==(LogParameters? LogParameters1,
                                            LogParameters? LogParameters2)
         {
 
@@ -335,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="LogParameters1">Log parameters.</param>
         /// <param name="LogParameters2">Other log parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (LogParameters? LogParameters1,
+        public static Boolean operator !=(LogParameters? LogParameters1,
                                            LogParameters? LogParameters2)
 
             => !(LogParameters1 == LogParameters2);
@@ -372,12 +386,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                RemoteLocation.Equals(LogParameters.RemoteLocation) &&
 
             ((!OldestTimestamp.HasValue && !LogParameters.OldestTimestamp.HasValue) ||
-              (OldestTimestamp.HasValue &&  LogParameters.OldestTimestamp.HasValue && OldestTimestamp.Value.Equals(LogParameters.OldestTimestamp.Value))) &&
+              (OldestTimestamp.HasValue && LogParameters.OldestTimestamp.HasValue && OldestTimestamp.Value.Equals(LogParameters.OldestTimestamp.Value))) &&
 
             ((!LatestTimestamp.HasValue && !LogParameters.LatestTimestamp.HasValue) ||
-              (LatestTimestamp.HasValue &&  LogParameters.LatestTimestamp.HasValue && LatestTimestamp.Value.Equals(LogParameters.LatestTimestamp.Value))) &&
+              (LatestTimestamp.HasValue && LogParameters.LatestTimestamp.HasValue && LatestTimestamp.Value.Equals(LogParameters.LatestTimestamp.Value))) &&
 
-               base.          Equals(LogParameters);
+               base.Equals(LogParameters);
 
         #endregion
 
@@ -385,23 +399,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return RemoteLocation.  GetHashCode()       * 7 ^
-                      (OldestTimestamp?.GetHashCode() ?? 0) * 5 ^
-                      (LatestTimestamp?.GetHashCode() ?? 0) * 3 ^
-
-                      base.             GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -412,9 +416,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RemoteLocation,
-                             OldestTimestamp.HasValue ? ", > " + OldestTimestamp.Value.ToIso8601() : "",
-                             LatestTimestamp.HasValue ? ", < " + LatestTimestamp.Value.ToIso8601() : "");
+            => String.Concat(
+
+                   RemoteLocation,
+
+                   OldestTimestamp.HasValue
+                       ? $", > {OldestTimestamp.Value.ToIso8601()}"
+                       : "",
+
+                   LatestTimestamp.HasValue
+                       ? $", < {LatestTimestamp.Value.ToIso8601()}"
+                       : ""
+
+               );
 
         #endregion
 

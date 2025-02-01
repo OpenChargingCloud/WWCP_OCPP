@@ -195,8 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            new InstallCertificateResponse(
                                Request:      request,
                                Status:       request.Certificate?.Parsed is not null
-                                                 ? CertificateStatus.Accepted
-                                                 : CertificateStatus.Rejected,
+                                                 ? InstallCertificateStatus.Accepted
+                                                 : InstallCertificateStatus.Rejected,
                                StatusInfo:   null,
                                CustomData:   null
                            )
@@ -1947,7 +1947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SetDisplayMessageResponse? response = null;
 
-                DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Message.Content}'!");
+                DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Messages.First().Content}'!");
 
                 // Message
 

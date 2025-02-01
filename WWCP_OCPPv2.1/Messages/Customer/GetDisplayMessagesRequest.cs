@@ -168,82 +168,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetDisplayMessagesRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetDisplayMessagesRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "MessagePriorityEnumType": {
+        //             "description": "If provided the Charging Station shall return Display Messages with the given priority only.",
+        //             "javaType": "MessagePriorityEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "AlwaysFront",
+        //                 "InFront",
+        //                 "NormalCycle"
+        //             ]
+        //         },
+        //         "MessageStateEnumType": {
+        //             "description": "If provided the Charging Station shall return Display Messages with the given state only. ",
+        //             "javaType": "MessageStateEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Charging",
+        //                 "Faulted",
+        //                 "Idle",
+        //                 "Unavailable",
+        //                 "Suspended",
+        //                 "Discharging"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "MessagePriorityEnumType": {
-        //       "description": "If provided the Charging Station shall return Display Messages with the given priority only.",
-        //       "javaType": "MessagePriorityEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "AlwaysFront",
-        //         "InFront",
-        //         "NormalCycle"
-        //       ]
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "If provided the Charging Station shall return Display Messages of the given ids. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-number-of-display-messages,NumberOfDisplayMessages.maxLimit&gt;&gt;",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "type": "integer",
+        //                 "minimum": 0.0
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "requestId": {
+        //             "description": "The Id of this request.",
+        //             "type": "integer"
+        //         },
+        //         "priority": {
+        //             "$ref": "#/definitions/MessagePriorityEnumType"
+        //         },
+        //         "state": {
+        //             "$ref": "#/definitions/MessageStateEnumType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "MessageStateEnumType": {
-        //       "description": "If provided the Charging Station shall return Display Messages with the given state only. ",
-        //       "javaType": "MessageStateEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Charging",
-        //         "Faulted",
-        //         "Idle",
-        //         "Unavailable"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "id": {
-        //       "description": "If provided the Charging Station shall return Display Messages of the given ids. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-number-of-display-messages,NumberOfDisplayMessages.maxLimit&gt;&gt;",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "type": "integer"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of this request.",
-        //       "type": "integer"
-        //     },
-        //     "priority": {
-        //       "$ref": "#/definitions/MessagePriorityEnumType"
-        //     },
-        //     "state": {
-        //       "$ref": "#/definitions/MessageStateEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId"
-        //   ]
+        //     "required": [
+        //         "requestId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetDisplayMessagesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetDisplayMessages request.
@@ -258,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom GetDisplayMessages requests.</param>
         public static GetDisplayMessagesRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      SourceRouting                                        Destination,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
@@ -287,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetDisplayMessagesRequest, out ErrorResponse, CustomGetDisplayMessagesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetDisplayMessagesRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetDisplayMessages request.
@@ -304,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom GetDisplayMessages requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       SourceRouting                                        Destination,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out GetDisplayMessagesRequest?      GetDisplayMessagesRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,

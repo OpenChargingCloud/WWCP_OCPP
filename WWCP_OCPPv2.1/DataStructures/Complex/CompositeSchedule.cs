@@ -108,47 +108,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "CompositeScheduleType": {
-        //   "description": "Composite_ Schedule\r\nurn:x-oca:ocpp:uid:2:233362",
-        //   "javaType": "CompositeSchedule",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "CompositeSchedule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evseId": {
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "duration": {
+        //             "type": "integer"
+        //         },
+        //         "scheduleStart": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "chargingRateUnit": {
+        //             "$ref": "#/definitions/ChargingRateUnitEnumType"
+        //         },
+        //         "chargingSchedulePeriod": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ChargingSchedulePeriodType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "chargingSchedulePeriod": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ChargingSchedulePeriodType"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "evseId": {
-        //       "description": "The ID of the EVSE for which the\r\nschedule is requested. When evseid=0, the\r\nCharging Station calculated the expected\r\nconsumption for the grid connection.",
-        //       "type": "integer"
-        //     },
-        //     "duration": {
-        //       "description": "Duration of the schedule in seconds.",
-        //       "type": "integer"
-        //     },
-        //     "scheduleStart": {
-        //       "description": "Composite_ Schedule. Start. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569456\r\nDate and time at which the schedule becomes active. All time measurements within the schedule are relative to this timestamp.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "chargingRateUnit": {
-        //       "$ref": "#/definitions/ChargingRateUnitEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "evseId",
-        //     "duration",
-        //     "scheduleStart",
-        //     "chargingRateUnit",
-        //     "chargingSchedulePeriod"
-        //   ]
+        //     "required": [
+        //         "evseId",
+        //         "duration",
+        //         "scheduleStart",
+        //         "chargingRateUnit",
+        //         "chargingSchedulePeriod"
+        //     ]
         // }
 
         #endregion

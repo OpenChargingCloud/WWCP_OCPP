@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -51,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// The overstay power threshold.
         /// </summary>
         [Optional]
-        public Decimal?                   OverstayPowerThreshold    { get; }
+        public RationalNumber?            OverstayPowerThreshold    { get; }
 
         #endregion
 
@@ -65,22 +67,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="OverstayPowerThreshold">An overstay power threshold.</param>
         public OverstayRuleList(IEnumerable<OverstayRule>  OverstayRules,
                                 TimeSpan?                  OverstayTimeThreshold    = null,
-                                Decimal?                   OverstayPowerThreshold   = null)
+                                RationalNumber?            OverstayPowerThreshold   = null)
         {
 
             this.OverstayRules           = OverstayRules.Distinct();
             this.OverstayTimeThreshold   = OverstayTimeThreshold;
             this.OverstayPowerThreshold  = OverstayPowerThreshold;
 
+            unchecked
+            {
+
+                hashCode = this.OverstayRules.          CalcHashCode()      * 7 ^
+                          (this.OverstayTimeThreshold?. GetHashCode() ?? 0) * 5 ^
+                          (this.OverstayPowerThreshold?.GetHashCode() ?? 0) * 3 ^
+                           base.                        GetHashCode();
+
+            }
+
         }
 
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "javaType": "OverstayRuleList",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "overstayPowerThreshold": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "overstayRule": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/OverstayRuleType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 5
+        //         },
+        //         "overstayTimeThreshold": {
+        //             "description": "Time till overstay is applied in seconds.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "overstayRule"
+        //     ]
+        // }
 
         #endregion
 
@@ -121,9 +161,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OverstayRuleList">The parsed overstay rule list.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out OverstayRuleList?  OverstayRuleList,
-                                       out String?            ErrorResponse)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out OverstayRuleList?  OverstayRuleList,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
 
             => TryParse(JSON,
                         out OverstayRuleList,
@@ -139,8 +179,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomOverstayRuleListParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                         JSON,
-                                       out OverstayRuleList?                           OverstayRuleList,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out OverstayRuleList?      OverstayRuleList,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<OverstayRuleList>?  CustomOverstayRuleListParser)
         {
 
@@ -151,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region OverstayRules             [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("overstayRules",
+                if (!JSON.ParseMandatoryHashSet("overstayRule",
                                                 "sub certificates",
                                                 OverstayRule.TryParse,
                                                 out HashSet<OverstayRule> OverstayRules,
@@ -166,25 +206,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 if (JSON.ParseOptional("overstayTimeThreshold",
                                        "overstay time threshold",
-                                       out UInt64? overstayTimeThreshold,
+                                       out TimeSpan? OverstayTimeThreshold,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
 
-                var OverstayTimeThreshold = overstayTimeThreshold.HasValue
-                                                ? new TimeSpan?(TimeSpan.FromSeconds(overstayTimeThreshold.Value))
-                                                : null;
-
                 #endregion
 
                 #region OverstayPowerThreshold    [optional]
 
-                if (JSON.ParseOptional("overstayPowerThreshold",
-                                       "overstay power threshold",
-                                       out Decimal? OverstayPowerThreshold,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("overstayPowerThreshold",
+                                           "overstay power threshold",
+                                           RationalNumber.TryParse,
+                                           out RationalNumber? OverstayPowerThreshold,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -230,14 +267,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                 new JProperty("subCertificates",         new JArray(OverstayRules.Select(overstayRule => overstayRule.ToJSON(CustomOverstayRuleSerializer)))),
+                                 new JProperty("overstayRule",             new JArray(OverstayRules.Select(overstayRule => overstayRule.ToJSON(CustomOverstayRuleSerializer)))),
 
                            OverstayTimeThreshold.HasValue
-                               ? new JProperty("overstayTimeThreshold",   (UInt64) Math.Round(OverstayTimeThreshold.Value.TotalSeconds, 0))
+                               ? new JProperty("overstayTimeThreshold",    (UInt64) Math.Round(OverstayTimeThreshold.Value.TotalSeconds, 0))
                                : null,
 
                            OverstayPowerThreshold is not null
-                               ? new JProperty("overstayPowerThreshold",  OverstayPowerThreshold.Value)
+                               ? new JProperty("overstayPowerThreshold",   OverstayPowerThreshold.ToJSON())
                                : null
 
                        );
@@ -321,8 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             => OverstayRuleList is not null &&
 
-               OverstayRules.Count().Equals(OverstayRuleList.OverstayRules.Count()) &&
-               OverstayRules.All(subCertificate => OverstayRuleList.OverstayRules.Contains(subCertificate)) &&
+               OverstayRules.ToHashSet().SetEquals(OverstayRuleList.OverstayRules) &&
 
             ((!OverstayTimeThreshold. HasValue    && !OverstayRuleList.OverstayTimeThreshold. HasValue)    ||
               (OverstayTimeThreshold. HasValue    &&  OverstayRuleList.OverstayTimeThreshold. HasValue    && OverstayTimeThreshold.Value.Equals(OverstayRuleList.OverstayTimeThreshold.Value))) &&
@@ -336,23 +372,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return OverstayRules.          CalcHashCode()      * 7 ^
-                      (OverstayTimeThreshold?. GetHashCode() ?? 0) * 5 ^
-                      (OverstayPowerThreshold?.GetHashCode() ?? 0) * 3 ^
-
-                       base.                   GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -368,11 +394,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                    $"{OverstayRules.Count()} overstay rule(s)",
 
                    OverstayTimeThreshold.HasValue
-                       ? ", time threshold: " + OverstayTimeThreshold.Value.TotalSeconds + " second(s)"
+                       ? $", time threshold: {OverstayTimeThreshold.Value.TotalSeconds} second(s)"
                        : null,
 
                    OverstayPowerThreshold is not null
-                       ? ", power threshold: " + OverstayPowerThreshold + " kW"
+                       ? $", power threshold: {OverstayPowerThreshold} kW"
                        : null
 
                );

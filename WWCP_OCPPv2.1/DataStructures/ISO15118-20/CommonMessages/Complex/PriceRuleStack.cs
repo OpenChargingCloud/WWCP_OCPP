@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -70,7 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 hashCode = this.Duration.  GetHashCode()  * 5 ^
                            this.PriceRules.CalcHashCode() * 3 ^
-
                            base.           GetHashCode();
 
             }
@@ -80,10 +81,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n",
+        //     "javaType": "PriceRuleStack",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "duration": {
+        //             "description": "Duration of the stack of price rules.  he amount of seconds that define the duration of the given PriceRule(s).\r\n",
+        //             "type": "integer"
+        //         },
+        //         "priceRule": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/PriceRuleType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 8
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "duration",
+        //         "priceRule"
+        //     ]
+        // }
 
         #endregion
 
@@ -101,8 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var priceRuleStack,
                          out var errorResponse,
-                         CustomPriceRuleStackParser) &&
-                priceRuleStack is not null)
+                         CustomPriceRuleStackParser))
             {
                 return priceRuleStack;
             }
@@ -124,9 +150,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PriceRuleStack">The parsed price rule stack.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out PriceRuleStack?  PriceRuleStack,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out PriceRuleStack?  PriceRuleStack,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out PriceRuleStack,
@@ -142,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPriceRuleStackParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out PriceRuleStack?                           PriceRuleStack,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out PriceRuleStack?      PriceRuleStack,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomJObjectParserDelegate<PriceRuleStack>?  CustomPriceRuleStackParser)
         {
 
@@ -180,8 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
-                PriceRuleStack = new PriceRuleStack(Duration,
-                                                    PriceRules);
+                PriceRuleStack = new PriceRuleStack(
+                                     Duration,
+                                     PriceRules
+                                 );
 
                 if (CustomPriceRuleStackParser is not null)
                     PriceRuleStack = CustomPriceRuleStackParser(JSON,
@@ -214,8 +242,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                           new JProperty("duration",    (UInt64) Math.Round(Duration.TotalSeconds, 0)),
-                           new JProperty("priceRules",  new JArray(PriceRules.Select(priceRule => priceRule.ToJSON(CustomPriceRuleSerializer))))
+                           new JProperty("duration",     (UInt64) Math.Round(Duration.TotalSeconds, 0)),
+
+                           new JProperty("priceRules",   new JArray(PriceRules.Select(priceRule => priceRule.ToJSON(CustomPriceRuleSerializer))))
 
                        );
 

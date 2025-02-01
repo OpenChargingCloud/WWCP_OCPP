@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
+        public GetInstalledCertificateIdsResponse(GetInstalledCertificateIdsRequest       Request,
                                                   GetInstalledCertificateStatus           Status,
                                                   IEnumerable<CertificateHashDataChain>?  CertificateHashDataChain   = null,
                                                   StatusInfo?                             StatusInfo                 = null,
@@ -148,7 +148,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 hashCode = this.Status.                  GetHashCode()       * 7 ^
                            this.CertificateHashDataChain.GetHashCode()       * 5 ^
                           (this.StatusInfo?.             GetHashCode() ?? 0) * 3 ^
-
                            base.                         GetHashCode();
 
             }
@@ -161,175 +160,175 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetInstalledCertificateIdsResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetInstalledCertificateIdsResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "GetCertificateIdUseEnumType": {
+        //             "description": "Indicates the type of the requested certificate(s).",
+        //             "javaType": "GetCertificateIdUseEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "V2GRootCertificate",
+        //                 "MORootCertificate",
+        //                 "CSMSRootCertificate",
+        //                 "V2GCertificateChain",
+        //                 "ManufacturerRootCertificate",
+        //                 "OEMRootCertificate"
+        //             ]
+        //         },
+        //         "GetInstalledCertificateStatusEnumType": {
+        //             "description": "Charging Station indicates if it can process the request.",
+        //             "javaType": "GetInstalledCertificateStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "NotFound"
+        //             ]
+        //         },
+        //         "HashAlgorithmEnumType": {
+        //             "description": "Used algorithms for the hashes provided.",
+        //             "javaType": "HashAlgorithmEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SHA256",
+        //                 "SHA384",
+        //                 "SHA512"
+        //             ]
+        //         },
+        //         "CertificateHashDataChainType": {
+        //             "javaType": "CertificateHashDataChain",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "certificateHashData": {
+        //                     "$ref": "#/definitions/CertificateHashDataType"
+        //                 },
+        //                 "certificateType": {
+        //                     "$ref": "#/definitions/GetCertificateIdUseEnumType"
+        //                 },
+        //                 "childCertificateHashData": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/CertificateHashDataType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 4
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "certificateType",
+        //                 "certificateHashData"
+        //             ]
+        //         },
+        //         "CertificateHashDataType": {
+        //             "javaType": "CertificateHashData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "hashAlgorithm": {
+        //                     "$ref": "#/definitions/HashAlgorithmEnumType"
+        //                 },
+        //                 "issuerNameHash": {
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "issuerKeyHash": {
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "serialNumber": {
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //                     "type": "string",
+        //                     "maxLength": 40
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "hashAlgorithm",
+        //                 "issuerNameHash",
+        //                 "issuerKeyHash",
+        //                 "serialNumber"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "GetCertificateIdUseEnumType": {
-        //       "description": "Indicates the type of the requested certificate(s).",
-        //       "javaType": "GetCertificateIdUseEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "V2GRootCertificate",
-        //         "MORootCertificate",
-        //         "CSMSRootCertificate",
-        //         "V2GCertificateChain",
-        //         "ManufacturerRootCertificate"
-        //       ]
-        //     },
-        //     "GetInstalledCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if it can process the request.",
-        //       "javaType": "GetInstalledCertificateStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "NotFound"
-        //       ]
-        //     },
-        //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.",
-        //       "javaType": "HashAlgorithmEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "SHA256",
-        //         "SHA384",
-        //         "SHA512"
-        //       ]
-        //     },
-        //     "CertificateHashDataChainType": {
-        //       "javaType": "CertificateHashDataChain",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/GetInstalledCertificateStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "certificateHashDataChain": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/CertificateHashDataChainType"
+        //             },
+        //             "minItems": 1
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "certificateHashData": {
-        //           "$ref": "#/definitions/CertificateHashDataType"
-        //         },
-        //         "certificateType": {
-        //           "$ref": "#/definitions/GetCertificateIdUseEnumType"
-        //         },
-        //         "childCertificateHashData": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/CertificateHashDataType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 4
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "certificateType",
-        //         "certificateHashData"
-        //       ]
         //     },
-        //     "CertificateHashDataType": {
-        //       "javaType": "CertificateHashData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "hashAlgorithm": {
-        //           "$ref": "#/definitions/HashAlgorithmEnumType"
-        //         },
-        //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "serialNumber": {
-        //           "description": "The serial number of the certificate.",
-        //           "type": "string",
-        //           "maxLength": 40
-        //         }
-        //       },
-        //       "required": [
-        //         "hashAlgorithm",
-        //         "issuerNameHash",
-        //         "issuerKeyHash",
-        //         "serialNumber"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/GetInstalledCertificateStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     },
-        //     "certificateHashDataChain": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/CertificateHashDataChainType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
-
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetInstalledCertificateIdsResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetInstalledCertificateIds response.
@@ -339,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom GetInstalledCertificateIds responses.</param>
         public static GetInstalledCertificateIdsResponse Parse(CSMS.GetInstalledCertificateIdsRequest                            Request,
                                                                JObject                                                           JSON,
-                                                               SourceRouting                                                 Destination,
+                                                               SourceRouting                                                     Destination,
                                                                NetworkPath                                                       NetworkPath,
                                                                DateTime?                                                         ResponseTimestamp                                = null,
                                                                CustomJObjectParserDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseParser   = null,
@@ -372,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetInstalledCertificateIdsResponse, out ErrorResponse, CustomGetInstalledCertificateIdsResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out GetInstalledCertificateIdsResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetInstalledCertificateIds response.
@@ -384,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom GetInstalledCertificateIds responses.</param>
         public static Boolean TryParse(CSMS.GetInstalledCertificateIdsRequest                            Request,
                                        JObject                                                           JSON,
-                                       SourceRouting                                                 Destination,
+                                       SourceRouting                                                     Destination,
                                        NetworkPath                                                       NetworkPath,
                                        [NotNullWhen(true)]  out GetInstalledCertificateIdsResponse?      GetInstalledCertificateIdsResponse,
                                        [NotNullWhen(false)] out String?                                  ErrorResponse,
@@ -570,21 +569,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The GetInstalledCertificateIds failed because of a request error.
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
-        public static GetInstalledCertificateIdsResponse RequestError(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                                      EventTracking_Id                        EventTrackingId,
-                                                                      ResultCode                              ErrorCode,
-                                                                      String?                                 ErrorDescription    = null,
-                                                                      JObject?                                ErrorDetails        = null,
-                                                                      DateTime?                               ResponseTimestamp   = null,
+        public static GetInstalledCertificateIdsResponse RequestError(GetInstalledCertificateIdsRequest  Request,
+                                                                      EventTracking_Id                   EventTrackingId,
+                                                                      ResultCode                         ErrorCode,
+                                                                      String?                            ErrorDescription    = null,
+                                                                      JObject?                           ErrorDetails        = null,
+                                                                      DateTime?                          ResponseTimestamp   = null,
 
-                                                                      SourceRouting?                          Destination         = null,
-                                                                      NetworkPath?                            NetworkPath         = null,
+                                                                      SourceRouting?                     Destination         = null,
+                                                                      NetworkPath?                       NetworkPath         = null,
 
-                                                                      IEnumerable<KeyPair>?                   SignKeys            = null,
-                                                                      IEnumerable<SignInfo>?                  SignInfos           = null,
-                                                                      IEnumerable<Signature>?                 Signatures          = null,
+                                                                      IEnumerable<KeyPair>?              SignKeys            = null,
+                                                                      IEnumerable<SignInfo>?             SignInfos           = null,
+                                                                      IEnumerable<Signature>?            Signatures          = null,
 
-                                                                      CustomData?                             CustomData          = null)
+                                                                      CustomData?                        CustomData          = null)
 
             => new (
 
@@ -592,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    GetInstalledCertificateStatus.NotFound,
                    null,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -616,12 +615,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static GetInstalledCertificateIdsResponse FormationViolation(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                                            String                                  ErrorDescription)
+        public static GetInstalledCertificateIdsResponse FormationViolation(GetInstalledCertificateIdsRequest  Request,
+                                                                            String                             ErrorDescription)
 
             => new (Request,
                     GetInstalledCertificateStatus.NotFound,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -631,12 +630,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static GetInstalledCertificateIdsResponse SignatureError(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                                        String                                  ErrorDescription)
+        public static GetInstalledCertificateIdsResponse SignatureError(GetInstalledCertificateIdsRequest  Request,
+                                                                        String                             ErrorDescription)
 
             => new (Request,
                     GetInstalledCertificateStatus.NotFound,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -646,12 +645,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static GetInstalledCertificateIdsResponse Failed(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                                String?                                 Description   = null)
+        public static GetInstalledCertificateIdsResponse Failed(GetInstalledCertificateIdsRequest  Request,
+                                                                String?                            Description   = null)
 
             => new (Request,
                     GetInstalledCertificateStatus.NotFound,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -659,12 +658,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetInstalledCertificateIdsResponse ExceptionOccured(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                                          Exception                               Exception)
+        public static GetInstalledCertificateIdsResponse ExceptionOccured(GetInstalledCertificateIdsRequest  Request,
+                                                                          Exception                          Exception)
 
             => new (Request,
                     GetInstalledCertificateStatus.NotFound,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

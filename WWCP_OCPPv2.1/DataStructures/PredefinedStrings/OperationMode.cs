@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this operation mode is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                     IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this operation mode is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                     IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the operation mode.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                      Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered operation modes.
+        /// </summary>
+        public static    IEnumerable<OperationMode>  All
+            => lookup.Values;
 
         #endregion
 
@@ -195,49 +201,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Minimize energy consumption by having the EV either on standby or in sleep.
         /// </summary>
-        public static OperationMode Idle                  { get; }
+        public static OperationMode  Idle                  { get; }
             = Register("Idle");
 
         /// <summary>
         /// Classic charging or smart charging mode.
         /// </summary>
-        public static OperationMode ChargingOnly          { get; }
+        public static OperationMode  ChargingOnly          { get; }
             = Register("ChargingOnly");
 
         /// <summary>
         /// Control of setpoint by the CSMS or some secondary actor that relais through the CSMS.
         /// </summary>
-        public static OperationMode CentralSetpoint       { get; }
+        public static OperationMode  CentralSetpoint       { get; }
             = Register("CentralSetpoint");
 
         /// <summary>
         /// Control of setpoint by an external actor on the charging station.
         /// </summary>
-        public static OperationMode ExternalSetpoint      { get; }
+        public static OperationMode  ExternalSetpoint      { get; }
             = Register("ExternalSetpoint");
 
         /// <summary>
         /// Control of (dis)charging limits by an external actor on the charging station.
         /// </summary>
-        public static OperationMode ExternalLimits        { get; }
+        public static OperationMode  ExternalLimits        { get; }
             = Register("ExternalLimits");
 
         /// <summary>
         /// Frequency support with control by the CSMS or some secondary actor that relais through the CSMS.
         /// </summary>
-        public static OperationMode CentralFrequency      { get; }
+        public static OperationMode  CentralFrequency      { get; }
             = Register("CentralFrequency");
 
         /// <summary>
         /// Frequency support with control in the charging station.
         /// </summary>
-        public static OperationMode LocalFrequency        { get; }
+        public static OperationMode  LocalFrequency        { get; }
             = Register("LocalFrequency");
 
         /// <summary>
         /// Load balancing by the charging station.
         /// </summary>
-        public static OperationMode LocalLoadBalancing    { get; }
+        public static OperationMode  LocalLoadBalancing    { get; }
             = Register("LocalLoadBalancing");
 
         #endregion

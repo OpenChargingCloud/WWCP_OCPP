@@ -118,32 +118,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ComponentType": {
-        //   "description": "A physical or logical component",
-        //   "javaType": "Component",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "A physical or logical component\r\n",
+        //     "javaType": "Component",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evse": {
+        //             "$ref": "#/definitions/EVSEType"
+        //         },
+        //         "name": {
+        //             "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "instance": {
+        //             "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "evse": {
-        //       "$ref": "#/definitions/EVSEType"
-        //     },
-        //     "name": {
-        //       "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //       "type":        "string",
-        //       "maxLength":    50
-        //     },
-        //     "instance": {
-        //       "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //       "type":        "string",
-        //       "maxLength":    50
-        //     }
-        //   },
-        //   "required": [
-        //     "name"
-        //   ]
+        //     "required": [
+        //         "name"
+        //     ]
         // }
 
         #endregion

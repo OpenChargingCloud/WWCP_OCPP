@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/ClearMonitoringStatusEnumType"
         //         },
         //         "id": {
-        //             "description": "Id of the monitor of which a clear was requested.\r\n\r\n",
+        //             "description": "Id of the monitor of which a clear was requested.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

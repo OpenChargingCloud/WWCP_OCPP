@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "additionalProperties": false,
         //     "properties": {
         //         "id": {
-        //             "description": "Id of stream to close.\r\n",
+        //             "description": "Id of stream to close.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

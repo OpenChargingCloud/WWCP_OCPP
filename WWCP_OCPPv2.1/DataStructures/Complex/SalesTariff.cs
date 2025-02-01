@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -103,42 +105,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "SalesTariffType": {
-        //   "description": "Sales_ Tariff\r\nurn:x-oca:ocpp:uid:2:233272\r\nNOTE: This dataType is based on dataTypes from &lt;&lt;ref-ISOIEC15118-2,ISO 15118-2&gt;&gt;.",
-        //   "javaType": "SalesTariff",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "A SalesTariff provided by a Mobility Operator (EMSP).
+        //                     NOTE: This dataType is based on dataTypes from ISO 15118-2.",
+        //     "javaType": "SalesTariff",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "SalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "salesTariffDescription": {
+        //             "description": "A human readable title/short description of the sales tariff e.g. for HMI display purposes.\r\n",
+        //             "type": "string",
+        //             "maxLength": 32
+        //         },
+        //         "numEPriceLevels": {
+        //             "description": "Defines the overall number of distinct price levels used across all provided SalesTariff elements.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "salesTariffEntry": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/SalesTariffEntryType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 1024
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "id": {
-        //       "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nSalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.",
-        //       "type": "integer"
-        //     },
-        //     "salesTariffDescription": {
-        //       "description": "Sales_ Tariff. Sales. Tariff_ Description\r\nurn:x-oca:ocpp:uid:1:569283\r\nA human readable title/short description of the sales tariff e.g. for HMI display purposes.",
-        //       "type": "string",
-        //       "maxLength": 32
-        //     },
-        //     "numEPriceLevels": {
-        //       "description": "Sales_ Tariff. Num_ E_ Price_ Levels. Counter\r\nurn:x-oca:ocpp:uid:1:569284\r\nDefines the overall number of distinct price levels used across all provided SalesTariff elements.",
-        //       "type": "integer"
-        //     },
-        //     "salesTariffEntry": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/SalesTariffEntryType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 1024
-        //     }
-        //   },
-        //   "required": [
-        //     "id",
-        //     "salesTariffEntry"
-        //   ]
+        //     "required": [
+        //         "id",
+        //         "salesTariffEntry"
+        //     ]
         // }
 
         #endregion
@@ -157,8 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var salesTariff,
                          out var errorResponse,
-                         CustomSalesTariffParser) &&
-                salesTariff is not null)
+                         CustomSalesTariffParser))
             {
                 return salesTariff;
             }
@@ -179,9 +183,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SalesTariff">The parsed connector type.</param>
-        public static Boolean TryParse(JObject           JSON,
-                                       out SalesTariff?  SalesTariff,
-                                       out String?       ErrorResponse)
+        public static Boolean TryParse(JObject                                JSON,
+                                       [NotNullWhen(true)]  out SalesTariff?  SalesTariff,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
                         out SalesTariff,
@@ -196,8 +200,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SalesTariff">The parsed connector type.</param>
         /// <param name="CustomSalesTariffParser">An optional delegate to parse custom sales tariffs.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       out SalesTariff?                           SalesTariff,
-                                       out String?                                ErrorResponse,
+                                       [NotNullWhen(true)]  out SalesTariff?      SalesTariff,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
                                        CustomJObjectParserDelegate<SalesTariff>?  CustomSalesTariffParser   = null)
         {
 
@@ -266,11 +270,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                SalesTariff = new SalesTariff(SalesTariffId,
-                                              SalesTariffEntries,
-                                              Description,
-                                              NumEPriceLevels,
-                                              CustomData);
+                SalesTariff = new SalesTariff(
+                                  SalesTariffId,
+                                  SalesTariffEntries,
+                                  Description,
+                                  NumEPriceLevels,
+                                  CustomData
+                              );
 
                 if (CustomSalesTariffParser is not null)
                     SalesTariff = CustomSalesTariffParser(JSON,

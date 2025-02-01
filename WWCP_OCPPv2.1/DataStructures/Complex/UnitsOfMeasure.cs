@@ -17,10 +17,13 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.WWCP;
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -45,13 +48,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unit of the measured value.
         /// </summary>
         [Mandatory]
-        public UnitOfMeasure Unit { get; } = Unit;
+        public UnitOfMeasure  Unit          { get; } = Unit;
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
         [Optional]
-        public Int32 Multiplier { get; } = Multiplier ?? 1;
+        public Int32          Multiplier    { get; } = Multiplier ?? 1;
 
         #endregion
 
@@ -59,29 +62,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:UnitsOfMeasureType",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Represents a UnitOfMeasure with a multiplier",
-        //   "javaType": "UnitsOfMeasure",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "unit": {
-        //       "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.",
-        //       "type": "string",
-        //       "default": "Wh",
-        //       "maxLength": 20
-        //     },
-        //     "multiplier": {
-        //       "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0.",
-        //       "type": "integer",
-        //       "default": 0
+        //     "description": "Represents a UnitOfMeasure with a multiplier\r\n",
+        //     "javaType": "UnitOfMeasure",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "unit": {
+        //             "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.
+        //                             This field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices.
+        //                             If an applicable unit is available in that list, otherwise a \"custom\" unit might be used.\r\n",
+        //             "type": "string",
+        //             "default": "Wh",
+        //             "maxLength": 20
+        //         },
+        //         "multiplier": {
+        //             "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to
+        //                             the 3rd power. Default is 0.
+        //                             The _multiplier_ only multiplies the value of the measurand.
+        //                             It does not specify a conversion between units, for example, kW and W.\r\n",
+        //             "type": "integer",
+        //             "default": 0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   }
         // }
 
         #endregion
@@ -100,8 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var unitsOfMeasure,
                          out var errorResponse,
-                         CustomUnitsOfMeasureParser) &&
-                unitsOfMeasure is not null)
+                         CustomUnitsOfMeasureParser))
             {
                 return unitsOfMeasure;
             }
@@ -123,9 +127,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UnitsOfMeasure">The parsed unit of measure.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out UnitsOfMeasure?  UnitsOfMeasure,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out UnitsOfMeasure?  UnitsOfMeasure,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out UnitsOfMeasure,
@@ -141,8 +145,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnitsOfMeasureParser">A delegate to parse custom units of measure.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out UnitsOfMeasure?                           UnitsOfMeasure,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out UnitsOfMeasure?      UnitsOfMeasure,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomJObjectParserDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureParser   = null)
         {
 

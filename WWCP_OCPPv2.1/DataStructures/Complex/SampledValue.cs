@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -141,41 +142,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "SampledValueType": {
-        //   "description": "Sampled_ Value\r\nurn:x-oca:ocpp:uid:2:233266\r\nSingle sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.",
-        //   "javaType": "SampledValue",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Single sampled value in MeterValues. Each value can be accompanied by optional fields.
+        //                     To save on mobile data usage, default values of all of the optional fields are such that.
+        //                     The value without any additional fields will be interpreted, as a register reading of
+        //                     active import energy in Wh (Watt-hour) units.\r\n",
+        //     "javaType": "SampledValue",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "value": {
+        //             "description": "Indicates the measured value.\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "measurand": {
+        //             "$ref": "#/definitions/MeasurandEnumType"
+        //         },
+        //         "context": {
+        //             "$ref": "#/definitions/ReadingContextEnumType"
+        //         },
+        //         "phase": {
+        //             "$ref": "#/definitions/PhaseEnumType"
+        //         },
+        //         "location": {
+        //             "$ref": "#/definitions/LocationEnumType"
+        //         },
+        //         "signedMeterValue": {
+        //             "$ref": "#/definitions/SignedMeterValueType"
+        //         },
+        //         "unitOfMeasure": {
+        //             "$ref": "#/definitions/UnitOfMeasureType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "value": {
-        //       "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.",
-        //       "type": "number"
-        //     },
-        //     "context": {
-        //       "$ref": "#/definitions/ReadingContextEnumType"
-        //     },
-        //     "measurand": {
-        //       "$ref": "#/definitions/MeasurandEnumType"
-        //     },
-        //     "phase": {
-        //       "$ref": "#/definitions/PhaseEnumType"
-        //     },
-        //     "location": {
-        //       "$ref": "#/definitions/LocationEnumType"
-        //     },
-        //     "signedMeterValue": {
-        //       "$ref": "#/definitions/SignedMeterValueType"
-        //     },
-        //     "unitOfMeasure": {
-        //       "$ref": "#/definitions/UnitOfMeasureType"
-        //     }
-        //   },
-        //   "required": [
-        //     "value"
-        //   ]
+        //     "required": [
+        //         "value"
+        //     ]
         // }
 
         #endregion
@@ -194,8 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var sampledValue,
                          out var errorResponse,
-                         CustomSampledValueParser) &&
-                sampledValue is not null)
+                         CustomSampledValueParser))
             {
                 return sampledValue;
             }
@@ -217,9 +220,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SampledValue">The parsed sampled value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            JSON,
-                                       out SampledValue?  SampledValue,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject                                 JSON,
+                                       [NotNullWhen(true)]  out SampledValue?  SampledValue,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
 
             => TryParse(JSON,
                         out SampledValue,
@@ -235,8 +238,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
         public static Boolean TryParse(JObject                                     JSON,
-                                       out SampledValue?                           SampledValue,
-                                       out String?                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out SampledValue?      SampledValue,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
                                        CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
         {
 

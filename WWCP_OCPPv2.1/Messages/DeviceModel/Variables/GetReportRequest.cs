@@ -134,8 +134,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.GetReportRequestId  = GetReportRequestId;
-            this.ComponentCriteria   = ComponentCriteria?. Distinct() ?? Array.Empty<ComponentCriteria>();
-            this.ComponentVariables  = ComponentVariables?.Distinct() ?? Array.Empty<ComponentVariable>();
+            this.ComponentCriteria   = ComponentCriteria?. Distinct() ?? [];
+            this.ComponentVariables  = ComponentVariables?.Distinct() ?? [];
 
             unchecked
             {
@@ -155,166 +155,168 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetReportRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetReportRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ComponentCriterionEnumType": {
+        //             "javaType": "ComponentCriterionEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Active",
+        //                 "Available",
+        //                 "Enabled",
+        //                 "Problem"
+        //             ]
+        //         },
+        //         "ComponentType": {
+        //             "description": "A physical or logical component\r\n",
+        //             "javaType": "Component",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evse": {
+        //                     "$ref": "#/definitions/EVSEType"
+        //                 },
+        //                 "name": {
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "ComponentVariableType": {
+        //             "description": "Class to report components, variables and variable attributes and characteristics.\r\n",
+        //             "javaType": "ComponentVariable",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "component": {
+        //                     "$ref": "#/definitions/ComponentType"
+        //                 },
+        //                 "variable": {
+        //                     "$ref": "#/definitions/VariableType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "component"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment\r\n",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "VariableType": {
+        //             "description": "Reference key to a component-variable.\r\n",
+        //             "javaType": "Variable",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "name": {
+        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ComponentCriterionEnumType": {
-        //       "javaType": "ComponentCriterionEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Active",
-        //         "Available",
-        //         "Enabled",
-        //         "Problem"
-        //       ]
-        //     },
-        //     "ComponentType": {
-        //       "description": "A physical or logical component",
-        //       "javaType": "Component",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "componentVariable": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ComponentVariableType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "requestId": {
+        //             "description": "The Id of the request.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "componentCriteria": {
+        //             "description": "This field contains criteria for components for which a report is requested\r\n",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ComponentCriterionEnumType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 4
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evse": {
-        //           "$ref": "#/definitions/EVSEType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
         //     },
-        //     "ComponentVariableType": {
-        //       "description": "Class to report components, variables and variable attributes and characteristics.",
-        //       "javaType": "ComponentVariable",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "component": {
-        //           "$ref": "#/definitions/ComponentType"
-        //         },
-        //         "variable": {
-        //           "$ref": "#/definitions/VariableType"
-        //         }
-        //       },
-        //       "required": [
-        //         "component"
-        //       ]
-        //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     },
-        //     "VariableType": {
-        //       "description": "Reference key to a component-variable.",
-        //       "javaType": "Variable",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "componentVariable": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ComponentVariableType"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of the request.",
-        //       "type": "integer"
-        //     },
-        //     "componentCriteria": {
-        //       "description": "This field contains criteria for components for which a report is requested",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ComponentCriterionEnumType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 4
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId"
-        //   ]
+        //     "required": [
+        //         "requestId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetReport request.
@@ -326,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static GetReportRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             SourceRouting                               Destination,
+                                             SourceRouting                                   Destination,
                                              NetworkPath                                     NetworkPath,
                                              DateTime?                                       RequestTimestamp               = null,
                                              TimeSpan?                                       RequestTimeout                 = null,
@@ -355,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetReportRequest, out ErrorResponse, CustomGetReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetReportRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetReport request.
@@ -369,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom GetReport requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       SourceRouting                               Destination,
+                                       SourceRouting                                   Destination,
                                        NetworkPath                                     NetworkPath,
                                        [NotNullWhen(true)]  out GetReportRequest?      GetReportRequest,
                                        [NotNullWhen(false)] out String?                ErrorResponse,

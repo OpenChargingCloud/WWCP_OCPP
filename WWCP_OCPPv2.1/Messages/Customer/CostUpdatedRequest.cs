@@ -168,11 +168,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "additionalProperties": false,
         //     "properties": {
         //         "totalCost": {
-        //             "description": "Current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [&lt;&lt;configkey-currency, Currency&gt;&gt;]\r\n\r\n",
+        //             "description": "Current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [&lt;&lt;configkey-currency, Currency&gt;&gt;]",
         //             "type": "number"
         //         },
         //         "transactionId": {
-        //             "description": "Transaction Id of the transaction the current cost are asked for.\r\n\r\n",
+        //             "description": "Transaction Id of the transaction the current cost are asked for.",
         //             "type": "string",
         //             "maxLength": 36
         //         },

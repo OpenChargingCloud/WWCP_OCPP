@@ -201,19 +201,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// This contains the field definition of a diagnostics log file.
         /// </summary>
-        public static LogType DiagnosticsLog      { get; }
+        public static LogType  DiagnosticsLog      { get; }
             = Register("DiagnosticsLog");
 
         /// <summary>
         /// Sent by the Central System to the Charge Point to request that the Charge Point uploads the security log.
         /// </summary>
-        public static LogType SecurityLog         { get; }
+        public static LogType  SecurityLog         { get; }
             = Register("SecurityLog");
 
         /// <summary>
         /// The log of sampled measurements from the DataCollector component.
         /// </summary>
-        public static LogType DataCollectorLog    { get; }
+        public static LogType  DataCollectorLog    { get; }
             = Register("DataCollectorLog");
 
         #endregion

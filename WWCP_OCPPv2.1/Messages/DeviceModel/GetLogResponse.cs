@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 hashCode = this.Status.     GetHashCode()       * 7 ^
                           (this.Filename?.  GetHashCode() ?? 0) * 5 ^
                           (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                           base.GetHashCode();
+                           base.            GetHashCode();
 
             }
 
@@ -161,38 +161,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:GetLog.conf",
-        //   "definitions": {
-        //     "LogStatusEnumType": {
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected",
-        //         "AcceptedCanceled"
-        //       ]
-        //     }
-        // },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "status": {
-        //         "$ref": "#/definitions/LogStatusEnumType"
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetLogResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "LogStatusEnumType": {
+        //             "description": "This field indicates whether the Charging Station was able to accept the request.\r\n",
+        //             "javaType": "LogStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "AcceptedCanceled"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.\r\n",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
         //     },
-        //     "filename": {
-        //         "type": "string",
-        //       "maxLength": 255
-        //     }
-        // },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/LogStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "filename": {
+        //             "description": "This contains the name of the log file that will be uploaded. This field is not present when no logging information is available.\r\n",
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetLogResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetLog response.
@@ -202,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLogResponseParser">A delegate to parse custom GetLog responses.</param>
         public static GetLogResponse Parse(GetLogRequest                                 Request,
                                            JObject                                       JSON,
-                                           SourceRouting                             Destination,
+                                           SourceRouting                                 Destination,
                                            NetworkPath                                   NetworkPath,
                                            DateTime?                                     ResponseTimestamp            = null,
                                            CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null,
@@ -233,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetLogResponse, out ErrorResponse, CustomGetLogResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out GetLogResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetLog response.
@@ -245,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLogResponseParser">A delegate to parse custom GetLog responses.</param>
         public static Boolean TryParse(GetLogRequest                                 Request,
                                        JObject                                       JSON,
-                                       SourceRouting                             Destination,
+                                       SourceRouting                                 Destination,
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetLogResponse?      GetLogResponse,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
@@ -443,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    LogStatus.Rejected,
                    null,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -472,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     LogStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -487,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     LogStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -502,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     LogStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -515,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     LogStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

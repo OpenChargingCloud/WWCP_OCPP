@@ -424,14 +424,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetLog                      (Destination, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                      (Destination, LogRequestId, LogType, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
-        /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
+        /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
@@ -448,8 +448,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetLog(this ICSMSNode           CSMS,
                    SourceRouting            Destination,
-                   LogType                  LogType,
                    Int32                    LogRequestId,
+                   LogType                  LogType,
                    LogParameters            Log,
                    Byte?                    Retries               = null,
                    TimeSpan?                RetryInterval         = null,
@@ -471,8 +471,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.OCPP.OUT.GetLog(
                        new GetLogRequest(
                            Destination,
-                           LogType,
                            LogRequestId,
+                           LogType,
                            Log,
                            Retries,
                            RetryInterval,

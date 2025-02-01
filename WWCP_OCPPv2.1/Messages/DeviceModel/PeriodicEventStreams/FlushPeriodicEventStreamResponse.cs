@@ -1,474 +1,474 @@
-﻿/*
- * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP OCPP <https://github.com/FlushChargingCloud/WWCP_OCPP>
- *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.gnu.org/licenses/agpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#region Usings
-
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.WWCP;
+﻿///*
+// * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * This file is part of WWCP OCPP <https://github.com/FlushChargingCloud/WWCP_OCPP>
+// *
+// * Licensed under the Affero GPL license, Version 3.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.gnu.org/licenses/agpl.html
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+
+//#region Usings
+
+//using Newtonsoft.Json.Linq;
+
+//using org.GraphDefined.Vanaheimr.Illias;
+
+//using cloud.charging.open.protocols.WWCP;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-
-#endregion
-
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
-{
-
-    /// <summary>
-    /// A flush periodic event stream response.
-    /// </summary>
-    public class FlushPeriodicEventStreamResponse : AResponse<FlushPeriodicEventStreamRequest,
-                                                              FlushPeriodicEventStreamResponse>,
-                                                    IResponse<Result>
-    {
+//using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+
+//#endregion
+
+//namespace cloud.charging.open.protocols.OCPPv2_1.CS
+//{
+
+//    /// <summary>
+//    /// A flush periodic event stream response.
+//    /// </summary>
+//    public class FlushPeriodicEventStreamResponse : AResponse<FlushPeriodicEventStreamRequest,
+//                                                              FlushPeriodicEventStreamResponse>,
+//                                                    IResponse<Result>
+//    {
 
-        #region Data
+//        #region Data
 
-        /// <summary>
-        /// The JSON-LD context of this object.
-        /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/flushPeriodicEventStreamResponse");
+//        /// <summary>
+//        /// The JSON-LD context of this object.
+//        /// </summary>
+//        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/flushPeriodicEventStreamResponse");
 
-        #endregion
+//        #endregion
 
-        #region Properties
+//        #region Properties
 
-        /// <summary>
-        /// The JSON-LD context of this object.
-        /// </summary>
-        public JSONLDContext  Context
-            => DefaultJSONLDContext;
+//        /// <summary>
+//        /// The JSON-LD context of this object.
+//        /// </summary>
+//        public JSONLDContext  Context
+//            => DefaultJSONLDContext;
 
-        /// <summary>
-        /// The registration status.
-        /// </summary>
-        [Mandatory]
-        public GenericStatus   Status        { get; }
+//        /// <summary>
+//        /// The registration status.
+//        /// </summary>
+//        [Mandatory]
+//        public GenericStatus   Status        { get; }
 
-        /// <summary>
-        /// An optional element providing more information about the registration status.
-        /// </summary>
-        [Optional]
-        public StatusInfo?     StatusInfo    { get; }
+//        /// <summary>
+//        /// An optional element providing more information about the registration status.
+//        /// </summary>
+//        [Optional]
+//        public StatusInfo?     StatusInfo    { get; }
 
-        #endregion
+//        #endregion
 
-        #region Constructor(s)
+//        #region Constructor(s)
 
-        #region FlushPeriodicEventStreamResponse(Request, Status, StatusInfo = null, ...)
+//        #region FlushPeriodicEventStreamResponse(Request, Status, StatusInfo = null, ...)
 
-        /// <summary>
-        /// Create a new open periodic event stream response.
-        /// </summary>
-        /// <param name="Request">The open periodic event stream request leading to this response.</param>
-        /// <param name="Status">The registration status.</param>
-        /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public FlushPeriodicEventStreamResponse(CSMS.FlushPeriodicEventStreamRequest  Request,
-                                                GenericStatus                         Status,
-                                                StatusInfo?                           StatusInfo          = null,
-                                                DateTime?                             ResponseTimestamp   = null,
+//        /// <summary>
+//        /// Create a new open periodic event stream response.
+//        /// </summary>
+//        /// <param name="Request">The open periodic event stream request leading to this response.</param>
+//        /// <param name="Status">The registration status.</param>
+//        /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
+//        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+//        /// 
+//        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+//        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+//        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+//        /// 
+//        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+//        public FlushPeriodicEventStreamResponse(CSMS.FlushPeriodicEventStreamRequest  Request,
+//                                                GenericStatus                         Status,
+//                                                StatusInfo?                           StatusInfo          = null,
+//                                                DateTime?                             ResponseTimestamp   = null,
 
-                                                IEnumerable<KeyPair>?                 SignKeys            = null,
-                                                IEnumerable<SignInfo>?                SignInfos           = null,
-                                                IEnumerable<Signature>?               Signatures          = null,
+//                                                IEnumerable<KeyPair>?                 SignKeys            = null,
+//                                                IEnumerable<SignInfo>?                SignInfos           = null,
+//                                                IEnumerable<Signature>?               Signatures          = null,
 
-                                                CustomData?                           CustomData          = null)
+//                                                CustomData?                           CustomData          = null)
 
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
+//            : base(Request,
+//                   Result.OK(),
+//                   ResponseTimestamp,
 
-                   null,
-                   null,
+//                   null,
+//                   null,
 
-                   SignKeys,
-                   SignInfos,
-                   Signatures,
+//                   SignKeys,
+//                   SignInfos,
+//                   Signatures,
 
-                   CustomData)
+//                   CustomData)
 
-        {
+//        {
 
-            this.Status      = Status;
-            this.StatusInfo  = StatusInfo;
+//            this.Status      = Status;
+//            this.StatusInfo  = StatusInfo;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region FlushPeriodicEventStreamResponse(Request, Result)
+//        #region FlushPeriodicEventStreamResponse(Request, Result)
 
-        /// <summary>
-        /// Create a new open periodic event stream response.
-        /// </summary>
-        /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">A result.</param>
-        public FlushPeriodicEventStreamResponse(CSMS.FlushPeriodicEventStreamRequest  Request,
-                                                Result                                Result)
+//        /// <summary>
+//        /// Create a new open periodic event stream response.
+//        /// </summary>
+//        /// <param name="Request">The authorize request.</param>
+//        /// <param name="Result">A result.</param>
+//        public FlushPeriodicEventStreamResponse(CSMS.FlushPeriodicEventStreamRequest  Request,
+//                                                Result                                Result)
 
-            : base(Request,
-                   Result)
+//            : base(Request,
+//                   Result)
 
-        {
+//        {
 
-            this.Status = GenericStatus.Rejected;
+//            this.Status = GenericStatus.Rejected;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
 
-        #region Documentation
+//        #region Documentation
 
-        // tba.
+//        // tba.
 
-        #endregion
+//        #endregion
 
-        #region (static) Parse   (Request, JSON, CustomFlushPeriodicEventStreamResponseParser = null)
+//        #region (static) Parse   (Request, JSON, CustomFlushPeriodicEventStreamResponseParser = null)
 
-        /// <summary>
-        /// Parse the given JSON representation of a flush periodic event stream response.
-        /// </summary>
-        /// <param name="Request">The open periodic event stream request leading to this response.</param>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomFlushPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static FlushPeriodicEventStreamResponse Parse(CSMS.FlushPeriodicEventStreamRequest                            Request,
-                                                             JObject                                                         JSON,
-                                                             CustomJObjectParserDelegate<FlushPeriodicEventStreamResponse>?  CustomFlushPeriodicEventStreamResponseParser   = null)
-        {
+//        /// <summary>
+//        /// Parse the given JSON representation of a flush periodic event stream response.
+//        /// </summary>
+//        /// <param name="Request">The open periodic event stream request leading to this response.</param>
+//        /// <param name="JSON">The JSON to be parsed.</param>
+//        /// <param name="CustomFlushPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
+//        public static FlushPeriodicEventStreamResponse Parse(CSMS.FlushPeriodicEventStreamRequest                            Request,
+//                                                             JObject                                                         JSON,
+//                                                             CustomJObjectParserDelegate<FlushPeriodicEventStreamResponse>?  CustomFlushPeriodicEventStreamResponseParser   = null)
+//        {
 
 
-            if (TryParse(Request,
-                         JSON,
-                         out var flushPeriodicEventStreamResponse,
-                         out var errorResponse,
-                         CustomFlushPeriodicEventStreamResponseParser) &&
-                flushPeriodicEventStreamResponse is not null)
-            {
-                return flushPeriodicEventStreamResponse;
-            }
+//            if (TryParse(Request,
+//                         JSON,
+//                         out var flushPeriodicEventStreamResponse,
+//                         out var errorResponse,
+//                         CustomFlushPeriodicEventStreamResponseParser) &&
+//                flushPeriodicEventStreamResponse is not null)
+//            {
+//                return flushPeriodicEventStreamResponse;
+//            }
 
-            throw new ArgumentException("The given JSON representation of a flush periodic event stream response is invalid: " + errorResponse,
-                                        nameof(JSON));
+//            throw new ArgumentException("The given JSON representation of a flush periodic event stream response is invalid: " + errorResponse,
+//                                        nameof(JSON));
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region (static) TryParse(Request, JSON, out FlushPeriodicEventStreamResponse, out ErrorResponse, CustomFlushPeriodicEventStreamResponseParser = null)
+//        #region (static) TryParse(Request, JSON, out FlushPeriodicEventStreamResponse, out ErrorResponse, CustomFlushPeriodicEventStreamResponseParser = null)
 
-        /// <summary>
-        /// Try to parse the given JSON representation of a flush periodic event stream response.
-        /// </summary>
-        /// <param name="Request">The open periodic event stream request leading to this response.</param>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="FlushPeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomFlushPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static Boolean TryParse(CSMS.FlushPeriodicEventStreamRequest                            Request,
-                                       JObject                                                         JSON,
-                                       out FlushPeriodicEventStreamResponse?                           FlushPeriodicEventStreamResponse,
-                                       out String?                                                     ErrorResponse,
-                                       CustomJObjectParserDelegate<FlushPeriodicEventStreamResponse>?  CustomFlushPeriodicEventStreamResponseParser   = null)
-        {
+//        /// <summary>
+//        /// Try to parse the given JSON representation of a flush periodic event stream response.
+//        /// </summary>
+//        /// <param name="Request">The open periodic event stream request leading to this response.</param>
+//        /// <param name="JSON">The JSON to be parsed.</param>
+//        /// <param name="FlushPeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
+//        /// <param name="ErrorResponse">An optional error response.</param>
+//        /// <param name="CustomFlushPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
+//        public static Boolean TryParse(CSMS.FlushPeriodicEventStreamRequest                            Request,
+//                                       JObject                                                         JSON,
+//                                       out FlushPeriodicEventStreamResponse?                           FlushPeriodicEventStreamResponse,
+//                                       out String?                                                     ErrorResponse,
+//                                       CustomJObjectParserDelegate<FlushPeriodicEventStreamResponse>?  CustomFlushPeriodicEventStreamResponseParser   = null)
+//        {
 
-            try
-            {
+//            try
+//            {
 
-                FlushPeriodicEventStreamResponse = null;
+//                FlushPeriodicEventStreamResponse = null;
 
-                #region Status         [mandatory]
+//                #region Status         [mandatory]
 
-                if (!JSON.ParseMandatory("status",
-                                         "registration status",
-                                         GenericStatusExtensions.TryParse,
-                                         out GenericStatus RegistrationStatus,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
+//                if (!JSON.ParseMandatory("status",
+//                                         "registration status",
+//                                         GenericStatusExtensions.TryParse,
+//                                         out GenericStatus RegistrationStatus,
+//                                         out ErrorResponse))
+//                {
+//                    return false;
+//                }
 
-                if (RegistrationStatus == GenericStatus.Unknown)
-                {
-                    ErrorResponse = "Unknown registration status '" + (JSON["status"]?.Value<String>() ?? "") + "' received!";
-                    return false;
-                }
+//                if (RegistrationStatus == GenericStatus.Unknown)
+//                {
+//                    ErrorResponse = "Unknown registration status '" + (JSON["status"]?.Value<String>() ?? "") + "' received!";
+//                    return false;
+//                }
 
-                #endregion
+//                #endregion
 
-                #region StatusInfo     [optional]
+//                #region StatusInfo     [optional]
 
-                if (JSON.ParseOptionalJSON("statusInfo",
-                                           "status info",
-                                           OCPPv2_1.StatusInfo.TryParse,
-                                           out StatusInfo StatusInfo,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+//                if (JSON.ParseOptionalJSON("statusInfo",
+//                                           "status info",
+//                                           OCPPv2_1.StatusInfo.TryParse,
+//                                           out StatusInfo StatusInfo,
+//                                           out ErrorResponse))
+//                {
+//                    if (ErrorResponse is not null)
+//                        return false;
+//                }
 
-                #endregion
+//                #endregion
 
-                #region Signatures     [optional, OCPP_CSE]
+//                #region Signatures     [optional, OCPP_CSE]
 
-                if (JSON.ParseOptionalHashSet("signatures",
-                                              "cryptographic signatures",
-                                              Signature.TryParse,
-                                              out HashSet<Signature> Signatures,
-                                              out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+//                if (JSON.ParseOptionalHashSet("signatures",
+//                                              "cryptographic signatures",
+//                                              Signature.TryParse,
+//                                              out HashSet<Signature> Signatures,
+//                                              out ErrorResponse))
+//                {
+//                    if (ErrorResponse is not null)
+//                        return false;
+//                }
 
-                #endregion
+//                #endregion
 
-                #region CustomData     [optional]
+//                #region CustomData     [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
-                                           WWCP.CustomData.TryParse,
-                                           out CustomData? CustomData,
-                                           out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+//                if (JSON.ParseOptionalJSON("customData",
+//                                           "custom data",
+//                                           WWCP.CustomData.TryParse,
+//                                           out CustomData? CustomData,
+//                                           out ErrorResponse))
+//                {
+//                    if (ErrorResponse is not null)
+//                        return false;
+//                }
 
-                #endregion
+//                #endregion
 
 
-                FlushPeriodicEventStreamResponse = new FlushPeriodicEventStreamResponse(
-                                                       Request,
-                                                       RegistrationStatus,
-                                                       StatusInfo,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       Signatures,
-                                                       CustomData
-                                                   );
+//                FlushPeriodicEventStreamResponse = new FlushPeriodicEventStreamResponse(
+//                                                       Request,
+//                                                       RegistrationStatus,
+//                                                       StatusInfo,
+//                                                       null,
+//                                                       null,
+//                                                       null,
+//                                                       Signatures,
+//                                                       CustomData
+//                                                   );
 
-                if (CustomFlushPeriodicEventStreamResponseParser is not null)
-                    FlushPeriodicEventStreamResponse = CustomFlushPeriodicEventStreamResponseParser(JSON,
-                                                                                                    FlushPeriodicEventStreamResponse);
+//                if (CustomFlushPeriodicEventStreamResponseParser is not null)
+//                    FlushPeriodicEventStreamResponse = CustomFlushPeriodicEventStreamResponseParser(JSON,
+//                                                                                                    FlushPeriodicEventStreamResponse);
 
-                return true;
+//                return true;
 
-            }
-            catch (Exception e)
-            {
-                FlushPeriodicEventStreamResponse  = null;
-                ErrorResponse                     = "The given JSON representation of a flush periodic event stream response is invalid: " + e.Message;
-                return false;
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                FlushPeriodicEventStreamResponse  = null;
+//                ErrorResponse                     = "The given JSON representation of a flush periodic event stream response is invalid: " + e.Message;
+//                return false;
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region ToJSON(CustomFlushPeriodicEventStreamResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+//        #region ToJSON(CustomFlushPeriodicEventStreamResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
-        /// <param name="CustomFlushPeriodicEventStreamResponseSerializer">A delegate to serialize custom open periodic event stream responses.</param>
-        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
-        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
-        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(Boolean                                                             IncludeJSONLDContext                               = false,
-                              CustomJObjectSerializerDelegate<FlushPeriodicEventStreamResponse>?  CustomFlushPeriodicEventStreamResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
-                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
-        {
+//        /// <summary>
+//        /// Return a JSON representation of this object.
+//        /// </summary>
+//        /// <param name="CustomFlushPeriodicEventStreamResponseSerializer">A delegate to serialize custom open periodic event stream responses.</param>
+//        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+//        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+//        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+//        public JObject ToJSON(Boolean                                                             IncludeJSONLDContext                               = false,
+//                              CustomJObjectSerializerDelegate<FlushPeriodicEventStreamResponse>?  CustomFlushPeriodicEventStreamResponseSerializer   = null,
+//                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
+//                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
+//                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
+//        {
 
-            var json = JSONObject.Create(
+//            var json = JSONObject.Create(
 
-                           IncludeJSONLDContext
-                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
-                               : null,
+//                           IncludeJSONLDContext
+//                               ? new JProperty("@context",     DefaultJSONLDContext.ToString())
+//                               : null,
 
-                                 new JProperty("status",       Status.              AsText()),
+//                                 new JProperty("status",       Status.              AsText()),
 
-                           StatusInfo is not null
-                               ? new JProperty("statusInfo",   StatusInfo.          ToJSON(CustomStatusInfoSerializer,
-                                                                                           CustomCustomDataSerializer))
-                               : null,
+//                           StatusInfo is not null
+//                               ? new JProperty("statusInfo",   StatusInfo.          ToJSON(CustomStatusInfoSerializer,
+//                                                                                           CustomCustomDataSerializer))
+//                               : null,
 
-                           Signatures.Any()
-                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                          CustomCustomDataSerializer))))
-                               : null,
+//                           Signatures.Any()
+//                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+//                                                                                                                          CustomCustomDataSerializer))))
+//                               : null,
 
-                           CustomData is not null
-                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
-                               : null
+//                           CustomData is not null
+//                               ? new JProperty("customData",   CustomData.          ToJSON(CustomCustomDataSerializer))
+//                               : null
 
-                       );
+//                       );
 
-            return CustomFlushPeriodicEventStreamResponseSerializer is not null
-                       ? CustomFlushPeriodicEventStreamResponseSerializer(this, json)
-                       : json;
+//            return CustomFlushPeriodicEventStreamResponseSerializer is not null
+//                       ? CustomFlushPeriodicEventStreamResponseSerializer(this, json)
+//                       : json;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region Static methods
+//        #region Static methods
 
-        /// <summary>
-        /// The open periodic event stream failed.
-        /// </summary>
-        public static FlushPeriodicEventStreamResponse Failed(CSMS.FlushPeriodicEventStreamRequest Request)
+//        /// <summary>
+//        /// The open periodic event stream failed.
+//        /// </summary>
+//        public static FlushPeriodicEventStreamResponse Failed(CSMS.FlushPeriodicEventStreamRequest Request)
 
-            => new (Request,
-                    Result.Server());
+//            => new (Request,
+//                    Result.Server());
 
-        #endregion
+//        #endregion
 
 
-        #region Operator overloading
+//        #region Operator overloading
 
-        #region Operator == (FlushPeriodicEventStreamResponse1, FlushPeriodicEventStreamResponse2)
+//        #region Operator == (FlushPeriodicEventStreamResponse1, FlushPeriodicEventStreamResponse2)
 
-        /// <summary>
-        /// Compares two open periodic event stream responses for equality.
-        /// </summary>
-        /// <param name="FlushPeriodicEventStreamResponse1">A flush periodic event stream response.</param>
-        /// <param name="FlushPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse1,
-                                           FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse2)
-        {
+//        /// <summary>
+//        /// Compares two open periodic event stream responses for equality.
+//        /// </summary>
+//        /// <param name="FlushPeriodicEventStreamResponse1">A flush periodic event stream response.</param>
+//        /// <param name="FlushPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator == (FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse1,
+//                                           FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse2)
+//        {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(FlushPeriodicEventStreamResponse1, FlushPeriodicEventStreamResponse2))
-                return true;
+//            // If both are null, or both are same instance, return true.
+//            if (ReferenceEquals(FlushPeriodicEventStreamResponse1, FlushPeriodicEventStreamResponse2))
+//                return true;
 
-            // If one is null, but not both, return false.
-            if (FlushPeriodicEventStreamResponse1 is null || FlushPeriodicEventStreamResponse2 is null)
-                return false;
+//            // If one is null, but not both, return false.
+//            if (FlushPeriodicEventStreamResponse1 is null || FlushPeriodicEventStreamResponse2 is null)
+//                return false;
 
-            return FlushPeriodicEventStreamResponse1.Equals(FlushPeriodicEventStreamResponse2);
+//            return FlushPeriodicEventStreamResponse1.Equals(FlushPeriodicEventStreamResponse2);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Operator != (FlushPeriodicEventStreamResponse1, FlushPeriodicEventStreamResponse2)
+//        #region Operator != (FlushPeriodicEventStreamResponse1, FlushPeriodicEventStreamResponse2)
 
-        /// <summary>
-        /// Compares two open periodic event stream responses for inequality.
-        /// </summary>
-        /// <param name="FlushPeriodicEventStreamResponse1">A flush periodic event stream response.</param>
-        /// <param name="FlushPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
-        /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse1,
-                                           FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse2)
+//        /// <summary>
+//        /// Compares two open periodic event stream responses for inequality.
+//        /// </summary>
+//        /// <param name="FlushPeriodicEventStreamResponse1">A flush periodic event stream response.</param>
+//        /// <param name="FlushPeriodicEventStreamResponse2">Another open periodic event stream response.</param>
+//        /// <returns>False if both match; True otherwise.</returns>
+//        public static Boolean operator != (FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse1,
+//                                           FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse2)
 
-            => !(FlushPeriodicEventStreamResponse1 == FlushPeriodicEventStreamResponse2);
+//            => !(FlushPeriodicEventStreamResponse1 == FlushPeriodicEventStreamResponse2);
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region IEquatable<FlushPeriodicEventStreamResponse> Members
+//        #region IEquatable<FlushPeriodicEventStreamResponse> Members
 
-        #region Equals(Object)
+//        #region Equals(Object)
 
-        /// <summary>
-        /// Compares two open periodic event stream responses for equality.
-        /// </summary>
-        /// <param name="Object">A flush periodic event stream response to compare with.</param>
-        public override Boolean Equals(Object? Object)
+//        /// <summary>
+//        /// Compares two open periodic event stream responses for equality.
+//        /// </summary>
+//        /// <param name="Object">A flush periodic event stream response to compare with.</param>
+//        public override Boolean Equals(Object? Object)
 
-            => Object is FlushPeriodicEventStreamResponse flushPeriodicEventStreamResponse &&
-                   Equals(flushPeriodicEventStreamResponse);
+//            => Object is FlushPeriodicEventStreamResponse flushPeriodicEventStreamResponse &&
+//                   Equals(flushPeriodicEventStreamResponse);
 
-        #endregion
+//        #endregion
 
-        #region Equals(FlushPeriodicEventStreamResponse)
+//        #region Equals(FlushPeriodicEventStreamResponse)
 
-        /// <summary>
-        /// Compares two open periodic event stream responses for equality.
-        /// </summary>
-        /// <param name="FlushPeriodicEventStreamResponse">A flush periodic event stream response to compare with.</param>
-        public override Boolean Equals(FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse)
+//        /// <summary>
+//        /// Compares two open periodic event stream responses for equality.
+//        /// </summary>
+//        /// <param name="FlushPeriodicEventStreamResponse">A flush periodic event stream response to compare with.</param>
+//        public override Boolean Equals(FlushPeriodicEventStreamResponse? FlushPeriodicEventStreamResponse)
 
-            => FlushPeriodicEventStreamResponse is not null &&
+//            => FlushPeriodicEventStreamResponse is not null &&
 
-               Status.Equals(FlushPeriodicEventStreamResponse.Status) &&
+//               Status.Equals(FlushPeriodicEventStreamResponse.Status) &&
 
-             ((StatusInfo is     null && FlushPeriodicEventStreamResponse.StatusInfo is     null) ||
-              (StatusInfo is not null && FlushPeriodicEventStreamResponse.StatusInfo is not null && StatusInfo.Equals(FlushPeriodicEventStreamResponse.StatusInfo))) &&
+//             ((StatusInfo is     null && FlushPeriodicEventStreamResponse.StatusInfo is     null) ||
+//              (StatusInfo is not null && FlushPeriodicEventStreamResponse.StatusInfo is not null && StatusInfo.Equals(FlushPeriodicEventStreamResponse.StatusInfo))) &&
 
-               base.GenericEquals(FlushPeriodicEventStreamResponse);
+//               base.GenericEquals(FlushPeriodicEventStreamResponse);
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region (override) GetHashCode()
+//        #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
-        {
-            unchecked
-            {
+//        /// <summary>
+//        /// Return the HashCode of this object.
+//        /// </summary>
+//        /// <returns>The HashCode of this object.</returns>
+//        public override Int32 GetHashCode()
+//        {
+//            unchecked
+//            {
 
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+//                return Status.     GetHashCode()       * 5 ^
+//                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
-                       base.       GetHashCode();
+//                       base.       GetHashCode();
 
-            }
-        }
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region (override) ToString()
+//        #region (override) ToString()
 
-        /// <summary>
-        /// Return a text representation of this object.
-        /// </summary>
-        public override String ToString()
+//        /// <summary>
+//        /// Return a text representation of this object.
+//        /// </summary>
+//        public override String ToString()
 
-            => Status.AsText();
+//            => Status.AsText();
 
-        #endregion
+//        #endregion
 
 
-    }
+//    }
 
-}
+//}

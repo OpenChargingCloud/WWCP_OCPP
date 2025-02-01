@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -84,30 +86,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
-        // "ChargingLimitType": {
-        //   "description": "Charging_ Limit\r\nurn:x-enexis:ecdm:uid:2:234489",
-        //   "javaType": "ChargingLimit",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "ChargingLimit",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "chargingLimitSource": {
+        //             "description": "Represents the source of the charging limit.
+        //                             Values defined in appendix as ChargingLimitSourceEnumStringType.\r\n",
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "isLocalGeneration": {
+        //             "description": "*(2.1)* True when the reported limit concerns local generation that is
+        //                             providing extra capacity, instead of a limitation.\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "isGridCritical": {
+        //             "description": "Indicates whether the charging limit is critical for the grid.\r\n",
+        //             "type": "boolean"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "chargingLimitSource": {
-        //       "$ref": "#/definitions/ChargingLimitSourceEnumType"
-        //     },
-        //     "isGridCritical": {
-        //       "description": "Charging_ Limit. Is_ Grid_ Critical. Indicator\r\nurn:x-enexis:ecdm:uid:1:570847\r\nIndicates whether the charging limit is critical for the grid.",
-        //       "type": "boolean"
-        //     }
-        //   },
-        //   "required": [
-        //     "chargingLimitSource"
-        //   ]
+        //     "required": [
+        //         "chargingLimitSource"
+        //     ]
         // }
 
         #endregion
@@ -126,8 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingLimit,
                          out var errorResponse,
-                         CustomChargingLimitParser) &&
-                chargingLimit is not null)
+                         CustomChargingLimitParser))
             {
                 return chargingLimit;
             }
@@ -149,9 +155,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingLimit">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out ChargingLimit?  ChargingLimit,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out ChargingLimit?  ChargingLimit,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingLimit,
@@ -167,8 +173,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingLimitParser">A delegate to parse custom charging limit JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
-                                       out ChargingLimit?                           ChargingLimit,
-                                       out String?                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingLimit?      ChargingLimit,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingLimit>?  CustomChargingLimitParser)
         {
 

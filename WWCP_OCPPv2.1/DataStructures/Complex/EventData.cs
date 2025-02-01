@@ -186,27 +186,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.TransactionId          = TransactionId;
             this.VariableMonitoringId   = VariableMonitoringId;
 
-
             unchecked
             {
 
-                hashCode = EventId.              GetHashCode()       * 53 ^
-                           Timestamp.            GetHashCode()       * 47 ^
-                           Trigger.              GetHashCode()       * 43 ^
-                           ActualValue.          GetHashCode()       * 41 ^
-                           EventNotificationType.GetHashCode()       * 37 ^
-                           Component.            GetHashCode()       * 31 ^
-                           Variable.             GetHashCode()       * 29 ^
+                hashCode = this.EventId.              GetHashCode()       * 53 ^
+                           this.Timestamp.            GetHashCode()       * 47 ^
+                           this.Trigger.              GetHashCode()       * 43 ^
+                           this.ActualValue.          GetHashCode()       * 41 ^
+                           this.EventNotificationType.GetHashCode()       * 37 ^
+                           this.Component.            GetHashCode()       * 31 ^
+                           this.Variable.             GetHashCode()       * 29 ^
 
-                          (Severity?.            GetHashCode() ?? 0) * 23 ^
-                          (Cause?.               GetHashCode() ?? 0) * 19 ^
-                          (TechCode?.            GetHashCode() ?? 0) * 17 ^
-                          (TechInfo?.            GetHashCode() ?? 0) * 11 ^
-                          (Cleared?.             GetHashCode() ?? 0) *  7 ^
-                          (TransactionId?.       GetHashCode() ?? 0) *  5 ^
-                          (VariableMonitoringId?.GetHashCode() ?? 0) *  3 ^
+                          (this.Severity?.            GetHashCode() ?? 0) * 23 ^
+                          (this.Cause?.               GetHashCode() ?? 0) * 19 ^
+                          (this.TechCode?.            GetHashCode() ?? 0) * 17 ^
+                          (this.TechInfo?.            GetHashCode() ?? 0) * 11 ^
+                          (this.Cleared?.             GetHashCode() ?? 0) *  7 ^
+                          (this.TransactionId?.       GetHashCode() ?? 0) *  5 ^
+                          (this.VariableMonitoringId?.GetHashCode() ?? 0) *  3 ^
 
-                           base.                 GetHashCode();
+                           base.                      GetHashCode();
 
             }
 

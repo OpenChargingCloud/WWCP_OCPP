@@ -67,25 +67,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this measurand is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                 IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this measurand is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                 IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the measurand.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                  Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         /// <summary>
         /// All registered measurands.
         /// </summary>
-        public static IEnumerable<Measurand> Values
+        public static    IEnumerable<Measurand>  Values
             => lookup.Values;
 
         #endregion
@@ -201,13 +201,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Instantaneous current flow from EV.
         /// </summary>
-        public static Measurand Current_Export                       { get; }
+        public static Measurand  Current_Export                       { get; }
             = Register("Current.Export");
 
         /// <summary>
         /// Instantaneous current flow to EV.
         /// </summary>
-        public static Measurand Current_Import                       { get; }
+        public static Measurand  Current_Import                       { get; }
             = Register("Current.Import");
 
         /// <summary>
@@ -215,56 +215,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Has been replaced by Current.Import.Offered.
         /// </summary>
         [Obsolete("Has been replaced by Current.Import.Offered.")]
-        public static Measurand Current_Offered                      { get; }
+        public static Measurand  Current_Offered                      { get; }
             = Register("Current.Offered");
 
         /// <summary>
         /// Maximum current offered to EV.
         /// </summary>
-        public static Measurand Current_Import_Offered               { get; }
+        public static Measurand  Current_Import_Offered               { get; }
             = Register("Current.Import.Offered");
 
         /// <summary>
         /// Minimum current the EV can be charged with, max(EV, EVSE).
         /// </summary>
-        public static Measurand Current_Import_Minimum               { get; }
+        public static Measurand  Current_Import_Minimum               { get; }
             = Register("Current.Import.Minimum");
 
         /// <summary>
         /// Maximum current the EV can be discharged with, min(EV, EVSE).
         /// </summary>
-        public static Measurand Current_Export_Offered               { get; }
+        public static Measurand  Current_Export_Offered               { get; }
             = Register("Current.Export.Offered");
 
         /// <summary>
         /// Minimum current the EV can be discharged with, max(EV, EVSE).
         /// </summary>
-        public static Measurand Current_Export_Minimum               { get; }
+        public static Measurand  Current_Export_Minimum               { get; }
             = Register("Current.Export.Minimum");
 
         /// <summary>
         /// Current state of charge of the EV battery.
         /// </summary>
-        public static Measurand Display_PresentSOC                   { get; }
+        public static Measurand  Display_PresentSOC                   { get; }
             = Register("Display.PresentSOC");
 
         /// <summary>
         /// Minimum State of Charge EV needs after charging of the EV
         /// battery the EV to keep throughout the charging session.
         /// </summary>
-        public static Measurand Display_MinimumSOC                   { get; }
+        public static Measurand  Display_MinimumSOC                   { get; }
             = Register("Display.MinimumSOC");
 
         /// <summary>
         /// Target State of Charge of the EV battery EV needs after charging.
         /// </summary>
-        public static Measurand Display_TargetSOC                    { get; }
+        public static Measurand  Display_TargetSOC                    { get; }
             = Register("Display.TargetSOC");
 
         /// <summary>
         /// The SOC at which the EV will prohibit any further charging.
         /// </summary>
-        public static Measurand Display_MaximumSOC                   { get; }
+        public static Measurand  Display_MaximumSOC                   { get; }
             = Register("Display.MaximumSOC");
 
         /// <summary>
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// communicated as the offset in seconds from the point in time this
         /// value was received from EV.
         /// </summary>
-        public static Measurand Display_RemainingTimeToMinimumSOC    { get; }
+        public static Measurand  Display_RemainingTimeToMinimumSOC    { get; }
             = Register("Display.RemainingTimeToMinimumSOC");
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// communicated as the offset in seconds from the point in time this
         /// value was received from EV.
         /// </summary>
-        public static Measurand Display_RemainingTimeToTargetSOC     { get; }
+        public static Measurand  Display_RemainingTimeToTargetSOC     { get; }
             = Register("Display.RemainingTimeToTargetSOC");
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// communicated as the offset in seconds from the point in time
         /// this value was received from EV.
         /// </summary>
-        public static Measurand Display_RemainingTimeToMaximumSOC    { get; }
+        public static Measurand  Display_RemainingTimeToMaximumSOC    { get; }
             = Register("Display.RemainingTimeToMaximumSOC");
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Display.BatteryEnergyCapacity The calculated amount of electrical Energy in Wh
         /// stored in the battery when the displayed SOC equals 100 %.
         /// </summary>
-        public static Measurand Display_ChargingComplete             { get; }
+        public static Measurand  Display_ChargingComplete             { get; }
             = Register("Display.ChargingComplete");
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Inlet temperature too high to accept specific operating condition.
         /// </summary>
-        public static Measurand Display_InletHot                     { get; }
+        public static Measurand  Display_InletHot                     { get; }
             = Register("Display.InletHot");
 
         /// <summary>
@@ -317,14 +317,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Will be reset to 0 at start of transaction.
         /// Unit is Wh.
         /// </summary>
-        public static Measurand Energy_Active_Export_CableLoss       { get; }
+        public static Measurand  Energy_Active_Export_CableLoss       { get; }
             = Register("Energy.Active.Export.CableLoss");
 
         /// <summary>
         /// Numerical value read from the "active electrical energy" (Wh or kWh) register
         /// of the (most authoritative) electrical meter measuring energy exported (to the grid).
         /// </summary>
-        public static Measurand Energy_Active_Export_Register        { get; }
+        public static Measurand  Energy_Active_Export_Register        { get; }
             = Register("Energy.Active.Export.Register");
 
         /// <summary>
@@ -332,28 +332,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Will be reset to 0 at start of transaction.
         /// Unit is Wh.
         /// </summary>
-        public static Measurand Energy_Active_Import_CableLoss       { get; }
+        public static Measurand  Energy_Active_Import_CableLoss       { get; }
             = Register("Energy.Active.Import.CableLoss");
 
         /// <summary>
         /// Numerical value read from the "active electrical energy" (Wh or kWh) register
         /// of the (most authoritative) electrical meter measuring energy imported (from the grid supply)
         /// </summary>
-        public static Measurand Energy_Active_Import_Register        { get; }
+        public static Measurand  Energy_Active_Import_Register        { get; }
             = Register("Energy.Active.Import.Register");
 
         /// <summary>
         /// Numerical value read from the "reactive electrical energy" (varh or kvarh) register
         /// of the (most authoritative) electrical meter measuring energy exported (to the grid).
         /// </summary>
-        public static Measurand Energy_Reactive_Export_Register      { get; }
+        public static Measurand  Energy_Reactive_Export_Register      { get; }
             = Register("Energy.Reactive.Export.Register");
 
         /// <summary>
         /// Numerical value read from the "reactive electrical energy" (varh or kvarh) register
         /// of the (most authoritative) electrical meter measuring energy imported (from the grid supply).
         /// </summary>
-        public static Measurand Energy_Reactive_Import_Register      { get; }
+        public static Measurand  Energy_Reactive_Import_Register      { get; }
             = Register("Energy.Reactive.Import.Register");
 
         /// <summary>
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// and applicable interval duration configuration values (in seconds) for
         /// ClockAlignedDataInterval and TxnMeterValueSampleInterval.
         /// </summary>
-        public static Measurand Energy_Active_Export_Interval        { get; }
+        public static Measurand  Energy_Active_Export_Interval        { get; }
             = Register("Energy.Active.Export.Interval");
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// and applicable interval duration configuration values (in seconds) for
         /// ClockAlignedDataInterval and TxnMeterValueSampleInterval.
         /// </summary>
-        public static Measurand Energy_Active_Import_Interval        { get; }
+        public static Measurand  Energy_Active_Import_Interval        { get; }
             = Register("Energy.Active.Import.Interval");
 
         /// <summary>
@@ -380,13 +380,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// frequently during an interval as result of LocalLoadBalancing or
         /// LocalFrequencyControl. Can be negative if energy was exported.
         /// </summary>
-        public static Measurand Energy_Active_Setpoint_Interval      { get; }
+        public static Measurand  Energy_Active_Setpoint_Interval      { get; }
             = Register("Energy.Active.Setpoint.Interval");
 
         /// <summary>
         /// Numerical value read from the “net active electrical energy" (Wh or kWh) register.
         /// </summary>
-        public static Measurand Energy_Active_Net                    { get; }
+        public static Measurand  Energy_Active_Net                    { get; }
             = Register("Energy.Active.Net");
 
         /// <summary>
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// applicable interval duration configuration values (in seconds) for
         /// ClockAlignedDataInterval and TxnMeterValueSampleInterval.
         /// </summary>
-        public static Measurand Energy_Reactive_Export_Interval      { get; }
+        public static Measurand  Energy_Reactive_Export_Interval      { get; }
             = Register("Energy.Reactive.Export.Interval");
 
         /// <summary>
@@ -404,113 +404,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// applicable interval duration configuration values (in seconds) for
         /// ClockAlignedDataInterval and TxnMeterValueSampleInterval.
         /// </summary>
-        public static Measurand Energy_Reactive_Import_Interval      { get; }
+        public static Measurand  Energy_Reactive_Import_Interval      { get; }
             = Register("Energy.Reactive.Import.Interval");
 
         /// <summary>
         /// Numerical value read from the “net reactive electrical energy" (varh or kvarh) register.
         /// </summary>
-        public static Measurand Energy_Reactive_Net                  { get; }
+        public static Measurand  Energy_Reactive_Net                  { get; }
             = Register("Energy.Reactive.Net");
 
         /// <summary>
         /// Numerical value read from the "apparent electrical energy" (VAh or kVAh) register.
         /// </summary>
-        public static Measurand Energy_Apparent_Net                  { get; }
+        public static Measurand  Energy_Apparent_Net                  { get; }
             = Register("Energy.Apparent.Net");
 
         /// <summary>
         /// Numerical value read from the "apparent electrical import energy" (VAh or kVAh) register.
         /// </summary>
-        public static Measurand Energy_Apparent_Import               { get; }
+        public static Measurand  Energy_Apparent_Import               { get; }
             = Register("Energy.Apparent.Import");
 
         /// <summary>
         /// Numerical value read from the "apparent electrical export energy" (VAh or kVAh) register.
         /// </summary>
-        public static Measurand Energy_Apparent_Export               { get; }
+        public static Measurand  Energy_Apparent_Export               { get; }
             = Register("Energy.Apparent.Export");
 
         /// <summary>
         /// Energy to requested state of charge.
         /// </summary>
-        public static Measurand EnergyRequest_Target                 { get; }
+        public static Measurand  EnergyRequest_Target                 { get; }
             = Register("EnergyRequest.Target");
 
         /// <summary>
         /// Energy to minimum allowed state of charge.
         /// </summary>
-        public static Measurand EnergyRequest_Minimum                { get; }
+        public static Measurand  EnergyRequest_Minimum                { get; }
             = Register("EnergyRequest.Minimum");
 
         /// <summary>
         /// Energy to maximum state of charge.
         /// </summary>
-        public static Measurand EnergyRequest_Maximum                { get; }
+        public static Measurand  EnergyRequest_Maximum                { get; }
             = Register("EnergyRequest.Maximum");
 
         /// <summary>
         /// Energy to minimum state of charge for cycling (V2X) activity.
         /// Positive value means that current state of charge is below V2X range.
         /// </summary>
-        public static Measurand EnergyRequest_Minimum_V2X            { get; }
+        public static Measurand  EnergyRequest_Minimum_V2X            { get; }
             = Register("EnergyRequest.Minimum.V2X");
 
         /// <summary>
         /// Energy to maximum state of charge for cycling (V2X) activity.
         /// Negative value indicates that current state of charge is above V2X range.
         /// </summary>
-        public static Measurand EnergyRequest_Maximum_V2X            { get; }
+        public static Measurand  EnergyRequest_Maximum_V2X            { get; }
             = Register("EnergyRequest.Maximum.V2X");
 
         /// <summary>
         /// Energy to end of bulk charging.
         /// </summary>
-        public static Measurand EnergyRequest_Bulk                   { get; }
+        public static Measurand  EnergyRequest_Bulk                   { get; }
             = Register("EnergyRequest.Bulk");
 
         /// <summary>
         /// Instantaneous active power exported by EV. (W or kW)
         /// </summary>
-        public static Measurand Power_Active_Export                  { get; }
+        public static Measurand  Power_Active_Export                  { get; }
             = Register("Power.Active.Export");
 
         /// <summary>
         /// Instantaneous active power imported by EV. (W or kW).
         /// </summary>
-        public static Measurand Power_Active_Import                  { get; }
+        public static Measurand  Power_Active_Import                  { get; }
             = Register("Power.Active.Import");
 
         /// <summary>
         /// Power setpoint for charging or discharging (negative for
         /// discharging), that should be followed as closely as possible.
         /// </summary>
-        public static Measurand Power_Active_Setpoint                { get; }
+        public static Measurand  Power_Active_Setpoint                { get; }
             = Register("Power.Active.Setpoint");
 
         /// <summary>
         /// Difference between the given charging setpoint and the actual
         /// power measured. Can be negative.
         /// </summary>
-        public static Measurand Power_Active_Residual                { get; }
+        public static Measurand  Power_Active_Residual                { get; }
             = Register("Power.Active.Residual");
 
         /// <summary>
         /// Instantaneous reactive power exported by EV. (var or kvar).
         /// </summary>
-        public static Measurand Power_Reactive_Export                { get; }
+        public static Measurand  Power_Reactive_Export                { get; }
             = Register("Power.Reactive.Export");
 
         /// <summary>
         /// Instantaneous reactive power imported by EV. (var or kvar).
         /// </summary>
-        public static Measurand Power_Reactive_Import                { get; }
+        public static Measurand  Power_Reactive_Import                { get; }
             = Register("Power.Reactive.Import");
 
         /// <summary>
         /// Instantaneous power factor of total energy flow.
         /// </summary>
-        public static Measurand Power_Factor                         { get; }
+        public static Measurand  Power_Factor                         { get; }
             = Register("Power.Factor");
 
         /// <summary>
@@ -518,61 +518,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Has been replaced by Power.Import.Offered.
         /// </summary>
         [Obsolete("Has been replaced by Power.Import.Offered.")]
-        public static Measurand Power_Offered                        { get; }
+        public static Measurand  Power_Offered                        { get; }
             = Register("Power.Offered");
 
         /// <summary>
         /// Maximum power the EV can be charged with, min(EV, EVSE).
         /// </summary>
-        public static Measurand Power_Import_Offered                 { get; }
+        public static Measurand  Power_Import_Offered                 { get; }
             = Register("Power.Import.Offered");
 
         /// <summary>
         /// Minimum power the EV can be charged with, max(EV, EVSE).
         /// </summary>
-        public static Measurand Power_Import_Minimum                 { get; }
+        public static Measurand  Power_Import_Minimum                 { get; }
             = Register("Power.Import.Minimum");
 
         /// <summary>
         /// Maximum power the EV can be discharged with, min(EV, EVSE).
         /// </summary>
-        public static Measurand Power_Export_Offered                 { get; }
+        public static Measurand  Power_Export_Offered                 { get; }
             = Register("Power.Export.Offered");
 
         /// <summary>
         /// Minimum power the EV can be discharged with, max(EV, EVSE).
         /// </summary>
-        public static Measurand Power_Export_Minimum                 { get; }
+        public static Measurand  Power_Export_Minimum                 { get; }
             = Register("Power.Export.Minimum");
 
         /// <summary>
         /// Instantaneous DC or AC RMS supply voltage.
         /// </summary>
-        public static Measurand Voltage                              { get; }
+        public static Measurand  Voltage                              { get; }
             = Register("Voltage");
 
         /// <summary>
         /// Minimum voltage the EV can be charged or discharged with, max(EV, EVSE).
         /// </summary>
-        public static Measurand Voltage_Minimum                      { get; }
+        public static Measurand  Voltage_Minimum                      { get; }
             = Register("Voltage.Minimum");
 
         /// <summary>
         /// Maximum voltage the EV can be charged or discharged with, max(EV, EVSE).
         /// </summary>
-        public static Measurand Voltage_Maximum                      { get; }
+        public static Measurand  Voltage_Maximum                      { get; }
             = Register("Voltage.Maximum");
 
         /// <summary>
         /// Instantaneous reading of powerline frequency.
         /// </summary>
-        public static Measurand Frequency                            { get; }
+        public static Measurand  Frequency                            { get; }
             = Register("Frequency");
 
         /// <summary>
         /// State-of-Charge of charging vehicle in percentage.
         /// </summary>
-        public static Measurand SoC                                  { get; }
+        public static Measurand  SoC                                  { get; }
             = Register("SoC");
 
         #endregion

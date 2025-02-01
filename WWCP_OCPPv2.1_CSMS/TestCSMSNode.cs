@@ -246,28 +246,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetCRL
 
-            OCPP.IN.OnGetCRL += (timestamp,
-                                 sender,
-                                 connection,
-                                 request,
-                                 cancellationToken) => {
+            //OCPP.IN.OnGetCRL += (timestamp,
+            //                     sender,
+            //                     connection,
+            //                     request,
+            //                     cancellationToken) => {
 
-                DebugX.Log("OnGetCRL: " + request.DestinationId);
+            //    DebugX.Log("OnGetCRL: " + request.DestinationId);
 
-                // GetCRLRequestId
-                // CertificateHashData
+            //    // GetCRLRequestId
+            //    // CertificateHashData
 
-                return Task.FromResult(
-                           new GetCRLResponse(
-                               Request:           request,
-                               GetCRLRequestId:   request.GetCRLRequestId,
-                               Status:            GenericStatus.Accepted,
-                               StatusInfo:        null,
-                               CustomData:        null
-                           )
-                       );
+            //    return Task.FromResult(
+            //               new GetCRLResponse(
+            //                   Request:           request,
+            //                   GetCRLRequestId:   request.GetCRLRequestId,
+            //                   Status:            GenericStatus.Accepted,
+            //                   StatusInfo:        null,
+            //                   CustomData:        null
+            //               )
+            //           );
 
-            };
+            //};
 
             #endregion
 

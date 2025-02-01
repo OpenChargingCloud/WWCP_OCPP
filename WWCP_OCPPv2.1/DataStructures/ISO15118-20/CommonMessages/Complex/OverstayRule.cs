@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -37,28 +39,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Properties
 
         /// <summary>
-        /// The start time.
+        /// The time after trigger of the parent Overstay Rules for this particular fee to apply.
         /// </summary>
         [Mandatory]
-        public DateTime      StartTime      { get; }
+        public TimeSpan        StartTime      { get; }
 
         /// <summary>
         /// The overstay fee period.
         /// </summary>
         [Mandatory]
-        public TimeSpan      Period         { get; }
+        public TimeSpan        Period         { get; }
 
         /// <summary>
         /// The overstay fee.
         /// </summary>
         [Mandatory]
-        public Decimal       Fee            { get; }
+        public RationalNumber  Fee            { get; }
 
         /// <summary>
         /// The optional description.
         /// </summary>
         [Optional]
-        public Description?  Description    { get; }
+        public String?         Description    { get; }
 
         #endregion
 
@@ -71,10 +73,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="Period">An overstay fee period.</param>
         /// <param name="Fee">An overstay fee.</param>
         /// <param name="Description">An optional description.</param>
-        public OverstayRule(DateTime      StartTime,
-                            TimeSpan      Period,
-                            Decimal       Fee,
-                            Description?  Description   = null)
+        public OverstayRule(TimeSpan        StartTime,
+                            TimeSpan        Period,
+                            RationalNumber  Fee,
+                            String?         Description   = null)
         {
 
             this.StartTime    = StartTime;
@@ -89,7 +91,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                            this.Period.      GetHashCode()       *  7 ^
                            this.Fee.         GetHashCode()       *  5 ^
                           (this.Description?.GetHashCode() ?? 0) *  3 ^
-
                            base.             GetHashCode();
 
             }
@@ -99,10 +100,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "javaType": "OverstayRule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "overstayFee": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "overstayRuleDescription": {
+        //             "description": "Human readable string to identify the overstay rule.\r\n",
+        //             "type": "string",
+        //             "maxLength": 32
+        //         },
+        //         "startTime": {
+        //             "description": "Time in seconds after trigger of the parent Overstay Rules for this particular fee to apply.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "overstayFeePeriod": {
+        //             "description": "Time till overstay will be reapplied\r\n",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "startTime",
+        //         "overstayFeePeriod",
+        //         "overstayFee"
+        //     ]
+        // }
 
         #endregion
 
@@ -120,8 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var overstayRule,
                          out var errorResponse,
-                         CustomOverstayRuleParser) &&
-                overstayRule is not null)
+                         CustomOverstayRuleParser))
             {
                 return overstayRule;
             }
@@ -143,9 +173,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OverstayRule">The parsed overstay rule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            JSON,
-                                       out OverstayRule?  OverstayRule,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject                                 JSON,
+                                       [NotNullWhen(true)]  out OverstayRule?  OverstayRule,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
 
             => TryParse(JSON,
                         out OverstayRule,
@@ -161,8 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomOverstayRuleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                     JSON,
-                                       out OverstayRule?                           OverstayRule,
-                                       out String?                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out OverstayRule?      OverstayRule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
                                        CustomJObjectParserDelegate<OverstayRule>?  CustomOverstayRuleParser)
         {
 
@@ -175,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 if (!JSON.ParseMandatory("startTime",
                                          "start time",
-                                         out DateTime StartTime,
+                                         out TimeSpan StartTime,
                                          out ErrorResponse))
                 {
                     return false;
@@ -185,24 +215,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Period         [mandatory]
 
-                if (!JSON.ParseMandatory("period",
+                if (!JSON.ParseMandatory("overstayFeePeriod",
                                          "overstay fee period",
-                                         out UInt64 period,
+                                         out TimeSpan Period,
                                          out ErrorResponse))
                 {
                     return false;
                 }
 
-                var Period = TimeSpan.FromSeconds(period);
-
                 #endregion
 
                 #region Fee            [mandatory]
 
-                if (!JSON.ParseMandatory("fee",
-                                         "overstay fee",
-                                         out Decimal Fee,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("overstayFee",
+                                             "overstay fee",
+                                             RationalNumber.TryParse,
+                                             out RationalNumber? Fee,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -211,15 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Description    [optional]
 
-                if (JSON.ParseOptional("description",
-                                       "overstay fee description",
-                                       CommonTypes.Description.TryParse,
-                                       out Description Description,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                var Description = JSON["overstayRuleDescription"]?.Value<String>();
 
                 #endregion
 
@@ -260,12 +281,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                 new JProperty("startTime",    StartTime.ToIso8601()),
-                                 new JProperty("period",       (UInt64) Math.Round(Period.TotalSeconds, 0)),
-                                 new JProperty("fee",          Fee),
+                                 new JProperty("startTime",    (UInt32) Math.Round(StartTime.TotalSeconds, 0)),
+                                 new JProperty("period",       (UInt32) Math.Round(Period.   TotalSeconds, 0)),
+                                 new JProperty("fee",          Fee.ToJSON()),
 
-                           Description.HasValue
-                               ? new JProperty("description",  Description.ToString())
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",  Description)
                                : null
 
                        );
@@ -353,8 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                Period.   Equals(OverstayRule.Period)    &&
                Fee.      Equals(OverstayRule.Fee)       &&
 
-            ((!Description.HasValue && !OverstayRule.Description.HasValue) ||
-              (Description.HasValue &&  OverstayRule.Description.HasValue && Description.Value.Equals(OverstayRule.Description.Value)));
+               String.   Equals(Description, OverstayRule.Description);
 
         #endregion
 
@@ -379,9 +399,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// </summary>
         public override String ToString()
 
-            => $"{StartTime}, {Period.TotalSeconds} second(s), {Fee} fee{(Description.HasValue
-                                                                              ? ", description: \"" + Description.Value + "\""
-                                                                              : "")}";
+            => String.Concat(
+
+                   $"{StartTime}, {Period.TotalSeconds} second(s), {Fee} fee",
+
+                   $"{(Description.IsNotNullOrEmpty()
+                           ? $", description: '{Description}'"
+                           : "")}"
+
+               );
 
         #endregion
 

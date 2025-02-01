@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -109,8 +111,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.ChargingProfilePurpose  = ChargingProfilePurpose;
             this.StackLevel              = StackLevel;
-            this.ChargingProfileIds      = ChargingProfileIds?.  Distinct() ?? Array.Empty<ChargingProfile_Id>();
-            this.ChargingLimitSources    = ChargingLimitSources?.Distinct() ?? Array.Empty<ChargingLimitSource>();
+            this.ChargingProfileIds      = ChargingProfileIds?.  Distinct() ?? [];
+            this.ChargingLimitSources    = ChargingLimitSources?.Distinct() ?? [];
+
+            unchecked
+            {
+
+                hashCode = (this.ChargingProfilePurpose?.GetHashCode()  ?? 0) * 11 ^
+                           (this.StackLevel?.            GetHashCode()  ?? 0) *  7 ^
+                            this.ChargingProfileIds.     CalcHashCode()       *  5 ^
+                            this.ChargingLimitSources.   CalcHashCode()       *  3 ^
+                            base.                        GetHashCode();
+
+            }
 
         }
 
@@ -119,42 +132,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ChargingProfileCriterionType": {
-        //   "description": "Charging_ Profile\r\nurn:x-oca:ocpp:uid:2:233255\r\nA ChargingProfile consists of ChargingSchedule, describing the amount of power or current that can be delivered per time interval.",
-        //   "javaType": "ChargingProfileCriterion",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "chargingProfilePurpose": {
-        //       "$ref": "#/definitions/ChargingProfilePurposeEnumType"
-        //     },
-        //     "stackLevel": {
-        //       "description": "Charging_ Profile. Stack_ Level. Counter\r\nurn:x-oca:ocpp:uid:1:569230\r\nValue determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.",
-        //       "type": "integer"
-        //     },
-        //     "chargingProfileId": {
-        //       "description": "List of all the chargingProfileIds requested. Any ChargingProfile that matches one of these profiles will be reported. If omitted, the Charging Station SHALL not filter on chargingProfileId. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-charging-profile-entries,ChargingProfileEntries.maxLimit&gt;&gt;",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "type": "integer"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "chargingLimitSource": {
-        //       "description": "For which charging limit sources, charging profiles SHALL be reported. If omitted, the Charging Station SHALL not filter on chargingLimitSource.",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ChargingLimitSourceEnumType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 4
+        // {
+        //     "description": "A ChargingProfileCriterionType is a filter for charging profiles to be selected by a GetChargingProfilesRequest.",
+        //     "javaType": "ChargingProfileCriterion",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "chargingProfilePurpose": {
+        //             "$ref": "#/definitions/ChargingProfilePurposeEnumType"
+        //         },
+        //         "stackLevel": {
+        //             "description": "Value determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "chargingProfileId": {
+        //             "description": "List of all the chargingProfileIds requested. Any ChargingProfile that matches one of these profiles will be reported. If omitted, the Charging Station SHALL not filter on chargingProfileId. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-charging-profile-entries,ChargingProfileEntries.maxLimit&gt;&gt;",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "type": "integer"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "chargingLimitSource": {
+        //             "description": "For which charging limit sources, charging profiles SHALL be reported. If omitted, the Charging Station SHALL not filter on chargingLimitSource. Values defined in Appendix as ChargingLimitSourceEnumStringType.",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "type": "string",
+        //                 "maxLength": 20
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 4
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   }
         // }
 
         #endregion
@@ -196,9 +211,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingProfileCriterion">The parsed charging profile criterion.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                        JSON,
-                                       out ChargingProfileCriterion?  ChargingProfileCriterion,
-                                       out String?                    ErrorResponse)
+        public static Boolean TryParse(JObject                                             JSON,
+                                       [NotNullWhen(true)]  out ChargingProfileCriterion?  ChargingProfileCriterion,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingProfileCriterion,
@@ -214,8 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingProfileCriterionParser">A delegate to parse custom charging profile criterion JSON objects.</param>
         public static Boolean TryParse(JObject                                                 JSON,
-                                       out ChargingProfileCriterion?                           ChargingProfileCriterion,
-                                       out String?                                             ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingProfileCriterion?      ChargingProfileCriterion,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingProfileCriterion>?  CustomChargingProfileCriterionParser)
         {
 
@@ -463,24 +478,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return (ChargingProfilePurpose?.GetHashCode()  ?? 0) * 11 ^
-                       (StackLevel?.            GetHashCode()  ?? 0) *  7 ^
-                       (ChargingLimitSources?.  CalcHashCode() ?? 0) *  5 ^
-                        ChargingProfileIds.     CalcHashCode()       *  3 ^
-
-                        base.                   GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this measurement location is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                           IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this measurement location is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                           IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the measurement location.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                            Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered measurement locations.
+        /// </summary>
+        public static    IEnumerable<MeasurementLocation>  All
+            => lookup.Values;
 
         #endregion
 
@@ -195,37 +201,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Body
         /// </summary>
-        public static MeasurementLocation Body        { get; }
+        public static MeasurementLocation  Body        { get; }
             = Register("Body");
 
         /// <summary>
         /// Cable
         /// </summary>
-        public static MeasurementLocation Cable       { get; }
+        public static MeasurementLocation  Cable       { get; }
             = Register("Cable");
 
         /// <summary>
         /// EV
         /// </summary>
-        public static MeasurementLocation EV          { get; }
+        public static MeasurementLocation  EV          { get; }
             = Register("EV");
 
         /// <summary>
         /// Inlet
         /// </summary>
-        public static MeasurementLocation Inlet       { get; }
+        public static MeasurementLocation  Inlet       { get; }
             = Register("Inlet");
 
         /// <summary>
         /// Outlet
         /// </summary>
-        public static MeasurementLocation Outlet      { get; }
+        public static MeasurementLocation  Outlet      { get; }
             = Register("Outlet");
 
         /// <summary>
         /// Measurement of an upstream meter (e.g. local grid meter).
         /// </summary>
-        public static MeasurementLocation Upstream    { get; }
+        public static MeasurementLocation  Upstream    { get; }
             = Register("Upstream");
 
         #endregion

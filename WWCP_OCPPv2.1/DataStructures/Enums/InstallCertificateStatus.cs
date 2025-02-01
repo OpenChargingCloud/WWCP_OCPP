@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extensions methods for certificate status.
+    /// Extensions methods for install certificate status.
     /// </summary>
-    public static class CertificateStatusExtensions
+    public static class InstallCertificateStatusExtensions
     {
 
         #region Parse   (Text)
@@ -30,13 +30,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text as a certificate status.
         /// </summary>
         /// <param name="Text">A text representation of a certificate status.</param>
-        public static CertificateStatus Parse(String Text)
+        public static InstallCertificateStatus Parse(String Text)
         {
 
             if (TryParse(Text, out var status))
                 return status;
 
-            return CertificateStatus.Unknown;
+            return InstallCertificateStatus.Unknown;
 
         }
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a certificate status.
         /// </summary>
         /// <param name="Text">A text representation of a certificate status.</param>
-        public static CertificateStatus? TryParse(String Text)
+        public static InstallCertificateStatus? TryParse(String Text)
         {
 
             if (TryParse(Text, out var status))
@@ -67,25 +67,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Text">A text representation of a certificate status.</param>
         /// <param name="CertificateStatus">The parsed certificate status.</param>
-        public static Boolean TryParse(String Text, out CertificateStatus CertificateStatus)
+        public static Boolean TryParse(String Text, out InstallCertificateStatus CertificateStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    CertificateStatus = CertificateStatus.Accepted;
+                    CertificateStatus = InstallCertificateStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    CertificateStatus = CertificateStatus.Rejected;
+                    CertificateStatus = InstallCertificateStatus.Rejected;
                     return true;
 
                 case "Failed":
-                    CertificateStatus = CertificateStatus.Failed;
+                    CertificateStatus = InstallCertificateStatus.Failed;
                     return true;
 
                 default:
-                    CertificateStatus = CertificateStatus.Unknown;
+                    CertificateStatus = InstallCertificateStatus.Unknown;
                     return false;
 
             }
@@ -95,12 +95,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region AsText  (this CertificateStatus)
 
-        public static String AsText(this CertificateStatus CertificateStatus)
+        public static String AsText(this InstallCertificateStatus CertificateStatus)
 
             => CertificateStatus switch {
-                   CertificateStatus.Accepted  => "Accepted",
-                   CertificateStatus.Rejected  => "Rejected",
-                   CertificateStatus.Failed    => "Failed",
+                   InstallCertificateStatus.Accepted  => "Accepted",
+                   InstallCertificateStatus.Rejected  => "Rejected",
+                   InstallCertificateStatus.Failed    => "Failed",
                    _                           => "Unknown"
                };
 
@@ -110,9 +110,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// Certificate status.
+    /// Install certificate status.
     /// </summary>
-    public enum CertificateStatus
+    public enum InstallCertificateStatus
     {
 
         /// <summary>

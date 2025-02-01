@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -97,8 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            EVMinCurrent.GetHashCode() *  7 ^
                            EVMaxCurrent.GetHashCode() *  5 ^
                            EVMaxVoltage.GetHashCode() *  3 ^
-
-                           base.GetHashCode();
+                           base.        GetHashCode();
 
             }
 
@@ -109,38 +110,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ACChargingParametersType": {
-        //   "description": "AC_ Charging_ Parameters\r\nurn:x-oca:ocpp:uid:2:233250\r\nEV AC charging parameters.",
-        //   "javaType": "ACChargingParameters",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "EV AC charging parameters for ISO 15118-2\r\n\r\n",
+        //     "javaType": "ACChargingParameters",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "energyAmount": {
+        //             "description": "Amount of energy requested (in Wh). This includes energy required for preconditioning.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EAmount +\r\n*ISO 15118-20*: Dynamic/Scheduled_SEReqControlModeType: EVTargetEnergyRequest\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "evMinCurrent": {
+        //             "description": "Minimum current (amps) supported by the electric vehicle (per phase).\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMinCurrent\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "evMaxCurrent": {
+        //             "description": "Maximum current (amps) supported by the electric vehicle (per phase). Includes cable capacity.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMaxCurrent\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "evMaxVoltage": {
+        //             "description": "Maximum voltage supported by the electric vehicle.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMaxVoltage\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "energyAmount": {
-        //       "description": "AC_ Charging_ Parameters. Energy_ Amount. Energy_ Amount\r\nurn:x-oca:ocpp:uid:1:569211\r\nAmount of energy requested (in Wh). This includes energy required for preconditioning.",
-        //       "type": "integer"
-        //     },
-        //     "evMinCurrent": {
-        //       "description": "AC_ Charging_ Parameters. EV_ Min. Current\r\nurn:x-oca:ocpp:uid:1:569212\r\nMinimum current (amps) supported by the electric vehicle (per phase).",
-        //       "type": "integer"
-        //     },
-        //     "evMaxCurrent": {
-        //       "description": "AC_ Charging_ Parameters. EV_ Max. Current\r\nurn:x-oca:ocpp:uid:1:569213\r\nMaximum current (amps) supported by the electric vehicle (per phase). Includes cable capacity.",
-        //       "type": "integer"
-        //     },
-        //     "evMaxVoltage": {
-        //       "description": "AC_ Charging_ Parameters. EV_ Max. Voltage\r\nurn:x-oca:ocpp:uid:1:569214\r\nMaximum voltage supported by the electric vehicle",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "energyAmount",
-        //     "evMinCurrent",
-        //     "evMaxCurrent",
-        //     "evMaxVoltage"
-        //   ]
+        //     "required": [
+        //         "energyAmount",
+        //         "evMinCurrent",
+        //         "evMaxCurrent",
+        //         "evMaxVoltage"
+        //     ]
         // }
 
         #endregion
@@ -159,8 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var acChargingParameters,
                          out var errorResponse,
-                         CustomACChargingParametersParser) &&
-                acChargingParameters is not null)
+                         CustomACChargingParametersParser))
             {
                 return acChargingParameters;
             }
@@ -182,9 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ACChargingParameters">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       out ACChargingParameters?  ACChargingParameters,
-                                       out String?                ErrorResponse)
+        public static Boolean TryParse(JObject                                         JSON,
+                                       [NotNullWhen(true)]  out ACChargingParameters?  ACChargingParameters,
+                                       [NotNullWhen(false)] out String?                ErrorResponse)
 
             => TryParse(JSON,
                         out ACChargingParameters,
@@ -200,8 +200,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomACChargingParametersParser">A delegate to parse custom AC charging parameters JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
-                                       out ACChargingParameters?                           ACChargingParameters,
-                                       out String?                                         ErrorResponse,
+                                       [NotNullWhen(true)]  out ACChargingParameters?      ACChargingParameters,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<ACChargingParameters>?  CustomACChargingParametersParser)
         {
 

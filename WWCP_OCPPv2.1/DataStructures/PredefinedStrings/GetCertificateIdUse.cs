@@ -25,22 +25,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for get certificate id uses.
+    /// Extension methods for GetCertificateIdUses.
     /// </summary>
     public static class GetCertificateIdUseExtensions
     {
 
         /// <summary>
-        /// Indicates whether this get certificate id use is null or empty.
+        /// Indicates whether this GetCertificateIdUse is null or empty.
         /// </summary>
-        /// <param name="GetCertificateIdUse">A get certificate id use.</param>
+        /// <param name="GetCertificateIdUse">A GetCertificateIdUse.</param>
         public static Boolean IsNullOrEmpty(this GetCertificateIdUse? GetCertificateIdUse)
             => !GetCertificateIdUse.HasValue || GetCertificateIdUse.Value.IsNullOrEmpty;
 
         /// <summary>
-        /// Indicates whether this get certificate id use is null or empty.
+        /// Indicates whether this GetCertificateIdUse is null or empty.
         /// </summary>
-        /// <param name="GetCertificateIdUse">A get certificate id use.</param>
+        /// <param name="GetCertificateIdUse">A GetCertificateIdUse.</param>
         public static Boolean IsNotNullOrEmpty(this GetCertificateIdUse? GetCertificateIdUse)
             => GetCertificateIdUse.HasValue && GetCertificateIdUse.Value.IsNotNullOrEmpty;
 
@@ -48,11 +48,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// A get certificate id use.
+    /// A GetCertificateIdUse.
     /// </summary>
     public readonly struct GetCertificateIdUse : IId,
-                                                   IEquatable<GetCertificateIdUse>,
-                                                   IComparable<GetCertificateIdUse>
+                                                 IEquatable<GetCertificateIdUse>,
+                                                 IComparable<GetCertificateIdUse>
     {
 
         #region Data
@@ -65,19 +65,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// Indicates whether this get certificate id use is null or empty.
+        /// Indicates whether this GetCertificateIdUse is null or empty.
         /// </summary>
         public readonly  Boolean                        IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Indicates whether this get certificate id use is NOT null or empty.
+        /// Indicates whether this GetCertificateIdUse is NOT null or empty.
         /// </summary>
         public readonly  Boolean                        IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the get certificate id use.
+        /// The length of the GetCertificateIdUse.
         /// </summary>
         public readonly  UInt64                         Length
             => (UInt64) (InternalId?.Length ?? 0);
@@ -93,9 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get certificate id use based on the given text.
+        /// Create a new GetCertificateIdUse based on the given text.
         /// </summary>
-        /// <param name="Text">The text representation of a get certificate id use.</param>
+        /// <param name="Text">The text representation of a GetCertificateIdUse.</param>
         private GetCertificateIdUse(String Text)
         {
             this.InternalId = Text;
@@ -119,16 +119,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a get certificate id use.
+        /// Parse the given string as a GetCertificateIdUse.
         /// </summary>
-        /// <param name="Text">A text representation of a get certificate id use.</param>
+        /// <param name="Text">A text representation of a GetCertificateIdUse.</param>
         public static GetCertificateIdUse Parse(String Text)
         {
 
-            if (TryParse(Text, out var installCertificateUse))
-                return installCertificateUse;
+            if (TryParse(Text, out var getCertificateIdUse))
+                return getCertificateIdUse;
 
-            throw new ArgumentException($"Invalid text representation of a get certificate id use: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of a GetCertificateIdUse: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -138,14 +138,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as a get certificate id use.
+        /// Try to parse the given text as a GetCertificateIdUse.
         /// </summary>
-        /// <param name="Text">A text representation of a get certificate id use.</param>
+        /// <param name="Text">A text representation of a GetCertificateIdUse.</param>
         public static GetCertificateIdUse? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var installCertificateUse))
-                return installCertificateUse;
+            if (TryParse(Text, out var getCertificateIdUse))
+                return getCertificateIdUse;
 
             return null;
 
@@ -156,10 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) TryParse(Text, out GetCertificateIdUse)
 
         /// <summary>
-        /// Try to parse the given text as a get certificate id use.
+        /// Try to parse the given text as a GetCertificateIdUse.
         /// </summary>
-        /// <param name="Text">A text representation of a get certificate id use.</param>
-        /// <param name="GetCertificateIdUse">The parsed get certificate id use.</param>
+        /// <param name="Text">A text representation of a GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse">The parsed GetCertificateIdUse.</param>
         public static Boolean TryParse(String Text, out GetCertificateIdUse GetCertificateIdUse)
         {
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this get certificate id use.
+        /// Clone this GetCertificateIdUse.
         /// </summary>
         public GetCertificateIdUse Clone()
 
@@ -245,8 +245,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetCertificateIdUse1">A get certificate id use.</param>
-        /// <param name="GetCertificateIdUse2">Another get certificate id use.</param>
+        /// <param name="GetCertificateIdUse1">A GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse2">Another GetCertificateIdUse.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (GetCertificateIdUse GetCertificateIdUse1,
                                            GetCertificateIdUse GetCertificateIdUse2)
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetCertificateIdUse1">A get certificate id use.</param>
-        /// <param name="GetCertificateIdUse2">Another get certificate id use.</param>
+        /// <param name="GetCertificateIdUse1">A GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse2">Another GetCertificateIdUse.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (GetCertificateIdUse GetCertificateIdUse1,
                                            GetCertificateIdUse GetCertificateIdUse2)
@@ -275,8 +275,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetCertificateIdUse1">A get certificate id use.</param>
-        /// <param name="GetCertificateIdUse2">Another get certificate id use.</param>
+        /// <param name="GetCertificateIdUse1">A GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse2">Another GetCertificateIdUse.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (GetCertificateIdUse GetCertificateIdUse1,
                                           GetCertificateIdUse GetCertificateIdUse2)
@@ -290,8 +290,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetCertificateIdUse1">A get certificate id use.</param>
-        /// <param name="GetCertificateIdUse2">Another get certificate id use.</param>
+        /// <param name="GetCertificateIdUse1">A GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse2">Another GetCertificateIdUse.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (GetCertificateIdUse GetCertificateIdUse1,
                                            GetCertificateIdUse GetCertificateIdUse2)
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetCertificateIdUse1">A get certificate id use.</param>
-        /// <param name="GetCertificateIdUse2">Another get certificate id use.</param>
+        /// <param name="GetCertificateIdUse1">A GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse2">Another GetCertificateIdUse.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (GetCertificateIdUse GetCertificateIdUse1,
                                           GetCertificateIdUse GetCertificateIdUse2)
@@ -320,8 +320,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetCertificateIdUse1">A get certificate id use.</param>
-        /// <param name="GetCertificateIdUse2">Another get certificate id use.</param>
+        /// <param name="GetCertificateIdUse1">A GetCertificateIdUse.</param>
+        /// <param name="GetCertificateIdUse2">Another GetCertificateIdUse.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (GetCertificateIdUse GetCertificateIdUse1,
                                            GetCertificateIdUse GetCertificateIdUse2)
@@ -337,14 +337,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two get certificate id uses.
+        /// Compares two GetCertificateIdUses.
         /// </summary>
-        /// <param name="Object">A get certificate id use to compare with.</param>
+        /// <param name="Object">A GetCertificateIdUse to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is GetCertificateIdUse installCertificateUse
-                   ? CompareTo(installCertificateUse)
-                   : throw new ArgumentException("The given object is not a get certificate id use!",
+            => Object is GetCertificateIdUse getCertificateIdUse
+                   ? CompareTo(getCertificateIdUse)
+                   : throw new ArgumentException("The given object is not a GetCertificateIdUse!",
                                                  nameof(Object));
 
         #endregion
@@ -352,9 +352,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(GetCertificateIdUse)
 
         /// <summary>
-        /// Compares two get certificate id uses.
+        /// Compares two GetCertificateIdUses.
         /// </summary>
-        /// <param name="GetCertificateIdUse">A get certificate id use to compare with.</param>
+        /// <param name="GetCertificateIdUse">A GetCertificateIdUse to compare with.</param>
         public Int32 CompareTo(GetCertificateIdUse GetCertificateIdUse)
 
             => String.Compare(InternalId,
@@ -370,22 +370,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get certificate id uses for equality.
+        /// Compares two GetCertificateIdUses for equality.
         /// </summary>
-        /// <param name="Object">A get certificate id use to compare with.</param>
+        /// <param name="Object">A GetCertificateIdUse to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetCertificateIdUse installCertificateUse &&
-                   Equals(installCertificateUse);
+            => Object is GetCertificateIdUse getCertificateIdUse &&
+                   Equals(getCertificateIdUse);
 
         #endregion
 
         #region Equals(GetCertificateIdUse)
 
         /// <summary>
-        /// Compares two get certificate id uses for equality.
+        /// Compares two GetCertificateIdUses for equality.
         /// </summary>
-        /// <param name="GetCertificateIdUse">A get certificate id use to compare with.</param>
+        /// <param name="GetCertificateIdUse">A GetCertificateIdUse to compare with.</param>
         public Boolean Equals(GetCertificateIdUse GetCertificateIdUse)
 
             => String.Equals(InternalId,

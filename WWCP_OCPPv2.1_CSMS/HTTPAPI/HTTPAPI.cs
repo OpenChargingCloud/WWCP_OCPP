@@ -804,120 +804,120 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetCRL
 
-            CSMS.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
-                                                     sender,
-                                                     connection,
-                                                     request,
-                                                     ct) =>
+            //CSMS.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
+            //                                         sender,
+            //                                         connection,
+            //                                         request,
+            //                                         ct) =>
 
-                NotifyRequestReceived(
-                    nameof(CSMS.OCPP.IN.OnGetCRLRequestReceived),
-                    timestamp,
-                    sender,
-                    connection,
-                    request,
-                    request.ToJSON(
-                        true,
-                        NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
-                        NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
-                        NetworkingNode.OCPP.CustomSignatureSerializer,
-                        NetworkingNode.OCPP.CustomCustomDataSerializer
-                    ),
-                    ct
-                );
+            //    NotifyRequestReceived(
+            //        nameof(CSMS.OCPP.IN.OnGetCRLRequestReceived),
+            //        timestamp,
+            //        sender,
+            //        connection,
+            //        request,
+            //        request.ToJSON(
+            //            true,
+            //            NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
+            //            NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+            //            NetworkingNode.OCPP.CustomSignatureSerializer,
+            //            NetworkingNode.OCPP.CustomCustomDataSerializer
+            //        ),
+            //        ct
+            //    );
 
-            CSMS.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
-                                                  sender,
-                                                  connection,
-                                                  request,
-                                                  sentMessageResult,
-                                                  ct) =>
+            //CSMS.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
+            //                                      sender,
+            //                                      connection,
+            //                                      request,
+            //                                      sentMessageResult,
+            //                                      ct) =>
 
-                NotifyRequestSent(
-                    nameof(CSMS.OCPP.OUT.OnGetCRLRequestSent),
-                    timestamp,
-                    sender,
-                    connection,
-                    request,
-                    request.ToJSON(
-                        true,
-                        NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
-                        NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
-                        NetworkingNode.OCPP.CustomSignatureSerializer,
-                        NetworkingNode.OCPP.CustomCustomDataSerializer
-                    ),
-                    sentMessageResult,
-                    ct
-                );
+            //    NotifyRequestSent(
+            //        nameof(CSMS.OCPP.OUT.OnGetCRLRequestSent),
+            //        timestamp,
+            //        sender,
+            //        connection,
+            //        request,
+            //        request.ToJSON(
+            //            true,
+            //            NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
+            //            NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+            //            NetworkingNode.OCPP.CustomSignatureSerializer,
+            //            NetworkingNode.OCPP.CustomCustomDataSerializer
+            //        ),
+            //        sentMessageResult,
+            //        ct
+            //    );
 
 
-            CSMS.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
-                                                      sender,
-                                                      connection,
-                                                      request,
-                                                      response,
-                                                      runtime,
-                                                      ct) =>
+            //CSMS.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
+            //                                          sender,
+            //                                          connection,
+            //                                          request,
+            //                                          response,
+            //                                          runtime,
+            //                                          ct) =>
 
-                NotifyResponseReceived(
-                    nameof(CSMS.OCPP.IN.OnGetCRLResponseReceived),
-                    timestamp,
-                    sender,
-                    connection,
-                    request,
-                    request?.ToJSON(
-                        true,
-                        NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
-                        NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
-                        NetworkingNode.OCPP.CustomSignatureSerializer,
-                        NetworkingNode.OCPP.CustomCustomDataSerializer
-                    ),
-                    response,
-                    response.ToJSON(
-                        true,
-                        NetworkingNode.OCPP.CustomGetCRLResponseSerializer,
-                        NetworkingNode.OCPP.CustomStatusInfoSerializer,
-                        NetworkingNode.OCPP.CustomSignatureSerializer,
-                        NetworkingNode.OCPP.CustomCustomDataSerializer
-                    ),
-                    runtime,
-                    ct
-                );
+            //    NotifyResponseReceived(
+            //        nameof(CSMS.OCPP.IN.OnGetCRLResponseReceived),
+            //        timestamp,
+            //        sender,
+            //        connection,
+            //        request,
+            //        request?.ToJSON(
+            //            true,
+            //            NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
+            //            NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+            //            NetworkingNode.OCPP.CustomSignatureSerializer,
+            //            NetworkingNode.OCPP.CustomCustomDataSerializer
+            //        ),
+            //        response,
+            //        response.ToJSON(
+            //            true,
+            //            NetworkingNode.OCPP.CustomGetCRLResponseSerializer,
+            //            NetworkingNode.OCPP.CustomStatusInfoSerializer,
+            //            NetworkingNode.OCPP.CustomSignatureSerializer,
+            //            NetworkingNode.OCPP.CustomCustomDataSerializer
+            //        ),
+            //        runtime,
+            //        ct
+            //    );
 
-            CSMS.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
-                                                   sender,
-                                                   connection,
-                                                   request,
-                                                   response,
-                                                   runtime,
-                                                   sentMessageResult,
-                                                   ct) =>
+            //CSMS.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
+            //                                       sender,
+            //                                       connection,
+            //                                       request,
+            //                                       response,
+            //                                       runtime,
+            //                                       sentMessageResult,
+            //                                       ct) =>
 
-                NotifyResponseSent(
-                    nameof(CSMS.OCPP.OUT.OnGetCRLResponseSent),
-                    timestamp,
-                    sender,
-                    connection,
-                    request,
-                    request?.ToJSON(
-                        true,
-                        NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
-                        NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
-                        NetworkingNode.OCPP.CustomSignatureSerializer,
-                        NetworkingNode.OCPP.CustomCustomDataSerializer
-                    ),
-                    response,
-                    response.ToJSON(
-                        true,
-                        NetworkingNode.OCPP.CustomGetCRLResponseSerializer,
-                        NetworkingNode.OCPP.CustomStatusInfoSerializer,
-                        NetworkingNode.OCPP.CustomSignatureSerializer,
-                        NetworkingNode.OCPP.CustomCustomDataSerializer
-                    ),
-                    runtime,
-                    sentMessageResult,
-                    ct
-                );
+            //    NotifyResponseSent(
+            //        nameof(CSMS.OCPP.OUT.OnGetCRLResponseSent),
+            //        timestamp,
+            //        sender,
+            //        connection,
+            //        request,
+            //        request?.ToJSON(
+            //            true,
+            //            NetworkingNode.OCPP.CustomGetCRLRequestSerializer,
+            //            NetworkingNode.OCPP.CustomCertificateHashDataSerializer,
+            //            NetworkingNode.OCPP.CustomSignatureSerializer,
+            //            NetworkingNode.OCPP.CustomCustomDataSerializer
+            //        ),
+            //        response,
+            //        response.ToJSON(
+            //            true,
+            //            NetworkingNode.OCPP.CustomGetCRLResponseSerializer,
+            //            NetworkingNode.OCPP.CustomStatusInfoSerializer,
+            //            NetworkingNode.OCPP.CustomSignatureSerializer,
+            //            NetworkingNode.OCPP.CustomCustomDataSerializer
+            //        ),
+            //        runtime,
+            //        sentMessageResult,
+            //        ct
+            //    );
 
             #endregion
 
@@ -1426,8 +1426,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingLimitSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1470,8 +1471,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingLimitSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1517,8 +1519,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request?.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingLimitSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1571,8 +1574,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request?.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifyChargingLimitRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingLimitSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1783,7 +1787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1827,7 +1831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1874,7 +1878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -1929,7 +1933,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                         NetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -2325,7 +2329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomReportChargingProfilesRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -2370,7 +2374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomReportChargingProfilesRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -2418,7 +2422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomReportChargingProfilesRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -2473,7 +2477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomReportChargingProfilesRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -5541,7 +5545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         NetworkingNode.OCPP.CustomIdTokenSerializer,
                         NetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -5590,7 +5594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         NetworkingNode.OCPP.CustomIdTokenSerializer,
                         NetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -5642,7 +5646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         NetworkingNode.OCPP.CustomIdTokenSerializer,
                         NetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -5702,7 +5706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         NetworkingNode.OCPP.CustomIdTokenSerializer,
                         NetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -6000,7 +6004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomSetChargingProfileRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -6045,7 +6049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomSetChargingProfileRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -6093,7 +6097,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomSetChargingProfileRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
@@ -6149,7 +6153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         true,
                         NetworkingNode.OCPP.CustomSetChargingProfileRequestSerializer,
                         NetworkingNode.OCPP.CustomChargingProfileSerializer,
-                        NetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                        NetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                         NetworkingNode.OCPP.CustomChargingScheduleSerializer,
                         NetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                         NetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,

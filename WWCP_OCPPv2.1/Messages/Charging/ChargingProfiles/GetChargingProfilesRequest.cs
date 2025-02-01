@@ -73,8 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Optional EVSE identification of the EVSE for which the installed charging
         /// profiles SHALL be reported.
         /// If 0, only charging profiles installed on the charging station itself
-        /// (the grid connection) SHALL be reported.If omitted, all installed
+        /// (the grid connection) SHALL be reported. If omitted, all installed
         /// charging profiles SHALL be reported.
+        /// Reported charging profiles SHALL match the criteria in field _chargingProfile_.
         /// </summary>
         [Optional]
         public EVSE_Id?                  EVSEId                          { get; }
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a GetChargingProfiles request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="GetChargingProfilesRequestId">An unique identification of the GetChargingProfiles request.</param>
+        /// <param name="GetChargingProfilesRequestId">Reference identification that is to be used by the charging station in the ReportChargingProfilesRequest when provided.</param>
         /// <param name="ChargingProfile">Machting charging profiles.</param>
         /// <param name="EVSEId">Optional EVSE identification of the EVSE for which the installed charging profiles SHALL be reported. If 0, only charging profiles installed on the charging station itself (the grid connection) SHALL be reported.If omitted, all installed charging profiles SHALL be reported.</param>
         /// 
@@ -160,112 +161,106 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetChargingProfilesRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetChargingProfilesRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ChargingProfilePurposeEnumType": {
+        //             "description": "Defines the purpose of the schedule transferred by this profile",
+        //             "javaType": "ChargingProfilePurposeEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ChargingStationExternalConstraints",
+        //                 "ChargingStationMaxProfile",
+        //                 "TxDefaultProfile",
+        //                 "TxProfile",
+        //                 "PriorityCharging",
+        //                 "LocalGeneration"
+        //             ]
+        //         },
+        //         "ChargingProfileCriterionType": {
+        //             "description": "A ChargingProfileCriterionType is a filter for charging profiles to be selected by a GetChargingProfilesRequest.",
+        //             "javaType": "ChargingProfileCriterion",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "chargingProfilePurpose": {
+        //                     "$ref": "#/definitions/ChargingProfilePurposeEnumType"
+        //                 },
+        //                 "stackLevel": {
+        //                     "description": "Value determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "chargingProfileId": {
+        //                     "description": "List of all the chargingProfileIds requested. Any ChargingProfile that matches one of these profiles will be reported. If omitted, the Charging Station SHALL not filter on chargingProfileId. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-charging-profile-entries,ChargingProfileEntries.maxLimit&gt;&gt;",
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "type": "integer"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "chargingLimitSource": {
+        //                     "description": "For which charging limit sources, charging profiles SHALL be reported. If omitted, the Charging Station SHALL not filter on chargingLimitSource. Values defined in Appendix as ChargingLimitSourceEnumStringType.",
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "type": "string",
+        //                         "maxLength": 20
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 4
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ChargingLimitSourceEnumType": {
-        //       "javaType": "ChargingLimitSourceEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "EMS",
-        //         "Other",
-        //         "SO",
-        //         "CSO"
-        //       ]
-        //     },
-        //     "ChargingProfilePurposeEnumType": {
-        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nDefines the purpose of the schedule transferred by this profile",
-        //       "javaType": "ChargingProfilePurposeEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ChargingStationExternalConstraints",
-        //         "ChargingStationMaxProfile",
-        //         "TxDefaultProfile",
-        //         "TxProfile"
-        //       ]
-        //     },
-        //     "ChargingProfileCriterionType": {
-        //       "description": "Charging_ Profile\r\nurn:x-oca:ocpp:uid:2:233255\r\nA ChargingProfile consists of ChargingSchedule, describing the amount of power or current that can be delivered per time interval.",
-        //       "javaType": "ChargingProfileCriterion",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "chargingProfilePurpose": {
-        //           "$ref": "#/definitions/ChargingProfilePurposeEnumType"
-        //         },
-        //         "stackLevel": {
-        //           "description": "Charging_ Profile. Stack_ Level. Counter\r\nurn:x-oca:ocpp:uid:1:569230\r\nValue determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.",
-        //           "type": "integer"
-        //         },
-        //         "chargingProfileId": {
-        //           "description": "List of all the chargingProfileIds requested. Any ChargingProfile that matches one of these profiles will be reported. If omitted, the Charging Station SHALL not filter on chargingProfileId. This field SHALL NOT contain more ids than set in &lt;&lt;configkey-charging-profile-entries,ChargingProfileEntries.maxLimit&gt;&gt;",
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "requestId": {
+        //             "description": "Reference identification that is to be used by the Charging Station in the &lt;&lt;reportchargingprofilesrequest, ReportChargingProfilesRequest&gt;&gt; when provided.",
         //             "type": "integer"
-        //           },
-        //           "minItems": 1
         //         },
-        //         "chargingLimitSource": {
-        //           "description": "For which charging limit sources, charging profiles SHALL be reported. If omitted, the Charging Station SHALL not filter on chargingLimitSource.",
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/ChargingLimitSourceEnumType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 4
+        //         "evseId": {
+        //             "description": "For which EVSE installed charging profiles SHALL be reported. If 0, only charging profiles installed on the Charging Station itself (the grid connection) SHALL be reported. If omitted, all installed charging profiles SHALL be reported. +\r\nReported charging profiles SHALL match the criteria in field _chargingProfile_.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "chargingProfile": {
+        //             "$ref": "#/definitions/ChargingProfileCriterionType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       }
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "requestId": {
-        //       "description": "Reference identification that is to be used by the Charging Station in the &lt;&lt;reportchargingprofilesrequest, ReportChargingProfilesRequest&gt;&gt; when provided.",
-        //       "type": "integer"
-        //     },
-        //     "evseId": {
-        //       "description": "For which EVSE installed charging profiles SHALL be reported. If 0, only charging profiles installed on the Charging Station itself (the grid connection) SHALL be reported. If omitted, all installed charging profiles SHALL be reported.",
-        //       "type": "integer"
-        //     },
-        //     "chargingProfile": {
-        //       "$ref": "#/definitions/ChargingProfileCriterionType"
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId",
-        //     "chargingProfile"
-        //   ]
+        //     "required": [
+        //         "requestId",
+        //         "chargingProfile"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetChargingProfilesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetChargingProfiles request.
@@ -280,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetChargingProfilesRequestParser">A delegate to parse custom GetChargingProfiles requests.</param>
         public static GetChargingProfilesRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       SourceRouting                                         Destination,
+                                                       SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 RequestTimestamp                         = null,
                                                        TimeSpan?                                                 RequestTimeout                           = null,
@@ -309,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetChargingProfiles request.
@@ -326,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetChargingProfilesRequestParser">A delegate to parse custom GetChargingProfiles requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       SourceRouting                                         Destination,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out GetChargingProfilesRequest?      GetChargingProfilesRequest,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -359,8 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              "charging profile",
                                              ChargingProfileCriterion.TryParse,
                                              out ChargingProfileCriterion? ChargingProfile,
-                                             out ErrorResponse) ||
-                     ChargingProfile is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -599,11 +593,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat("RequestId: ", GetChargingProfilesRequestId.ToString(),
+            => String.Concat(
 
-                             ChargingProfile.IsNotEmpty
-                                 ? ChargingProfile.ToString()
-                                 : "");
+                   $"{GetChargingProfilesRequestId}: ",
+
+                   EVSEId.HasValue
+                       ? ", EVSE: " + EVSEId
+                       : "",
+
+                   ChargingProfile.IsNotEmpty
+                       ? $", {ChargingProfile}"
+                       : ""
+
+               );
 
         #endregion
 

@@ -151,6 +151,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean?                         PreconditioningRequest    { get; }
 
         /// <summary>
+        /// The optional indication whether the EVSE must turn off power electronics/modules associated with this transaction.
+        /// </summary>
+        public Boolean?                         EVSESleep                 { get; }
+
+        /// <summary>
         /// The optional V2X operation mode that should be used during this time interval.
         /// When absent it defaults to "charging only".
         /// </summary>
@@ -178,12 +183,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The charging rate unit must be W for local frequency control.
         /// </summary>
         public IEnumerable<V2XSignalWattEntry>  V2XSignalWattCurve        { get; }
-
-        /// <summary>
-        /// The optional timestamp when this charging schedule period had been updated last.
-        /// Only relevant in a dynamic charging profile.
-        /// </summary>
-        public DateTime?                        DynUpdateTime             { get; }
 
         #endregion
 
@@ -214,11 +213,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
         /// 
         /// <param name="PreconditioningRequest">The optional indication whether the EV should attempt to keep its battery management system preconditioned for this time interval, such that the EV can charge/discharge at requested power immediately.</param>
+        /// <param name="EVSESleep">The optional indication whether the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.</param>
         /// <param name="OperationMode">The optional V2X operation mode that should be used during this time interval. When absent it defaults to "charging only".</param>
         /// <param name="V2XBaseline">The optional power baseline value that is used on top of all values of the V2X Frequency-Watt and V2X Signal-Watt curve.</param>
         /// <param name="V2XFreqWattCurve">The optional power frequency curve used, but not required, when operationMode = LocalFrequency.</param>
         /// <param name="V2XSignalWattCurve">An optional power frequency curve used, but not required, when operationMode = LocalFrequency.</param>
-        /// <param name="DynUpdateTime">An optional timestamp when this charging schedule period had been updated last. Only relevant in a dynamic charging profile.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingSchedulePeriod(TimeSpan                          StartPeriod,
@@ -242,11 +241,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       ChargingRateValue?                SetpointReactive_L3      = null,
 
                                       Boolean?                          PreconditioningRequest   = null,
+                                      Boolean?                          EVSESleep                = null,
                                       OperationMode?                    OperationMode            = null,
                                       Decimal?                          V2XBaseline              = null,
                                       IEnumerable<V2XFreqWattEntry>?    V2XFreqWattCurve         = null,
                                       IEnumerable<V2XSignalWattEntry>?  V2XSignalWattCurve       = null,
-                                      DateTime?                         DynUpdateTime            = null,
 
                                       CustomData?                       CustomData               = null)
 
@@ -275,11 +274,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.SetpointReactive_L3     = SetpointReactive_L3;
 
             this.PreconditioningRequest  = PreconditioningRequest;
+            this.EVSESleep               = EVSESleep;
             this.OperationMode           = OperationMode;
             this.V2XBaseline             = V2XBaseline;
-            this.V2XFreqWattCurve        = V2XFreqWattCurve?.  Distinct() ?? Array.Empty<V2XFreqWattEntry>();
-            this.V2XSignalWattCurve      = V2XSignalWattCurve?.Distinct() ?? Array.Empty<V2XSignalWattEntry>();
-            this.DynUpdateTime           = DynUpdateTime;
+            this.V2XFreqWattCurve        = V2XFreqWattCurve?.  Distinct() ?? [];
+            this.V2XSignalWattCurve      = V2XSignalWattCurve?.Distinct() ?? [];
 
             unchecked
             {
@@ -305,11 +304,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           (this.SetpointReactive_L3?.   GetHashCode() ?? 0) * 19 ^
 
                           (this.PreconditioningRequest?.GetHashCode() ?? 0) * 17 ^
-                          (this.OperationMode?.         GetHashCode() ?? 0) * 13 ^
-                          (this.V2XBaseline?.           GetHashCode() ?? 0) * 11 ^
-                           this.V2XFreqWattCurve.       CalcHashCode()      *  7 ^
-                           this.V2XSignalWattCurve.     CalcHashCode()      *  5 ^
-                          (this.DynUpdateTime?.         GetHashCode() ?? 0) *  3 ^
+                          (this.EVSESleep?.             GetHashCode() ?? 0) * 13 ^
+                          (this.OperationMode?.         GetHashCode() ?? 0) * 11 ^
+                          (this.V2XBaseline?.           GetHashCode() ?? 0) *  7 ^
+                           this.V2XFreqWattCurve.       CalcHashCode()      *  5 ^
+                           this.V2XSignalWattCurve.     CalcHashCode()      *  3 ^
 
                            base.                        GetHashCode();
 
@@ -320,10 +319,122 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Charging schedule period structure defines a time period in a charging schedule. It is used in: CompositeScheduleType and in ChargingScheduleType. When used in a NotifyEVChargingScheduleRequest only _startPeriod_, _limit_, _limit_L2_, _limit_L3_ are relevant.",
+        //     "javaType": "ChargingSchedulePeriod",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "startPeriod": {
+        //             "description": "Start of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.",
+        //             "type": "integer"
+        //         },
+        //         "limit": {
+        //             "description": "Optional only when not required by the _operationMode_, as in CentralSetpoint, ExternalSetpoint, ExternalLimits, LocalFrequency,  LocalLoadBalancing. +\r\nCharging rate limit during the schedule period, in the applicable _chargingRateUnit_. \r\nThis SHOULD be a non-negative value; a negative value is only supported for backwards compatibility with older systems that use a negative value to specify a discharging limit.\r\nWhen using _chargingRateUnit_ = `W`, this field represents the sum of the power of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "type": "number"
+        //         },
+        //         "limit_L2": {
+        //             "description": "*(2.1)* Charging rate limit on phase L2  in the applicable _chargingRateUnit_. ",
+        //             "type": "number"
+        //         },
+        //         "limit_L3": {
+        //             "description": "*(2.1)* Charging rate limit on phase L3  in the applicable _chargingRateUnit_. ",
+        //             "type": "number"
+        //         },
+        //         "numberPhases": {
+        //             "description": "The number of phases that can be used for charging. +\r\nFor a DC EVSE this field should be omitted. +\r\nFor an AC EVSE a default value of _numberPhases_ = 3 will be assumed if the field is absent.",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 3.0
+        //         },
+        //         "phaseToUse": {
+        //             "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It\u2019s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 3.0
+        //         },
+        //         "dischargeLimit": {
+        //             "description": "*(2.1)* Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "type": "number",
+        //             "maximum": 0.0
+        //         },
+        //         "dischargeLimit_L2": {
+        //             "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. ",
+        //             "type": "number",
+        //             "maximum": 0.0
+        //         },
+        //         "dischargeLimit_L3": {
+        //             "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. ",
+        //             "type": "number",
+        //             "maximum": 0.0
+        //         },
+        //         "setpoint": {
+        //             "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "type": "number"
+        //         },
+        //         "setpoint_L2": {
+        //             "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.",
+        //             "type": "number"
+        //         },
+        //         "setpoint_L3": {
+        //             "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. ",
+        //             "type": "number"
+        //         },
+        //         "setpointReactive": {
+        //             "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "type": "number"
+        //         },
+        //         "setpointReactive_L2": {
+        //             "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. ",
+        //             "type": "number"
+        //         },
+        //         "setpointReactive_L3": {
+        //             "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. ",
+        //             "type": "number"
+        //         },
+        //         "preconditioningRequest": {
+        //             "description": "*(2.1)* If  true, the EV should attempt to keep the BMS preconditioned for this time interval.",
+        //             "type": "boolean"
+        //         },
+        //         "evseSleep": {
+        //             "description": "*(2.1)* If true, the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.",
+        //             "type": "boolean"
+        //         },
+        //         "v2xBaseline": {
+        //             "description": "*(2.1)* Power value that, when present, is used as a baseline on top of which values from _v2xFreqWattCurve_ and _v2xSignalWattCurve_ are added.",
+        //             "type": "number"
+        //         },
+        //         "operationMode": {
+        //             "$ref": "#/definitions/OperationModeEnumType"
+        //         },
+        //         "v2xFreqWattCurve": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/V2XFreqWattPointType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 20
+        //         },
+        //         "v2xSignalWattCurve": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/V2XSignalWattPointType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 20
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "startPeriod"
+        //     ]
+        // }
 
         #endregion
 
@@ -604,6 +715,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region EVSESleep                 [optional]
+
+                if (JSON.ParseOptional("evseSleep",
+                                       "EVSE sleep",
+                                       out Boolean? EVSESleep,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region OperationMode             [optional]
 
                 if (JSON.ParseOptional("operationMode",
@@ -659,19 +783,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region DynUpdateTime             [optional]
-
-                if (JSON.ParseOptional("dynUpdateTime",
-                                       "dynamic update time",
-                                       out DateTime? DynUpdateTime,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
 
                 #region CustomData                [optional]
 
@@ -711,11 +822,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              SetpointReactive_L3,
 
                                              PreconditioningRequest,
+                                             EVSESleep,
                                              OperationMode,
                                              V2XBaseline,
                                              V2XFreqWattCurve,
                                              V2XSignalWattCurve,
-                                             DynUpdateTime,
 
                                              CustomData
 
@@ -824,6 +935,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("preconditioningRequest",   PreconditioningRequest.Value)
                                : null,
 
+                           EVSESleep.             HasValue
+                               ? new JProperty("evseSleep",                EVSESleep.             Value)
+                               : null,
+
                            OperationMode.         HasValue
                                ? new JProperty("operationMode",            OperationMode.         Value)
                                : null,
@@ -840,10 +955,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            V2XSignalWattCurve.    Any()
                                ? new JProperty("v2xSignalWattCurve",       new JArray(V2XSignalWattCurve.Select(v2xSignalWattEntry => v2xSignalWattEntry.ToJSON(CustomV2XSignalWattEntrySerializer,
                                                                                                                                                                 CustomCustomDataSerializer))))
-                               : null,
-
-                           DynUpdateTime.         HasValue
-                               ? new JProperty("dynUpdateTime",            DynUpdateTime.         Value.ToIso8601())
                                : null,
 
 
@@ -999,6 +1110,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 PreconditioningRequest.HasValue &&  ChargingSchedulePeriod.PreconditioningRequest.HasValue &&
                 PreconditioningRequest.Value.Equals(ChargingSchedulePeriod.PreconditioningRequest.Value))  &&
 
+             ((!EVSESleep.             HasValue && !ChargingSchedulePeriod.EVSESleep.             HasValue) ||
+                EVSESleep.             HasValue &&  ChargingSchedulePeriod.EVSESleep.             HasValue &&
+                EVSESleep.             Value.Equals(ChargingSchedulePeriod.EVSESleep.             Value))  &&
+
              ((!OperationMode.         HasValue && !ChargingSchedulePeriod.OperationMode.         HasValue) ||
                 OperationMode.         HasValue &&  ChargingSchedulePeriod.OperationMode.         HasValue &&
                 OperationMode.         Value.Equals(ChargingSchedulePeriod.OperationMode.         Value))  &&
@@ -1006,11 +1121,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
              ((!V2XBaseline.           HasValue && !ChargingSchedulePeriod.V2XBaseline.           HasValue) ||
                 V2XBaseline.           HasValue &&  ChargingSchedulePeriod.V2XBaseline.           HasValue &&
                 V2XBaseline.           Value.Equals(ChargingSchedulePeriod.V2XBaseline.           Value))  &&
-
-             ((!DynUpdateTime.         HasValue && !ChargingSchedulePeriod.DynUpdateTime.         HasValue) ||
-                DynUpdateTime.         HasValue &&  ChargingSchedulePeriod.DynUpdateTime.         HasValue &&
-                DynUpdateTime.         Value.Equals(ChargingSchedulePeriod.DynUpdateTime.         Value))  &&
-
 
                V2XFreqWattCurve.  Count().Equals(ChargingSchedulePeriod.V2XFreqWattCurve.  Count()) &&
                V2XFreqWattCurve.  All(v2xFreqWattEntry   => ChargingSchedulePeriod.V2XFreqWattCurve.  Contains(v2xFreqWattEntry))   &&
@@ -1046,14 +1156,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   StartPeriod,
+                   (Int32) StartPeriod.TotalSeconds,
 
                    NumberOfPhases.HasValue
-                       ? ", " + NumberOfPhases + " phases"
+                       ? $", {NumberOfPhases} phases"
                        : "",
 
                    PhaseToUse.HasValue
-                       ? ", using phase: " + PhaseToUse.Value.AsText()
+                       ? $", using phase: {PhaseToUse.Value.AsText()}"
                        : ""
 
                );

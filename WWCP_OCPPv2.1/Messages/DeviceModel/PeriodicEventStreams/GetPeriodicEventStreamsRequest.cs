@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -117,14 +119,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetPeriodicEventStreamRequest",
+        //     "description": "This message is empty. It has no fields.\r\n",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an GetPeriodicEventStreams request.
@@ -136,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetPeriodicEventStreamRequestParser">A delegate to parse custom GetPeriodicEventStreams requests.</param>
         public static GetPeriodicEventStreamsRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           SourceRouting                                             Destination,
+                                                           SourceRouting                                                 Destination,
                                                            NetworkPath                                                   NetworkPath,
                                                            CustomJObjectParserDelegate<GetPeriodicEventStreamsRequest>?  CustomGetPeriodicEventStreamRequestParser   = null)
         {
@@ -148,8 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getPeriodicEventStreamsRequest,
                          out var errorResponse,
-                         CustomGetPeriodicEventStreamRequestParser) &&
-                getPeriodicEventStreamsRequest is not null)
+                         CustomGetPeriodicEventStreamRequestParser))
             {
                 return getPeriodicEventStreamsRequest;
             }
@@ -174,12 +202,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetPeriodicEventStreamRequest">The parsed GetPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                              JSON,
-                                       Request_Id                           RequestId,
-                                       SourceRouting                    Destination,
-                                       NetworkPath                          NetworkPath,
-                                       out GetPeriodicEventStreamsRequest?  GetPeriodicEventStreamRequest,
-                                       out String?                          ErrorResponse)
+        public static Boolean TryParse(JObject                                                   JSON,
+                                       Request_Id                                                RequestId,
+                                       SourceRouting                                             Destination,
+                                       NetworkPath                                               NetworkPath,
+                                       [NotNullWhen(true)]  out GetPeriodicEventStreamsRequest?  GetPeriodicEventStreamRequest,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -202,10 +230,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetPeriodicEventStreamRequestParser">A delegate to parse custom GetPeriodicEventStreams requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       SourceRouting                                             Destination,
+                                       SourceRouting                                                 Destination,
                                        NetworkPath                                                   NetworkPath,
-                                       out GetPeriodicEventStreamsRequest?                           GetPeriodicEventStreamRequest,
-                                       out String?                                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out GetPeriodicEventStreamsRequest?      GetPeriodicEventStreamRequest,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse,
                                        CustomJObjectParserDelegate<GetPeriodicEventStreamsRequest>?  CustomGetPeriodicEventStreamRequestParser)
         {
 

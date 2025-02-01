@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -51,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The message info.
         /// </summary>
-        public MessageContent     Message           { get; }
+        public MessageContents    Messages          { get; }
 
         /// <summary>
         /// Optional state during the message should be shown.
@@ -89,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Id">Master resource identifier, unique within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).</param>
         /// <param name="Priority">The priority of this message.</param>
-        /// <param name="Message">The message info.</param>
+        /// <param name="Messages">The message info.</param>
         /// <param name="State">Optional state during the message should be shown. When omitted this message should be shown in any state of the charging station.</param>
         /// <param name="StartTimestamp">Optional timestamp after which the message should be shown. If omitted: Show it at once.</param>
         /// <param name="EndTimestamp">Optional timestamp after which the message should be removed.</param>
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public MessageInfo(DisplayMessage_Id  Id,
                            MessagePriority    Priority,
-                           MessageContent     Message,
+                           MessageContents    Messages,
                            MessageState?      State            = null,
                            DateTime?          StartTimestamp   = null,
                            DateTime?          EndTimestamp     = null,
@@ -112,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Id              = Id;
             this.Priority        = Priority;
-            this.Message         = Message;
+            this.Messages        = Messages;
             this.State           = State;
             this.StartTimestamp  = StartTimestamp;
             this.EndTimestamp    = EndTimestamp;
@@ -126,52 +128,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "MessageInfoType": {
-        //   "description": "Message_ Info\r\nurn:x-enexis:ecdm:uid:2:233264\r\nContains message details, for a message to be displayed on a Charging Station.",
-        //   "javaType": "MessageInfo",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Contains message details, for a message to be displayed on a Charging Station.\r\n",
+        //     "javaType": "MessageInfo",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "display": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "id": {
+        //             "description": "Unique id within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "priority": {
+        //             "$ref": "#/definitions/MessagePriorityEnumType"
+        //         },
+        //         "state": {
+        //             "$ref": "#/definitions/MessageStateEnumType"
+        //         },
+        //         "startDateTime": {
+        //             "description": "From what date-time should this message be shown. If omitted: directly.\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "endDateTime": {
+        //             "description": "Until what date-time should this message be shown, after this date/time this message SHALL be removed.\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "transactionId": {
+        //             "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.\r\n",
+        //             "type": "string",
+        //             "maxLength": 36
+        //         },
+        //         "message": {
+        //             "$ref": "#/definitions/MessageContentType"
+        //         },
+        //         "messageExtra": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/MessageContentType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 4
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "display": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "id": {
-        //       "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nMaster resource identifier, unique within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).",
-        //       "type": "integer"
-        //     },
-        //     "priority": {
-        //       "$ref": "#/definitions/MessagePriorityEnumType"
-        //     },
-        //     "state": {
-        //       "$ref": "#/definitions/MessageStateEnumType"
-        //     },
-        //     "startDateTime": {
-        //       "description": "Message_ Info. Start. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569256\r\nFrom what date-time should this message be shown. If omitted: directly.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "endDateTime": {
-        //       "description": "Message_ Info. End. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569257\r\nUntil what date-time should this message be shown, after this date/time this message SHALL be removed.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "transactionId": {
-        //       "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.",
-        //       "type": "string",
-        //       "maxLength": 36
-        //     },
-        //     "message": {
-        //       "$ref": "#/definitions/MessageContentType"
-        //     }
-        //   },
-        //   "required": [
-        //     "id",
-        //     "priority",
-        //     "message"
-        //   ]
+        //     "required": [
+        //         "id",
+        //         "priority",
+        //         "message"
+        //     ]
         // }
 
         #endregion
@@ -190,8 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var messageInfo,
                          out var errorResponse,
-                         CustomMessageInfoParser) &&
-                messageInfo is not null)
+                         CustomMessageInfoParser))
             {
                 return messageInfo;
             }
@@ -213,9 +224,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MessageInfo">The parsed message info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject           JSON,
-                                       out MessageInfo?  MessageInfo,
-                                       out String?       ErrorResponse)
+        public static Boolean TryParse(JObject                                JSON,
+                                       [NotNullWhen(true)]  out MessageInfo?  MessageInfo,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
                         out MessageInfo,
@@ -231,8 +242,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMessageInfoParser">A delegate to parse custom message info.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       out MessageInfo?                           MessageInfo,
-                                       out String?                                ErrorResponse,
+                                       [NotNullWhen(true)]  out MessageInfo?      MessageInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
                                        CustomJObjectParserDelegate<MessageInfo>?  CustomMessageInfoParser   = null)
         {
 
@@ -267,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Message           [mandatory]
+                #region Messages          [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("message",
                                              "message content",
@@ -278,8 +289,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                if (Message is null)
+                if (!JSON.ParseMandatoryHashSet("messageExtra",
+                                                "messages extra",
+                                                MessageContent.TryParse,
+                                                out HashSet<MessageContent> messages,
+                                                out ErrorResponse))
+                {
                     return false;
+                }
+
+                var Messages = new MessageContents(Message);
+
+                Messages.Set(messages);
 
                 #endregion
 
@@ -369,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 MessageInfo = new MessageInfo(
                                   Id,
                                   Priority,
-                                  Message,
+                                  Messages,
                                   State,
                                   StartTimestamp,
                                   EndTimestamp,
@@ -417,8 +438,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("id",              Id.                  Value),
                                  new JProperty("priority",        Priority.            ToString()),
-                                 new JProperty("message",         Message.             ToJSON(CustomMessageContentSerializer,
+                                 new JProperty("message",         Messages.First().    ToJSON(CustomMessageContentSerializer,
                                                                                               CustomCustomDataSerializer)),
+
+                           Messages.Count > 1
+                               ? new JProperty("messageExtra",    Messages.Skip(1).Select(message => message.ToJSON(CustomMessageContentSerializer,
+                                                                                                                    CustomCustomDataSerializer)))
+                               : null,
 
                            State.HasValue
                                ? new JProperty("state",           State.         Value.ToString())
@@ -529,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                Id.      Equals(MessageInfo.Id)       &&
                Priority.Equals(MessageInfo.Priority) &&
-               Message. Equals(MessageInfo.Message)  &&
+               Messages. Equals(MessageInfo.Messages)  &&
 
             ((!State.         HasValue    && !MessageInfo.State.         HasValue)    ||
                State.         HasValue    &&  MessageInfo.State.         HasValue    && State.         Value.Equals(MessageInfo.State.         Value)) &&
@@ -565,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 return Id.             GetHashCode()       * 23 ^
                        Priority.       GetHashCode()       * 19 ^
-                       Message.        GetHashCode()       * 17 ^
+                       Messages.       GetHashCode()       * 17 ^
                       (State?.         GetHashCode() ?? 0) * 13 ^
                       (StartTimestamp?.GetHashCode() ?? 0) * 11 ^
                       (EndTimestamp?.  GetHashCode() ?? 0) *  7 ^
@@ -587,8 +613,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public override String ToString()
 
             => String.Concat(
-                   Message.Content.SubstringMax(30),
-                   " (", Id, ", ", Priority, ")"
+
+                   Messages.First().Content.SubstringMax(30),
+
+                   $" ({Id}, {Priority})"
+
                );
 
         #endregion

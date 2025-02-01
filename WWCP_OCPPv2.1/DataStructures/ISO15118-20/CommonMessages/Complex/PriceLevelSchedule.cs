@@ -17,11 +17,14 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
+using System;
 
 #endregion
 
@@ -31,20 +34,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The price level schedule.
     /// </summary>
-    public class PriceLevelSchedule : PriceSchedule,
+    public class PriceLevelSchedule : APriceSchedule,
                                       IEquatable<PriceLevelSchedule>
     {
 
-        //ToDo: Ask OCA about PriceLevelSchedule_Id which seems to be a XML attribute in 15118-20, but missing in OCPP v2.1!
-        //ToDo: OCPP is using the undefined type "NumericIdentifierType"!
-
         #region Properties
-
-        /// <summary>
-        /// The unique identification of the price level schedule.
-        /// </summary>
-        [Mandatory]
-        public PriceLevelSchedule_Id                 Id                           { get; }
 
         /// <summary>
         /// The the overall number of distinct price level elements used across
@@ -72,15 +66,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="NumberOfPriceLevels">The number of prive levels.</param>
         /// <param name="PriceLevelScheduleEntries">An enumeration of price level schedule entries (max 1024).</param>
         /// <param name="Description">An optional description of the price schedule.</param>
-        public PriceLevelSchedule(PriceLevelSchedule_Id                 Id,
+        public PriceLevelSchedule(PriceSchedule_Id                      Id,
                                   DateTime                              TimeAnchor,
-                                  PriceSchedule_Id                      PriceScheduleId,
                                   Byte                                  NumberOfPriceLevels,
                                   IEnumerable<PriceLevelScheduleEntry>  PriceLevelScheduleEntries,
-                                  Description?                          Description   = null)
+                                  String?                               Description   = null)
 
-            : base(TimeAnchor,
-                   PriceScheduleId,
+            : base(Id,
+                   TimeAnchor,
                    Description)
 
         {
@@ -89,19 +82,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 throw new ArgumentException("The given enumeration of price level schedule entries must not be empty!",
                                             nameof(PriceLevelScheduleEntries));
 
-            this.Id                         = Id;
             this.NumberOfPriceLevels        = NumberOfPriceLevels;
             this.PriceLevelScheduleEntries  = PriceLevelScheduleEntries.Distinct();
+
+            unchecked
+            {
+
+                hashCode = this.Id.                       GetHashCode()  * 7 ^
+                           this.NumberOfPriceLevels.      GetHashCode()  * 5 ^
+                           this.PriceLevelScheduleEntries.CalcHashCode() * 3 ^
+                           base.                          GetHashCode();
+
+            }
 
         }
 
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "The PriceLevelScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.\r\n",
+        //     "javaType": "PriceLevelSchedule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "priceLevelScheduleEntries": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/PriceLevelScheduleEntryType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 100
+        //         },
+        //         "timeAnchor": {
+        //             "description": "Starting point of this price schedule.\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "priceScheduleId": {
+        //             "description": "Unique ID of this price schedule.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "priceScheduleDescription": {
+        //             "description": "Description of the price schedule.\r\n",
+        //             "type": "string",
+        //             "maxLength": 32
+        //         },
+        //         "numberOfPriceLevels": {
+        //             "description": "Defines the overall number of distinct price level elements used across all PriceLevelSchedules.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "timeAnchor",
+        //         "priceScheduleId",
+        //         "numberOfPriceLevels",
+        //         "priceLevelScheduleEntries"
+        //     ]
+        // }
 
         #endregion
 
@@ -119,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var priceLevelSchedule,
                          out var errorResponse,
-                         CustomPriceLevelScheduleParser) &&
-                priceLevelSchedule is not null)
+                         CustomPriceLevelScheduleParser))
             {
                 return priceLevelSchedule;
             }
@@ -142,9 +187,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PriceLevelSchedule">The parsed price level schedule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                  JSON,
-                                       out PriceLevelSchedule?  PriceLevelSchedule,
-                                       out String?              ErrorResponse)
+        public static Boolean TryParse(JObject                                       JSON,
+                                       [NotNullWhen(true)]  out PriceLevelSchedule?  PriceLevelSchedule,
+                                       [NotNullWhen(false)] out String?              ErrorResponse)
 
             => TryParse(JSON,
                         out PriceLevelSchedule,
@@ -160,8 +205,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPriceLevelScheduleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                           JSON,
-                                       out PriceLevelSchedule?                           PriceLevelSchedule,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out PriceLevelSchedule?      PriceLevelSchedule,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<PriceLevelSchedule>?  CustomPriceLevelScheduleParser)
         {
 
@@ -172,10 +217,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Id                           [mandatory]
 
-                if (!JSON.ParseMandatory("id",
+                if (!JSON.ParseMandatory("priceScheduleId",
                                          "price level schedule identification",
-                                         PriceLevelSchedule_Id.TryParse,
-                                         out PriceLevelSchedule_Id Id,
+                                         PriceSchedule_Id.TryParse,
+                                         out PriceSchedule_Id Id,
                                          out ErrorResponse))
                 {
                     return false;
@@ -188,19 +233,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 if (!JSON.ParseMandatory("timeAnchor",
                                          "time anchor",
                                          out DateTime TimeAnchor,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region PriceScheduleId              [mandatory]
-
-                if (!JSON.ParseMandatory("priceScheduleId",
-                                         "price schedule identification",
-                                         PriceSchedule_Id.TryParse,
-                                         out PriceSchedule_Id PriceScheduleId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -235,25 +267,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Description                  [optional]
 
-                if (JSON.ParseOptional("description",
-                                       "price schedule description",
-                                       CommonTypes.Description.TryParse,
-                                       out Description? Description,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                var Description = JSON["description"]?.Value<String>();
 
                 #endregion
 
 
-                PriceLevelSchedule = new PriceLevelSchedule(Id,
-                                                            TimeAnchor,
-                                                            PriceScheduleId,
-                                                            NumberOfPriceLevels,
-                                                            PriceLevelScheduleEntries,
-                                                            Description);
+                PriceLevelSchedule = new PriceLevelSchedule(
+                                         Id,
+                                         TimeAnchor,
+                                         NumberOfPriceLevels,
+                                         PriceLevelScheduleEntries,
+                                         Description
+                                     );
 
                 if (CustomPriceLevelScheduleParser is not null)
                     PriceLevelSchedule = CustomPriceLevelScheduleParser(JSON,
@@ -286,14 +311,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",                         Id.             ToString()),
-                                 new JProperty("timeAnchor",                 TimeAnchor.     ToIso8601()),
-                                 new JProperty("priceScheduleId",            PriceScheduleId.ToString()),
-                                 new JProperty("numberOfPriceLevels",        NumberOfPriceLevels),
-                                 new JProperty("priceLevelScheduleEntries",  new JArray(PriceLevelScheduleEntries.Select(priceLevelScheduleEntry => priceLevelScheduleEntry.ToJSON(CustomPriceLevelScheduleEntrySerializer)))),
+                                 new JProperty("priceScheduleId",             Id.             ToString()),
+                                 new JProperty("timeAnchor",                  TimeAnchor.     ToIso8601()),
+                                 new JProperty("numberOfPriceLevels",         NumberOfPriceLevels),
+                                 new JProperty("priceLevelScheduleEntries",   new JArray(PriceLevelScheduleEntries.Select(priceLevelScheduleEntry => priceLevelScheduleEntry.ToJSON(CustomPriceLevelScheduleEntrySerializer)))),
 
-                           Description.HasValue
-                               ? new JProperty("description",                Description.    Value)
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("priceScheduleDescription",    Description)
                                : null
 
                        );
@@ -391,23 +415,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.                       GetHashCode()  * 7 ^
-                       NumberOfPriceLevels.      GetHashCode()  * 5 ^
-                       PriceLevelScheduleEntries.CalcHashCode() * 3 ^
-
-                       base.                     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

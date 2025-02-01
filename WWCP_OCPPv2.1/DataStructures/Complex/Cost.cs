@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -87,31 +89,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "CostType": {
-        //   "description": "Cost\r\nurn:x-oca:ocpp:uid:2:233258",
-        //   "javaType": "Cost",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "Cost",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "costKind": {
+        //             "$ref": "#/definitions/CostKindEnumType"
+        //         },
+        //         "amount": {
+        //             "description": "The estimated or actual cost per kWh\r\n",
+        //             "type": "integer"
+        //         },
+        //         "amountMultiplier": {
+        //             "description": "Values: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier\r\n",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "costKind": {
-        //       "$ref": "#/definitions/CostKindEnumType"
-        //     },
-        //     "amount": {
-        //       "description": "Cost. Amount. Amount\r\nurn:x-oca:ocpp:uid:1:569244\r\nThe estimated or actual cost per kWh",
-        //       "type": "integer"
-        //     },
-        //     "amountMultiplier": {
-        //       "description": "Cost. Amount_ Multiplier. Integer\r\nurn:x-oca:ocpp:uid:1:569245\r\nValues: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "costKind",
-        //     "amount"
-        //   ]
+        //     "required": [
+        //         "costKind",
+        //         "amount"
+        //     ]
         // }
 
         #endregion
@@ -130,8 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var cost,
                          out var errorResponse,
-                         CustomCostParser) &&
-                cost is not null)
+                         CustomCostParser))
             {
                 return cost;
             }
@@ -152,9 +152,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Cost">The parsed cost.</param>
-        public static Boolean TryParse(JObject      JSON,
-                                       out Cost?    Cost,
-                                       out String?  ErrorResponse)
+        public static Boolean TryParse(JObject                           JSON,
+                                       [NotNullWhen(true)]  out Cost?    Cost,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
 
             => TryParse(JSON,
                         out Cost,
@@ -169,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Cost">The parsed cost.</param>
         /// <param name="CustomCostParser">An optional delegate to parse custom costs.</param>
         public static Boolean TryParse(JObject                             JSON,
-                                       out Cost?                           Cost,
-                                       out String?                         ErrorResponse,
+                                       [NotNullWhen(true)]  out Cost?      Cost,
+                                       [NotNullWhen(false)] out String?    ErrorResponse,
                                        CustomJObjectParserDelegate<Cost>?  CustomCostParser   = null)
         {
 
@@ -232,10 +232,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Cost = new Cost(CostKind,
-                                Amount,
-                                AmountMultiplier,
-                                CustomData);
+                Cost = new Cost(
+                           CostKind,
+                           Amount,
+                           AmountMultiplier,
+                           CustomData
+                       );
 
                 if (CustomCostParser is not null)
                     Cost = CustomCostParser(JSON,

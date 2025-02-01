@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "additionalProperties": false,
         //     "properties": {
         //         "messageId": {
-        //             "description": "May be used to indicate a specific message or implementation.\r\n",
+        //             "description": "May be used to indicate a specific message or implementation.",
         //             "type": "string",
         //             "maxLength": 50
         //         },
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "description": "Data without specified length or format. This needs to be decided by both parties (Open to implementation).\r\n"
         //         },
         //         "vendorId": {
-        //             "description": "This identifies the Vendor specific implementation\r\n\r\n",
+        //             "description": "This identifies the Vendor specific implementation",
         //             "type": "string",
         //             "maxLength": 255
         //         },

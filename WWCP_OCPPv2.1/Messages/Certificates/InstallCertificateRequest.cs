@@ -145,61 +145,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:InstallCertificateRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:InstallCertificateRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "InstallCertificateUseEnumType": {
+        //             "description": "Indicates the certificate type that is sent.\r\n",
+        //             "javaType": "InstallCertificateUseEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "V2GRootCertificate",
+        //                 "MORootCertificate",
+        //                 "ManufacturerRootCertificate",
+        //                 "CSMSRootCertificate",
+        //                 "OEMRootCertificate"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "InstallCertificateUseEnumType": {
-        //       "description": "Indicates the certificate type that is sent.",
-        //       "javaType": "InstallCertificateUseEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "V2GRootCertificate",
-        //         "MORootCertificate",
-        //         "CSMSRootCertificate",
-        //         "ManufacturerRootCertificate"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "certificateType": {
+        //             "$ref": "#/definitions/InstallCertificateUseEnumType"
+        //         },
+        //         "certificate": {
+        //             "description": "A PEM encoded X.509 certificate.\r\n",
+        //             "type": "string",
+        //             "maxLength": 10000
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "certificateType": {
-        //       "$ref": "#/definitions/InstallCertificateUseEnumType"
-        //     },
-        //     "certificate": {
-        //       "description": "A PEM encoded X.509 certificate.",
-        //       "type": "string",
-        //       "maxLength": 5500
-        //     }
-        //   },
-        //   "required": [
-        //     "certificateType",
-        //     "certificate"
-        //   ]
+        //     "required": [
+        //         "certificateType",
+        //         "certificate"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomInstallCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an InstallCertificate request.
@@ -214,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom InstallCertificate requests.</param>
         public static InstallCertificateRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      SourceRouting                                        Destination,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
@@ -243,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out InstallCertificateRequest, out ErrorResponse, CustomInstallCertificateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out InstallCertificateRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an InstallCertificate request.
@@ -260,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom InstallCertificate requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       SourceRouting                                        Destination,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out InstallCertificateRequest?      InstallCertificateRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
@@ -275,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 InstallCertificateRequest = null;
 
-                #region CertificateType      [mandatory]
+                #region CertificateType    [mandatory]
 
                 if (!JSON.ParseMandatory("certificateType",
                                          "certificate type",
@@ -288,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Certificate          [mandatory]
+                #region Certificate        [mandatory]
 
                 if (!JSON.ParseMandatoryText("certificate",
                                              "certificate",
@@ -307,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures         [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -321,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -515,11 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   CertificateType.ToString(),
-                   ", ",
-                   Certificate.ToString().SubstringMax(10)
-               );
+            => $"{CertificateType}, {Certificate.ToString().SubstringMax(50)}";
 
         #endregion
 

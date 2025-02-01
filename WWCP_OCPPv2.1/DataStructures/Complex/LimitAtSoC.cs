@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -29,10 +31,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A limit beyond a state-of-charge value.
+    /// A limit at a state-of-charge.
     /// </summary>
-    public class LimitBeyondSoC : ACustomData,
-                                  IEquatable<LimitBeyondSoC>
+    public class LimitAtSoC : ACustomData,
+                              IEquatable<LimitAtSoC>
     {
 
         #region Properties
@@ -41,44 +43,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The state-of-charge value beyond which the charging rate limit should be applied.
         /// </summary>
         [Mandatory]
-        public PercentageByte      StateOfCharge        { get; }
+        public PercentageByte     SoC      { get; }
 
         /// <summary>
-        /// The charging rate limit beyond the state-of-charge value (Watt or Ampere).
+        /// The charging rate limit beyond the state-of-charge value.
+        /// The unit is defined by _chargingSchedule.chargingRateUnit_ (Watt or Ampere).
         /// </summary>
         [Mandatory]
-        public ChargingRateValue  ChargingRateLimit    { get; }
+        public ChargingRateValue  Limit    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new limit beyond state-of-charge.
+        /// Create a new limit at a state-of-charge.
         /// </summary>
-        /// <param name="StateOfCharge">An state-of-charge value beyond which the charging rate limit should be applied.</param>
-        /// <param name="ChargingRateLimit">The charging rate limit beyond the state-of-charge value (in chargingRateUnit).</param>
+        /// <param name="SoC">An state-of-charge value beyond which the charging rate limit should be applied.</param>
+        /// <param name="Limit">The charging rate limit beyond the state-of-charge. The unit is defined by _chargingSchedule.chargingRateUnit_ (Watt or Ampere).</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public LimitBeyondSoC(PercentageByte      StateOfCharge,
-                              ChargingRateValue  ChargingRateLimit,
-                              CustomData?        CustomData   = null)
+        public LimitAtSoC(PercentageByte     SoC,
+                          ChargingRateValue  Limit,
+                          CustomData?        CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.StateOfCharge      = StateOfCharge;
-            this.ChargingRateLimit  = ChargingRateLimit;
+            this.SoC    = SoC;
+            this.Limit  = Limit;
 
         }
 
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "javaType": "LimitAtSoC",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "soc": {
+        //             "description": "The SoC value beyond which the charging rate limit should be applied.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "limit": {
+        //             "description": "Charging rate limit beyond the SoC value.\r\nThe unit is defined by _chargingSchedule.chargingRateUnit_.\r\n\r\n",
+        //             "type": "number"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "soc",
+        //         "limit"
+        //     ]
+        // }
 
         #endregion
 
@@ -89,15 +114,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomLimitBeyondSoCParser">An optional delegate to parse custom sales tariff entries.</param>
-        public static LimitBeyondSoC Parse(JObject                                       JSON,
-                                           CustomJObjectParserDelegate<LimitBeyondSoC>?  CustomLimitBeyondSoCParser   = null)
+        public static LimitAtSoC Parse(JObject                                   JSON,
+                                       CustomJObjectParserDelegate<LimitAtSoC>?  CustomLimitBeyondSoCParser   = null)
         {
 
             if (TryParse(JSON,
                          out var limitBeyondSoC,
                          out var errorResponse,
-                         CustomLimitBeyondSoCParser) &&
-                limitBeyondSoC is not null)
+                         CustomLimitBeyondSoCParser))
             {
                 return limitBeyondSoC;
             }
@@ -118,9 +142,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="LimitBeyondSoC">The parsed connector type.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out LimitBeyondSoC?  LimitBeyondSoC,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                               JSON,
+                                       [NotNullWhen(true)]  out LimitAtSoC?  LimitBeyondSoC,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
 
             => TryParse(JSON,
                         out LimitBeyondSoC,
@@ -134,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="LimitBeyondSoC">The parsed connector type.</param>
         /// <param name="CustomLimitBeyondSoCParser">An optional delegate to parse custom sales tariff entries.</param>
-        public static Boolean TryParse(JObject                                       JSON,
-                                       out LimitBeyondSoC?                           LimitBeyondSoC,
-                                       out String?                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<LimitBeyondSoC>?  CustomLimitBeyondSoCParser   = null)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out LimitAtSoC?      LimitBeyondSoC,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
+                                       CustomJObjectParserDelegate<LimitAtSoC>?  CustomLimitBeyondSoCParser   = null)
         {
 
             try
@@ -187,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                LimitBeyondSoC = new LimitBeyondSoC(
+                LimitBeyondSoC = new LimitAtSoC(
                                      StateOfCharge,
                                      ChargingRateLimit,
                                      CustomData
@@ -211,21 +235,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomLimitBeyondSoCSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomLimitAtSoCSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomLimitBeyondSoCSerializer">A delegate to serialize custom limitBeyondSoCs.</param>
+        /// <param name="CustomLimitAtSoCSerializer">A delegate to serialize custom limitBeyondSoCs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LimitBeyondSoC>?  CustomLimitBeyondSoCSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<LimitAtSoC>?  CustomLimitAtSoCSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("soc",          StateOfCharge.    Value),
-                                 new JProperty("limit",        ChargingRateLimit.Value),
+                                 new JProperty("soc",          SoC.  Value),
+                                 new JProperty("limit",        Limit.Value),
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -233,8 +257,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        );
 
-            return CustomLimitBeyondSoCSerializer is not null
-                       ? CustomLimitBeyondSoCSerializer(this, json)
+            return CustomLimitAtSoCSerializer is not null
+                       ? CustomLimitAtSoCSerializer(this, json)
                        : json;
 
         }
@@ -252,8 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="LimitBeyondSoC1">A limit beyond state-of-charge.</param>
         /// <param name="LimitBeyondSoC2">Another limit beyond state-of-charge.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (LimitBeyondSoC? LimitBeyondSoC1,
-                                           LimitBeyondSoC? LimitBeyondSoC2)
+        public static Boolean operator == (LimitAtSoC? LimitBeyondSoC1,
+                                           LimitAtSoC? LimitBeyondSoC2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -278,8 +302,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="LimitBeyondSoC1">A limit beyond state-of-charge.</param>
         /// <param name="LimitBeyondSoC2">Another limit beyond state-of-charge.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (LimitBeyondSoC? LimitBeyondSoC1,
-                                           LimitBeyondSoC? LimitBeyondSoC2)
+        public static Boolean operator != (LimitAtSoC? LimitBeyondSoC1,
+                                           LimitAtSoC? LimitBeyondSoC2)
 
             => !(LimitBeyondSoC1 == LimitBeyondSoC2);
 
@@ -297,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A limit beyond state-of-charge to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is LimitBeyondSoC limitBeyondSoC &&
+            => Object is LimitAtSoC limitBeyondSoC &&
                    Equals(limitBeyondSoC);
 
         #endregion
@@ -308,12 +332,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two limit beyond a state-of-charge values for equality.
         /// </summary>
         /// <param name="LimitBeyondSoC">A limit beyond state-of-charge to compare with.</param>
-        public Boolean Equals(LimitBeyondSoC? LimitBeyondSoC)
+        public Boolean Equals(LimitAtSoC? LimitBeyondSoC)
 
             => LimitBeyondSoC is not null &&
 
-               StateOfCharge.    Equals(LimitBeyondSoC.StateOfCharge)     &&
-               ChargingRateLimit.Equals(LimitBeyondSoC.ChargingRateLimit) &&
+               SoC.    Equals(LimitBeyondSoC.SoC)     &&
+               Limit.Equals(LimitBeyondSoC.Limit) &&
 
                base.             Equals(LimitBeyondSoC);
 
@@ -332,10 +356,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return StateOfCharge.    GetHashCode() * 5 ^
-                       ChargingRateLimit.GetHashCode() * 3 ^
-
-                       base.             GetHashCode();
+                return SoC.  GetHashCode() * 5 ^
+                       Limit.GetHashCode() * 3 ^
+                       base. GetHashCode();
 
             }
         }
@@ -349,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{ChargingRateLimit} after {StateOfCharge} state-of-charge";
+            => $"{Limit} after {SoC} state-of-charge";
 
         #endregion
 

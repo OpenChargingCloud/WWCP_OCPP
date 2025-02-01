@@ -96,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new GetLog request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
+        /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
@@ -112,8 +112,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetLogRequest(SourceRouting            Destination,
-                             LogType                  LogType,
                              Int32                    LogRequestId,
+                             LogType                  LogType,
                              LogParameters            Log,
                              Byte?                    Retries               = null,
                              TimeSpan?                RetryInterval         = null,
@@ -151,8 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.LogType        = LogType;
             this.LogRequestId   = LogRequestId;
+            this.LogType        = LogType;
             this.Log            = Log;
             this.Retries        = Retries;
             this.RetryInterval  = RetryInterval;
@@ -161,8 +161,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                hashCode = this.LogType.       GetHashCode()       * 13 ^
-                           this.LogRequestId.  GetHashCode()       * 11 ^
+                hashCode = this.LogRequestId.  GetHashCode()       * 13 ^
+                           this.LogType.       GetHashCode()       * 11 ^
                            this.Log.           GetHashCode()       *  7 ^
                           (this.Retries?.      GetHashCode() ?? 0) *  5 ^
                           (this.RetryInterval?.GetHashCode() ?? 0) *  3 ^
@@ -178,99 +178,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetLogRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetLogRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "LogEnumType": {
+        //             "description": "This contains the type of log file that the Charging Station\r\nshould send.",
+        //             "javaType": "LogEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "DiagnosticsLog",
+        //                 "SecurityLog",
+        //                 "DataCollectorLog"
+        //             ]
+        //         },
+        //         "LogParametersType": {
+        //             "description": "Generic class for the configuration of logging entries.",
+        //             "javaType": "LogParameters",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "remoteLocation": {
+        //                     "description": "The URL of the location at the remote system where the log should be stored.",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "oldestTimestamp": {
+        //                     "description": "This contains the date and time of the oldest logging information to include in the diagnostics.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "latestTimestamp": {
+        //                     "description": "This contains the date and time of the latest logging information to include in the diagnostics.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "remoteLocation"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "LogEnumType": {
-        //       "description": "This contains the type of log file that the Charging Station\r\nshould send.",
-        //       "javaType": "LogEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "DiagnosticsLog",
-        //         "SecurityLog"
-        //       ]
-        //     },
-        //     "LogParametersType": {
-        //       "description": "Log\r\nurn:x-enexis:ecdm:uid:2:233373\r\nGeneric class for the configuration of logging entries.",
-        //       "javaType": "LogParameters",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "log": {
+        //             "$ref": "#/definitions/LogParametersType"
+        //         },
+        //         "logType": {
+        //             "$ref": "#/definitions/LogEnumType"
+        //         },
+        //         "requestId": {
+        //             "description": "The Id of this request",
+        //             "type": "integer"
+        //         },
+        //         "retries": {
+        //             "description": "This specifies how many times the Charging Station must retry to upload the log before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry. If the value is 0, it means: no retries.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "retryInterval": {
+        //             "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.",
+        //             "type": "integer"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "remoteLocation": {
-        //           "description": "Log. Remote_ Location. URI\r\nurn:x-enexis:ecdm:uid:1:569484\r\nThe URL of the location at the remote system where the log should be stored.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         },
-        //         "oldestTimestamp": {
-        //           "description": "Log. Oldest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569477\r\nThis contains the date and time of the oldest logging information to include in the diagnostics.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "latestTimestamp": {
-        //           "description": "Log. Latest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569482\r\nThis contains the date and time of the latest logging information to include in the diagnostics.",
-        //           "type": "string",
-        //           "format": "date-time"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "remoteLocation"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "log": {
-        //       "$ref": "#/definitions/LogParametersType"
-        //     },
-        //     "logType": {
-        //       "$ref": "#/definitions/LogEnumType"
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of this request",
-        //       "type": "integer"
-        //     },
-        //     "retries": {
-        //       "description": "This specifies how many times the Charging Station must try to upload the log before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.",
-        //       "type": "integer"
-        //     },
-        //     "retryInterval": {
-        //       "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "logType",
-        //     "requestId",
-        //     "log"
-        //   ]
+        //     "required": [
+        //         "logType",
+        //         "requestId",
+        //         "log"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGetLogRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a GetLog request.
@@ -285,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
         public static GetLogRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
-                                          SourceRouting                            Destination,
+                                          SourceRouting                                Destination,
                                           NetworkPath                                  NetworkPath,
                                           DateTime?                                    RequestTimestamp            = null,
                                           TimeSpan?                                    RequestTimeout              = null,
@@ -314,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out GetLogRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetLog request.
@@ -331,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetLogRequestParser">A delegate to parse custom GetLog requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
-                                       SourceRouting                            Destination,
+                                       SourceRouting                                Destination,
                                        NetworkPath                                  NetworkPath,
                                        [NotNullWhen(true)]  out GetLogRequest?      GetLogRequest,
                                        [NotNullWhen(false)] out String?             ErrorResponse,
@@ -346,12 +348,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetLogRequest = null;
 
-                #region LogType              [mandatory]
+                #region LogRequestId         [mandatory]
 
-                if (!JSON.ParseMandatory("logType",
-                                         "log type",
-                                         OCPPv2_1.LogType.TryParse,
-                                         out LogType LogType,
+                if (!JSON.ParseMandatory("requestId",
+                                         "log request identification",
+                                         out Int32 LogRequestId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -359,11 +360,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region LogRequestId         [mandatory]
+                #region LogType              [mandatory]
 
-                if (!JSON.ParseMandatory("requestId",
-                                         "log request identification",
-                                         out Int32 LogRequestId,
+                if (!JSON.ParseMandatory("logType",
+                                         "log type",
+                                         OCPPv2_1.LogType.TryParse,
+                                         out LogType LogType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -443,8 +445,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 GetLogRequest = new GetLogRequest(
 
                                     Destination,
-                                    LogType,
                                     LogRequestId,
+                                    LogType,
                                     Log,
                                     Retries,
                                     RetryInterval,
@@ -503,8 +505,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",        DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("logType",         LogType.             ToString()),
                                  new JProperty("requestId",       LogRequestId),
+                                 new JProperty("logType",         LogType.             ToString()),
                                  new JProperty("log",             Log.                 ToJSON(CustomLogParametersSerializer)),
 
                            Retries.HasValue

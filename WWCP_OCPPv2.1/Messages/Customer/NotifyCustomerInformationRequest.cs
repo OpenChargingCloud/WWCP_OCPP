@@ -180,66 +180,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:NotifyCustomerInformationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:NotifyCustomerInformationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "data": {
-        //       "description": "(Part of) the requested data. No format specified in which the data is returned. Should be human readable.",
-        //       "type": "string",
-        //       "maxLength": 512
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "data": {
+        //             "description": "(Part of) the requested data. No format specified in which the data is returned. Should be human readable.\r\n",
+        //             "type": "string",
+        //             "maxLength": 512
+        //         },
+        //         "tbc": {
+        //             "description": "\u201cto be continued\u201d indicator. Indicates whether another part of the monitoringData follows in an upcoming notifyMonitoringReportRequest message. Default value when omitted is false.\r\n",
+        //             "type": "boolean",
+        //             "default": false
+        //         },
+        //         "seqNo": {
+        //             "description": "Sequence number of this message. First message starts at 0.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "generatedAt": {
+        //             "description": " Timestamp of the moment this message was generated at the Charging Station.\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "requestId": {
+        //             "description": "The Id of the request.\r\n\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "tbc": {
-        //       "description": "“to be continued” indicator. Indicates whether another part of the monitoringData follows in an upcoming notifyMonitoringReportRequest message. Default value when omitted is false.",
-        //       "type": "boolean",
-        //       "default": false
-        //     },
-        //     "seqNo": {
-        //       "description": "Sequence number of this message. First message starts at 0.",
-        //       "type": "integer"
-        //     },
-        //     "generatedAt": {
-        //       "description": " Timestamp of the moment this message was generated at the Charging Station.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of the request.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "data",
-        //     "seqNo",
-        //     "generatedAt",
-        //     "requestId"
-        //   ]
+        //     "required": [
+        //         "data",
+        //         "seqNo",
+        //         "generatedAt",
+        //         "requestId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyCustomerInformation request.
@@ -254,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom NotifyCustomerInformation requests.</param>
         public static NotifyCustomerInformationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             SourceRouting                                               Destination,
+                                                             SourceRouting                                                   Destination,
                                                              NetworkPath                                                     NetworkPath,
                                                              DateTime?                                                       RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
@@ -283,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyCustomerInformation request.
@@ -300,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom NotifyCustomerInformation requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       SourceRouting                                               Destination,
+                                       SourceRouting                                                   Destination,
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCustomerInformationRequest?      NotifyCustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
@@ -331,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatoryText("data",
                                              "customer data",
-                                             out String Data,
+                                             out String? Data,
                                              out ErrorResponse))
                 {
                     return false;

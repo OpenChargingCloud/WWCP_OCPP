@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -93,17 +94,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public GetPeriodicEventStreamsResponse(CSMS.GetPeriodicEventStreamsRequest  Request,
-                                               GenericStatus?                       Status               = null,
-                                               StatusInfo?                          StatusInfo           = null,
-                                               IEnumerable<ConstantStreamData>?     ConstantStreamData   = null,
-                                               DateTime?                            ResponseTimestamp    = null,
+        public GetPeriodicEventStreamsResponse(GetPeriodicEventStreamsRequest    Request,
+                                               GenericStatus?                    Status               = null,
+                                               StatusInfo?                       StatusInfo           = null,
+                                               IEnumerable<ConstantStreamData>?  ConstantStreamData   = null,
+                                               DateTime?                         ResponseTimestamp    = null,
 
-                                               IEnumerable<KeyPair>?                SignKeys             = null,
-                                               IEnumerable<SignInfo>?               SignInfos            = null,
-                                               IEnumerable<Signature>?              Signatures           = null,
+                                               IEnumerable<KeyPair>?             SignKeys             = null,
+                                               IEnumerable<SignInfo>?            SignInfos            = null,
+                                               IEnumerable<Signature>?           Signatures           = null,
 
-                                               CustomData?                          CustomData           = null)
+                                               CustomData?                       CustomData           = null)
 
             : base(Request,
                    Result.OK(),
@@ -122,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.Status              = Status;
             this.StatusInfo          = StatusInfo;
-            this.ConstantStreamData  = ConstantStreamData?.Distinct() ?? Array.Empty<ConstantStreamData>();
+            this.ConstantStreamData  = ConstantStreamData?.Distinct() ?? [];
 
 
             unchecked
@@ -146,15 +147,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public GetPeriodicEventStreamsResponse(CSMS.GetPeriodicEventStreamsRequest  Request,
-                                               Result                               Result)
+        public GetPeriodicEventStreamsResponse(GetPeriodicEventStreamsRequest  Request,
+                                               Result                          Result)
 
             : base(Request,
                    Result)
 
         {
 
-            this.ConstantStreamData  = Array.Empty<ConstantStreamData>();
+            this.ConstantStreamData  = [];
             this.Status              = GenericStatus.Rejected;
 
         }
@@ -164,10 +165,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:GetPeriodicEventStreamResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ConstantStreamDataType": {
+        //             "javaType": "ConstantStreamData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "Uniquely identifies the stream\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "params": {
+        //                     "$ref": "#/definitions/PeriodicEventStreamParamsType"
+        //                 },
+        //                 "variableMonitoringId": {
+        //                     "description": "Id of monitor used to report his event. It can be a preconfigured or hardwired monitor.\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id",
+        //                 "variableMonitoringId",
+        //                 "params"
+        //             ]
+        //         },
+        //         "PeriodicEventStreamParamsType": {
+        //             "javaType": "PeriodicEventStreamParams",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "interval": {
+        //                     "description": "Time in seconds after which stream data is sent.\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "values": {
+        //                     "description": "Number of items to be sent together in stream.\r\n",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "constantStreamData": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ConstantStreamDataType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
@@ -179,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The open periodic event stream request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static GetPeriodicEventStreamsResponse Parse(CSMS.GetPeriodicEventStreamsRequest                            Request,
+        public static GetPeriodicEventStreamsResponse Parse(GetPeriodicEventStreamsRequest                                 Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<GetPeriodicEventStreamsResponse>?  CustomGetPeriodicEventStreamResponseParser   = null)
         {
@@ -189,8 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getPeriodicEventStreamResponse,
                          out var errorResponse,
-                         CustomGetPeriodicEventStreamResponseParser) &&
-                getPeriodicEventStreamResponse is not null)
+                         CustomGetPeriodicEventStreamResponseParser))
             {
                 return getPeriodicEventStreamResponse;
             }
@@ -212,10 +294,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="GetPeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static Boolean TryParse(CSMS.GetPeriodicEventStreamsRequest                            Request,
+        public static Boolean TryParse(GetPeriodicEventStreamsRequest                                 Request,
                                        JObject                                                        JSON,
-                                       out GetPeriodicEventStreamsResponse?                           GetPeriodicEventStreamResponse,
-                                       out String?                                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out GetPeriodicEventStreamsResponse?      GetPeriodicEventStreamResponse,
+                                       [NotNullWhen(false)] out String?                               ErrorResponse,
                                        CustomJObjectParserDelegate<GetPeriodicEventStreamsResponse>?  CustomGetPeriodicEventStreamResponseParser   = null)
         {
 
@@ -381,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The open periodic event stream failed.
         /// </summary>
-        public static GetPeriodicEventStreamsResponse Failed(CSMS.GetPeriodicEventStreamsRequest Request)
+        public static GetPeriodicEventStreamsResponse Failed(GetPeriodicEventStreamsRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -500,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                        : "",
 
                    ConstantStreamData.Any()
-                       ? ", " + ConstantStreamData.AggregateWith(", ")
+                       ? $", {ConstantStreamData.AggregateWith(", ")}"
                        : ""
 
                );

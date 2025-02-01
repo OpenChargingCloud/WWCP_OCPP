@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -77,27 +79,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "RelativeTimeIntervalType": {
-        //   "description": "Relative_ Timer_ Interval\r\nurn:x-oca:ocpp:uid:2:233270",
-        //   "javaType": "RelativeTimeInterval",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "javaType": "RelativeTimeInterval",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "start": {
+        //             "description": "Start of the interval, in seconds from NOW.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "duration": {
+        //             "description": "Duration of the interval, in seconds.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "start": {
-        //       "description": "Relative_ Timer_ Interval. Start. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569279\r\nStart of the interval, in seconds from NOW.",
-        //       "type": "integer"
-        //     },
-        //     "duration": {
-        //       "description": "Relative_ Timer_ Interval. Duration. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569280\r\nDuration of the interval, in seconds.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "start"
-        //   ]
+        //     "required": [
+        //         "start"
+        //     ]
         // }
 
         #endregion
@@ -116,8 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var relativeTimeInterval,
                          out var errorResponse,
-                         CustomRelativeTimeIntervalParser) &&
-                relativeTimeInterval is not null)
+                         CustomRelativeTimeIntervalParser))
             {
                 return relativeTimeInterval;
             }
@@ -138,9 +138,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RelativeTimeInterval">The parsed relative time interval.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       out RelativeTimeInterval?  RelativeTimeInterval,
-                                       out String?                ErrorResponse)
+        public static Boolean TryParse(JObject                                         JSON,
+                                       [NotNullWhen(true)]  out RelativeTimeInterval?  RelativeTimeInterval,
+                                       [NotNullWhen(false)] out String?                ErrorResponse)
 
             => TryParse(JSON,
                         out RelativeTimeInterval,
@@ -155,8 +155,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RelativeTimeInterval">The parsed relative time interval.</param>
         /// <param name="CustomRelativeTimeIntervalParser">An optional delegate to parse custom relative time intervals.</param>
         public static Boolean TryParse(JObject                                             JSON,
-                                       out RelativeTimeInterval?                           RelativeTimeInterval,
-                                       out String?                                         ErrorResponse,
+                                       [NotNullWhen(true)]  out RelativeTimeInterval?      RelativeTimeInterval,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalParser   = null)
         {
 

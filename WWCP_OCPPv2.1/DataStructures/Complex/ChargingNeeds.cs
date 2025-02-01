@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -170,10 +172,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "javaType": "ChargingNeeds",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "acChargingParameters": {
+        //             "$ref": "#/definitions/ACChargingParametersType"
+        //         },
+        //         "derChargingParameters": {
+        //             "$ref": "#/definitions/DERChargingParametersType"
+        //         },
+        //         "evEnergyOffer": {
+        //             "$ref": "#/definitions/EVEnergyOfferType"
+        //         },
+        //         "requestedEnergyTransfer": {
+        //             "$ref": "#/definitions/EnergyTransferModeEnumType"
+        //         },
+        //         "dcChargingParameters": {
+        //             "$ref": "#/definitions/DCChargingParametersType"
+        //         },
+        //         "v2xChargingParameters": {
+        //             "$ref": "#/definitions/V2XChargingParametersType"
+        //         },
+        //         "availableEnergyTransfer": {
+        //             "description": "*(2.1)* Modes of energy transfer that are marked as available by EV.\r\n",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/EnergyTransferModeEnumType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "controlMode": {
+        //             "$ref": "#/definitions/ControlModeEnumType"
+        //         },
+        //         "mobilityNeedsMode": {
+        //             "$ref": "#/definitions/MobilityNeedsModeEnumType"
+        //         },
+        //         "departureTime": {
+        //             "description": "Estimated departure time of the EV. +\r\n*ISO 15118-2:* AC/DC_EVChargeParameterType: DepartureTime +\r\n*ISO 15118-20:* Dynamic/Scheduled_SEReqControlModeType: DepartureTIme\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "requestedEnergyTransfer"
+        //     ]
+        // }
 
         #endregion
 
@@ -191,8 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingNeeds,
                          out var errorResponse,
-                         CustomChargingNeedsParser) &&
-                chargingNeeds is not null)
+                         CustomChargingNeedsParser))
             {
                 return chargingNeeds;
             }
@@ -214,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingNeeds">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out ChargingNeeds?  ChargingNeeds,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out ChargingNeeds?  ChargingNeeds,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingNeeds,
@@ -232,8 +282,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingNeedsParser">A delegate to parse custom CustomChargingNeeds JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
-                                       out ChargingNeeds?                           ChargingNeeds,
-                                       out String?                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out ChargingNeeds?      ChargingNeeds,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingNeeds>?  CustomChargingNeedsParser)
         {
 
@@ -358,6 +408,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            "V2X charging parameters",
                                            OCPPv2_1.V2XChargingParameters.TryParse,
                                            out V2XChargingParameters? V2XChargingParameters,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DERChargingParameters           [optional]
+
+                if (JSON.ParseOptionalJSON("derChargingParameters",
+                                           "DC charging parameters",
+                                           OCPPv2_1.DERChargingParameters.TryParse,
+                                           out DERChargingParameters? DERChargingParameters,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

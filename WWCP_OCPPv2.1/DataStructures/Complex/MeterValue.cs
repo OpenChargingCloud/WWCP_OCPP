@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -90,35 +92,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:MeterValueType",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Meter_ Value\r\nurn:x-oca:ocpp:uid:2:233265\r\nCollection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.",
-        //   "javaType": "MeterValue",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "description": "Collection of one or more sampled values in MeterValuesRequest and TransactionEvent.
+        //                     All sampled values in a MeterValue are sampled at the same point in time.\r\n",
+        //     "javaType": "MeterValue",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "sampledValue": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/SampledValueType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "timestamp": {
+        //             "description": "Timestamp for measured value(s).\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "sampledValue": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/SampledValueType"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "timestamp": {
-        //       "description": "Meter_ Value. Timestamp. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569259\r\nTimestamp for measured value(s).",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     }
-        //   },
-        //   "required": [
-        //     "timestamp",
-        //     "sampledValue"
-        //   ]
+        //     "required": [
+        //         "timestamp",
+        //         "sampledValue"
+        //     ]
         // }
 
         #endregion
@@ -137,8 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var meterValue,
                          out var errorResponse,
-                         CustomMeterValueParser) &&
-                meterValue is not null)
+                         CustomMeterValueParser))
             {
                 return meterValue;
             }
@@ -160,9 +159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject          JSON,
-                                       out MeterValue?  MeterValue,
-                                       out String?      ErrorResponse)
+        public static Boolean TryParse(JObject                               JSON,
+                                       [NotNullWhen(true)]  out MeterValue?  MeterValue,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
 
             => TryParse(JSON,
                         out MeterValue,
@@ -178,8 +177,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMeterValueParser">A delegate to parse custom meter values.</param>
         public static Boolean TryParse(JObject                                   JSON,
-                                       out MeterValue?                           MeterValue,
-                                       out String?                               ErrorResponse,
+                                       [NotNullWhen(true)]  out MeterValue?      MeterValue,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
                                        CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser)
         {
 

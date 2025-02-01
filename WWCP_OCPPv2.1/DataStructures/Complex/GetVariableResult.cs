@@ -130,46 +130,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "GetVariableResultType": {
-        //   "description": "Class to hold results of GetVariables request.",
-        //   "javaType": "GetVariableResult",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Class to hold results of GetVariables request.\r\n",
+        //     "javaType": "GetVariableResult",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "attributeStatus": {
+        //             "$ref": "#/definitions/GetVariableStatusEnumType"
+        //         },
+        //         "attributeStatusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "attributeType": {
+        //             "$ref": "#/definitions/AttributeEnumType"
+        //         },
+        //         "attributeValue": {
+        //             "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
+        //             "type": "string",
+        //             "maxLength": 2500
+        //         },
+        //         "component": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "variable": {
+        //             "$ref": "#/definitions/VariableType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "attributeStatusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     },
-        //     "attributeStatus": {
-        //       "$ref": "#/definitions/GetVariableStatusEnumType"
-        //     },
-        //     "attributeType": {
-        //       "$ref": "#/definitions/AttributeEnumType"
-        //     },
-        //     "attributeValue": {
-        //       "description":
-        //           "Value of requested attribute type of component-variable.
-        //            This field can only be empty when the given status is NOT accepted.
-        //            The Configuration Variable <<configkey-reporting-value-size,ReportingValueSize>> can be used to limit
-        //            GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue.
-        //            The max size of these values will always remain equal.",
-        //       "type": "string",
-        //       "maxLength": 2500
-        //     },
-        //     "component": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "variable": {
-        //       "$ref": "#/definitions/VariableType"
-        //     }
-        //   },
-        //   "required": [
-        //     "attributeStatus",
-        //     "component",
-        //     "variable"
-        //   ]
+        //     "required": [
+        //         "attributeStatus",
+        //         "component",
+        //         "variable"
+        //     ]
         // }
 
         #endregion
@@ -188,8 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var getVariableResult,
                          out var errorResponse,
-                         CustomGetVariableResultParser) &&
-                getVariableResult is not null)
+                         CustomGetVariableResultParser))
             {
                 return getVariableResult;
             }

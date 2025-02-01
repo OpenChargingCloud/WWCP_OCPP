@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
 #endregion
 
@@ -29,50 +29,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 {
 
     /// <summary>
-    /// An additional service.
+    /// An additional selected service.
     /// </summary>
-    public class AdditionalService : IEquatable<AdditionalService>
+    public class AdditionalSelectedService : IEquatable<AdditionalSelectedService>
     {
 
         #region Properties
 
         /// <summary>
-        /// The name of the additional service.
+        /// The name of the additional selected service.
         /// </summary>
         [Mandatory]
-        public Name     Name    { get; }
+        public String          Name    { get; }
 
         /// <summary>
-        /// The fee of the additional service.
+        /// The fee of the additional selected service.
         /// </summary>
         [Mandatory]
-        public Decimal  Fee     { get; }
+        public RationalNumber  Fee     { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new additional service.
+        /// Create a new additional selected service.
         /// </summary>
         /// <param name="Name">The name of the additional service.</param>
         /// <param name="Fee">The fee of the additional service.</param>
-        public AdditionalService(Name     Name,
-                                 Decimal  Fee)
+        public AdditionalSelectedService(String          Name,
+                                         RationalNumber  Fee)
         {
 
             this.Name  = Name;
             this.Fee   = Fee;
+
+            unchecked
+            {
+
+                hashCode = this.Name.GetHashCode() * 5 ^
+                           this.Fee. GetHashCode() * 3;
+
+            }
 
         }
 
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "javaType": "AdditionalSelectedServices",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "serviceFee": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "serviceName": {
+        //             "description": "Human readable string to identify this service.\r\n",
+        //             "type": "string",
+        //             "maxLength": 80
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "serviceName",
+        //         "serviceFee"
+        //     ]
+        // }
 
         #endregion
 
@@ -83,15 +112,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomAdditionalServiceParser">An optional delegate to parse custom additional services.</param>
-        public static AdditionalService Parse(JObject                                          JSON,
-                                              CustomJObjectParserDelegate<AdditionalService>?  CustomAdditionalServiceParser   = null)
+        public static AdditionalSelectedService Parse(JObject                                          JSON,
+                                              CustomJObjectParserDelegate<AdditionalSelectedService>?  CustomAdditionalServiceParser   = null)
         {
 
             if (TryParse(JSON,
                          out var additionalService,
                          out var errorResponse,
-                         CustomAdditionalServiceParser) &&
-                additionalService is not null)
+                         CustomAdditionalServiceParser))
             {
                 return additionalService;
             }
@@ -113,9 +141,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AdditionalService">The parsed additional service.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out AdditionalService?  AdditionalService,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out AdditionalSelectedService?  AdditionalService,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out AdditionalService,
@@ -131,9 +159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAdditionalServiceParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out AdditionalService?                           AdditionalService,
-                                       out String?                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<AdditionalService>?  CustomAdditionalServiceParser)
+                                       [NotNullWhen(true)]  out AdditionalSelectedService?      AdditionalService,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
+                                       CustomJObjectParserDelegate<AdditionalSelectedService>?  CustomAdditionalServiceParser)
         {
 
             try
@@ -143,11 +171,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Name    [mandatory]
 
-                if (!JSON.ParseMandatory("name",
-                                         "service name",
-                                         CommonTypes.Name.TryParse,
-                                         out Name Name,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryText("serviceName",
+                                             "service name",
+                                             out String? Name,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -156,10 +183,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Fee     [mandatory]
 
-                if (!JSON.ParseMandatory("fee",
-                                         "service fee",
-                                         out Decimal Fee,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("serviceFee",
+                                             "service fee",
+                                             RationalNumber.TryParse,
+                                             out RationalNumber? Fee,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -167,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
-                AdditionalService = new AdditionalService(
+                AdditionalService = new AdditionalSelectedService(
                                         Name,
                                         Fee
                                     );
@@ -196,14 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomAdditionalServiceSerializer">A delegate to serialize custom additional services.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AdditionalService>? CustomAdditionalServiceSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AdditionalSelectedService>? CustomAdditionalServiceSerializer = null)
         {
 
             var json = JSONObject.Create(
-
-                           new JProperty("name",  Name.ToString()),
-                           new JProperty("fee",   Fee)
-
+                           new JProperty("serviceName",  Name),
+                           new JProperty("serviceFee",   Fee.ToJSON())
                        );
 
             return CustomAdditionalServiceSerializer is not null
@@ -225,8 +251,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="AdditionalService1">An additional service.</param>
         /// <param name="AdditionalService2">Another additional service.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AdditionalService? AdditionalService1,
-                                           AdditionalService? AdditionalService2)
+        public static Boolean operator == (AdditionalSelectedService? AdditionalService1,
+                                           AdditionalSelectedService? AdditionalService2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -251,8 +277,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="AdditionalService1">An additional service.</param>
         /// <param name="AdditionalService2">Another additional service.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AdditionalService? AdditionalService1,
-                                           AdditionalService? AdditionalService2)
+        public static Boolean operator != (AdditionalSelectedService? AdditionalService1,
+                                           AdditionalSelectedService? AdditionalService2)
 
             => !(AdditionalService1 == AdditionalService2);
 
@@ -270,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="Object">An additional service to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is AdditionalService additionalService &&
+            => Object is AdditionalSelectedService additionalService &&
                    Equals(additionalService);
 
         #endregion
@@ -281,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Compares two additional services for equality.
         /// </summary>
         /// <param name="AdditionalService">An additional service to compare with.</param>
-        public Boolean Equals(AdditionalService? AdditionalService)
+        public Boolean Equals(AdditionalSelectedService? AdditionalService)
 
             => AdditionalService is not null &&
 
@@ -294,20 +320,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Name.GetHashCode() * 5 ^
-                       Fee. GetHashCode() * 3;
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

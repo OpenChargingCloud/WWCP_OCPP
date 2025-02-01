@@ -29,28 +29,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The abstract price schedule.
     /// </summary>
-    public abstract class PriceSchedule : IEquatable<PriceSchedule>
+    public abstract class APriceSchedule : IEquatable<APriceSchedule>
     {
 
         #region Properties
 
         /// <summary>
-        /// The time anchor of the price schedule.
-        /// </summary>
-        [Mandatory]
-        public DateTime          TimeAnchor         { get; }
-
-        /// <summary>
         /// The unique identification of the price schedule.
         /// </summary>
         [Mandatory]
-        public PriceSchedule_Id  PriceScheduleId    { get; }
+        public PriceSchedule_Id  Id             { get; }
+
+        /// <summary>
+        /// The time anchor of the price schedule.
+        /// </summary>
+        [Mandatory]
+        public DateTime          TimeAnchor     { get; }
 
         /// <summary>
         /// The description of the price schedule.
         /// </summary>
         [Optional]
-        public Description?      Description        { get; }
+        public String?           Description    { get; }
 
         #endregion
 
@@ -59,38 +59,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <summary>
         /// Create a new price schedule.
         /// </summary>
+        /// <param name="Id">An unique identification of the price schedule.</param>
         /// <param name="TimeAnchor">A time anchor of the price schedule.</param>
-        /// <param name="PriceScheduleId">An unique identification of the price schedule.</param>
         /// <param name="Description">An optional description of the price schedule.</param>
-        public PriceSchedule(DateTime          TimeAnchor,
-                             PriceSchedule_Id  PriceScheduleId,
-                             Description?      Description   = null)
+        public APriceSchedule(PriceSchedule_Id  Id,
+                              DateTime          TimeAnchor,
+                              String?           Description   = null)
         {
 
-            this.TimeAnchor       = TimeAnchor;
-            this.PriceScheduleId  = PriceScheduleId;
-            this.Description      = Description;
+            this.Id           = Id;
+            this.TimeAnchor   = TimeAnchor;
+            this.Description  = Description;
 
             unchecked
             {
 
-                hashCode = TimeAnchor.     GetHashCode()       * 7 ^
-                           PriceScheduleId.GetHashCode()       * 5 ^
-                          (Description?.   GetHashCode() ?? 0) * 3 ^
-
-                           base.GetHashCode();
+                hashCode = Id.          GetHashCode()       * 7 ^
+                           TimeAnchor.  GetHashCode()       * 5 ^
+                          (Description?.GetHashCode() ?? 0) * 3 ^
+                           base.        GetHashCode();
 
             }
 
         }
-
-        #endregion
-
-
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
-        #region Documentation
-
 
         #endregion
 
@@ -105,8 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="PriceSchedule1">A price schedule.</param>
         /// <param name="PriceSchedule2">Another price schedule.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (PriceSchedule? PriceSchedule1,
-                                           PriceSchedule? PriceSchedule2)
+        public static Boolean operator == (APriceSchedule? PriceSchedule1,
+                                           APriceSchedule? PriceSchedule2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -131,8 +122,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="PriceSchedule1">A price schedule.</param>
         /// <param name="PriceSchedule2">Another price schedule.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (PriceSchedule? PriceSchedule1,
-                                           PriceSchedule? PriceSchedule2)
+        public static Boolean operator != (APriceSchedule? PriceSchedule1,
+                                           APriceSchedule? PriceSchedule2)
 
             => !(PriceSchedule1 == PriceSchedule2);
 
@@ -150,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="Object">A price schedule to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is PriceSchedule priceSchedule &&
+            => Object is APriceSchedule priceSchedule &&
                    Equals(priceSchedule);
 
         #endregion
@@ -161,15 +152,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Compares two price schedules for equality.
         /// </summary>
         /// <param name="PriceSchedule">A price schedule to compare with.</param>
-        public Boolean Equals(PriceSchedule? PriceSchedule)
+        public Boolean Equals(APriceSchedule? PriceSchedule)
 
             => PriceSchedule is not null &&
 
                TimeAnchor.     Equals(PriceSchedule.TimeAnchor)      &&
-               PriceScheduleId.Equals(PriceSchedule.PriceScheduleId) &&
+               Id.Equals(PriceSchedule.Id) &&
 
-            ((!Description.HasValue && !PriceSchedule.Description.HasValue) ||
-              (Description.HasValue &&  PriceSchedule.Description.HasValue && Description.Value.Equals(PriceSchedule.Description.Value)));
+               String.Equals(Description, PriceSchedule.Description);
 
         #endregion
 
@@ -194,9 +184,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// </summary>
         public override String ToString()
 
-            => $"{PriceScheduleId} ({TimeAnchor}){(Description.HasValue
-                                                       ? ", description: " + Description.Value
-                                                       : "")}";
+            => String.Concat(
+
+                   $"{Id} ({TimeAnchor})",
+
+                   Description.IsNotNullOrEmpty()
+                       ? $", '{Description}'"
+                       : ""
+
+               );
 
         #endregion
 

@@ -143,63 +143,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:LogStatusNotificationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:LogStatusNotificationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "UploadLogStatusEnumType": {
+        //             "description": "This contains the status of the log upload.\r\n",
+        //             "javaType": "UploadLogStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "BadMessage",
+        //                 "Idle",
+        //                 "NotSupportedOperation",
+        //                 "PermissionDenied",
+        //                 "Uploaded",
+        //                 "UploadFailure",
+        //                 "Uploading",
+        //                 "AcceptedCanceled"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.\r\n",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "UploadLogStatusEnumType": {
-        //       "description": "This contains the status of the log upload.",
-        //       "javaType": "UploadLogStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "BadMessage",
-        //         "Idle",
-        //         "NotSupportedOperation",
-        //         "PermissionDenied",
-        //         "Uploaded",
-        //         "UploadFailure",
-        //         "Uploading",
-        //         "AcceptedCanceled"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/UploadLogStatusEnumType"
+        //         },
+        //         "requestId": {
+        //             "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/UploadLogStatusEnumType"
-        //     },
-        //     "requestId": {
-        //       "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomLogStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a log status notification request.
@@ -214,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom log status notification requests.</param>
         public static LogStatusNotificationRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         SourceRouting                                           Destination,
+                                                         SourceRouting                                               Destination,
                                                          NetworkPath                                                 NetworkPath,
                                                          DateTime?                                                   RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
@@ -260,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom log status notification requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       SourceRouting                                           Destination,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out LogStatusNotificationRequest?      LogStatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,

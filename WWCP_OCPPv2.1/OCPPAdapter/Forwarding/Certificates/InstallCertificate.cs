@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new InstallCertificateResponse(
                                        request,
-                                       CertificateStatus.Failed,
+                                       InstallCertificateStatus.Failed,
                                        Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 

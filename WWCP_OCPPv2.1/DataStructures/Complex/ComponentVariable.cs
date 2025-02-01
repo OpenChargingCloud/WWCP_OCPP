@@ -88,25 +88,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ComponentVariableType": {
-        //   "description": "Class to report components, variables and variable attributes and characteristics.",
-        //   "javaType": "ComponentVariable",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Class to report components, variables and variable attributes and characteristics.\r\n",
+        //     "javaType": "ComponentVariable",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "component": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "variable": {
+        //             "$ref": "#/definitions/VariableType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "component": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "variable": {
-        //       "$ref": "#/definitions/VariableType"
-        //     }
-        //   },
-        //   "required": [
-        //     "component"
-        //   ]
+        //     "required": [
+        //         "component"
+        //     ]
         // }
 
         #endregion
@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Component.ToString(),
 
                    Variable is not null
-                       ? " (" + Variable.ToString() + ")"
+                       ? $" / {Variable}"
                        : null
 
                );

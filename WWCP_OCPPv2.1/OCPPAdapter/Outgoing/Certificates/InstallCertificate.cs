@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new InstallCertificateResponse(
                                      Request,
-                                     CertificateStatus.Failed,
+                                     InstallCertificateStatus.Failed,
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 

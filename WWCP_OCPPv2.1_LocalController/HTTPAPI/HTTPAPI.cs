@@ -707,74 +707,74 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region OnGetCRL
 
-            LocalController.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                ct) =>
+            //LocalController.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
+            //                                                    sender,
+            //                                                    connection,
+            //                                                    request,
+            //                                                    ct) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCRLRequestReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection?.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON())
-                                     ));
-
-
-            LocalController.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             sentMessageResult,
-                                                             ct) =>
-
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLRequestSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection?.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON())
-                                     ));
+            //    EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCRLRequestReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",   timestamp. ToIso8601()),
+            //                             new JProperty("sender",      sender.Id),
+            //                             new JProperty("connection",  connection?.ToJSON()),
+            //                             new JProperty("request",     request.   ToJSON())
+            //                         ));
 
 
-            LocalController.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
-                                                                 sender,
-                                                                 connection,
-                                                                 request,
-                                                                 response,
-                                                                 runtime,
-                                                                 ct) =>
+            //LocalController.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
+            //                                                 sender,
+            //                                                 connection,
+            //                                                 request,
+            //                                                 sentMessageResult,
+            //                                                 ct) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCRLResponseReceived),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection?.ToJSON()),
-                                         new JProperty("request",     request?.  ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime?.  TotalMilliseconds)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLRequestSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",   timestamp. ToIso8601()),
+            //                             new JProperty("sender",      sender.Id),
+            //                             new JProperty("connection",  connection?.ToJSON()),
+            //                             new JProperty("request",     request.   ToJSON())
+            //                         ));
 
 
-            LocalController.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
-                                                              sender,
-                                                              connection,
-                                                              request,
-                                                              response,
-                                                              runtime,
-                                                              sentMessageResult,
-                                                              ct) =>
+            //LocalController.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
+            //                                                     sender,
+            //                                                     connection,
+            //                                                     request,
+            //                                                     response,
+            //                                                     runtime,
+            //                                                     ct) =>
 
-                EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLResponseSent),
-                                     JSONObject.Create(
-                                         new JProperty("timestamp",   timestamp. ToIso8601()),
-                                         new JProperty("sender",      sender.Id),
-                                         new JProperty("connection",  connection?.ToJSON()),
-                                         new JProperty("request",     request.   ToJSON()),
-                                         new JProperty("response",    response.  ToJSON()),
-                                         new JProperty("runtime",     runtime.   TotalMilliseconds)
-                                     ));
+            //    EventLog.SubmitEvent(nameof(LocalController.OCPP.IN.OnGetCRLResponseReceived),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",   timestamp. ToIso8601()),
+            //                             new JProperty("sender",      sender.Id),
+            //                             new JProperty("connection",  connection?.ToJSON()),
+            //                             new JProperty("request",     request?.  ToJSON()),
+            //                             new JProperty("response",    response.  ToJSON()),
+            //                             new JProperty("runtime",     runtime?.  TotalMilliseconds)
+            //                         ));
+
+
+            //LocalController.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
+            //                                                  sender,
+            //                                                  connection,
+            //                                                  request,
+            //                                                  response,
+            //                                                  runtime,
+            //                                                  sentMessageResult,
+            //                                                  ct) =>
+
+            //    EventLog.SubmitEvent(nameof(LocalController.OCPP.OUT.OnGetCRLResponseSent),
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",   timestamp. ToIso8601()),
+            //                             new JProperty("sender",      sender.Id),
+            //                             new JProperty("connection",  connection?.ToJSON()),
+            //                             new JProperty("request",     request.   ToJSON()),
+            //                             new JProperty("response",    response.  ToJSON()),
+            //                             new JProperty("runtime",     runtime.   TotalMilliseconds)
+            //                         ));
 
             #endregion
 

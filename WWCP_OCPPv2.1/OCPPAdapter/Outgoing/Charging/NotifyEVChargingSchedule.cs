@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             parentNetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
                             parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                            parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                             parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                             parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                             parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                                              parentNetworkingNode.OCPP.CustomNotifyEVChargingScheduleRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomChargingScheduleSerializer,
-                                                             parentNetworkingNode.OCPP.CustomLimitBeyondSoCSerializer,
+                                                             parentNetworkingNode.OCPP.CustomLimitAtSoCSerializer,
                                                              parentNetworkingNode.OCPP.CustomChargingSchedulePeriodSerializer,
                                                              parentNetworkingNode.OCPP.CustomV2XFreqWattEntrySerializer,
                                                              parentNetworkingNode.OCPP.CustomV2XSignalWattEntrySerializer,

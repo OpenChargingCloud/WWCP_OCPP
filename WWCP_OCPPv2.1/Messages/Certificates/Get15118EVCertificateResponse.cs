@@ -108,26 +108,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public Get15118EVCertificateResponse(CS.Get15118EVCertificateRequest  Request,
-                                             ISO15118EVCertificateStatus      Status,
-                                             EXIData                          EXIResponse,
-                                             UInt32?                          RemainingContracts    = null,
-                                             StatusInfo?                      StatusInfo            = null,
+        public Get15118EVCertificateResponse(Get15118EVCertificateRequest  Request,
+                                             ISO15118EVCertificateStatus   Status,
+                                             EXIData                       EXIResponse,
+                                             UInt32?                       RemainingContracts    = null,
+                                             StatusInfo?                   StatusInfo            = null,
 
-                                             Result?                          Result                = null,
-                                             DateTime?                        ResponseTimestamp     = null,
+                                             Result?                       Result                = null,
+                                             DateTime?                     ResponseTimestamp     = null,
 
-                                             SourceRouting?                   Destination           = null,
-                                             NetworkPath?                     NetworkPath           = null,
+                                             SourceRouting?                Destination           = null,
+                                             NetworkPath?                  NetworkPath           = null,
 
-                                             IEnumerable<KeyPair>?            SignKeys              = null,
-                                             IEnumerable<SignInfo>?           SignInfos             = null,
-                                             IEnumerable<Signature>?          Signatures            = null,
+                                             IEnumerable<KeyPair>?         SignKeys              = null,
+                                             IEnumerable<SignInfo>?        SignInfos             = null,
+                                             IEnumerable<Signature>?       Signatures            = null,
 
-                                             CustomData?                      CustomData            = null,
+                                             CustomData?                   CustomData            = null,
 
-                                             SerializationFormats?            SerializationFormat   = null,
-                                             CancellationToken                CancellationToken     = default)
+                                             SerializationFormats?         SerializationFormat   = null,
+                                             CancellationToken             CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -168,91 +168,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:Get15118EVCertificateResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:Get15118EVCertificateResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "Iso15118EVCertificateStatusEnumType": {
+        //             "description": "Indicates whether the message was processed properly.",
+        //             "javaType": "Iso15118EVCertificateStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Failed"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "Iso15118EVCertificateStatusEnumType": {
-        //       "description": "Indicates whether the message was processed properly.",
-        //       "javaType": "Iso15118EVCertificateStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Failed"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/Iso15118EVCertificateStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "exiResponse": {
+        //             "description": "*(2/1)* Raw CertificateInstallationRes response for the EV, Base64 encoded. +\r\nExtended to support ISO 15118-20 certificates. The minimum supported length is 17000. If a longer _exiResponse_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"Get15118EVCertificateResponse.exiResponse\" ].",
+        //             "type": "string",
+        //             "maxLength": 17000
+        //         },
+        //         "remainingContracts": {
+        //             "description": "*(2.1)* Number of contracts that can be retrieved with additional requests.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/Iso15118EVCertificateStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     },
-        //     "exiResponse": {
-        //       "description": "Raw CertificateInstallationRes response for the EV, Base64 encoded.",
-        //       "type": "string",
-        //       "maxLength": 5600
-        //     }
-        //   },
-        //   "required": [
-        //     "status",
-        //     "exiResponse"
-        //   ]
+        //     "required": [
+        //         "status",
+        //         "exiResponse"
+        //     ]
         // }
-
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGet15118EVCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a Get15118EVCertificate response.
@@ -262,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom Get15118EVCertificate responses.</param>
         public static Get15118EVCertificateResponse Parse(CS.Get15118EVCertificateRequest                              Request,
                                                           JObject                                                      JSON,
-                                                          SourceRouting                                            Destination,
+                                                          SourceRouting                                                Destination,
                                                           NetworkPath                                                  NetworkPath,
                                                           DateTime?                                                    ResponseTimestamp                           = null,
                                                           CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null,
@@ -293,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out Get15118EVCertificateResponse, out ErrorResponse, CustomGet15118EVCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out Get15118EVCertificateResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a Get15118EVCertificate response.
@@ -305,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom Get15118EVCertificate responses.</param>
         public static Boolean TryParse(CS.Get15118EVCertificateRequest                              Request,
                                        JObject                                                      JSON,
-                                       SourceRouting                                            Destination,
+                                       SourceRouting                                                Destination,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out Get15118EVCertificateResponse?      Get15118EVCertificateResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
@@ -503,21 +505,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The Get15118EVCertificate failed because of a request error.
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
-        public static Get15118EVCertificateResponse RequestError(CS.Get15118EVCertificateRequest  Request,
-                                                                 EventTracking_Id                 EventTrackingId,
-                                                                 ResultCode                       ErrorCode,
-                                                                 String?                          ErrorDescription    = null,
-                                                                 JObject?                         ErrorDetails        = null,
-                                                                 DateTime?                        ResponseTimestamp   = null,
+        public static Get15118EVCertificateResponse RequestError(Get15118EVCertificateRequest  Request,
+                                                                 EventTracking_Id              EventTrackingId,
+                                                                 ResultCode                    ErrorCode,
+                                                                 String?                       ErrorDescription    = null,
+                                                                 JObject?                      ErrorDetails        = null,
+                                                                 DateTime?                     ResponseTimestamp   = null,
 
-                                                                 SourceRouting?                   Destination         = null,
-                                                                 NetworkPath?                     NetworkPath         = null,
+                                                                 SourceRouting?                Destination         = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
 
-                                                                 IEnumerable<KeyPair>?            SignKeys            = null,
-                                                                 IEnumerable<SignInfo>?           SignInfos           = null,
-                                                                 IEnumerable<Signature>?          Signatures          = null,
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<Signature>?       Signatures          = null,
 
-                                                                 CustomData?                      CustomData          = null)
+                                                                 CustomData?                   CustomData          = null)
 
             => new (
 
@@ -526,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    EXIData.Empty,
                    null,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -550,13 +552,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static Get15118EVCertificateResponse FormationViolation(CS.Get15118EVCertificateRequest  Request,
-                                                                       String                           ErrorDescription)
+        public static Get15118EVCertificateResponse FormationViolation(Get15118EVCertificateRequest  Request,
+                                                                       String                        ErrorDescription)
 
             => new (Request,
                     ISO15118EVCertificateStatus.Failed,
                     EXIData.Empty,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -566,13 +568,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
-        public static Get15118EVCertificateResponse SignatureError(CS.Get15118EVCertificateRequest  Request,
-                                                                   String                           ErrorDescription)
+        public static Get15118EVCertificateResponse SignatureError(Get15118EVCertificateRequest  Request,
+                                                                   String                        ErrorDescription)
 
             => new (Request,
                     ISO15118EVCertificateStatus.Failed,
                     EXIData.Empty,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -582,13 +584,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
         /// <param name="Description">An optional error description.</param>
-        public static Get15118EVCertificateResponse Failed(CS.Get15118EVCertificateRequest  Request,
-                                                           String?                          Description   = null)
+        public static Get15118EVCertificateResponse Failed(Get15118EVCertificateRequest  Request,
+                                                           String?                       Description   = null)
 
             => new (Request,
                     ISO15118EVCertificateStatus.Failed,
                     EXIData.Empty,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -596,13 +598,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static Get15118EVCertificateResponse ExceptionOccured(CS.Get15118EVCertificateRequest  Request,
-                                                                     Exception                        Exception)
+        public static Get15118EVCertificateResponse ExceptionOccured(Get15118EVCertificateRequest  Request,
+                                                                     Exception                     Exception)
 
             => new (Request,
                     ISO15118EVCertificateStatus.Failed,
                     EXIData.Empty,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

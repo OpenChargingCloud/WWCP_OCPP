@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/StatusInfoType"
         //         },
         //         "tariffId": {
-        //             "description": "Id of tariff for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.\r\n",
+        //             "description": "Id of tariff for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.",
         //             "type": "string",
         //             "maxLength": 60
         //         },

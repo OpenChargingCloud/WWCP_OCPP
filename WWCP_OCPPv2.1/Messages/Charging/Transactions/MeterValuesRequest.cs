@@ -145,260 +145,290 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:MeterValuesRequest",
-        //   "description": "Request_ Body\r\nurn:x-enexis:ecdm:uid:2:234744",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:MeterValuesRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "LocationEnumType": {
+        //             "description": "Indicates where the measured value has been sampled. Default =  \"Outlet\"\r\n\r\n",
+        //             "javaType": "LocationEnum",
+        //             "type": "string",
+        //             "default": "Outlet",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Body",
+        //                 "Cable",
+        //                 "EV",
+        //                 "Inlet",
+        //                 "Outlet",
+        //                 "Upstream"
+        //             ]
+        //         },
+        //         "MeasurandEnumType": {
+        //             "description": "Type of measurement. Default = \"Energy.Active.Import.Register\"\r\n",
+        //             "javaType": "MeasurandEnum",
+        //             "type": "string",
+        //             "default": "Energy.Active.Import.Register",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Current.Export",
+        //                 "Current.Export.Offered",
+        //                 "Current.Export.Minimum",
+        //                 "Current.Import",
+        //                 "Current.Import.Offered",
+        //                 "Current.Import.Minimum",
+        //                 "Current.Offered",
+        //                 "Display.PresentSOC",
+        //                 "Display.MinimumSOC",
+        //                 "Display.TargetSOC",
+        //                 "Display.MaximumSOC",
+        //                 "Display.RemainingTimeToMinimumSOC",
+        //                 "Display.RemainingTimeToTargetSOC",
+        //                 "Display.RemainingTimeToMaximumSOC",
+        //                 "Display.ChargingComplete",
+        //                 "Display.BatteryEnergyCapacity",
+        //                 "Display.InletHot",
+        //                 "Energy.Active.Export.Interval",
+        //                 "Energy.Active.Export.Register",
+        //                 "Energy.Active.Import.Interval",
+        //                 "Energy.Active.Import.Register",
+        //                 "Energy.Active.Import.CableLoss",
+        //                 "Energy.Active.Import.LocalGeneration.Register",
+        //                 "Energy.Active.Net",
+        //                 "Energy.Active.Setpoint.Interval",
+        //                 "Energy.Apparent.Export",
+        //                 "Energy.Apparent.Import",
+        //                 "Energy.Apparent.Net",
+        //                 "Energy.Reactive.Export.Interval",
+        //                 "Energy.Reactive.Export.Register",
+        //                 "Energy.Reactive.Import.Interval",
+        //                 "Energy.Reactive.Import.Register",
+        //                 "Energy.Reactive.Net",
+        //                 "EnergyRequest.Target",
+        //                 "EnergyRequest.Minimum",
+        //                 "EnergyRequest.Maximum",
+        //                 "EnergyRequest.Minimum.V2X",
+        //                 "EnergyRequest.Maximum.V2X",
+        //                 "EnergyRequest.Bulk",
+        //                 "Frequency",
+        //                 "Power.Active.Export",
+        //                 "Power.Active.Import",
+        //                 "Power.Active.Setpoint",
+        //                 "Power.Active.Residual",
+        //                 "Power.Export.Minimum",
+        //                 "Power.Export.Offered",
+        //                 "Power.Factor",
+        //                 "Power.Import.Offered",
+        //                 "Power.Import.Minimum",
+        //                 "Power.Offered",
+        //                 "Power.Reactive.Export",
+        //                 "Power.Reactive.Import",
+        //                 "SoC",
+        //                 "Voltage",
+        //                 "Voltage.Minimum",
+        //                 "Voltage.Maximum"
+        //             ]
+        //         },
+        //         "PhaseEnumType": {
+        //             "description": "Indicates how the measured value is to be interpreted. For instance between L1 and neutral (L1-N) Please note that not all values of phase are applicable to all Measurands. When phase is absent, the measured value is interpreted as an overall value.\r\n",
+        //             "javaType": "PhaseEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "L1",
+        //                 "L2",
+        //                 "L3",
+        //                 "N",
+        //                 "L1-N",
+        //                 "L2-N",
+        //                 "L3-N",
+        //                 "L1-L2",
+        //                 "L2-L3",
+        //                 "L3-L1"
+        //             ]
+        //         },
+        //         "ReadingContextEnumType": {
+        //             "description": "Type of detail value: start, end or sample. Default = \"Sample.Periodic\"\r\n",
+        //             "javaType": "ReadingContextEnum",
+        //             "type": "string",
+        //             "default": "Sample.Periodic",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Interruption.Begin",
+        //                 "Interruption.End",
+        //                 "Other",
+        //                 "Sample.Clock",
+        //                 "Sample.Periodic",
+        //                 "Transaction.Begin",
+        //                 "Transaction.End",
+        //                 "Trigger"
+        //             ]
+        //         },
+        //         "MeterValueType": {
+        //             "description": "Collection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.\r\n",
+        //             "javaType": "MeterValue",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "sampledValue": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/SampledValueType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "timestamp": {
+        //                     "description": "Timestamp for measured value(s).\r\n",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "timestamp",
+        //                 "sampledValue"
+        //             ]
+        //         },
+        //         "SampledValueType": {
+        //             "description": "Single sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.\r\n",
+        //             "javaType": "SampledValue",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "value": {
+        //                     "description": "Indicates the measured value.\r\n\r\n",
+        //                     "type": "number"
+        //                 },
+        //                 "measurand": {
+        //                     "$ref": "#/definitions/MeasurandEnumType"
+        //                 },
+        //                 "context": {
+        //                     "$ref": "#/definitions/ReadingContextEnumType"
+        //                 },
+        //                 "phase": {
+        //                     "$ref": "#/definitions/PhaseEnumType"
+        //                 },
+        //                 "location": {
+        //                     "$ref": "#/definitions/LocationEnumType"
+        //                 },
+        //                 "signedMeterValue": {
+        //                     "$ref": "#/definitions/SignedMeterValueType"
+        //                 },
+        //                 "unitOfMeasure": {
+        //                     "$ref": "#/definitions/UnitOfMeasureType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "value"
+        //             ]
+        //         },
+        //         "SignedMeterValueType": {
+        //             "description": "Represent a signed version of the meter value.\r\n",
+        //             "javaType": "SignedMeterValue",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "signedMeterData": {
+        //                     "description": "Base64 encoded, contains the signed data from the meter in the format specified in _encodingMethod_, which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 32768
+        //                 },
+        //                 "signingMethod": {
+        //                     "description": "*(2.1)* Method used to create the digital signature. Optional, if already included in _signedMeterData_. Standard values for this are defined in Appendix as SigningMethodEnumStringType.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "encodingMethod": {
+        //                     "description": "Format used by the energy meter to encode the meter data. For example: OCMF or EDL.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "publicKey": {
+        //                     "description": "*(2.1)* Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.\r\n",
+        //                     "type": "string",
+        //                     "maxLength": 2500
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "signedMeterData",
+        //                 "encodingMethod"
+        //             ]
+        //         },
+        //         "UnitOfMeasureType": {
+        //             "description": "Represents a UnitOfMeasure with a multiplier\r\n",
+        //             "javaType": "UnitOfMeasure",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "unit": {
+        //                     "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.\r\n",
+        //                     "type": "string",
+        //                     "default": "Wh",
+        //                     "maxLength": 20
+        //                 },
+        //                 "multiplier": {
+        //                     "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0. +\r\nThe _multiplier_ only multiplies the value of the measurand. It does not specify a conversion between units, for example, kW and W.\r\n",
+        //                     "type": "integer",
+        //                     "default": 0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "LocationEnumType": {
-        //       "description": "Sampled_ Value. Location. Location_ Code\r\nurn:x-oca:ocpp:uid:1:569265\r\nIndicates where the measured value has been sampled. Default =  \"Outlet\"",
-        //       "javaType": "LocationEnum",
-        //       "type": "string",
-        //       "default": "Outlet",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Body",
-        //         "Cable",
-        //         "EV",
-        //         "Inlet",
-        //         "Outlet"
-        //       ]
-        //     },
-        //     "MeasurandEnumType": {
-        //       "description": "Sampled_ Value. Measurand. Measurand_ Code\r\nurn:x-oca:ocpp:uid:1:569263\r\nType of measurement. Default = \"Energy.Active.Import.Register\"",
-        //       "javaType": "MeasurandEnum",
-        //       "type": "string",
-        //       "default": "Energy.Active.Import.Register",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Current.Export",
-        //         "Current.Import",
-        //         "Current.Offered",
-        //         "Energy.Active.Export.Register",
-        //         "Energy.Active.Import.Register",
-        //         "Energy.Reactive.Export.Register",
-        //         "Energy.Reactive.Import.Register",
-        //         "Energy.Active.Export.Interval",
-        //         "Energy.Active.Import.Interval",
-        //         "Energy.Active.Net",
-        //         "Energy.Reactive.Export.Interval",
-        //         "Energy.Reactive.Import.Interval",
-        //         "Energy.Reactive.Net",
-        //         "Energy.Apparent.Net",
-        //         "Energy.Apparent.Import",
-        //         "Energy.Apparent.Export",
-        //         "Frequency",
-        //         "Power.Active.Export",
-        //         "Power.Active.Import",
-        //         "Power.Factor",
-        //         "Power.Offered",
-        //         "Power.Reactive.Export",
-        //         "Power.Reactive.Import",
-        //         "SoC",
-        //         "Voltage"
-        //       ]
-        //     },
-        //     "PhaseEnumType": {
-        //       "description": "Sampled_ Value. Phase. Phase_ Code\r\nurn:x-oca:ocpp:uid:1:569264\r\nIndicates how the measured value is to be interpreted. For instance between L1 and neutral (L1-N) Please note that not all values of phase are applicable to all Measurands. When phase is absent, the measured value is interpreted as an overall value.",
-        //       "javaType": "PhaseEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "L1",
-        //         "L2",
-        //         "L3",
-        //         "N",
-        //         "L1-N",
-        //         "L2-N",
-        //         "L3-N",
-        //         "L1-L2",
-        //         "L2-L3",
-        //         "L3-L1"
-        //       ]
-        //     },
-        //     "ReadingContextEnumType": {
-        //       "description": "Sampled_ Value. Context. Reading_ Context_ Code\r\nurn:x-oca:ocpp:uid:1:569261\r\nType of detail value: start, end or sample. Default = \"Sample.Periodic\"",
-        //       "javaType": "ReadingContextEnum",
-        //       "type": "string",
-        //       "default": "Sample.Periodic",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Interruption.Begin",
-        //         "Interruption.End",
-        //         "Other",
-        //         "Sample.Clock",
-        //         "Sample.Periodic",
-        //         "Transaction.Begin",
-        //         "Transaction.End",
-        //         "Trigger"
-        //       ]
-        //     },
-        //     "MeterValueType": {
-        //       "description": "Meter_ Value\r\nurn:x-oca:ocpp:uid:2:233265\r\nCollection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.",
-        //       "javaType": "MeterValue",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evseId": {
+        //             "description": "This contains a number (&gt;0) designating an EVSE of the Charging Station. \u20180\u2019 (zero) is used to designate the main power meter.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "meterValue": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/MeterValueType"
+        //             },
+        //             "minItems": 1
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "sampledValue": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/SampledValueType"
-        //           },
-        //           "minItems": 1
-        //         },
-        //         "timestamp": {
-        //           "description": "Meter_ Value. Timestamp. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569259\r\nTimestamp for measured value(s).",
-        //           "type": "string",
-        //           "format": "date-time"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "timestamp",
-        //         "sampledValue"
-        //       ]
         //     },
-        //     "SampledValueType": {
-        //       "description": "Sampled_ Value\r\nurn:x-oca:ocpp:uid:2:233266\r\nSingle sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.",
-        //       "javaType": "SampledValue",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "value": {
-        //           "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.",
-        //           "type": "number"
-        //         },
-        //         "context": {
-        //           "$ref": "#/definitions/ReadingContextEnumType"
-        //         },
-        //         "measurand": {
-        //           "$ref": "#/definitions/MeasurandEnumType"
-        //         },
-        //         "phase": {
-        //           "$ref": "#/definitions/PhaseEnumType"
-        //         },
-        //         "location": {
-        //           "$ref": "#/definitions/LocationEnumType"
-        //         },
-        //         "signedMeterValue": {
-        //           "$ref": "#/definitions/SignedMeterValueType"
-        //         },
-        //         "unitOfMeasure": {
-        //           "$ref": "#/definitions/UnitOfMeasureType"
-        //         }
-        //       },
-        //       "required": [
-        //         "value"
-        //       ]
-        //     },
-        //     "SignedMeterValueType": {
-        //       "description": "Represent a signed version of the meter value.",
-        //       "javaType": "SignedMeterValue",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "signedMeterData": {
-        //           "description": "Base64 encoded, contains the signed data which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.",
-        //           "type": "string",
-        //           "maxLength": 2500
-        //         },
-        //         "signingMethod": {
-        //           "description": "Method used to create the digital signature.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "encodingMethod": {
-        //           "description": "Method used to encode the meter values before applying the digital signature algorithm.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "publicKey": {
-        //           "description": "Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.",
-        //           "type": "string",
-        //           "maxLength": 2500
-        //         }
-        //       },
-        //       "required": [
-        //         "signedMeterData",
-        //         "signingMethod",
-        //         "encodingMethod",
-        //         "publicKey"
-        //       ]
-        //     },
-        //     "UnitOfMeasureType": {
-        //       "description": "Represents a UnitOfMeasure with a multiplier",
-        //       "javaType": "UnitOfMeasure",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "unit": {
-        //           "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.",
-        //           "type": "string",
-        //           "default": "Wh",
-        //           "maxLength": 20
-        //         },
-        //         "multiplier": {
-        //           "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0.",
-        //           "type": "integer",
-        //           "default": 0
-        //         }
-        //       }
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "evseId": {
-        //       "description": "Request_ Body. EVSEID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:571101\r\nThis contains a number (&gt;0) designating an EVSE of the Charging Station. ‘0’ (zero) is used to designate the main power meter.",
-        //       "type": "integer"
-        //     },
-        //     "meterValue": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/MeterValueType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "evseId",
-        //     "meterValue"
-        //   ]
+        //     "required": [
+        //         "evseId",
+        //         "meterValue"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomMeterValuesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a meter values request.
@@ -413,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
         public static MeterValuesRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               SourceRouting                                 Destination,
+                                               SourceRouting                                     Destination,
                                                NetworkPath                                       NetworkPath,
                                                DateTime?                                         RequestTimestamp                 = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
@@ -442,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out MeterValuesRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a meter values request.
@@ -459,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom BootNotification requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       SourceRouting                                 Destination,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out MeterValuesRequest?      MeterValuesRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,

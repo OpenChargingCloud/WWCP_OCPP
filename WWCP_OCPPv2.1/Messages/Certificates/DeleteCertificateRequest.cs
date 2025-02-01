@@ -137,88 +137,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:DeleteCertificateRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:DeleteCertificateRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "HashAlgorithmEnumType": {
+        //             "description": "Used algorithms for the hashes provided.",
+        //             "javaType": "HashAlgorithmEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SHA256",
+        //                 "SHA384",
+        //                 "SHA512"
+        //             ]
+        //         },
+        //         "CertificateHashDataType": {
+        //             "javaType": "CertificateHashData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "hashAlgorithm": {
+        //                     "$ref": "#/definitions/HashAlgorithmEnumType"
+        //                 },
+        //                 "issuerNameHash": {
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "issuerKeyHash": {
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "serialNumber": {
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //                     "type": "string",
+        //                     "maxLength": 40
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "hashAlgorithm",
+        //                 "issuerNameHash",
+        //                 "issuerKeyHash",
+        //                 "serialNumber"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "HashAlgorithmEnumType": {
-        //       "description": "Used algorithms for the hashes provided.",
-        //       "javaType": "HashAlgorithmEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "SHA256",
-        //         "SHA384",
-        //         "SHA512"
-        //       ]
-        //     },
-        //     "CertificateHashDataType": {
-        //       "javaType": "CertificateHashData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "certificateHashData": {
+        //             "$ref": "#/definitions/CertificateHashDataType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "hashAlgorithm": {
-        //           "$ref": "#/definitions/HashAlgorithmEnumType"
-        //         },
-        //         "issuerNameHash": {
-        //           "description": "Hashed value of the Issuer DN (Distinguished Name).",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "issuerKeyHash": {
-        //           "description": "Hashed value of the issuers public key",
-        //           "type": "string",
-        //           "maxLength": 128
-        //         },
-        //         "serialNumber": {
-        //           "description": "The serial number of the certificate.",
-        //           "type": "string",
-        //           "maxLength": 40
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "hashAlgorithm",
-        //         "issuerNameHash",
-        //         "issuerKeyHash",
-        //         "serialNumber"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "certificateHashData": {
-        //       "$ref": "#/definitions/CertificateHashDataType"
-        //     }
-        //   },
-        //   "required": [
-        //     "certificateHashData"
-        //   ]
+        //     "required": [
+        //         "certificateHashData"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomDeleteCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a DeleteCertificate request.
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DeleteCertificateRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out DeleteCertificateRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteCertificate request.

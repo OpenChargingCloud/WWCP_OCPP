@@ -17,9 +17,12 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
@@ -31,73 +34,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The absolute price schedule.
     /// </summary>
-    public class AbsolutePriceSchedule : PriceSchedule,
+    public class AbsolutePriceSchedule : APriceSchedule,
                                          IEquatable<AbsolutePriceSchedule>
     {
 
         #region Properties
 
         /// <summary>
-        /// The unique identification of the absolute price schedule.
-        /// </summary>
-        [Mandatory]
-        public AbsolutePriceSchedule_Id                    Id                            { get; }
-
-        /// <summary>
         /// The currency used.
         /// </summary>
         [Mandatory]
-        public org.GraphDefined.Vanaheimr.Illias.Currency  Currency                      { get; }
+        public Currency                                Currency                      { get; }
 
         /// <summary>
         /// The language spoken.
         /// </summary>
         [Mandatory]
-        public String                                      Language                      { get; }
+        public Language_Id                             Language                      { get; }
 
         /// <summary>
         /// The unique identification of the price algorithm.
         /// </summary>
         [Mandatory]
-        public PriceAlgorithm_Id                           PriceAlgorithmId              { get; }
+        public PriceAlgorithm_Id                       PriceAlgorithmId              { get; }
 
         /// <summary>
         /// The optional minimum cost.
         /// </summary>
         [Optional]
-        public Decimal?                                    MinimumCost                   { get; }
+        public RationalNumber?                         MinimumCost                   { get; }
 
         /// <summary>
         /// The optional maximum cost.
         /// </summary>
         [Optional]
-        public Decimal?                                    MaximumCost                   { get; }
+        public RationalNumber?                         MaximumCost                   { get; }
 
         /// <summary>
         /// The optional enumeration of tax rules.
         /// [max 10]
         /// </summary>
         [Optional]
-        public IEnumerable<TaxRule>                        TaxRules                      { get; }
+        public IEnumerable<TaxRule>                    TaxRules                      { get; }
 
         /// <summary>
         /// The enumeration of price rule stacks.
         /// [max 1024]
         /// </summary>
         [Mandatory]
-        public IEnumerable<PriceRuleStack>                 PriceRuleStacks               { get; }
+        public IEnumerable<PriceRuleStack>             PriceRuleStacks               { get; }
 
         /// <summary>
         /// The optional overstay rules list.
         /// </summary>
         [Optional]
-        public OverstayRuleList?                           OverstayRules                 { get; }
+        public OverstayRuleList?                       OverstayRules                 { get; }
 
         /// <summary>
         /// The optional enumeration of additional selected services.
         /// </summary>
         [Optional]
-        public IEnumerable<AdditionalService>              AdditionalSelectedServices    { get; }
+        public IEnumerable<AdditionalSelectedService>  AdditionalSelectedServices    { get; }
 
         #endregion
 
@@ -108,7 +105,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// </summary>
         /// <param name="Id">An unique identification of the absolute price schedule.</param>
         /// <param name="TimeAnchor">A time anchor of the price schedule.</param>
-        /// <param name="PriceScheduleId">An unique identification of the price schedule.</param>
         /// <param name="Currency">The currency used.</param>
         /// <param name="Language">The language spoken.</param>
         /// <param name="PriceAlgorithmId">An unique identification of the price algorithm.</param>
@@ -120,28 +116,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="TaxRules">An optional enumeration of tax rules [max 10].</param>
         /// <param name="OverstayRules">An optional overstay rules list.</param>
         /// <param name="AdditionalSelectedServices">An optional enumeration of additional selected services.</param>
-        public AbsolutePriceSchedule(AbsolutePriceSchedule_Id                    Id,
-                                     DateTime                                    TimeAnchor,
-                                     PriceSchedule_Id                            PriceScheduleId,
-                                     org.GraphDefined.Vanaheimr.Illias.Currency  Currency,
-                                     String                                      Language,
-                                     PriceAlgorithm_Id                           PriceAlgorithmId,
-                                     IEnumerable<PriceRuleStack>                 PriceRuleStacks,
+        public AbsolutePriceSchedule(PriceSchedule_Id                         Id,
+                                     DateTime                                 TimeAnchor,
+                                     Currency                                 Currency,
+                                     Language_Id                              Language,
+                                     PriceAlgorithm_Id                        PriceAlgorithmId,
+                                     IEnumerable<PriceRuleStack>              PriceRuleStacks,
 
-                                     Description?                                Description                  = null,
-                                     Decimal?                                    MinimumCost                  = null,
-                                     Decimal?                                    MaximumCost                  = null,
-                                     IEnumerable<TaxRule>?                       TaxRules                     = null,
-                                     OverstayRuleList?                           OverstayRules                = null,
-                                     IEnumerable<AdditionalService>?             AdditionalSelectedServices   = null)
+                                     String?                                  Description                  = null,
+                                     RationalNumber?                          MinimumCost                  = null,
+                                     RationalNumber?                          MaximumCost                  = null,
+                                     IEnumerable<TaxRule>?                    TaxRules                     = null,
+                                     OverstayRuleList?                        OverstayRules                = null,
+                                     IEnumerable<AdditionalSelectedService>?  AdditionalSelectedServices   = null)
 
-            : base(TimeAnchor,
-                   PriceScheduleId,
+            : base(Id,
+                   TimeAnchor,
                    Description)
 
         {
 
-            this.Id                          = Id;
             this.Currency                    = Currency;
             this.Language                    = Language;
             this.PriceAlgorithmId            = PriceAlgorithmId;
@@ -149,9 +143,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             this.MinimumCost                 = MinimumCost;
             this.MaximumCost                 = MaximumCost;
-            this.TaxRules                    = TaxRules?.                  Distinct() ?? Array.Empty<TaxRule>();
+            this.TaxRules                    = TaxRules?.                  Distinct() ?? [];
             this.OverstayRules               = OverstayRules;
-            this.AdditionalSelectedServices  = AdditionalSelectedServices?.Distinct() ?? Array.Empty<AdditionalService>();
+            this.AdditionalSelectedServices  = AdditionalSelectedServices?.Distinct() ?? [];
 
             unchecked
             {
@@ -161,13 +155,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                            this.Language.                  GetHashCode()        * 23 ^
                            this.PriceAlgorithmId.          GetHashCode()        * 19 ^
                            this.PriceRuleStacks.           CalcHashCode()       * 17 ^
-
                           (this.MinimumCost?.              GetHashCode()  ?? 0) * 13 ^
                           (this.MaximumCost?.              GetHashCode()  ?? 0) * 11 ^
                            this.TaxRules.                  CalcHashCode()       *  7 ^
                           (this.OverstayRules?.            GetHashCode()  ?? 0) *  5 ^
                            this.AdditionalSelectedServices.CalcHashCode()       *  3 ^
-
                            base.                           GetHashCode();
 
             }
@@ -177,10 +169,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "The AbsolutePriceScheduleType is modeled after the same type that is defined in ISO 15118-20,
+        //                     such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON
+        //                     (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not
+        //                     invalidate the signature.
+        //
+        //                     image::images/AbsolutePriceSchedule-Simple.png[]",
+        //
+        //     "javaType": "AbsolutePriceSchedule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "timeAnchor": {
+        //             "description": "Starting point of price schedule.\r\n",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "priceScheduleID": {
+        //             "description": "Unique ID of price schedule\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "priceScheduleDescription": {
+        //             "description": "Description of the price schedule.\r\n",
+        //             "type": "string",
+        //             "maxLength": 160
+        //         },
+        //         "currency": {
+        //             "description": "Currency according to ISO 4217.\r\n",
+        //             "type": "string",
+        //             "maxLength": 3
+        //         },
+        //         "language": {
+        //             "description": "String that indicates what language is used for the human readable strings in the price schedule. Based on ISO 639.\r\n",
+        //             "type": "string",
+        //             "maxLength": 8
+        //         },
+        //         "priceAlgorithm": {
+        //             "description": "A string in URN notation which shall uniquely identify an algorithm that defines how to compute an energy fee sum for a specific power profile based on the EnergyFee information from the PriceRule elements.\r\n",
+        //             "type": "string",
+        //             "maxLength": 2000
+        //         },
+        //         "minimumCost": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "maximumCost": {
+        //             "$ref": "#/definitions/RationalNumberType"
+        //         },
+        //         "priceRuleStacks": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/PriceRuleStackType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 1024
+        //         },
+        //         "taxRules": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/TaxRuleType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 10
+        //         },
+        //         "overstayRuleList": {
+        //             "$ref": "#/definitions/OverstayRuleListType"
+        //         },
+        //         "additionalSelectedServices": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/AdditionalSelectedServicesType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 5
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "timeAnchor",
+        //         "priceScheduleID",
+        //         "currency",
+        //         "language",
+        //         "priceAlgorithm",
+        //         "priceRuleStacks"
+        //     ]
+        // }
 
         #endregion
 
@@ -198,8 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var absolutePriceSchedule,
                          out var errorResponse,
-                         CustomAbsolutePriceScheduleParser) &&
-                absolutePriceSchedule is not null)
+                         CustomAbsolutePriceScheduleParser))
             {
                 return absolutePriceSchedule;
             }
@@ -221,9 +301,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AbsolutePriceSchedule">The parsed absolute price schedule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       out AbsolutePriceSchedule?  AbsolutePriceSchedule,
-                                       out String?                 ErrorResponse)
+        public static Boolean TryParse(JObject                                          JSON,
+                                       [NotNullWhen(true)]  out AbsolutePriceSchedule?  AbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         out AbsolutePriceSchedule,
@@ -239,8 +319,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAbsolutePriceScheduleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                              JSON,
-                                       out AbsolutePriceSchedule?                           AbsolutePriceSchedule,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out AbsolutePriceSchedule?      AbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<AbsolutePriceSchedule>?  CustomAbsolutePriceScheduleParser)
         {
 
@@ -251,10 +331,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Id                             [mandatory]
 
-                if (!JSON.ParseMandatory("id",
-                                         "absolute price schedule identification",
-                                         AbsolutePriceSchedule_Id.TryParse,
-                                         out AbsolutePriceSchedule_Id Id,
+                if (!JSON.ParseMandatory("priceScheduleID",
+                                         "price schedule identification",
+                                         PriceSchedule_Id.TryParse,
+                                         out PriceSchedule_Id Id,
                                          out ErrorResponse))
                 {
                     return false;
@@ -274,25 +354,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #endregion
 
-                #region PriceScheduleId                [mandatory]
-
-                if (!JSON.ParseMandatory("priceScheduleId",
-                                         "price schedule identification",
-                                         PriceSchedule_Id.TryParse,
-                                         out PriceSchedule_Id PriceScheduleId,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
                 #region Currency                       [mandatory]
 
                 if (!JSON.ParseMandatory("currency",
                                          "currency",
                                          org.GraphDefined.Vanaheimr.Illias.Currency.TryParse,
-                                         out org.GraphDefined.Vanaheimr.Illias.Currency Currency,
+                                         out Currency Currency,
                                          out ErrorResponse))
                 {
                     return false;
@@ -302,22 +369,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Language                       [mandatory]
 
-                if (!JSON.ParseMandatoryText("language",
-                                             "language",
-                                             out String Language,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("language",
+                                         "language",
+                                         Language_Id.TryParse,
+                                         out Language_Id Language,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region PriceAlgorithmId               [mandatory]
+                #region PriceAlgorithm                 [mandatory]
 
-                if (!JSON.ParseMandatory("priceAlgorithmId",
+                if (!JSON.ParseMandatory("priceAlgorithm",
                                          "price algorithm identification",
                                          PriceAlgorithm_Id.TryParse,
-                                         out PriceAlgorithm_Id PriceAlgorithmId,
+                                         out PriceAlgorithm_Id PriceAlgorithm,
                                          out ErrorResponse))
                 {
                     return false;
@@ -341,24 +409,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Description                    [optional]
 
-                if (JSON.ParseOptional("description",
-                                       "price schedule description",
-                                       CommonTypes.Description.TryParse,
-                                       out Description? Description,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                var Description = JSON["priceScheduleDescription"]?.Value<String>();
 
                 #endregion
 
                 #region MinimumCost                    [optional]
 
-                if (JSON.ParseOptional("MinimumCost",
-                                       "minimum cost",
-                                       out Decimal? MinimumCost,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("minimumCost",
+                                           "minimum cost",
+                                           RationalNumber.TryParse,
+                                           out RationalNumber? MinimumCost,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -368,10 +429,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region MaximumCost                    [optional]
 
-                if (JSON.ParseOptional("MaximumCost",
-                                       "maximum cost",
-                                       out Decimal? MaximumCost,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("maximumCost",
+                                           "maximum cost",
+                                           RationalNumber.TryParse,
+                                           out RationalNumber? MaximumCost,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -395,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region OverstayRules                  [optional]
 
-                if (JSON.ParseOptionalJSON("overstayRules",
+                if (JSON.ParseOptionalJSON("overstayRuleList",
                                            "overstay rules",
                                            OverstayRuleList.TryParse,
                                            out OverstayRuleList? OverstayRules,
@@ -411,8 +473,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 if (JSON.ParseOptionalHashSet("additionalSelectedServices",
                                               "additional selected services",
-                                              AdditionalService.TryParse,
-                                              out HashSet<AdditionalService> AdditionalSelectedServices,
+                                              AdditionalSelectedService.TryParse,
+                                              out HashSet<AdditionalSelectedService> AdditionalSelectedServices,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -423,12 +485,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
 
                 AbsolutePriceSchedule = new AbsolutePriceSchedule(
+
                                             Id,
                                             TimeAnchor,
-                                            PriceScheduleId,
                                             Currency,
                                             Language,
-                                            PriceAlgorithmId,
+                                            PriceAlgorithm,
                                             PriceRuleStacks,
 
                                             Description,
@@ -437,6 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                             TaxRules,
                                             OverstayRules,
                                             AdditionalSelectedServices
+
                                         );
 
                 if (CustomAbsolutePriceScheduleParser is not null)
@@ -469,49 +532,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="CustomOverstayRuleListSerializer">A delegate to serialize custom overstay rule lists.</param>
         /// <param name="CustomOverstayRuleSerializer">A delegate to serialize custom overstay rules.</param>
         /// <param name="CustomAdditionalServiceSerializer">A delegate to serialize custom additional services.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AbsolutePriceSchedule>?  CustomAbsolutePriceScheduleSerializer   = null,
-                              CustomJObjectSerializerDelegate<PriceRuleStack>?         CustomPriceRuleStackSerializer          = null,
-                              CustomJObjectSerializerDelegate<PriceRule>?              CustomPriceRuleSerializer               = null,
-                              CustomJObjectSerializerDelegate<TaxRule>?                CustomTaxRuleSerializer                 = null,
-                              CustomJObjectSerializerDelegate<OverstayRuleList>?       CustomOverstayRuleListSerializer        = null,
-                              CustomJObjectSerializerDelegate<OverstayRule>?           CustomOverstayRuleSerializer            = null,
-                              CustomJObjectSerializerDelegate<AdditionalService>?      CustomAdditionalServiceSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AbsolutePriceSchedule>?      CustomAbsolutePriceScheduleSerializer   = null,
+                              CustomJObjectSerializerDelegate<PriceRuleStack>?             CustomPriceRuleStackSerializer          = null,
+                              CustomJObjectSerializerDelegate<PriceRule>?                  CustomPriceRuleSerializer               = null,
+                              CustomJObjectSerializerDelegate<TaxRule>?                    CustomTaxRuleSerializer                 = null,
+                              CustomJObjectSerializerDelegate<OverstayRuleList>?           CustomOverstayRuleListSerializer        = null,
+                              CustomJObjectSerializerDelegate<OverstayRule>?               CustomOverstayRuleSerializer            = null,
+                              CustomJObjectSerializerDelegate<AdditionalSelectedService>?  CustomAdditionalServiceSerializer       = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",                          Id.               ToString()),
+                                 new JProperty("priceScheduleID",             Id.               ToString()),
                                  new JProperty("timeAnchor",                  TimeAnchor.       ToIso8601()),
-                                 new JProperty("priceScheduleId",             PriceScheduleId.Value),
                                  new JProperty("currency",                    Currency.ISOCode),
-                                 new JProperty("language",                    Language),
-                                 new JProperty("priceAlgorithmId",            PriceAlgorithmId. ToString()),
-                                 new JProperty("priceRuleStacks",             new JArray(PriceRuleStacks.           Select(priceRuleStack    => priceRuleStack.   ToJSON(CustomPriceRuleStackSerializer,
-                                                                                                                                                                         CustomPriceRuleSerializer)))),
+                                 new JProperty("language",                    Language.         ToString()),
+                                 new JProperty("priceAlgorithm",              PriceAlgorithmId. ToString()),
+                                 new JProperty("priceRuleStacks",             new JArray(PriceRuleStacks.           Select(priceRuleStack            => priceRuleStack.   ToJSON(CustomPriceRuleStackSerializer,
+                                                                                                                                                                                 CustomPriceRuleSerializer)))),
 
-                           Description.HasValue
-                               ? new JProperty("description",                 Description.      Value)
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("priceScheduleDescription",    Description)
                                : null,
 
                            MinimumCost is not null
-                               ? new JProperty("minimumCost",                 MinimumCost.Value)
+                               ? new JProperty("minimumCost",                 MinimumCost.      ToJSON())
                                : null,
 
                            MaximumCost is not null
-                               ? new JProperty("maximumCost",                 MaximumCost.Value)
+                               ? new JProperty("maximumCost",                 MaximumCost.      ToJSON())
                                : null,
 
                            TaxRules.Any()
-                               ? new JProperty("taxRules",                    new JArray(TaxRules.                  Select(taxRule           => taxRule.          ToJSON(CustomTaxRuleSerializer))))
+                               ? new JProperty("taxRules",                    new JArray(TaxRules.                  Select(taxRule                   => taxRule.          ToJSON(CustomTaxRuleSerializer))))
                                : null,
 
                            OverstayRules is not null
-                               ? new JProperty("overstayRules",               OverstayRules.    ToJSON(CustomOverstayRuleListSerializer,
+                               ? new JProperty("overstayRuleList",            OverstayRules.    ToJSON(CustomOverstayRuleListSerializer,
                                                                                                        CustomOverstayRuleSerializer))
                                : null,
 
                            AdditionalSelectedServices.Any()
-                               ? new JProperty("additionalSelectedServices",  new JArray(AdditionalSelectedServices.Select(additionalService => additionalService.ToJSON(CustomAdditionalServiceSerializer))))
+                               ? new JProperty("additionalSelectedServices",  new JArray(AdditionalSelectedServices.Select(additionalSelectedService => additionalSelectedService.ToJSON(CustomAdditionalServiceSerializer))))
                                : null
 
                        );

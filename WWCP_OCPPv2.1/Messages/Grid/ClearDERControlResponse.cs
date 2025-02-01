@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          Destination,
                          NetworkPath,
-                         out var afrrSignalResponse,
+                         out var clearDERControlResponse,
                          out var errorResponse,
                          ResponseTimestamp,
                          CustomClearDERControlResponseParser,
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          CustomSignatureParser,
                          CustomCustomDataParser))
             {
-                return afrrSignalResponse;
+                return clearDERControlResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a ClearDERControl response is invalid: " + errorResponse,
@@ -595,8 +595,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ClearDERControlResponse">A ClearDERControl response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ClearDERControlResponse afrrSignalResponse &&
-                   Equals(afrrSignalResponse);
+            => Object is ClearDERControlResponse clearDERControlResponse &&
+                   Equals(clearDERControlResponse);
 
         #endregion
 

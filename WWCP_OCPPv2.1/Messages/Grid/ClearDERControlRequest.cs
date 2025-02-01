@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext    Context
             => DefaultJSONLDContext;
 
         /// <summary>
@@ -548,11 +548,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        : "Clearing scheduled DER controls",
 
                    ControlType.HasValue
-                       ? $" for control setting '{ControlType.Value}'"
+                       ? $", for control setting '{ControlType.Value}'"
                        : "",
 
                    ControlId.  HasValue
-                       ? $" for control id: '{ControlId.Value}'"
+                       ? $", for control id: '{ControlId.Value}'"
                        : ""
 
                 );

@@ -98,29 +98,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "GetVariableDataType": {
-        //   "description": "Class to hold parameters for GetVariables request.",
-        //   "javaType": "GetVariableData",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Class to hold parameters for GetVariables request.\r\n",
+        //     "javaType": "GetVariableData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "attributeType": {
+        //             "$ref": "#/definitions/AttributeEnumType"
+        //         },
+        //         "component": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "variable": {
+        //             "$ref": "#/definitions/VariableType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "attributeType": {
-        //       "$ref": "#/definitions/AttributeEnumType"
-        //     },
-        //     "component": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "variable": {
-        //       "$ref": "#/definitions/VariableType"
-        //     }
-        //   },
-        //   "required": [
-        //     "component",
-        //     "variable"
-        //   ]
+        //     "required": [
+        //         "component",
+        //         "variable"
+        //     ]
         // }
 
         #endregion
@@ -139,8 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var getVariableData,
                          out var errorResponse,
-                         CustomGetVariableDataParser) &&
-                getVariableData is not null)
+                         CustomGetVariableDataParser))
             {
                 return getVariableData;
             }

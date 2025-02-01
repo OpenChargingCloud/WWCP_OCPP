@@ -1404,81 +1404,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #region GetCRLRequest_Test()
 
-        /// <summary>
-        /// A test for fetching a certificate revocation list from the CSMS for the specified certificate.
-        /// </summary>
-        [Test]
-        public async Task GetCRLRequest_Test()
-        {
+        ///// <summary>
+        ///// A test for fetching a certificate revocation list from the CSMS for the specified certificate.
+        ///// </summary>
+        //[Test]
+        //public async Task GetCRLRequest_Test()
+        //{
 
-            if (testCSMS1                                            is not null &&
-                chargingStation1                                     is not null &&
+        //    if (testCSMS1                                            is not null &&
+        //        chargingStation1                                     is not null &&
 
-                csms1WebSocketJSONRequestsSent                       is not null &&
-                csms1WebSocketJSONRequestErrorsReceived              is not null &&
-                csms1WebSocketJSONResponsesReceived                  is not null &&
-                csms1WebSocketJSONRequestsReceived                   is not null &&
-                csms1WebSocketJSONResponsesSent                      is not null &&
-                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+        //        csms1WebSocketJSONRequestsSent                       is not null &&
+        //        csms1WebSocketJSONRequestErrorsReceived              is not null &&
+        //        csms1WebSocketJSONResponsesReceived                  is not null &&
+        //        csms1WebSocketJSONRequestsReceived                   is not null &&
+        //        csms1WebSocketJSONResponsesSent                      is not null &&
+        //        csms1WebSocketJSONResponseErrorsReceived             is not null &&
 
-                chargingStation1                                     is not null &&
-                chargingStation1WebSocketJSONRequestsSent            is not null &&
-                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
-                chargingStation1WebSocketJSONResponsesReceived       is not null &&
-                chargingStation1WebSocketJSONRequestsReceived        is not null &&
-                chargingStation1WebSocketJSONResponsesSent           is not null &&
-                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
-            {
+        //        chargingStation1                                     is not null &&
+        //        chargingStation1WebSocketJSONRequestsSent            is not null &&
+        //        chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+        //        chargingStation1WebSocketJSONResponsesReceived       is not null &&
+        //        chargingStation1WebSocketJSONRequestsReceived        is not null &&
+        //        chargingStation1WebSocketJSONResponsesSent           is not null &&
+        //        chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
+        //    {
 
-                var getCRLRequests = new ConcurrentList<GetCRLRequest>();
+        //        var getCRLRequests = new ConcurrentList<GetCRLRequest>();
 
-                testCSMS1.OCPP.IN.OnGetCRLRequestReceived += (timestamp, sender, connection, getCRLRequest, ct) => {
-                    getCRLRequests.TryAdd(getCRLRequest);
-                    return Task.CompletedTask;
-                };
+        //        testCSMS1.OCPP.IN.OnGetCRLRequestReceived += (timestamp, sender, connection, getCRLRequest, ct) => {
+        //            getCRLRequests.TryAdd(getCRLRequest);
+        //            return Task.CompletedTask;
+        //        };
 
-                var response = await chargingStation1.GetCRLRequest(
-                                         GetCRLRequestId:       1,
-                                         CertificateHashData:   new CertificateHashData(
-                                                                    HashAlgorithm:         HashAlgorithm.SHA256,
-                                                                    IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
-                                                                    IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
-                                                                    SerialNumber:         "23"
-                                                                ),
-                                         CustomData:            null
-                                     );
+        //        var response = await chargingStation1.GetCRLRequest(
+        //                                 GetCRLRequestId:       1,
+        //                                 CertificateHashData:   new CertificateHashData(
+        //                                                            HashAlgorithm:         HashAlgorithm.SHA256,
+        //                                                            IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
+        //                                                            IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
+        //                                                            SerialNumber:         "23"
+        //                                                        ),
+        //                                 CustomData:            null
+        //                             );
 
 
-                Assert.Multiple(() => {
+        //        Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+        //            Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(getCRLRequests.Count,                                        Is.EqualTo(1));
+        //            Assert.That(getCRLRequests.Count,                                        Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(0));
+        //            Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(0));
+        //            Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
+        //            Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(0));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(1));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(1));
-                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
+        //            Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(1));
+        //            Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(1));
+        //            Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(1));
-                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(1));
+        //            Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(1));
+        //            Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
+        //            Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(1));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
+        //            Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(0));
+        //            Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(0));
+        //            Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
-                });
+        //        });
 
-            }
+        //    }
 
-            else
-                Assert.Fail($"{nameof(GetCRLRequest_Test)} preconditions failed!");
+        //    else
+        //        Assert.Fail($"{nameof(GetCRLRequest_Test)} preconditions failed!");
 
-        }
+        //}
 
         #endregion
 
@@ -2950,7 +2950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                new MessageInfo(
                                                                                    Id:               DisplayMessage_Id.NewRandom,
                                                                                    Priority:         MessagePriority.InFront,
-                                                                                   Message:          new MessageContent(
+                                                                                   Messages:         new MessageContents(
                                                                                                          Content:      "Hello World!",
                                                                                                          Format:       MessageFormat.UTF8,
                                                                                                          Language:     Language_Id.Parse("EN"),

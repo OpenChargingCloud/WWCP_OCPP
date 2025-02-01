@@ -86,27 +86,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "EVSEType": {
-        //   "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //   "javaType": "EVSE",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Electric Vehicle Supply Equipment\r\n",
+        //     "javaType": "EVSE",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "connectorId": {
+        //             "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "id": {
-        //       "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //       "type": "integer"
-        //     },
-        //     "connectorId": {
-        //       "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "id"
-        //   ]
+        //     "required": [
+        //         "id"
+        //     ]
         // }
 
         #endregion

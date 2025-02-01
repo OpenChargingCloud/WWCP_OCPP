@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/StatusInfoType"
         //                 },
         //                 "tariffId": {
-        //                     "description": "Id of tariff for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.\r\n",
+        //                     "description": "Id of tariff for which _status_ is reported. If no tariffs were found, then this field is absent, and _status_ will be `NoTariff`.",
         //                     "type": "string",
         //                     "maxLength": 60
         //                 },
@@ -179,18 +179,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "StatusInfoType": {
-        //             "description": "Element providing more information about the status.\r\n",
+        //             "description": "Element providing more information about the status.",
         //             "javaType": "StatusInfo",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "reasonCode": {
-        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
         //                 "additionalInfo": {
-        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "description": "Additional text to provide detailed information.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },

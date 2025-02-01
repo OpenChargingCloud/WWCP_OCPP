@@ -71,20 +71,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         /// <summary>
         /// Base64 encoded certificate installation request from the electric vehicle.
-        /// [max 5600]
+        /// If a longer _exiRequest_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"Get15118EVCertificateRequest.exiRequest\" ].
+        /// [max 11000]
         /// </summary>
         [Mandatory]
         public EXIData                EXIRequest                          { get; }
 
         /// <summary>
-        /// The optional number of contracts that EV wants to install at most.
+        /// The optional maximum number of ISO 15118-20 contracts that EV wants to install.
         /// </summary>
         [Optional]
         public UInt32?                MaximumContractCertificateChains    { get; }
 
         /// <summary>
-        /// The optional enumeration of eMA Ids that have priority in case more contracts
-        /// than maximumContractCertificateChains are available.
+        /// The optional enumeration of ISO 15118-20 eMA Ids that have priority in case more
+        /// contract certificates than allowed by _maximumContractCertificateChains_ are available.
         /// </summary>
         [Optional]
         public IEnumerable<EMA_Id>    PrioritizedEMAIds                   { get; }
@@ -99,9 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
         /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
-        /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
-        /// <param name="MaximumContractCertificateChains">Optional number of contracts that EV wants to install at most.</param>
-        /// <param name="PrioritizedEMAIds">An optional enumeration of eMA Ids that have priority in case more contracts than maximumContractCertificateChains are available.</param>
+        /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle.</param>
+        /// <param name="MaximumContractCertificateChains">The optional maximum number of ISO 15118-20 contracts that EV wants to install.</param>
+        /// <param name="PrioritizedEMAIds">The optional enumeration of ISO 15118-20 eMA Ids that have priority in case more contract certificates than allowed by _maximumContractCertificateChains_ are available.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -116,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             ISO15118SchemaVersion    ISO15118SchemaVersion,
                                             CertificateAction        CertificateAction,
                                             EXIData                  EXIRequest,
-                                            UInt32?                  MaximumContractCertificateChains   = 1,
+                                            UInt32?                  MaximumContractCertificateChains   = null,
                                             IEnumerable<EMA_Id>?     PrioritizedEMAIds                  = null,
 
                                             IEnumerable<KeyPair>?    SignKeys                           = null,
@@ -156,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.CertificateAction                 = CertificateAction;
             this.EXIRequest                        = EXIRequest;
             this.MaximumContractCertificateChains  = MaximumContractCertificateChains;
-            this.PrioritizedEMAIds                 = PrioritizedEMAIds?.Distinct() ?? Array.Empty<EMA_Id>();
+            this.PrioritizedEMAIds                 = PrioritizedEMAIds?.Distinct() ?? [];
 
             unchecked
             {
@@ -175,70 +176,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:Get15118EVCertificateRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:Get15118EVCertificateRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CertificateActionEnumType": {
+        //             "description": "Defines whether certificate needs to be installed or updated.",
+        //             "javaType": "CertificateActionEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Install",
+        //                 "Update"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "CertificateActionEnumType": {
-        //       "description": "Defines whether certificate needs to be installed or updated.",
-        //       "javaType": "CertificateActionEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Install",
-        //         "Update"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "iso15118SchemaVersion": {
+        //             "description": "Schema version currently used for the 15118 session between EV and Charging Station. Needed for parsing of the EXI stream by the CSMS.",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "action": {
+        //             "$ref": "#/definitions/CertificateActionEnumType"
+        //         },
+        //         "exiRequest": {
+        //             "description": "*(2.1)* Raw CertificateInstallationReq request from EV, Base64 encoded. +\r\nExtended to support ISO 15118-20 certificates. The minimum supported length is 11000. If a longer _exiRequest_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"Get15118EVCertificateRequest.exiRequest\" ].",
+        //             "type": "string",
+        //             "maxLength": 11000
+        //         },
+        //         "maximumContractCertificateChains": {
+        //             "description": "*(2.1)* Absent during ISO 15118-2 session. Required during ISO 15118-20 session. +\r\nMaximum number of contracts that EV wants to install.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "prioritizedEMAIDs": {
+        //             "description": "*(2.1)*  Absent during ISO 15118-2 session. Optional during ISO 15118-20 session. List of EMAIDs for which contract certificates must be requested first, in case there are more certificates than allowed by _maximumContractCertificateChains_.",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "type": "string",
+        //                 "maxLength": 255
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 8
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "iso15118SchemaVersion": {
-        //       "description": "Schema version currently used for the 15118 session between EV and Charging Station. Needed for parsing of the EXI stream by the CSMS.",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     },
-        //     "action": {
-        //       "$ref": "#/definitions/CertificateActionEnumType"
-        //     },
-        //     "exiRequest": {
-        //       "description": "Raw CertificateInstallationReq request from EV, Base64 encoded.",
-        //       "type": "string",
-        //       "maxLength": 5600
-        //     }
-        //   },
-        //   "required": [
-        //     "iso15118SchemaVersion",
-        //     "action",
-        //     "exiRequest"
-        //   ]
+        //     "required": [
+        //         "iso15118SchemaVersion",
+        //         "action",
+        //         "exiRequest"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomGet15118EVCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a Get15118EVCertificate request.
@@ -253,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
         public static Get15118EVCertificateRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         SourceRouting                                           Destination,
+                                                         SourceRouting                                               Destination,
                                                          NetworkPath                                                 NetworkPath,
                                                          DateTime?                                                   RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
@@ -299,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       SourceRouting                                           Destination,
+                                       SourceRouting                                               Destination,
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out Get15118EVCertificateRequest?      Get15118EVCertificateRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,

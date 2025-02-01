@@ -2750,7 +2750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(CertificateStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(InstallCertificateStatus.Accepted));
 
                     Assert.That(installCertificateRequests.Count,                            Is.EqualTo(1));
 
@@ -2862,7 +2862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response1.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
-                    Assert.That(response1.Status,                                            Is.EqualTo(CertificateStatus.Accepted));
+                    Assert.That(response1.Status,                                            Is.EqualTo(InstallCertificateStatus.Accepted));
 
                     Assert.That(installCertificateRequests.Count,                            Is.EqualTo(1));
 
@@ -3018,7 +3018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response1.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
-                    Assert.That(response1.Status,                                            Is.EqualTo(CertificateStatus.Accepted));
+                    Assert.That(response1.Status,                                            Is.EqualTo(InstallCertificateStatus.Accepted));
 
                     Assert.That(installCertificateRequests.Count,                            Is.EqualTo(1));
 
@@ -4846,7 +4846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                           Message:       new MessageInfo(
                                                              Id:               DisplayMessage_Id.NewRandom,
                                                              Priority:         MessagePriority.AlwaysFront,
-                                                             Message:          new MessageContent(
+                                                             Messages:         new MessageContents(
                                                                                    Content:      message,
                                                                                    Format:       MessageFormat.UTF8,
                                                                                    Language:     Language_Id.Parse("de"),
@@ -4954,7 +4954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                  Message:       new MessageInfo(
                                                                     Id:               messageIds[i-1],
                                                                     Priority:         i > 7 ? MessagePriority.AlwaysFront : MessagePriority.NormalCycle,
-                                                                    Message:          new MessageContent(
+                                                                    Messages:         new MessageContents(
                                                                                           Content:      $"{i}:{setMessage}",
                                                                                           Format:       MessageFormat.UTF8,
                                                                                           Language:     Language_Id.Parse("de"),
@@ -5169,7 +5169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               Message:       new MessageInfo(
                                                                  Id:               messageId1,
                                                                  Priority:         MessagePriority.AlwaysFront,
-                                                                 Message:          new MessageContent(
+                                                                 Messages:         new MessageContents(
                                                                                        Content:      message1,
                                                                                        Format:       MessageFormat.UTF8,
                                                                                        Language:     Language_Id.Parse("de"),
@@ -5198,7 +5198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               Message:       new MessageInfo(
                                                                  Id:               messageId2,
                                                                  Priority:         MessagePriority.AlwaysFront,
-                                                                 Message:          new MessageContent(
+                                                                 Messages:         new MessageContents(
                                                                                        Content:      message2,
                                                                                        Format:       MessageFormat.UTF8,
                                                                                        Language:     Language_Id.Parse("de"),

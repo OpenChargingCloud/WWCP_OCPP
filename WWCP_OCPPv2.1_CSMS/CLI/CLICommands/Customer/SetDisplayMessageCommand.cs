@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                              Message:       new MessageInfo(
                                                                 Id:               DisplayMessage_Id.NewRandom,
                                                                 Priority:         MessagePriority.NormalCycle,
-                                                                Message:          new MessageContent(
+                                                                Messages:         new MessageContents(
                                                                                       Content:      Arguments[1],
                                                                                       Language:     Language_Id.EN,
                                                                                       Format:       MessageFormat.UTF8,

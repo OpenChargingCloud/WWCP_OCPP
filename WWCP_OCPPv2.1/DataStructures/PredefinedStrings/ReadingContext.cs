@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this reading context is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                      IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this reading context is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                      IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the reading context.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                       Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered reading contexts.
+        /// </summary>
+        public static    IEnumerable<ReadingContext>  All
+            => lookup.Values;
 
         #endregion
 
@@ -195,49 +201,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Value taken at start of interruption.
         /// </summary>
-        public static ReadingContext InterruptionBegin    { get; }
+        public static ReadingContext  InterruptionBegin    { get; }
             = Register("InterruptionBegin");
 
         /// <summary>
         /// Value taken when resuming after interruption.
         /// </summary>
-        public static ReadingContext InterruptionEnd      { get; }
+        public static ReadingContext  InterruptionEnd      { get; }
             = Register("InterruptionEnd");
 
         /// <summary>
         /// Value for any other situations.
         /// </summary>
-        public static ReadingContext Other                { get; }
+        public static ReadingContext  Other                { get; }
             = Register("Other");
 
         /// <summary>
         /// Value taken at clock aligned interval.
         /// </summary>
-        public static ReadingContext SampleClock          { get; }
+        public static ReadingContext  SampleClock          { get; }
             = Register("SampleClock");
 
         /// <summary>
         /// Value taken as periodic sample relative to start time of transaction.
         /// </summary>
-        public static ReadingContext SamplePeriodic       { get; }
+        public static ReadingContext  SamplePeriodic       { get; }
             = Register("SamplePeriodic");
 
         /// <summary>
         /// Value taken at the beginning of a transaction.
         /// </summary>
-        public static ReadingContext TransactionBegin     { get; }
+        public static ReadingContext  TransactionBegin     { get; }
             = Register("TransactionBegin");
 
         /// <summary>
         /// Value taken at the end of a transaction.
         /// </summary>
-        public static ReadingContext TransactionEnd       { get; }
+        public static ReadingContext  TransactionEnd       { get; }
             = Register("TransactionEnd");
 
         /// <summary>
         /// Value taken in response to a TriggerMessage request.
         /// </summary>
-        public static ReadingContext Trigger              { get; }
+        public static ReadingContext  Trigger              { get; }
             = Register("Trigger");
 
         #endregion

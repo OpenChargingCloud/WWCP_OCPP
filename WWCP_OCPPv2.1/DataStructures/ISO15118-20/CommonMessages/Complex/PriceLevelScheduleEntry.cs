@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -31,8 +33,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// </summary>
     public class PriceLevelScheduleEntry : IEquatable<PriceLevelScheduleEntry>
     {
-
-        //ToDo: In OCPP the PriceLevel is an Integer, in 15118 a byte!
 
         #region Properties
 
@@ -71,8 +71,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
         // <xs:complexType name="PriceLevelScheduleEntryType">
@@ -81,6 +79,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         //         <xs:element name="PriceLevel" type="xs:unsignedByte"/>
         //     </xs:sequence>
         // </xs:complexType>
+
+        // {
+        //     "description": "Part of ISO 15118-20 price schedule.\r\n",
+        //     "javaType": "PriceLevelScheduleEntry",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "duration": {
+        //             "description": "The amount of seconds that define the duration of this given PriceLevelScheduleEntry.\r\n",
+        //             "type": "integer"
+        //         },
+        //         "priceLevel": {
+        //             "description": "Defines the price level of this PriceLevelScheduleEntry (referring to NumberOfPriceLevels).
+        //                             Small values for the PriceLevel represent a cheaper PriceLevelScheduleEntry.
+        //                             Large values for the PriceLevel represent a more expensive PriceLevelScheduleEntry.\r\n",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "duration",
+        //         "priceLevel"
+        //     ]
+        // }
 
         #endregion
 
@@ -98,8 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var priceLevelScheduleEntry,
                          out var errorResponse,
-                         CustomPriceLevelScheduleEntryParser) &&
-                priceLevelScheduleEntry is not null)
+                         CustomPriceLevelScheduleEntryParser))
             {
                 return priceLevelScheduleEntry;
             }
@@ -121,9 +145,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PriceLevelScheduleEntry">The parsed price level schedule entry.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                       JSON,
-                                       out PriceLevelScheduleEntry?  PriceLevelScheduleEntry,
-                                       out String?                   ErrorResponse)
+        public static Boolean TryParse(JObject                                            JSON,
+                                       [NotNullWhen(true)]  out PriceLevelScheduleEntry?  PriceLevelScheduleEntry,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse)
 
             => TryParse(JSON,
                         out PriceLevelScheduleEntry,
@@ -139,8 +163,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPriceLevelScheduleEntryParser">An optional delegate to parse custom price level schedule entries.</param>
         public static Boolean TryParse(JObject                                                JSON,
-                                       out PriceLevelScheduleEntry?                           PriceLevelScheduleEntry,
-                                       out String?                                            ErrorResponse,
+                                       [NotNullWhen(true)]  out PriceLevelScheduleEntry?      PriceLevelScheduleEntry,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
                                        CustomJObjectParserDelegate<PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntryParser)
         {
 
@@ -153,13 +177,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 if (!JSON.ParseMandatory("duration",
                                          "duration",
-                                         out UInt64 duration,
+                                         out TimeSpan Duration,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var Duration = TimeSpan.FromSeconds(duration);
 
                 #endregion
 
@@ -210,8 +232,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                           new JProperty("duration",    (UInt64) Math.Round(Duration.TotalSeconds, 0)),
-                           new JProperty("priceLevel",  PriceLevel)
+                           new JProperty("duration",     (UInt64) Math.Round(Duration.TotalSeconds, 0)),
+
+                           new JProperty("priceLevel",   PriceLevel)
 
                        );
 

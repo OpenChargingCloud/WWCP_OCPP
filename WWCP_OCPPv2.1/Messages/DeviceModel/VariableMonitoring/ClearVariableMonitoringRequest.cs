@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "additionalProperties": false,
         //     "properties": {
         //         "id": {
-        //             "description": "List of the monitors to be cleared, identified by there Id.\r\n",
+        //             "description": "List of the monitors to be cleared, identified by there Id.",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {
