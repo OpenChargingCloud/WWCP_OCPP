@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "AdditionalSelectedServices",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         //             "$ref": "#/definitions/RationalNumberType"
         //         },
         //         "serviceName": {
-        //             "description": "Human readable string to identify this service.\r\n",
+        //             "description": "Human readable string to identify this service.",
         //             "type": "string",
         //             "maxLength": 80
         //         },

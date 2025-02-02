@@ -57,17 +57,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "RationalNumber",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "exponent": {
-        //             "description": "The exponent to base 10 (dec)\r\n",
+        //             "description": "The exponent to base 10 (dec)",
         //             "type": "integer"
         //         },
         //         "value": {
-        //             "description": "Value which shall be multiplied.\r\n",
+        //             "description": "Value which shall be multiplied.",
         //             "type": "integer"
         //         },
         //         "customData": {

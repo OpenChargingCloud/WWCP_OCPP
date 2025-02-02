@@ -220,17 +220,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "$ref": "#/definitions/CertificateActionEnumType"
         //         },
         //         "exiRequest": {
-        //             "description": "*(2.1)* Raw CertificateInstallationReq request from EV, Base64 encoded. +\r\nExtended to support ISO 15118-20 certificates. The minimum supported length is 11000. If a longer _exiRequest_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"Get15118EVCertificateRequest.exiRequest\" ].",
+        //             "description": "Raw CertificateInstallationReq request from EV, Base64 encoded. +\r\nExtended to support ISO 15118-20 certificates. The minimum supported length is 11000. If a longer _exiRequest_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"Get15118EVCertificateRequest.exiRequest\" ].",
         //             "type": "string",
         //             "maxLength": 11000
         //         },
         //         "maximumContractCertificateChains": {
-        //             "description": "*(2.1)* Absent during ISO 15118-2 session. Required during ISO 15118-20 session. +\r\nMaximum number of contracts that EV wants to install.",
+        //             "description": "Absent during ISO 15118-2 session. Required during ISO 15118-20 session. +\r\nMaximum number of contracts that EV wants to install.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "prioritizedEMAIDs": {
-        //             "description": "*(2.1)*  Absent during ISO 15118-2 session. Optional during ISO 15118-20 session. List of EMAIDs for which contract certificates must be requested first, in case there are more certificates than allowed by _maximumContractCertificateChains_.",
+        //             "description": " Absent during ISO 15118-2 session. Optional during ISO 15118-20 session. List of EMAIDs for which contract certificates must be requested first, in case there are more certificates than allowed by _maximumContractCertificateChains_.",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {

@@ -144,39 +144,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "TaxRule",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "taxRuleID": {
-        //             "description": "Id for the tax rule.\r\n",
+        //             "description": "Id for the tax rule.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "taxRuleName": {
-        //             "description": "Human readable string to identify the tax rule.\r\n",
+        //             "description": "Human readable string to identify the tax rule.",
         //             "type": "string",
         //             "maxLength": 100
         //         },
         //         "taxIncludedInPrice": {
-        //             "description": "Indicates whether the tax is included in any price or not.\r\n",
+        //             "description": "Indicates whether the tax is included in any price or not.",
         //             "type": "boolean"
         //         },
         //         "appliesToEnergyFee": {
-        //             "description": "Indicates whether this tax applies to Energy Fees.\r\n",
+        //             "description": "Indicates whether this tax applies to Energy Fees.",
         //             "type": "boolean"
         //         },
         //         "appliesToParkingFee": {
-        //             "description": "Indicates whether this tax applies to Parking Fees.\r\n\r\n",
+        //             "description": "Indicates whether this tax applies to Parking Fees.",
         //             "type": "boolean"
         //         },
         //         "appliesToOverstayFee": {
-        //             "description": "Indicates whether this tax applies to Overstay Fees.\r\n\r\n",
+        //             "description": "Indicates whether this tax applies to Overstay Fees.",
         //             "type": "boolean"
         //         },
         //         "appliesToMinimumMaximumCost": {
-        //             "description": "Indicates whether this tax applies to Minimum/Maximum Cost.\r\n\r\n",
+        //             "description": "Indicates whether this tax applies to Minimum/Maximum Cost.",
         //             "type": "boolean"
         //         },
         //         "taxRate": {

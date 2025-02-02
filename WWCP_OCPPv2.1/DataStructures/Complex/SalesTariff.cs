@@ -113,17 +113,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "additionalProperties": false,
         //     "properties": {
         //         "id": {
-        //             "description": "SalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.\r\n",
+        //             "description": "SalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "salesTariffDescription": {
-        //             "description": "A human readable title/short description of the sales tariff e.g. for HMI display purposes.\r\n",
+        //             "description": "A human readable title/short description of the sales tariff e.g. for HMI display purposes.",
         //             "type": "string",
         //             "maxLength": 32
         //         },
         //         "numEPriceLevels": {
-        //             "description": "Defines the overall number of distinct price levels used across all provided SalesTariff elements.\r\n",
+        //             "description": "Defines the overall number of distinct price levels used across all provided SalesTariff elements.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

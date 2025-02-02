@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         // {
         //     "$schema": "http://json-schema.org/draft-06/schema#",
         //     "$id": "urn:OCPP:Cp:2:2025:1:GetPeriodicEventStreamRequest",
-        //     "description": "This message is empty. It has no fields.\r\n",
+        //     "description": "This message is empty. It has no fields.",
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "CustomDataType": {

@@ -191,21 +191,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "additionalProperties": false,
         //     "properties": {
         //         "controlId": {
-        //             "description": "Id of the started or stopped DER control.\r\nCorresponds to the _controlId_ of the SetDERControlRequest.\r\n\r\n",
+        //             "description": "Id of the started or stopped DER control.\r\nCorresponds to the _controlId_ of the SetDERControlRequest.",
         //             "type": "string",
         //             "maxLength": 36
         //         },
         //         "started": {
-        //             "description": "True if DER control has started. False if it has ended.\r\n\r\n",
+        //             "description": "True if DER control has started. False if it has ended.",
         //             "type": "boolean"
         //         },
         //         "timestamp": {
-        //             "description": "Time of start or end of event.\r\n\r\n",
+        //             "description": "Time of start or end of event.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "supersededIds": {
-        //             "description": "List of controlIds that are superseded as a result of this control starting.\r\n\r\n",
+        //             "description": "List of controlIds that are superseded as a result of this control starting.",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {

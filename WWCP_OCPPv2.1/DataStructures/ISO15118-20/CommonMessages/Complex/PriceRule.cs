@@ -122,22 +122,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "PriceRule",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "parkingFeePeriod": {
-        //             "description": "The duration of the parking fee period (in seconds).\r\nWhen the time enters into a ParkingFeePeriod, the ParkingFee will apply to the session. .\r\n",
+        //             "description": "The duration of the parking fee period (in seconds).\r\nWhen the time enters into a ParkingFeePeriod, the ParkingFee will apply to the session. .",
         //             "type": "integer"
         //         },
         //         "carbonDioxideEmission": {
-        //             "description": "Number of grams of CO2 per kWh.\r\n",
+        //             "description": "Number of grams of CO2 per kWh.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "renewableGenerationPercentage": {
-        //             "description": "Percentage of the power that is created by renewable resources.\r\n",
+        //             "description": "Percentage of the power that is created by renewable resources.",
         //             "type": "integer",
         //             "minimum": 0.0,
         //             "maximum": 100.0

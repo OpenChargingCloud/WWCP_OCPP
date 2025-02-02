@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -74,10 +76,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = EVPowerSchedule.         GetHashCode()       * 5 ^
-                          (EVAbsolutePriceSchedule?.GetHashCode() ?? 0) * 3 ^
-
-                           base.                    GetHashCode();
+                hashCode = this.EVPowerSchedule.         GetHashCode()       * 5 ^
+                          (this.EVAbsolutePriceSchedule?.GetHashCode() ?? 0) * 3 ^
+                           base.                         GetHashCode();
 
             }
 
@@ -86,10 +87,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "A schedule of the energy amount over time that EV is willing to discharge.
+        //                     A negative value indicates the willingness to discharge under specific conditions,
+        //                     a positive value indicates that the EV currently is not able to offer energy to discharge.",
+        //     "javaType": "EVEnergyOffer",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evAbsolutePriceSchedule": {
+        //             "$ref": "#/definitions/EVAbsolutePriceScheduleType"
+        //         },
+        //         "evPowerSchedule": {
+        //             "$ref": "#/definitions/EVPowerScheduleType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "evPowerSchedule"
+        //     ]
+        // }
 
         #endregion
 
@@ -107,8 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evEnergyOffer,
                          out var errorResponse,
-                         CustomEVEnergyOfferParser) &&
-                evEnergyOffer is not null)
+                         CustomEVEnergyOfferParser))
             {
                 return evEnergyOffer;
             }
@@ -130,9 +150,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVEnergyOffer">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out EVEnergyOffer?  EVEnergyOffer,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out EVEnergyOffer?  EVEnergyOffer,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
 
             => TryParse(JSON,
                         out EVEnergyOffer,
@@ -148,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEVEnergyOfferParser">A delegate to parse custom ev energy offer JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
-                                       out EVEnergyOffer?                           EVEnergyOffer,
-                                       out String?                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out EVEnergyOffer?      EVEnergyOffer,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
                                        CustomJObjectParserDelegate<EVEnergyOffer>?  CustomEVEnergyOfferParser)
         {
 
@@ -164,8 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "EV power schedule",
                                              OCPPv2_1.EVPowerSchedule.TryParse,
                                              out EVPowerSchedule? EVPowerSchedule,
-                                             out ErrorResponse) ||
-                    EVPowerSchedule is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }

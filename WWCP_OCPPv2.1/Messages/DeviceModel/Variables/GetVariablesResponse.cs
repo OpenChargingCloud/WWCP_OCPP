@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "ComponentType": {
-        //             "description": "A physical or logical component\r\n",
+        //             "description": "A physical or logical component",
         //             "javaType": "Component",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -177,12 +177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/EVSEType"
         //                 },
         //                 "name": {
-        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
         //                 "instance": {
-        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
@@ -195,18 +195,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "EVSEType": {
-        //             "description": "Electric Vehicle Supply Equipment\r\n",
+        //             "description": "Electric Vehicle Supply Equipment",
         //             "javaType": "EVSE",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "id": {
-        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "connectorId": {
-        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "GetVariableResultType": {
-        //             "description": "Class to hold results of GetVariables request.\r\n",
+        //             "description": "Class to hold results of GetVariables request.",
         //             "javaType": "GetVariableResult",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/AttributeEnumType"
         //                 },
         //                 "attributeValue": {
-        //                     "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
+        //                     "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
         //                     "type": "string",
         //                     "maxLength": 2500
         //                 },
@@ -255,18 +255,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "StatusInfoType": {
-        //             "description": "Element providing more information about the status.\r\n",
+        //             "description": "Element providing more information about the status.",
         //             "javaType": "StatusInfo",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "reasonCode": {
-        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
         //                 "additionalInfo": {
-        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "description": "Additional text to provide detailed information.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },
@@ -279,18 +279,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "VariableType": {
-        //             "description": "Reference key to a component-variable.\r\n",
+        //             "description": "Reference key to a component-variable.",
         //             "javaType": "Variable",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "name": {
-        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
         //                 "instance": {
-        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },

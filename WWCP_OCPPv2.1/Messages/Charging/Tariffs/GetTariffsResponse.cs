@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "TariffGetStatusEnumType": {
-        //             "description": "Status of operation\r\n",
+        //             "description": "Status of operation",
         //             "javaType": "TariffGetStatusEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "TariffKindEnumType": {
-        //             "description": "Kind of tariff (driver/default)\r\n",
+        //             "description": "Kind of tariff (driver/default)",
         //             "javaType": "TariffKindEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -186,18 +186,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "StatusInfoType": {
-        //             "description": "Element providing more information about the status.\r\n",
+        //             "description": "Element providing more information about the status.",
         //             "javaType": "StatusInfo",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "reasonCode": {
-        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
         //                 "additionalInfo": {
-        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "description": "Additional text to provide detailed information.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },
@@ -210,13 +210,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "TariffAssignmentType": {
-        //             "description": "Shows assignment of tariffs to EVSE or IdToken.\r\n",
+        //             "description": "Shows assignment of tariffs to EVSE or IdToken.",
         //             "javaType": "TariffAssignment",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "tariffId": {
-        //                     "description": "Tariff id.\r\n",
+        //                     "description": "Tariff id.",
         //                     "type": "string",
         //                     "maxLength": 60
         //                 },
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/TariffKindEnumType"
         //                 },
         //                 "validFrom": {
-        //                     "description": "Date/time when this tariff become active.\r\n",
+        //                     "description": "Date/time when this tariff become active.",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "minItems": 1
         //                 },
         //                 "idTokens": {
-        //                     "description": "IdTokens related to tariff\r\n",
+        //                     "description": "IdTokens related to tariff",
         //                     "type": "array",
         //                     "additionalItems": false,
         //                     "items": {

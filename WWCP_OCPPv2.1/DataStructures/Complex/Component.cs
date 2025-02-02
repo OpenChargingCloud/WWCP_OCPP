@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "A physical or logical component\r\n",
+        //     "description": "A physical or logical component",
         //     "javaType": "Component",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -128,12 +128,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/EVSEType"
         //         },
         //         "name": {
-        //             "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //             "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "instance": {
-        //             "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //             "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //             "type": "string",
         //             "maxLength": 50
         //         },

@@ -98,11 +98,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/CostKindEnumType"
         //         },
         //         "amount": {
-        //             "description": "The estimated or actual cost per kWh\r\n",
+        //             "description": "The estimated or actual cost per kWh",
         //             "type": "integer"
         //         },
         //         "amountMultiplier": {
-        //             "description": "Values: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier\r\n",
+        //             "description": "Values: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
         //             "type": "integer"
         //         },
         //         "customData": {

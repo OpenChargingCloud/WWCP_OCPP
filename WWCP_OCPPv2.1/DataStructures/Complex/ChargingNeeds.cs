@@ -96,6 +96,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public V2XChargingParameters?           V2XChargingParameters           { get; }
 
         /// <summary>
+        /// DERChargingParametersType is used in ChargingNeedsType during an ISO 15118-20 session for AC_BPT_DER to report the inverter settings
+        /// related to DER control that were agreed between EVSE and EV.
+        /// Fields starting with \"ev\" contain values from the EV.
+        /// Other fields contain a value that is supported by both EV and EVSE.
+        /// DERChargingParametersType type is only relevant in case of an ISO 15118-20 AC_BPT_DER/AC_DER charging session.
+        /// NOTE: All these fields have values greater or equal to zero (i.e. are non-negative)
+        /// </summary>
+        [Optional]
+        public DERChargingParameters?           DERChargingParameters           { get; }
+
+        /// <summary>
         /// Optional discharging and associated price offered by EV.
         /// Schedule periods during which EV is willing to discharge have a dischargingLimit
         /// set to the maximum amount it can discharge.
@@ -120,7 +131,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ACChargingParameters">Optional ISO 15118-2 EV AC charging parameters.</param>
         /// <param name="DCChargingParameters">Optional ISO 15118-2 EV DC charging parameters.</param>
         /// <param name="V2XChargingParameters">Optional ISO 15118-20 EV charging parameters.</param>
-        /// <param name="EVEnergyOffer"></param>
+        /// <param name="DERChargingParameters">Optional DERChargingParametersType is used in ChargingNeedsType during an ISO 15118-20 session for AC_BPT_DER to report the inverter settings related to DER control that were agreed between EVSE and EV.</param>
+        /// <param name="EVEnergyOffer">Optional discharging and associated price offered by EV.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ChargingNeeds(EnergyTransferMode                RequestedEnergyTransferMode,
                              IEnumerable<EnergyTransferMode>?  AvailableEnergyTransferModes   = null,
@@ -131,6 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                              ACChargingParameters?             ACChargingParameters           = null,
                              DCChargingParameters?             DCChargingParameters           = null,
                              V2XChargingParameters?            V2XChargingParameters          = null,
+                             DERChargingParameters?            DERChargingParameters          = null,
                              EVEnergyOffer?                    EVEnergyOffer                  = null,
                              CustomData?                       CustomData                     = null)
 
@@ -139,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             this.RequestedEnergyTransferMode   = RequestedEnergyTransferMode;
-            this.AvailableEnergyTransferModes  = AvailableEnergyTransferModes?.Distinct() ?? Array.Empty<EnergyTransferMode>();
+            this.AvailableEnergyTransferModes  = AvailableEnergyTransferModes?.Distinct() ?? [];
             this.ControlMode                   = ControlMode;
             this.MobilityNeedsMode             = MobilityNeedsMode;
             this.Pricing                       = Pricing;
@@ -147,6 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ACChargingParameters          = ACChargingParameters;
             this.DCChargingParameters          = DCChargingParameters;
             this.V2XChargingParameters         = V2XChargingParameters;
+            this.DERChargingParameters         = DERChargingParameters;
             this.EVEnergyOffer                 = EVEnergyOffer;
 
 
@@ -155,13 +169,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = this.RequestedEnergyTransferMode. GetHashCode()       * 31 ^
                            this.AvailableEnergyTransferModes.CalcHashCode()      * 29 ^
-                          (this.ControlMode?.                GetHashCode() ?? 0) * 23 ^
-                          (this.MobilityNeedsMode?.          GetHashCode() ?? 0) * 19 ^
-                          (this.Pricing?.                    GetHashCode() ?? 0) * 17 ^
-                          (this.DepartureTime?.              GetHashCode() ?? 0) * 13 ^
-                          (this.ACChargingParameters?.       GetHashCode() ?? 0) * 11 ^
-                          (this.DCChargingParameters?.       GetHashCode() ?? 0) *  7 ^
-                          (this.V2XChargingParameters?.      GetHashCode() ?? 0) *  5 ^
+                          (this.ControlMode?.                GetHashCode() ?? 0) * 27 ^
+                          (this.MobilityNeedsMode?.          GetHashCode() ?? 0) * 23 ^
+                          (this.Pricing?.                    GetHashCode() ?? 0) * 19 ^
+                          (this.DepartureTime?.              GetHashCode() ?? 0) * 17 ^
+                          (this.ACChargingParameters?.       GetHashCode() ?? 0) * 13 ^
+                          (this.DCChargingParameters?.       GetHashCode() ?? 0) * 11 ^
+                          (this.V2XChargingParameters?.      GetHashCode() ?? 0) *  7 ^
+                          (this.DERChargingParameters?.      GetHashCode() ?? 0) *  5 ^
                           (this.EVEnergyOffer?.              GetHashCode() ?? 0) *  3 ^
                            base.                             GetHashCode();
 
@@ -198,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/V2XChargingParametersType"
         //         },
         //         "availableEnergyTransfer": {
-        //             "description": "*(2.1)* Modes of energy transfer that are marked as available by EV.\r\n",
+        //             "description": "Modes of energy transfer that are marked as available by EV.",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {
@@ -213,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/MobilityNeedsModeEnumType"
         //         },
         //         "departureTime": {
-        //             "description": "Estimated departure time of the EV. +\r\n*ISO 15118-2:* AC/DC_EVChargeParameterType: DepartureTime +\r\n*ISO 15118-20:* Dynamic/Scheduled_SEReqControlModeType: DepartureTIme\r\n",
+        //             "description": "Estimated departure time of the EV. +\r\n*ISO 15118-2:* AC/DC_EVChargeParameterType: DepartureTime +\r\n*ISO 15118-20:* Dynamic/Scheduled_SEReqControlModeType: DepartureTIme",
         //             "type": "string",
         //             "format": "date-time"
         //         },
@@ -469,6 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                     ACChargingParameters,
                                     DCChargingParameters,
                                     V2XChargingParameters,
+                                    DERChargingParameters,
                                     EVEnergyOffer,
                                     CustomData
                                 );

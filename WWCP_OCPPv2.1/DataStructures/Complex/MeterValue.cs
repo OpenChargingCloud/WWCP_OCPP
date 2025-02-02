@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // {
         //     "description": "Collection of one or more sampled values in MeterValuesRequest and TransactionEvent.
-        //                     All sampled values in a MeterValue are sampled at the same point in time.\r\n",
+        //                     All sampled values in a MeterValue are sampled at the same point in time.",
         //     "javaType": "MeterValue",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "minItems": 1
         //         },
         //         "timestamp": {
-        //             "description": "Timestamp for measured value(s).\r\n",
+        //             "description": "Timestamp for measured value(s).",
         //             "type": "string",
         //             "format": "date-time"
         //         },

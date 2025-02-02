@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -80,7 +82,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = TimeAnchor.            GetHashCode()  * 5 ^
                            EVPowerScheduleEntries.CalcHashCode() * 3 ^
-
                            base.                  GetHashCode();
 
             }
@@ -90,10 +91,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Schedule of EV energy offer.",
+        //     "javaType": "EVPowerSchedule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evPowerScheduleEntries": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/EVPowerScheduleEntryType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 1024
+        //         },
+        //         "timeAnchor": {
+        //             "description": "The time that defines the starting point for the EVEnergyOffer.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "timeAnchor",
+        //         "evPowerScheduleEntries"
+        //     ]
+        // }
 
         #endregion
 
@@ -111,8 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evPowerSchedule,
                          out var errorResponse,
-                         CustomEVPowerScheduleParser) &&
-                evPowerSchedule is not null)
+                         CustomEVPowerScheduleParser))
             {
                 return evPowerSchedule;
             }
@@ -134,9 +161,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVPowerSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out EVPowerSchedule?  EVPowerSchedule,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out EVPowerSchedule?  EVPowerSchedule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out EVPowerSchedule,
@@ -152,8 +179,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEVPowerScheduleParser">A delegate to parse custom power schedule JSON objects.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out EVPowerSchedule?                           EVPowerSchedule,
-                                       out String?                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out EVPowerSchedule?      EVPowerSchedule,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
                                        CustomJObjectParserDelegate<EVPowerSchedule>?  CustomEVPowerScheduleParser)
         {
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -42,25 +44,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The time anchor.
         /// </summary>
         [Mandatory]
-        public DateTime                                    TimeAnchor                        { get; }
+        public DateTime                                   TimeAnchor                        { get; }
 
         /// <summary>
         /// The currency (ISO 4217).
         /// </summary>
         [Mandatory]
-        public org.GraphDefined.Vanaheimr.Illias.Currency  Currency                          { get; }
+        public Currency                                   Currency                          { get; }
 
         /// <summary>
         /// The price algorithm.
         /// </summary>
         [Mandatory]
-        public PriceAlgorithm_Id                           PriceAlgorithm                    { get; }
+        public PriceAlgorithm                             PriceAlgorithm                    { get; }
 
         /// <summary>
         /// The enumeration of EV absolute price schedule entries.
         /// </summary>
         [Mandatory]
-        public IEnumerable<EVAbsolutePriceScheduleEntry>   EVAbsolutePriceScheduleEntries    { get; }
+        public IEnumerable<EVAbsolutePriceScheduleEntry>  EVAbsolutePriceScheduleEntries    { get; }
 
         #endregion
 
@@ -73,11 +75,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Currency">A currency (ISO 4217).</param>
         /// <param name="PriceAlgorithm">A price algorithm.</param>
         /// <param name="EVAbsolutePriceScheduleEntries">An enumeration of EV absolute price schedule entries (max 1024).</param>
-        public EVAbsolutePriceSchedule(DateTime                                    TimeAnchor,
-                                       org.GraphDefined.Vanaheimr.Illias.Currency  Currency,
-                                       PriceAlgorithm_Id                           PriceAlgorithm,
-                                       IEnumerable<EVAbsolutePriceScheduleEntry>   EVAbsolutePriceScheduleEntries,
-                                       CustomData?                                 CustomData   = null)
+        public EVAbsolutePriceSchedule(DateTime                                   TimeAnchor,
+                                       Currency                                   Currency,
+                                       PriceAlgorithm                             PriceAlgorithm,
+                                       IEnumerable<EVAbsolutePriceScheduleEntry>  EVAbsolutePriceScheduleEntries,
+                                       CustomData?                                CustomData   = null)
 
             : base(CustomData)
 
@@ -95,7 +97,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            Currency.                      GetHashCode()  *  7 ^
                            PriceAlgorithm.                GetHashCode()  *  5 ^
                            EVAbsolutePriceScheduleEntries.CalcHashCode() *  3 ^
-
                            base.                          GetHashCode();
 
             }
@@ -105,10 +106,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Price schedule of EV energy offer.",
+        //     "javaType": "EVAbsolutePriceSchedule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "timeAnchor": {
+        //             "description": "Starting point in time of the EVEnergyOffer.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "currency": {
+        //             "description": "Currency code according to ISO 4217.",
+        //             "type": "string",
+        //             "maxLength": 3
+        //         },
+        //         "evAbsolutePriceScheduleEntries": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/EVAbsolutePriceScheduleEntryType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 1024
+        //         },
+        //         "priceAlgorithm": {
+        //             "description": "ISO 15118-20 URN of price algorithm: Power, PeakPower, StackedEnergy.",
+        //             "type": "string",
+        //             "maxLength": 2000
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "timeAnchor",
+        //         "currency",
+        //         "priceAlgorithm",
+        //         "evAbsolutePriceScheduleEntries"
+        //     ]
+        // }
 
         #endregion
 
@@ -119,15 +159,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomEVAbsolutePriceScheduleParser">A delegate to parse custom ev absolute price schedule JSON objects.</param>
-        public static EVAbsolutePriceSchedule Parse(JObject                                      JSON,
-                                          CustomJObjectParserDelegate<EVAbsolutePriceSchedule>?  CustomEVAbsolutePriceScheduleParser   = null)
+        public static EVAbsolutePriceSchedule Parse(JObject                                                JSON,
+                                                    CustomJObjectParserDelegate<EVAbsolutePriceSchedule>?  CustomEVAbsolutePriceScheduleParser   = null)
         {
 
             if (TryParse(JSON,
                          out var evAbsolutePriceSchedule,
                          out var errorResponse,
-                         CustomEVAbsolutePriceScheduleParser) &&
-                evAbsolutePriceSchedule is not null)
+                         CustomEVAbsolutePriceScheduleParser))
             {
                 return evAbsolutePriceSchedule;
             }
@@ -149,9 +188,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVAbsolutePriceSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out EVAbsolutePriceSchedule?  EVAbsolutePriceSchedule,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                            JSON,
+                                       [NotNullWhen(true)]  out EVAbsolutePriceSchedule?  EVAbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse)
 
             => TryParse(JSON,
                         out EVAbsolutePriceSchedule,
@@ -166,9 +205,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EVAbsolutePriceSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEVAbsolutePriceScheduleParser">A delegate to parse custom ev absolute price schedule JSON objects.</param>
-        public static Boolean TryParse(JObject                                      JSON,
-                                       out EVAbsolutePriceSchedule?                           EVAbsolutePriceSchedule,
-                                       out String?                                  ErrorResponse,
+        public static Boolean TryParse(JObject                                                JSON,
+                                       [NotNullWhen(true)]  out EVAbsolutePriceSchedule?      EVAbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
                                        CustomJObjectParserDelegate<EVAbsolutePriceSchedule>?  CustomEVAbsolutePriceScheduleParser)
         {
 
@@ -194,14 +233,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (!JSON.ParseMandatory("currency",
                                          "currency",
                                          org.GraphDefined.Vanaheimr.Illias.Currency.TryParse,
-                                         out org.GraphDefined.Vanaheimr.Illias.Currency? Currency,
+                                         out Currency Currency,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                if (Currency is null)
-                    return false;
 
                 #endregion
 
@@ -209,8 +245,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("priceAlgorithm",
                                          "price lgorithm",
-                                         PriceAlgorithm_Id.TryParse,
-                                         out PriceAlgorithm_Id PriceAlgorithm,
+                                         OCPPv2_1.PriceAlgorithm.TryParse,
+                                         out PriceAlgorithm PriceAlgorithm,
                                          out ErrorResponse))
                 {
                     return false;

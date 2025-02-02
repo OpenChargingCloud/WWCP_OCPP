@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "DERControlEnumType": {
-        //             "description": "Name of DER control, e.g. LFMustTrip\r\n",
+        //             "description": "Name of DER control, e.g. LFMustTrip",
         //             "javaType": "DERControlEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             ]
         //         },
         //         "GridEventFaultEnumType": {
-        //             "description": "Type of grid event that caused this\r\n\r\n",
+        //             "description": "Type of grid event that caused this",
         //             "javaType": "GridEventFaultEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -255,16 +255,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "$ref": "#/definitions/GridEventFaultEnumType"
         //         },
         //         "alarmEnded": {
-        //             "description": "True when error condition has ended.\r\nAbsent or false when alarm has started.\r\n\r\n",
+        //             "description": "True when error condition has ended.\r\nAbsent or false when alarm has started.",
         //             "type": "boolean"
         //         },
         //         "timestamp": {
-        //             "description": "Time of start or end of alarm.\r\n\r\n",
+        //             "description": "Time of start or end of alarm.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "extraInfo": {
-        //             "description": "Optional info provided by EV.\r\n\r\n",
+        //             "description": "Optional info provided by EV.",
         //             "type": "string",
         //             "maxLength": 200
         //         },

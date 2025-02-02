@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "OverstayRuleList",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         //             "maxItems": 5
         //         },
         //         "overstayTimeThreshold": {
-        //             "description": "Time till overstay is applied in seconds.\r\n",
+        //             "description": "Time till overstay is applied in seconds.",
         //             "type": "integer"
         //         },
         //         "customData": {

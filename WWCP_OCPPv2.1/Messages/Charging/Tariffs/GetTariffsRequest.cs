@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "additionalProperties": false,
         //     "properties": {
         //         "evseId": {
-        //             "description": "EVSE id to get tariff from. When _evseId_ = 0, this gets tariffs from all EVSEs.\r\n",
+        //             "description": "EVSE id to get tariff from. When _evseId_ = 0, this gets tariffs from all EVSEs.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

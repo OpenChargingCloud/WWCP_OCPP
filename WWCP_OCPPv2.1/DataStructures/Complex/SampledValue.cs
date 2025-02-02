@@ -146,13 +146,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "description": "Single sampled value in MeterValues. Each value can be accompanied by optional fields.
         //                     To save on mobile data usage, default values of all of the optional fields are such that.
         //                     The value without any additional fields will be interpreted, as a register reading of
-        //                     active import energy in Wh (Watt-hour) units.\r\n",
+        //                     active import energy in Wh (Watt-hour) units.",
         //     "javaType": "SampledValue",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "value": {
-        //             "description": "Indicates the measured value.\r\n\r\n",
+        //             "description": "Indicates the measured value.",
         //             "type": "number"
         //         },
         //         "measurand": {

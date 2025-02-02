@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -34,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER charging parameters.
     /// 
     /// ISO 15118-20 session for AC_BPT_DER to report the inverter settings related to DER control that were agreed between EVSE and EV.
-    /// Fields starting with \"ev\" contain values from the EV.
+    /// Fields starting with "ev" contain values from the EV.
     /// Other fields contain a value that is supported by both EV and EVSE.
     /// DERChargingParametersType type is only relevant in case of an ISO 15118-20 AC_BPT_DER/AC_DER charging session.
     /// 
@@ -51,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType:DERControlFunctions (bitmap)
         /// </summary>
         [Optional]
-        public IEnumerable<DERControlType>          EVSupportedDERControls                    { get; }
+        public IEnumerable<DERControlType>            EVSupportedDERControls                    { get; }
 
         /// <summary>
         /// Rated maximum injected active power by EV, at specified over-excited power factor (overExcitedPowerFactor).
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVOverExcitedMaximumDischargePower
         /// </summary>
         [Optional]
-        public Decimal                              EVOverExcitedMaxDischargePower            { get; }
+        public Watt?                                  EVOverExcitedMaxDischargePower            { get; }
 
         /// <summary>
         /// EV power factor when injecting (over excited) the minimum reactive power.
@@ -71,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVOverExcitedPowerFactor
         /// </summary>
         [Optional]
-        public Decimal                              EVOverExcitedPowerFactor                  { get; }
+        public Decimal?                               EVOverExcitedPowerFactor                  { get; }
 
         /// <summary>
         /// Rated maximum injected active power by EV supported at specified under-excited power factor (EVUnderExcitedPowerFactor).
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVUnderExcitedMaximumDischargePower
         /// </summary>
         [Optional]
-        public Decimal                              EVUnderExcitedMaxDischargePower           { get; }
+        public Watt?                                  EVUnderExcitedMaxDischargePower           { get; }
 
         /// <summary>
         /// EV power factor when injecting (under excited) the minimum reactive power.
@@ -91,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVUnderExcitedPowerFactor
         /// </summary>
         [Optional]
-        public Decimal                              EVUnderExcitedPowerFactor                 { get; }
+        public Decimal?                               EVUnderExcitedPowerFactor                 { get; }
 
         /// <summary>
         /// Rated maximum total apparent power, defined by min(EV, EVSE) in va.
@@ -99,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumApparentPower
         /// </summary>
         [Optional]
-        public Decimal                              MaxApparentPower                          { get; }
+        public VoltAmpere?                            MaxApparentPower                          { get; }
 
         /// <summary>
         /// Rated maximum absorbed apparent power, defined by min(EV, EVSE) in va.
@@ -109,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower
         /// </summary>
         [Optional]
-        public Decimal                              MaxChargeApparentPower                    { get; }
+        public VoltAmpere?                            MaxChargeApparentPower                    { get; }
 
         /// <summary>
         /// Rated maximum absorbed apparent power on phase L2, defined by min(EV, EVSE) in va.
@@ -117,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower_L2
         /// </summary>
         [Optional]
-        public Decimal                              MaxChargeApparentPower_L2                 { get; }
+        public VoltAmpere?                            MaxChargeApparentPower_L2                 { get; }
 
         /// <summary>
         /// Rated maximum absorbed apparent power on phase L3, defined by min(EV, EVSE) in va.
@@ -125,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower_L3
         /// </summary>
         [Optional]
-        public Decimal                              MaxChargeApparentPower_L3                 { get; }
+        public VoltAmpere?                            MaxChargeApparentPower_L3                 { get; }
 
         /// <summary>
         /// Rated maximum injected apparent power, defined by min(EV, EVSE) in va.
@@ -135,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower
         /// </summary>
         [Optional]
-        public Decimal                              MaxDischargeApparentPower                 { get; }
+        public VoltAmpere?                            MaxDischargeApparentPower                 { get; }
 
         /// <summary>
         /// Rated maximum injected apparent power on phase L2, defined by min(EV, EVSE) in va.
@@ -143,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower_L2
         /// </summary>
         [Optional]
-        public Decimal                              MaxDischargeApparentPower_L2              { get; }
+        public VoltAmpere?                            MaxDischargeApparentPower_L2              { get; }
 
         /// <summary>
         /// Rated maximum injected apparent power on phase L3, defined by min(EV, EVSE) in va.
@@ -151,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower_L3
         /// </summary>
         [Optional]
-        public Decimal                              MaxDischargeApparentPower_L3              { get; }
+        public VoltAmpere?                            MaxDischargeApparentPower_L3              { get; }
 
         /// <summary>
         /// Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars.
@@ -161,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower
         /// </summary>
         [Optional]
-        public Decimal                              MaxChargeReactivePower                    { get; }
+        public VoltAmpereReactive?                    MaxChargeReactivePower                    { get; }
 
         /// <summary>
         /// Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L2.
@@ -169,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower_L2
         /// </summary>
         [Optional]
-        public Decimal                              MaxChargeReactivePower_L2                 { get; }
+        public VoltAmpereReactive?                    MaxChargeReactivePower_L2                 { get; }
 
         /// <summary>
         /// Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L3.
@@ -177,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower_L3
         /// </summary>
         [Optional]
-        public Decimal                              MaxChargeReactivePower_L3                 { get; }
+        public VoltAmpereReactive?                    MaxChargeReactivePower_L3                 { get; }
 
         /// <summary>
         /// Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars.
@@ -186,21 +187,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower
         /// </summary>
         [Optional]
-        public Decimal                              MinChargeReactivePower                    { get; }
+        public VoltAmpereReactive?                    MinChargeReactivePower                    { get; }
 
         /// <summary>
         /// Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L2.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower_L2
         /// </summary>
         [Optional]
-        public Decimal                              MinChargeReactivePower_L2                 { get; }
+        public VoltAmpereReactive?                    MinChargeReactivePower_L2                 { get; }
 
         /// <summary>
         /// Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L3.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower_L3
         /// </summary>
         [Optional]
-        public Decimal                              MinChargeReactivePower_L3                 { get; }
+        public VoltAmpereReactive?                    MinChargeReactivePower_L3                 { get; }
 
         /// <summary>
         /// Rated maximum injected reactive power, defined by min(EV, EVSE), in vars.
@@ -210,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower
         /// </summary>
         [Optional]
-        public Decimal                              MaxDischargeReactivePower                 { get; }
+        public VoltAmpereReactive?                    MaxDischargeReactivePower                 { get; }
 
         /// <summary>
         /// Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L2.
@@ -218,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower_L2
         /// </summary>
         [Optional]
-        public Decimal                              MaxDischargeReactivePower_L2              { get; }
+        public VoltAmpereReactive?                    MaxDischargeReactivePower_L2              { get; }
 
         /// <summary>
         /// Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L3.
@@ -226,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower_L3
         /// </summary>
         [Optional]
-        public Decimal                              MaxDischargeReactivePower_L3              { get; }
+        public VoltAmpereReactive?                    MaxDischargeReactivePower_L3              { get; }
 
         /// <summary>
         /// Rated minimum injected reactive power, defined by max(EV, EVSE), in vars.
@@ -235,28 +236,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower
         /// </summary>
         [Optional]
-        public Decimal                              MinDischargeReactivePower                 { get; }
+        public VoltAmpereReactive?                    MinDischargeReactivePower                 { get; }
 
         /// <summary>
         /// Rated minimum injected reactive power, defined by max(EV, EVSE), in var on phase L2.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower_L2
         /// </summary>
         [Optional]
-        public Decimal                              MinDischargeReactivePower_L2              { get; }
+        public VoltAmpereReactive?                    MinDischargeReactivePower_L2              { get; }
 
         /// <summary>
         /// Rated minimum injected reactive power, defined by max(EV, EVSE), in var on phase L3.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower_L3
         /// </summary>
         [Optional]
-        public Decimal                              MinDischargeReactivePower_L3              { get; }
+        public VoltAmpereReactive?                    MinDischargeReactivePower_L3              { get; }
 
         /// <summary>
         /// Line voltage supported by EVSE and EV.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVNominalVoltage
         /// </summary>
         [Optional]
-        public Decimal                              NominalVoltage                            { get; }
+        public Volt?                                  NominalVoltage                            { get; }
 
         /// <summary>
         /// The nominal AC voltage (rms) offset between the Charging Station's electrical
@@ -264,56 +265,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVNominalVoltageOffset
         /// </summary>
         [Optional]
-        public Decimal                              NominalVoltageOffset                      { get; }
+        public Volt?                                  NominalVoltageOffset                      { get; }
 
         /// <summary>
         /// Maximum AC rms voltage, as defined by min(EV, EVSE) to operate with.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumNominalVoltage
         /// </summary>
         [Optional]
-        public Decimal                              MaxNominalVoltage                         { get; }
+        public Volt?                                  MaxNominalVoltage                         { get; }
 
         /// <summary>
         /// Minimum AC rms voltage, as defined by max(EV, EVSE) to operate with.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumNominalVoltage
         /// </summary>
         [Optional]
-        public Decimal                              MinNominalVoltage                         { get; }
+        public Volt?                                  MinNominalVoltage                         { get; }
 
         /// <summary>
         /// Manufacturer of the EV inverter.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterManufacturer
         /// </summary>
         [Optional]
-        public Decimal                              EVInverterManufacturer                    { get; }
+        public String?                                EVInverterManufacturer                    { get; }
 
         /// <summary>
         /// Model name of the EV inverter.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterModel
         /// </summary>
         [Optional]
-        public Decimal                              EVInverterModel                           { get; }
+        public String?                                EVInverterModel                           { get; }
 
         /// <summary>
         /// Serial number of the EV inverter.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterSerialNumber
         /// </summary>
         [Optional]
-        public Decimal                              EVInverterSerialNumber                    { get; }
+        public String?                                EVInverterSerialNumber                    { get; }
 
         /// <summary>
         /// Software version of EV inverter.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterSwVersion
         /// </summary>
         [Optional]
-        public Decimal                              EVInverterSWVersion                       { get; }
+        public String?                                EVInverterSWVersion                       { get; }
 
         /// <summary>
         /// Hardware version of EV inverter.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterHwVersion
         /// </summary>
         [Optional]
-        public Decimal                              EVInverterHWVersion                       { get; }
+        public String?                                EVInverterHWVersion                       { get; }
 
         /// <summary>
         /// Type of islanding detection method. Only mandatory when islanding detection is
@@ -321,49 +322,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVIslandingDetectionMethod
         /// </summary>
         [Optional]
-        public IEnumerable<IslandingDetectionType>  EVIslandingDetectionMethod                { get; }
+        public IEnumerable<IslandingDetectionMethod>  EVIslandingDetectionMethod                { get; }
 
         /// <summary>
         /// Time after which EV will trip if an island has been detected.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVIslandingTripTime
         /// </summary>
         [Optional]
-        public Decimal                              EVIslandingTripTime                       { get; }
+        public TimeSpan?                              EVIslandingTripTime                       { get; }
 
         /// <summary>
         /// Maximum injected DC current allowed at level 1 charging.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel1DCInjection
         /// </summary>
         [Optional]
-        public Decimal                              EVMaximumLevel1DCInjection                { get; }
+        public Ampere?                                EVMaximumLevel1DCInjection                { get; }
 
         /// <summary>
         /// Maximum allowed duration of DC injection at level 1 charging.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVDurationLevel1DCInjection
         /// </summary>
         [Optional]
-        public Decimal                              EVDurationLevel1DCInjection               { get; }
+        public TimeSpan?                              EVDurationLevel1DCInjection               { get; }
 
         /// <summary>
         /// Maximum injected DC current allowed at level 2 charging.
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel2DCInjection
         /// </summary>
         [Optional]
-        public Decimal                              EVMaximumLevel2DCInjection                { get; }
+        public Ampere?                                EVMaximumLevel2DCInjection                { get; }
 
         /// <summary>
-        /// Maximum injected DC current allowed at level 2 charging.
-        /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel2DCInjection
+        /// Maximum allowed duration of DC injection at level 2 charging.
+        /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVDurationLevel2DCInjection
         /// </summary>
         [Optional]
-        public Decimal                              EVDurationLevel2DCInjection               { get; }
+        public TimeSpan?                              EVDurationLevel2DCInjection               { get; }
 
         /// <summary>
         /// Measure of the susceptibility of the circuit to reactance, in Siemens (S).
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVReactiveSusceptance
         /// </summary>
         [Optional]
-        public Decimal                              EVReactiveSusceptance                     { get; }
+        public Siemens?                               EVReactiveSusceptance                     { get; }
 
         /// <summary>
         /// Total energy value, in Wh, that EV is allowed to provide during the entire V2G session.
@@ -372,43 +373,218 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVSessionTotalDischargeEnergyAvailable
         /// </summary>
         [Optional]
-        public Decimal                              EVSessionTotalDischargeEnergyAvailable    { get; }
+        public WattHour?                              EVSessionTotalDischargeEnergyAvailable    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new DER charging parameters.
+        /// Create new DER charging parameters.
         /// </summary>
-        /// <param name="EnergyAmount">The amount of energy requested (in Wh). This includes energy required for preconditioning.</param>
-        /// <param name="EVMinCurrent">The minimum current (in A) supported by the electric vehicle (per phase).</param>
-        /// <param name="EVMaxCurrent">The maximum current (in A) supported by the electric vehicle (per phase) including the maximum cable capacity.</param>
-        /// <param name="EVMaxVoltage">The maximum voltage (in V) supported by the electric vehicle.</param>
+        /// <param name="EVSupportedDERControls">DER control functions supported by EV.</param>
+        /// <param name="EVOverExcitedMaxDischargePower">Rated maximum injected active power by EV, at specified over-excited power factor (overExcitedPowerFactor).</param>
+        /// <param name="EVOverExcitedPowerFactor">EV power factor when injecting (over excited) the minimum reactive power.</param>
+        /// <param name="EVUnderExcitedMaxDischargePower">Rated maximum injected active power by EV supported at specified under-excited power factor (EVUnderExcitedPowerFactor).</param>
+        /// <param name="EVUnderExcitedPowerFactor">EV power factor when injecting (under excited) the minimum reactive power.</param>
+        /// 
+        /// <param name="MaxApparentPower">Rated maximum total apparent power, defined by min(EV, EVSE) in va.</param>
+        /// <param name="MaxChargeApparentPower">Rated maximum absorbed apparent power, defined by min(EV, EVSE) in va.</param>
+        /// <param name="MaxChargeApparentPower_L2">Rated maximum absorbed apparent power on phase L2, defined by min(EV, EVSE) in va.</param>
+        /// <param name="MaxChargeApparentPower_L3">Rated maximum absorbed apparent power on phase L3, defined by min(EV, EVSE) in va.</param>
+        /// <param name="MaxDischargeApparentPower">Rated maximum injected apparent power, defined by min(EV, EVSE) in va.</param>
+        /// <param name="MaxDischargeApparentPower_L2">Rated maximum injected apparent power on phase L2, defined by min(EV, EVSE) in va.</param>
+        /// <param name="MaxDischargeApparentPower_L3">Rated maximum injected apparent power on phase L3, defined by min(EV, EVSE) in va.</param>
+        /// 
+        /// <param name="MaxChargeReactivePower">Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars.</param>
+        /// <param name="MaxChargeReactivePower_L2">Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L2.</param>
+        /// <param name="MaxChargeReactivePower_L3">Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L3.</param>
+        /// <param name="MinChargeReactivePower">Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars.</param>
+        /// <param name="MinChargeReactivePower_L2">Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L2.</param>
+        /// <param name="MinChargeReactivePower_L3">Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L3.</param>
+        /// 
+        /// <param name="MaxDischargeReactivePower">Rated maximum injected reactive power, defined by min(EV, EVSE), in vars.</param>
+        /// <param name="MaxDischargeReactivePower_L2">Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L2.</param>
+        /// <param name="MaxDischargeReactivePower_L3">Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L3.</param>
+        /// <param name="MinDischargeReactivePower">Rated minimum injected reactive power, defined by max(EV, EVSE), in vars.</param>
+        /// <param name="MinDischargeReactivePower_L2">Rated minimum injected reactive power, defined by max(EV, EVSE), in vars on phase L2.</param>
+        /// <param name="MinDischargeReactivePower_L3">Rated minimum injected reactive power, defined by max(EV, EVSE), in vars on phase L3.</param>
+        /// 
+        /// <param name="NominalVoltage">Line voltage supported by EVSE and EV.</param>
+        /// <param name="NominalVoltageOffset">The nominal AC voltage (rms) offset between the Charging Station's electrical connection point and the utility\u2019s point of common coupling.</param>
+        /// <param name="MaxNominalVoltage">Maximum AC rms voltage, as defined by min(EV, EVSE) to operate with.</param>
+        /// <param name="MinNominalVoltage">Minimum AC rms voltage, as defined by max(EV, EVSE) to operate with.</param>
+        /// 
+        /// <param name="EVInverterManufacturer">Manufacturer of the EV inverter.</param>
+        /// <param name="EVInverterModel">Model name of the EV inverter.</param>
+        /// <param name="EVInverterSerialNumber">Serial number of the EV inverter.</param>
+        /// <param name="EVInverterSWVersion">Software version of EV inverter.</param>
+        /// <param name="EVInverterHWVersion">Hardware version of EV inverter.</param>
+        /// 
+        /// <param name="EVIslandingDetectionMethod">Type of islanding detection method.</param>
+        /// <param name="EVIslandingTripTime">Time after which EV will trip if an island has been detected.</param>
+        /// <param name="EVMaximumLevel1DCInjection">Maximum injected DC current allowed at level 1 charging.</param>
+        /// <param name="EVDurationLevel1DCInjection">Maximum allowed duration of DC injection at level 1 charging.</param>
+        /// <param name="EVMaximumLevel2DCInjection">Maximum injected DC current allowed at level 2 charging.</param>
+        /// <param name="EVDurationLevel2DCInjection">Maximum injected DC current allowed at level 2 charging.</param>
+        /// <param name="EVReactiveSusceptance">Measure of the susceptibility of the circuit to reactance, in Siemens (S).</param>
+        /// <param name="EVSessionTotalDischargeEnergyAvailable">Total energy value, in Wh, that EV is allowed to provide during the entire V2G session.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public DERChargingParameters(WattHour     EnergyAmount,
-                                     Ampere       EVMinCurrent,
-                                     Ampere       EVMaxCurrent,
-                                     Volt         EVMaxVoltage,
-                                     CustomData?  CustomData   = null)
+        public DERChargingParameters(IEnumerable<DERControlType>?            EVSupportedDERControls                   = null,
+                                     Watt?                                   EVOverExcitedMaxDischargePower           = null,
+                                     Decimal?                                EVOverExcitedPowerFactor                 = null,
+                                     Watt?                                   EVUnderExcitedMaxDischargePower          = null,
+                                     Decimal?                                EVUnderExcitedPowerFactor                = null,
+
+                                     VoltAmpere?                             MaxApparentPower                         = null,
+                                     VoltAmpere?                             MaxChargeApparentPower                   = null,
+                                     VoltAmpere?                             MaxChargeApparentPower_L2                = null,
+                                     VoltAmpere?                             MaxChargeApparentPower_L3                = null,
+                                     VoltAmpere?                             MaxDischargeApparentPower                = null,
+                                     VoltAmpere?                             MaxDischargeApparentPower_L2             = null,
+                                     VoltAmpere?                             MaxDischargeApparentPower_L3             = null,
+
+                                     VoltAmpereReactive?                     MaxChargeReactivePower                   = null,
+                                     VoltAmpereReactive?                     MaxChargeReactivePower_L2                = null,
+                                     VoltAmpereReactive?                     MaxChargeReactivePower_L3                = null,
+                                     VoltAmpereReactive?                     MinChargeReactivePower                   = null,
+                                     VoltAmpereReactive?                     MinChargeReactivePower_L2                = null,
+                                     VoltAmpereReactive?                     MinChargeReactivePower_L3                = null,
+
+                                     VoltAmpereReactive?                     MaxDischargeReactivePower                = null,
+                                     VoltAmpereReactive?                     MaxDischargeReactivePower_L2             = null,
+                                     VoltAmpereReactive?                     MaxDischargeReactivePower_L3             = null,
+                                     VoltAmpereReactive?                     MinDischargeReactivePower                = null,
+                                     VoltAmpereReactive?                     MinDischargeReactivePower_L2             = null,
+                                     VoltAmpereReactive?                     MinDischargeReactivePower_L3             = null,
+
+                                     Volt?                                   NominalVoltage                           = null,
+                                     Volt?                                   NominalVoltageOffset                     = null,
+                                     Volt?                                   MaxNominalVoltage                        = null,
+                                     Volt?                                   MinNominalVoltage                        = null,
+
+                                     String?                                 EVInverterManufacturer                   = null,
+                                     String?                                 EVInverterModel                          = null,
+                                     String?                                 EVInverterSerialNumber                   = null,
+                                     String?                                 EVInverterSWVersion                      = null,
+                                     String?                                 EVInverterHWVersion                      = null,
+
+                                     IEnumerable<IslandingDetectionMethod>?  EVIslandingDetectionMethod               = null,
+                                     TimeSpan?                               EVIslandingTripTime                      = null,
+                                     Ampere?                                 EVMaximumLevel1DCInjection               = null,
+                                     TimeSpan?                               EVDurationLevel1DCInjection              = null,
+                                     Ampere?                                 EVMaximumLevel2DCInjection               = null,
+                                     TimeSpan?                               EVDurationLevel2DCInjection              = null,
+                                     Siemens?                                EVReactiveSusceptance                    = null,
+                                     WattHour?                               EVSessionTotalDischargeEnergyAvailable   = null,
+
+                                     CustomData?                             CustomData                               = null)
 
             : base(CustomData)
 
         {
 
-            //this.EnergyAmount  = EnergyAmount;
-            //this.EVMinCurrent  = EVMinCurrent;
-            //this.EVMaxCurrent  = EVMaxCurrent;
-            //this.EVMaxVoltage  = EVMaxVoltage;
+            this.EVSupportedDERControls                  = EVSupportedDERControls?.Distinct() ?? [];
+            this.EVOverExcitedMaxDischargePower          = EVOverExcitedMaxDischargePower;
+            this.EVOverExcitedPowerFactor                = EVOverExcitedPowerFactor;
+            this.EVUnderExcitedMaxDischargePower         = EVUnderExcitedMaxDischargePower;
+            this.EVUnderExcitedPowerFactor               = EVUnderExcitedPowerFactor;
+
+            this.MaxApparentPower                        = MaxApparentPower;
+            this.MaxChargeApparentPower                  = MaxChargeApparentPower;
+            this.MaxChargeApparentPower_L2               = MaxChargeApparentPower_L2;
+            this.MaxChargeApparentPower_L3               = MaxChargeApparentPower_L3;
+            this.MaxDischargeApparentPower               = MaxDischargeApparentPower;
+            this.MaxDischargeApparentPower_L2            = MaxDischargeApparentPower_L2;
+            this.MaxDischargeApparentPower_L3            = MaxDischargeApparentPower_L3;
+
+            this.MaxChargeReactivePower                  = MaxChargeReactivePower;
+            this.MaxChargeReactivePower_L2               = MaxChargeReactivePower_L2;
+            this.MaxChargeReactivePower_L3               = MaxChargeReactivePower_L3;
+            this.MinChargeReactivePower                  = MinChargeReactivePower;
+            this.MinChargeReactivePower_L2               = MinChargeReactivePower_L2;
+            this.MinChargeReactivePower_L3               = MinChargeReactivePower_L3;
+
+            this.MaxDischargeReactivePower               = MaxDischargeReactivePower;
+            this.MaxDischargeReactivePower_L2            = MaxDischargeReactivePower_L2;
+            this.MaxDischargeReactivePower_L3            = MaxDischargeReactivePower_L3;
+            this.MinDischargeReactivePower               = MinDischargeReactivePower;
+            this.MinDischargeReactivePower_L2            = MinDischargeReactivePower_L2;
+            this.MinDischargeReactivePower_L3            = MinDischargeReactivePower_L3;
+
+            this.NominalVoltage                          = NominalVoltage;
+            this.NominalVoltageOffset                    = NominalVoltageOffset;
+            this.MaxNominalVoltage                       = MaxNominalVoltage;
+            this.MinNominalVoltage                       = MinNominalVoltage;
+
+            this.EVInverterManufacturer                  = EVInverterManufacturer;
+            this.EVInverterModel                         = EVInverterModel;
+            this.EVInverterSerialNumber                  = EVInverterSerialNumber;
+            this.EVInverterSWVersion                     = EVInverterSWVersion;
+            this.EVInverterHWVersion                     = EVInverterHWVersion;
+
+            this.EVIslandingDetectionMethod              = EVIslandingDetectionMethod?.Distinct() ?? [];
+            this.EVIslandingTripTime                     = EVIslandingTripTime;
+            this.EVMaximumLevel1DCInjection              = EVMaximumLevel1DCInjection;
+            this.EVDurationLevel1DCInjection             = EVDurationLevel1DCInjection;
+            this.EVMaximumLevel2DCInjection              = EVMaximumLevel2DCInjection;
+            this.EVDurationLevel2DCInjection             = EVDurationLevel2DCInjection;
+            this.EVReactiveSusceptance                   = EVReactiveSusceptance;
+            this.EVSessionTotalDischargeEnergyAvailable  = EVSessionTotalDischargeEnergyAvailable;
 
             unchecked
             {
 
-                hashCode = EnergyAmount.GetHashCode() * 11 ^
-                           EVMinCurrent.GetHashCode() *  7 ^
-                           EVMaxCurrent.GetHashCode() *  5 ^
-                           EVMaxVoltage.GetHashCode() *  3 ^
-                           base.        GetHashCode();
+                hashCode =  this.EVSupportedDERControls.                 CalcHashCode()       * 191 ^
+                           (this.EVOverExcitedMaxDischargePower?.        GetHashCode()  ?? 0) * 181 ^
+                           (this.EVOverExcitedPowerFactor?.              GetHashCode()  ?? 0) * 179 ^
+                           (this.EVUnderExcitedMaxDischargePower?.       GetHashCode()  ?? 0) * 173 ^
+                           (this.EVUnderExcitedPowerFactor?.             GetHashCode()  ?? 0) * 167 ^
+
+                           (this.MaxApparentPower?.                      GetHashCode()  ?? 0) * 163 ^
+                           (this.MaxChargeApparentPower?.                GetHashCode()  ?? 0) * 157 ^
+                           (this.MaxChargeApparentPower_L2?.             GetHashCode()  ?? 0) * 151 ^
+                           (this.MaxChargeApparentPower_L3?.             GetHashCode()  ?? 0) * 149 ^
+                           (this.MaxDischargeApparentPower?.             GetHashCode()  ?? 0) * 139 ^
+                           (this.MaxDischargeApparentPower_L2?.          GetHashCode()  ?? 0) * 137 ^
+                           (this.MaxDischargeApparentPower_L3?.          GetHashCode()  ?? 0) * 131 ^
+
+                           (this.MaxChargeReactivePower?.                GetHashCode()  ?? 0) * 127 ^
+                           (this.MaxChargeReactivePower_L2?.             GetHashCode()  ?? 0) * 113 ^
+                           (this.MaxChargeReactivePower_L3?.             GetHashCode()  ?? 0) * 109 ^
+                           (this.MinChargeReactivePower?.                GetHashCode()  ?? 0) * 107 ^
+                           (this.MinChargeReactivePower_L2?.             GetHashCode()  ?? 0) * 103 ^
+                           (this.MinChargeReactivePower_L3?.             GetHashCode()  ?? 0) * 101 ^
+
+                           (this.MaxDischargeReactivePower?.             GetHashCode()  ?? 0) *  97 ^
+                           (this.MaxDischargeReactivePower_L2?.          GetHashCode()  ?? 0) *  89 ^
+                           (this.MaxDischargeReactivePower_L3?.          GetHashCode()  ?? 0) *  83 ^
+                           (this.MinDischargeReactivePower?.             GetHashCode()  ?? 0) *  79 ^
+                           (this.MinDischargeReactivePower_L2?.          GetHashCode()  ?? 0) *  73 ^
+                           (this.MinDischargeReactivePower_L3?.          GetHashCode()  ?? 0) *  71 ^
+
+                           (this.NominalVoltage?.                        GetHashCode()  ?? 0) *  67 ^
+                           (this.NominalVoltageOffset?.                  GetHashCode()  ?? 0) *  61 ^
+                           (this.MaxNominalVoltage?.                     GetHashCode()  ?? 0) *  59 ^
+                           (this.MinNominalVoltage?.                     GetHashCode()  ?? 0) *  53 ^
+
+                           (this.EVInverterManufacturer?.                GetHashCode()  ?? 0) *  47 ^
+                           (this.EVInverterModel?.                       GetHashCode()  ?? 0) *  43 ^
+                           (this.EVInverterSerialNumber?.                GetHashCode()  ?? 0) *  41 ^
+                           (this.EVInverterSWVersion?.                   GetHashCode()  ?? 0) *  37 ^
+                           (this.EVInverterHWVersion?.                   GetHashCode()  ?? 0) *  31 ^
+
+                            this.EVIslandingDetectionMethod.             CalcHashCode()       *  29 ^
+                           (this.EVIslandingTripTime?.                   GetHashCode()  ?? 0) *  23 ^
+                           (this.EVMaximumLevel1DCInjection?.            GetHashCode()  ?? 0) *  17 ^
+                           (this.EVDurationLevel1DCInjection?.           GetHashCode()  ?? 0) *  13 ^
+                           (this.EVMaximumLevel2DCInjection?.            GetHashCode()  ?? 0) *  11 ^
+                           (this.EVDurationLevel2DCInjection?.           GetHashCode()  ?? 0) *   7 ^
+                           (this.EVReactiveSusceptance?.                 GetHashCode()  ?? 0) *   5 ^
+                           (this.EVSessionTotalDischargeEnergyAvailable?.GetHashCode()  ?? 0) *   3 ^
+
+                            base.                                        GetHashCode();
 
             }
 
@@ -420,13 +596,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "*(2.1)* DERChargingParametersType is used in ChargingNeedsType during an ISO 15118-20 session for AC_BPT_DER to report the inverter settings related to DER control that were agreed between EVSE and EV.\r\n\r\nFields starting with \"ev\" contain values from the EV.\r\nOther fields contain a value that is supported by both EV and EVSE.\r\n\r\nDERChargingParametersType type is only relevant in case of an ISO 15118-20 AC_BPT_DER/AC_DER charging session.\r\n\r\nNOTE: All these fields have values greater or equal to zero (i.e. are non-negative)\r\n\r\n",
+        //     "description": "DERChargingParametersType is used in ChargingNeedsType during an ISO 15118-20 session for AC_BPT_DER to report the inverter settings related to DER control that were agreed between EVSE and EV.\r\n\r\nFields starting with \"ev\" contain values from the EV.\r\nOther fields contain a value that is supported by both EV and EVSE.\r\n\r\nDERChargingParametersType type is only relevant in case of an ISO 15118-20 AC_BPT_DER/AC_DER charging session.\r\n\r\nNOTE: All these fields have values greater or equal to zero (i.e. are non-negative)",
         //     "javaType": "DERChargingParameters",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "evSupportedDERControl": {
-        //             "description": "DER control functions supported by EV. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType:DERControlFunctions (bitmap)\r\n",
+        //             "description": "DER control functions supported by EV. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType:DERControlFunctions (bitmap)",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {
@@ -435,140 +611,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "minItems": 1
         //         },
         //         "evOverExcitedMaxDischargePower": {
-        //             "description": "Rated maximum injected active power by EV, at specified over-excited power factor (overExcitedPowerFactor). +\r\nIt can also be defined as the rated maximum discharge power at the rated minimum injected reactive power value. This means that if the EV is providing reactive power support, and it is requested to discharge at max power (e.g. to satisfy an EMS request), the EV may override the request and discharge up to overExcitedMaximumDischargePower to meet the minimum reactive power requirements. +\r\nCorresponds to the WOvPF attribute in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVOverExcitedMaximumDischargePower\r\n",
+        //             "description": "Rated maximum injected active power by EV, at specified over-excited power factor (overExcitedPowerFactor). +\r\nIt can also be defined as the rated maximum discharge power at the rated minimum injected reactive power value. This means that if the EV is providing reactive power support, and it is requested to discharge at max power (e.g. to satisfy an EMS request), the EV may override the request and discharge up to overExcitedMaximumDischargePower to meet the minimum reactive power requirements. +\r\nCorresponds to the WOvPF attribute in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVOverExcitedMaximumDischargePower",
         //             "type": "number"
         //         },
         //         "evOverExcitedPowerFactor": {
-        //             "description": "EV power factor when injecting (over excited) the minimum reactive power. +\r\nCorresponds to the OvPF attribute in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVOverExcitedPowerFactor\r\n",
+        //             "description": "EV power factor when injecting (over excited) the minimum reactive power. +\r\nCorresponds to the OvPF attribute in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVOverExcitedPowerFactor",
         //             "type": "number"
         //         },
         //         "evUnderExcitedMaxDischargePower": {
-        //             "description": "Rated maximum injected active power by EV supported at specified under-excited power factor (EVUnderExcitedPowerFactor). +\r\nIt can also be defined as the rated maximum dischargePower at the rated minimum absorbed reactive power value.\r\nThis means that if the EV is providing reactive power support, and it is requested to discharge at max power (e.g. to satisfy an EMS request), the EV may override the request and discharge up to underExcitedMaximumDischargePower to meet the minimum reactive power requirements. +\r\nThis corresponds to the WUnPF attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVUnderExcitedMaximumDischargePower\r\n",
+        //             "description": "Rated maximum injected active power by EV supported at specified under-excited power factor (EVUnderExcitedPowerFactor). +\r\nIt can also be defined as the rated maximum dischargePower at the rated minimum absorbed reactive power value.\r\nThis means that if the EV is providing reactive power support, and it is requested to discharge at max power (e.g. to satisfy an EMS request), the EV may override the request and discharge up to underExcitedMaximumDischargePower to meet the minimum reactive power requirements. +\r\nThis corresponds to the WUnPF attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVUnderExcitedMaximumDischargePower",
         //             "type": "number"
         //         },
         //         "evUnderExcitedPowerFactor": {
-        //             "description": "EV power factor when injecting (under excited) the minimum reactive power. +\r\nCorresponds to the OvPF attribute in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVUnderExcitedPowerFactor\r\n",
+        //             "description": "EV power factor when injecting (under excited) the minimum reactive power. +\r\nCorresponds to the OvPF attribute in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVUnderExcitedPowerFactor",
         //             "type": "number"
         //         },
         //         "maxApparentPower": {
-        //             "description": "Rated maximum total apparent power, defined by min(EV, EVSE) in va.\r\nCorresponds to the VAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumApparentPower\r\n",
+        //             "description": "Rated maximum total apparent power, defined by min(EV, EVSE) in va.\r\nCorresponds to the VAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumApparentPower",
         //             "type": "number"
         //         },
         //         "maxChargeApparentPower": {
-        //             "description": "Rated maximum absorbed apparent power, defined by min(EV, EVSE) in va. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n    Corresponds to the ChaVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower\r\n",
+        //             "description": "Rated maximum absorbed apparent power, defined by min(EV, EVSE) in va. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n    Corresponds to the ChaVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower",
         //             "type": "number"
         //         },
         //         "maxChargeApparentPower_L2": {
-        //             "description": "Rated maximum absorbed apparent power on phase L2, defined by min(EV, EVSE) in va.\r\nCorresponds to the ChaVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower_L2\r\n",
+        //             "description": "Rated maximum absorbed apparent power on phase L2, defined by min(EV, EVSE) in va.\r\nCorresponds to the ChaVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower_L2",
         //             "type": "number"
         //         },
         //         "maxChargeApparentPower_L3": {
-        //             "description": "Rated maximum absorbed apparent power on phase L3, defined by min(EV, EVSE) in va.\r\nCorresponds to the ChaVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower_L3\r\n",
+        //             "description": "Rated maximum absorbed apparent power on phase L3, defined by min(EV, EVSE) in va.\r\nCorresponds to the ChaVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeApparentPower_L3",
         //             "type": "number"
         //         },
         //         "maxDischargeApparentPower": {
-        //             "description": "Rated maximum injected apparent power, defined by min(EV, EVSE) in va. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n    Corresponds to the DisVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower\r\n",
+        //             "description": "Rated maximum injected apparent power, defined by min(EV, EVSE) in va. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n    Corresponds to the DisVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower",
         //             "type": "number"
         //         },
         //         "maxDischargeApparentPower_L2": {
-        //             "description": "Rated maximum injected apparent power on phase L2, defined by min(EV, EVSE) in va. +\r\n    Corresponds to the DisVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower_L2\r\n",
+        //             "description": "Rated maximum injected apparent power on phase L2, defined by min(EV, EVSE) in va. +\r\n    Corresponds to the DisVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower_L2",
         //             "type": "number"
         //         },
         //         "maxDischargeApparentPower_L3": {
-        //             "description": "Rated maximum injected apparent power on phase L3, defined by min(EV, EVSE) in va. +\r\n    Corresponds to the DisVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower_L3\r\n",
+        //             "description": "Rated maximum injected apparent power on phase L3, defined by min(EV, EVSE) in va. +\r\n    Corresponds to the DisVAMaxRtg in IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeApparentPower_L3",
         //             "type": "number"
         //         },
         //         "maxChargeReactivePower": {
-        //             "description": "Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\nCorresponds to the AvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower\r\n",
+        //             "description": "Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\nCorresponds to the AvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower",
         //             "type": "number"
         //         },
         //         "maxChargeReactivePower_L2": {
-        //             "description": "Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L2. +\r\nCorresponds to the AvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower_L2\r\n",
+        //             "description": "Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L2. +\r\nCorresponds to the AvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower_L2",
         //             "type": "number"
         //         },
         //         "maxChargeReactivePower_L3": {
-        //             "description": "Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L3. +\r\nCorresponds to the AvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower_L3\r\n",
+        //             "description": "Rated maximum absorbed reactive power, defined by min(EV, EVSE), in vars on phase L3. +\r\nCorresponds to the AvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargeReactivePower_L3",
         //             "type": "number"
         //         },
         //         "minChargeReactivePower": {
-        //             "description": "Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower\r\n",
+        //             "description": "Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower",
         //             "type": "number"
         //         },
         //         "minChargeReactivePower_L2": {
-        //             "description": "Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L2. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower_L2\r\n",
+        //             "description": "Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L2. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower_L2",
         //             "type": "number"
         //         },
         //         "minChargeReactivePower_L3": {
-        //             "description": "Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L3. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower_L3\r\n",
+        //             "description": "Rated minimum absorbed reactive power, defined by max(EV, EVSE), in vars on phase L3. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargeReactivePower_L3",
         //             "type": "number"
         //         },
         //         "maxDischargeReactivePower": {
-        //             "description": "Rated maximum injected reactive power, defined by min(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\nCorresponds to the IvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower\r\n",
+        //             "description": "Rated maximum injected reactive power, defined by min(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\nCorresponds to the IvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower",
         //             "type": "number"
         //         },
         //         "maxDischargeReactivePower_L2": {
-        //             "description": "Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L2. +\r\nCorresponds to the IvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower_L2\r\n",
+        //             "description": "Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L2. +\r\nCorresponds to the IvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower_L2",
         //             "type": "number"
         //         },
         //         "maxDischargeReactivePower_L3": {
-        //             "description": "Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L3. +\r\nCorresponds to the IvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower_L3\r\n",
+        //             "description": "Rated maximum injected reactive power, defined by min(EV, EVSE), in vars on phase L3. +\r\nCorresponds to the IvarMax attribute in the IEC 61850. +\r\n    *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargeReactivePower_L3",
         //             "type": "number"
         //         },
         //         "minDischargeReactivePower": {
-        //             "description": "Rated minimum injected reactive power, defined by max(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower\r\n",
+        //             "description": "Rated minimum injected reactive power, defined by max(EV, EVSE), in vars. +\r\n    This field represents the sum of all phases, unless values are provided for L2 and L3,\r\n    in which case this field represents phase L1. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower",
         //             "type": "number"
         //         },
         //         "minDischargeReactivePower_L2": {
-        //             "description": "Rated minimum injected reactive power, defined by max(EV, EVSE), in var on phase L2. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower_L2\r\n",
+        //             "description": "Rated minimum injected reactive power, defined by max(EV, EVSE), in var on phase L2. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower_L2",
         //             "type": "number"
         //         },
         //         "minDischargeReactivePower_L3": {
-        //             "description": "Rated minimum injected reactive power, defined by max(EV, EVSE), in var on phase L3. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower_L3\r\n",
+        //             "description": "Rated minimum injected reactive power, defined by max(EV, EVSE), in var on phase L3. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargeReactivePower_L3",
         //             "type": "number"
         //         },
         //         "nominalVoltage": {
-        //             "description": "Line voltage supported by EVSE and EV.\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVNominalVoltage\r\n",
+        //             "description": "Line voltage supported by EVSE and EV.\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVNominalVoltage",
         //             "type": "number"
         //         },
         //         "nominalVoltageOffset": {
-        //             "description": "The nominal AC voltage (rms) offset between the Charging Station's electrical connection point and the utility\u2019s point of common coupling. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVNominalVoltageOffset\r\n",
+        //             "description": "The nominal AC voltage (rms) offset between the Charging Station's electrical connection point and the utility\u2019s point of common coupling. +\r\n        *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVNominalVoltageOffset",
         //             "type": "number"
         //         },
         //         "maxNominalVoltage": {
-        //             "description": "Maximum AC rms voltage, as defined by min(EV, EVSE)  to operate with. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumNominalVoltage\r\n",
+        //             "description": "Maximum AC rms voltage, as defined by min(EV, EVSE)  to operate with. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumNominalVoltage",
         //             "type": "number"
         //         },
         //         "minNominalVoltage": {
-        //             "description": "Minimum AC rms voltage, as defined by max(EV, EVSE)  to operate with. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumNominalVoltage\r\n",
+        //             "description": "Minimum AC rms voltage, as defined by max(EV, EVSE)  to operate with. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMinimumNominalVoltage",
         //             "type": "number"
         //         },
         //         "evInverterManufacturer": {
-        //             "description": "Manufacturer of the EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterManufacturer\r\n",
+        //             "description": "Manufacturer of the EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterManufacturer",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "evInverterModel": {
-        //             "description": "Model name of the EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterModel\r\n",
+        //             "description": "Model name of the EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterModel",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "evInverterSerialNumber": {
-        //             "description": "Serial number of the EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterSerialNumber\r\n",
+        //             "description": "Serial number of the EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterSerialNumber",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "evInverterSwVersion": {
-        //             "description": "Software version of EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterSwVersion\r\n",
+        //             "description": "Software version of EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterSwVersion",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "evInverterHwVersion": {
-        //             "description": "Hardware version of EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterHwVersion\r\n",
+        //             "description": "Hardware version of EV inverter. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVInverterHwVersion",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "evIslandingDetectionMethod": {
-        //             "description": "Type of islanding detection method. Only mandatory when islanding detection is required at the site, as set in the ISO 15118 Service Details configuration. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVIslandingDetectionMethod\r\n",
+        //             "description": "Type of islanding detection method. Only mandatory when islanding detection is required at the site, as set in the ISO 15118 Service Details configuration. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVIslandingDetectionMethod",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {
@@ -577,31 +753,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "minItems": 1
         //         },
         //         "evIslandingTripTime": {
-        //             "description": "Time after which EV will trip if an island has been detected. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVIslandingTripTime\r\n",
+        //             "description": "Time after which EV will trip if an island has been detected. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVIslandingTripTime",
         //             "type": "number"
         //         },
         //         "evMaximumLevel1DCInjection": {
-        //             "description": "Maximum injected DC current allowed at level 1 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel1DCInjection\r\n",
+        //             "description": "Maximum injected DC current allowed at level 1 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel1DCInjection",
         //             "type": "number"
         //         },
         //         "evDurationLevel1DCInjection": {
-        //             "description": "Maximum allowed duration of DC injection at level 1 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVDurationLevel1DCInjection\r\n",
+        //             "description": "Maximum allowed duration of DC injection at level 1 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVDurationLevel1DCInjection",
         //             "type": "number"
         //         },
         //         "evMaximumLevel2DCInjection": {
-        //             "description": "Maximum injected DC current allowed at level 2 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel2DCInjection\r\n",
+        //             "description": "Maximum injected DC current allowed at level 2 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVMaximumLevel2DCInjection",
         //             "type": "number"
         //         },
         //         "evDurationLevel2DCInjection": {
-        //             "description": "Maximum allowed duration of DC injection at level 2 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVDurationLevel2DCInjection\r\n",
+        //             "description": "Maximum allowed duration of DC injection at level 2 charging. +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVDurationLevel2DCInjection",
         //             "type": "number"
         //         },
         //         "evReactiveSusceptance": {
-        //             "description": "\tMeasure of the susceptibility of the circuit to reactance, in Siemens (S). +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVReactiveSusceptance\r\n\r\n\r\n",
+        //             "description": "\tMeasure of the susceptibility of the circuit to reactance, in Siemens (S). +\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVReactiveSusceptance",
         //             "type": "number"
         //         },
         //         "evSessionTotalDischargeEnergyAvailable": {
-        //             "description": "Total energy value, in Wh, that EV is allowed to provide during the entire V2G session. The value is independent of the V2X Cycling area. Once this value reaches the value of 0, the EV may block any attempt to discharge in order to protect the battery health.\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVSessionTotalDischargeEnergyAvailable\r\n\r\n\r\n",
+        //             "description": "Total energy value, in Wh, that EV is allowed to provide during the entire V2G session. The value is independent of the V2X Cycling area. Once this value reaches the value of 0, the EV may block any attempt to discharge in order to protect the battery health.\r\n       *ISO 15118-20*: DER_BPT_AC_CPDReqEnergyTransferModeType: EVSessionTotalDischargeEnergyAvailable",
         //             "type": "number"
         //         },
         //         "customData": {
@@ -619,8 +795,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDERChargingParametersParser">A delegate to parse custom DER charging parameters JSON objects.</param>
-        public static DERChargingParameters Parse(JObject                                             JSON,
-                                                 CustomJObjectParserDelegate<DERChargingParameters>?  CustomDERChargingParametersParser   = null)
+        public static DERChargingParameters Parse(JObject                                              JSON,
+                                                  CustomJObjectParserDelegate<DERChargingParameters>?  CustomDERChargingParametersParser   = null)
         {
 
             if (TryParse(JSON,
@@ -676,59 +852,514 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DERChargingParameters = default;
 
-                #region EnergyAmount    [mandatory]
+                #region EVSupportedDERControls                    [optional]
 
-                if (!JSON.ParseMandatory("energyAmount",
-                                         "energy amount",
-                                         WattHour.TryParse,
-                                         out WattHour EnergyAmount,
-                                         out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("evOverExcitedMaxDischargePower",
+                                              "EV over excited max discharge power",
+                                              DERControlType.TryParse,
+                                              out HashSet<DERControlType> EVSupportedDERControls,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region EVMinCurrent    [mandatory]
+                #region EVOverExcitedMaxDischargePower            [optional]
 
-                if (!JSON.ParseMandatory("evMinCurrent",
-                                         "ev min current",
-                                         Ampere.TryParse,
-                                         out Ampere EVMinCurrent,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("evOverExcitedMaxDischargePower",
+                                       "EV over excited maximum discharge power",
+                                       out Watt? EVOverExcitedMaxDischargePower,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region EVMaxCurrent    [mandatory]
+                #region EVOverExcitedPowerFactor                  [optional]
 
-                if (!JSON.ParseMandatory("evMaxCurrent",
-                                         "ev max current",
-                                         Ampere.TryParse,
-                                         out Ampere EVMaxCurrent,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("evOverExcitedPowerFactor",
+                                       "EV evOverExcitedPowerFactor",
+                                       out Decimal? EVOverExcitedPowerFactor,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region EVMaxVoltage    [mandatory]
+                #region EVUnderExcitedMaxDischargePower           [optional]
 
-                if (!JSON.ParseMandatory("evMaxVoltage",
-                                         "ev max voltage",
-                                         Volt.TryParse,
-                                         out Volt EVMaxVoltage,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("evUnderExcitedMaxDischargePower",
+                                       "EV evUnderExcitedMaxDischargePower",
+                                       out Watt? EVUnderExcitedMaxDischargePower,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region CustomData      [optional]
+                #region EVUnderExcitedPowerFactor                 [optional]
+
+                if (JSON.ParseOptional("evUnderExcitedPowerFactor",
+                                       "EV under excited power factor",
+                                       out Decimal? EVUnderExcitedPowerFactor,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region MaxApparentPower                          [optional]
+
+                if (JSON.ParseOptional("maxApparentPower",
+                                       "maximum apparent power",
+                                       out VoltAmpere? MaxApparentPower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxChargeApparentPower                    [optional]
+
+                if (JSON.ParseOptional("maxChargeApparentPower",
+                                       "maximum charge apparentPower",
+                                       out VoltAmpere? MaxChargeApparentPower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxChargeApparentPower_L2                 [optional]
+
+                if (JSON.ParseOptional("maxChargeApparentPower_L2",
+                                       "maximum charge apparentPower L2",
+                                       out VoltAmpere? MaxChargeApparentPower_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxChargeApparentPower_L3                 [optional]
+
+                if (JSON.ParseOptional("maxChargeApparentPower_L3",
+                                       "maximum charge apparentPower L3",
+                                       out VoltAmpere? MaxChargeApparentPower_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxDischargeApparentPower                 [optional]
+
+                if (JSON.ParseOptional("maxDischargeApparentPower",
+                                       "maximum discharge apparentPower",
+                                       out VoltAmpere? MaxDischargeApparentPower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxDischargeApparentPower_L2              [optional]
+
+                if (JSON.ParseOptional("maxDischargeApparentPower_L2",
+                                       "maximum discharge apparentPower L2",
+                                       out VoltAmpere? MaxDischargeApparentPower_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxDischargeApparentPower_L3              [optional]
+
+                if (JSON.ParseOptional("maxDischargeApparentPower_L3",
+                                       "maximum discharge apparentPower L3",
+                                       out VoltAmpere? MaxDischargeApparentPower_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region MaxChargeReactivePower                    [optional]
+
+                if (JSON.ParseOptional("maxChargeReactivePower",
+                                       "maximum charge reactivePower",
+                                       out VoltAmpereReactive? MaxChargeReactivePower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxChargeReactivePower_L2                 [optional]
+
+                if (JSON.ParseOptional("maxChargeReactivePower_L2",
+                                       "maximum charge reactivePower L2",
+                                       out VoltAmpereReactive? MaxChargeReactivePower_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxChargeReactivePower_L3                 [optional]
+
+                if (JSON.ParseOptional("maxChargeReactivePower_L3",
+                                       "maximum charge reactivePower L3",
+                                       out VoltAmpereReactive? MaxChargeReactivePower_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinChargeReactivePower                    [optional]
+
+                if (JSON.ParseOptional("minChargeReactivePower",
+                                       "minimum charge reactivePower",
+                                       out VoltAmpereReactive? MinChargeReactivePower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinChargeReactivePower_L2                 [optional]
+
+                if (JSON.ParseOptional("minChargeReactivePower_L2",
+                                       "minimum charge reactivePower L2",
+                                       out VoltAmpereReactive? MinChargeReactivePower_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinChargeReactivePower_L3                 [optional]
+
+                if (JSON.ParseOptional("minChargeReactivePower_L3",
+                                       "minimum charge reactivePower L3",
+                                       out VoltAmpereReactive? MinChargeReactivePower_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region MaxDischargeReactivePower                 [optional]
+
+                if (JSON.ParseOptional("maxDischargeReactivePower",
+                                       "maximum discharge reactivePower",
+                                       out VoltAmpereReactive? MaxDischargeReactivePower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxDischargeReactivePower_L2              [optional]
+
+                if (JSON.ParseOptional("maxDischargeReactivePower_L2",
+                                       "maximum discharge reactivePower L2",
+                                       out VoltAmpereReactive? MaxDischargeReactivePower_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxDischargeReactivePower_L3              [optional]
+
+                if (JSON.ParseOptional("maxDischargeReactivePower_L3",
+                                       "maximum discharge reactivePower L3",
+                                       out VoltAmpereReactive? MaxDischargeReactivePower_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinDischargeReactivePower                 [optional]
+
+                if (JSON.ParseOptional("minDischargeReactivePower",
+                                       "minimum discharge reactivePower",
+                                       out VoltAmpereReactive? MinDischargeReactivePower,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinDischargeReactivePower_L2              [optional]
+
+                if (JSON.ParseOptional("minDischargeReactivePower_L2",
+                                       "minimum discharge reactivePower L2",
+                                       out VoltAmpereReactive? MinDischargeReactivePower_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinDischargeReactivePower_L3              [optional]
+
+                if (JSON.ParseOptional("minDischargeReactivePower_L3",
+                                       "minimum discharge reactivePower L3",
+                                       out VoltAmpereReactive? MinDischargeReactivePower_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region NominalVoltage                            [optional]
+
+                if (JSON.ParseOptional("nominalVoltage",
+                                       "nominal voltage",
+                                       out Volt? NominalVoltage,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region NominalVoltageOffset                      [optional]
+
+                if (JSON.ParseOptional("nominalVoltageOffset",
+                                       "nominal voltage offset",
+                                       out Volt? NominalVoltageOffset,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MaxNominalVoltage                         [optional]
+
+                if (JSON.ParseOptional("maxNominalVoltage",
+                                       "maximum nominal voltage",
+                                       out Volt? MaxNominalVoltage,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region MinNominalVoltage                         [optional]
+
+                if (JSON.ParseOptional("minNominalVoltage",
+                                       "minimum nominal voltage",
+                                       out Volt? MinNominalVoltage,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region EVInverterManufacturer                    [optional]
+
+                var EVInverterManufacturer = JSON.GetString("evInverterManufacturer");
+
+                #endregion
+
+                #region EVInverterModel                           [optional]
+
+                var EVInverterModel = JSON.GetString("evInverterModel");
+
+                #endregion
+
+                #region EVInverterSerialNumber                    [optional]
+
+                var EVInverterSerialNumber = JSON.GetString("evInverterSerialNumber");
+
+                #endregion
+
+                #region EVInverterSWVersion                       [optional]
+
+                var EVInverterSWVersion = JSON.GetString("evInverterSwVersion");
+
+                #endregion
+
+                #region EVInverterHWVersion                       [optional]
+
+                var EVInverterHWVersion = JSON.GetString("evInverterHwVersion");
+
+                #endregion
+
+
+                #region EVIslandingDetectionMethod                [optional]
+
+                if (JSON.ParseOptionalHashSet("evIslandingDetectionMethod",
+                                              "EV over excited max discharge power",
+                                              IslandingDetectionMethod.TryParse,
+                                              out HashSet<IslandingDetectionMethod> EVIslandingDetectionMethod,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVIslandingTripTime                       [optional]
+
+                if (JSON.ParseOptional("evIslandingTripTime",
+                                       "EV islanding trip time",
+                                       out TimeSpan? EVIslandingTripTime,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVMaximumLevel1DCInjection                [optional]
+
+                if (JSON.ParseOptional("evMaximumLevel1DCInjection",
+                                       "EV maximum level1 DC injection",
+                                       out Ampere? EVMaximumLevel1DCInjection,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVDurationLevel1DCInjection               [optional]
+
+                if (JSON.ParseOptional("evDurationLevel1DCInjection",
+                                       "EV duration level1 DC injection",
+                                       out TimeSpan? EVDurationLevel1DCInjection,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVMaximumLevel2DCInjection                [optional]
+
+                if (JSON.ParseOptional("evMaximumLevel2DCInjection",
+                                       "EV maximum level2 DC injection",
+                                       out Ampere? EVMaximumLevel2DCInjection,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVDurationLevel2DCInjection               [optional]
+
+                if (JSON.ParseOptional("evDurationLevel2DCInjection",
+                                       "EV duration level2 DC injection",
+                                       out TimeSpan? EVDurationLevel2DCInjection,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVReactiveSusceptance                     [optional]
+
+                if (JSON.ParseOptional("evReactiveSusceptance",
+                                       "EV reactive susceptance",
+                                       out Siemens? EVReactiveSusceptance,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region EVSessionTotalDischargeEnergyAvailable    [optional]
+
+                if (JSON.ParseOptional("evSessionTotalDischargeEnergyAvailable",
+                                       "EV session total discharge energy available",
+                                       out WattHour? EVSessionTotalDischargeEnergyAvailable,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region CustomData                                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -744,11 +1375,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 DERChargingParameters = new DERChargingParameters(
-                                            EnergyAmount,
-                                            EVMinCurrent,
-                                            EVMaxCurrent,
-                                            EVMaxVoltage,
+
+                                            EVSupportedDERControls,
+                                            EVOverExcitedMaxDischargePower,
+                                            EVOverExcitedPowerFactor,
+                                            EVUnderExcitedMaxDischargePower,
+                                            EVUnderExcitedPowerFactor,
+
+                                            MaxApparentPower,
+                                            MaxChargeApparentPower,
+                                            MaxChargeApparentPower_L2,
+                                            MaxChargeApparentPower_L3,
+                                            MaxDischargeApparentPower,
+                                            MaxDischargeApparentPower_L2,
+                                            MaxDischargeApparentPower_L3,
+
+                                            MaxChargeReactivePower,
+                                            MaxChargeReactivePower_L2,
+                                            MaxChargeReactivePower_L3,
+                                            MinChargeReactivePower,
+                                            MinChargeReactivePower_L2,
+                                            MinChargeReactivePower_L3,
+
+                                            MaxDischargeReactivePower,
+                                            MaxDischargeReactivePower_L2,
+                                            MaxDischargeReactivePower_L3,
+                                            MinDischargeReactivePower,
+                                            MinDischargeReactivePower_L2,
+                                            MinDischargeReactivePower_L3,
+
+                                            NominalVoltage,
+                                            NominalVoltageOffset,
+                                            MaxNominalVoltage,
+                                            MinNominalVoltage,
+
+                                            EVInverterManufacturer,
+                                            EVInverterModel,
+                                            EVInverterSerialNumber,
+                                            EVInverterSWVersion,
+                                            EVInverterHWVersion,
+
+                                            EVIslandingDetectionMethod,
+                                            EVIslandingTripTime,
+                                            EVMaximumLevel1DCInjection,
+                                            EVDurationLevel1DCInjection,
+                                            EVMaximumLevel2DCInjection,
+                                            EVDurationLevel2DCInjection,
+                                            EVReactiveSusceptance,
+                                            EVSessionTotalDischargeEnergyAvailable,
+
                                             CustomData
+
                                         );
 
                 if (CustomDERChargingParametersParser is not null)
@@ -778,18 +1455,183 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDERChargingParametersSerializer">A delegate to serialize custom DER charging parameters.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DERChargingParameters>?  CustomDERChargingParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
 
-                                 //new JProperty("energyAmount",   EnergyAmount.IntegerValue),
-                                 //new JProperty("evMinCurrent",   EVMinCurrent.IntegerValue),
-                                 //new JProperty("evMaxCurrent",   EVMaxCurrent.IntegerValue),
-                                 //new JProperty("evMaxVoltage",   EVMaxVoltage.IntegerValue),
+                           EVSupportedDERControls.Any()
+                               ? new JProperty("evSupportedDERControl",                    new JArray(EVSupportedDERControls.Select(evSupportedDERControl => evSupportedDERControl.ToString())))
+                               : null,
+
+                           EVOverExcitedMaxDischargePower.        HasValue
+                               ? new JProperty("evOverExcitedMaxDischargePower",           EVOverExcitedMaxDischargePower.        Value)
+                               : null,
+
+                           EVOverExcitedPowerFactor.              HasValue
+                               ? new JProperty("evOverExcitedPowerFactor",                 EVOverExcitedPowerFactor.              Value)
+                               : null,
+
+                           EVUnderExcitedMaxDischargePower.       HasValue
+                               ? new JProperty("evUnderExcitedMaxDischargePower",          EVUnderExcitedMaxDischargePower.       Value)
+                               : null,
+
+                           EVUnderExcitedPowerFactor.             HasValue
+                               ? new JProperty("evUnderExcitedPowerFactor",                EVUnderExcitedPowerFactor.             Value)
+                               : null,
+
+
+                           MaxApparentPower.                      HasValue
+                               ? new JProperty("maxApparentPower",                         MaxApparentPower.                      Value)
+                               : null,
+
+                           MaxChargeApparentPower.                HasValue
+                               ? new JProperty("maxChargeApparentPower",                   MaxChargeApparentPower.                Value)
+                               : null,
+
+                           MaxChargeApparentPower_L2.             HasValue
+                               ? new JProperty("maxChargeApparentPower_L2",                MaxChargeApparentPower_L2.             Value)
+                               : null,
+
+                           MaxChargeApparentPower_L3.             HasValue
+                               ? new JProperty("maxChargeApparentPower_L3",                MaxChargeApparentPower_L3.             Value)
+                               : null,
+
+                           MaxDischargeApparentPower.             HasValue
+                               ? new JProperty("maxDischargeApparentPower",                MaxDischargeApparentPower.             Value)
+                               : null,
+
+                           MaxDischargeApparentPower_L2.          HasValue
+                               ? new JProperty("maxDischargeApparentPower_L2",             MaxDischargeApparentPower_L2.          Value)
+                               : null,
+
+                           MaxDischargeApparentPower_L3.          HasValue
+                               ? new JProperty("maxDischargeApparentPower_L3",             MaxDischargeApparentPower_L3.          Value)
+                               : null,
+
+
+                           MaxChargeReactivePower.                HasValue
+                               ? new JProperty("maxChargeReactivePower",                   MaxChargeReactivePower.                Value)
+                               : null,
+
+                           MaxChargeReactivePower_L2.             HasValue
+                               ? new JProperty("maxChargeReactivePower_L2",                MaxChargeReactivePower_L2.             Value)
+                               : null,
+
+                           MaxChargeReactivePower_L3.             HasValue
+                               ? new JProperty("maxChargeReactivePower_L3",                MaxChargeReactivePower_L3.             Value)
+                               : null,
+
+                           MinChargeReactivePower.                HasValue
+                               ? new JProperty("minChargeReactivePower",                   MinChargeReactivePower.                Value)
+                               : null,
+
+                           MinChargeReactivePower_L2.             HasValue
+                               ? new JProperty("minChargeReactivePower_L2",                MinChargeReactivePower_L2.             Value)
+                               : null,
+
+                           MinChargeReactivePower_L3.             HasValue
+                               ? new JProperty("minChargeReactivePower_L3",                MinChargeReactivePower_L3.             Value)
+                               : null,
+
+
+                           MaxDischargeReactivePower.             HasValue
+                               ? new JProperty("maxDischargeReactivePower",                MaxDischargeReactivePower.             Value)
+                               : null,
+
+                           MaxDischargeReactivePower_L2.          HasValue
+                               ? new JProperty("maxDischargeReactivePower_L2",             MaxDischargeReactivePower_L2.          Value)
+                               : null,
+
+                           MaxDischargeReactivePower_L3.          HasValue
+                               ? new JProperty("maxDischargeReactivePower_L3",             MaxDischargeReactivePower_L3.          Value)
+                               : null,
+
+                           MinDischargeReactivePower.             HasValue
+                               ? new JProperty("minDischargeReactivePower",                MinDischargeReactivePower.             Value)
+                               : null,
+
+                           MinDischargeReactivePower_L2.          HasValue
+                               ? new JProperty("minDischargeReactivePower_L2",             MinDischargeReactivePower_L2.          Value)
+                               : null,
+
+                           MinDischargeReactivePower_L3.          HasValue
+                               ? new JProperty("minDischargeReactivePower_L3",             MinDischargeReactivePower_L3.          Value)
+                               : null,
+
+
+                           NominalVoltage.                        HasValue
+                               ? new JProperty("nominalVoltage",                           NominalVoltage.                        Value)
+                               : null,
+
+                           NominalVoltageOffset.                  HasValue
+                               ? new JProperty("nominalVoltageOffset",                     NominalVoltageOffset.                  Value)
+                               : null,
+
+                           MaxNominalVoltage.                     HasValue
+                               ? new JProperty("maxNominalVoltage",                        MaxNominalVoltage.                     Value)
+                               : null,
+
+                           MinNominalVoltage.                     HasValue
+                               ? new JProperty("minNominalVoltage",                        MinNominalVoltage.                     Value)
+                               : null,
+
+
+                           EVInverterManufacturer.IsNotNullOrEmpty()
+                               ? new JProperty("evInverterManufacturer",                   EVInverterManufacturer)
+                               : null,
+
+                           EVInverterModel.       IsNotNullOrEmpty()
+                               ? new JProperty("evInverterModel",                          EVInverterModel)
+                               : null,
+
+                           EVInverterSerialNumber.IsNotNullOrEmpty()
+                               ? new JProperty("evInverterSerialNumber",                   EVInverterSerialNumber)
+                               : null,
+
+                           EVInverterSWVersion.   IsNotNullOrEmpty()
+                               ? new JProperty("evInverterSwVersion",                      EVInverterSWVersion)
+                               : null,
+
+                           EVInverterHWVersion.   IsNotNullOrEmpty()
+                               ? new JProperty("evInverterHwVersion",                      EVInverterHWVersion)
+                               : null,
+
+
+                           EVIslandingDetectionMethod.Any()
+                               ? new JProperty("evIslandingDetectionMethod",               new JArray(EVIslandingDetectionMethod.Select(evIslandingDetectionMethod => evIslandingDetectionMethod.ToString())))
+                               : null,
+
+                           EVIslandingTripTime.                   HasValue
+                               ? new JProperty("evIslandingTripTime",                      EVIslandingTripTime.                   Value)
+                               : null,
+
+                           EVMaximumLevel1DCInjection.            HasValue
+                               ? new JProperty("evMaximumLevel1DCInjection",               EVMaximumLevel1DCInjection.            Value)
+                               : null,
+
+                           EVDurationLevel1DCInjection.           HasValue
+                               ? new JProperty("evDurationLevel1DCInjection",              EVDurationLevel1DCInjection.           Value)
+                               : null,
+
+                           EVMaximumLevel2DCInjection.            HasValue
+                               ? new JProperty("evMaximumLevel2DCInjection",               EVMaximumLevel2DCInjection.            Value)
+                               : null,
+
+                           EVDurationLevel2DCInjection.           HasValue
+                               ? new JProperty("evDurationLevel2DCInjection",              EVDurationLevel2DCInjection.           Value)
+                               : null,
+
+                           EVReactiveSusceptance.                 HasValue
+                               ? new JProperty("evReactiveSusceptance",                    EVReactiveSusceptance.                 Value)
+                               : null,
+
+                           EVSessionTotalDischargeEnergyAvailable.HasValue
+                               ? new JProperty("evSessionTotalDischargeEnergyAvailable",   EVSessionTotalDischargeEnergyAvailable.Value)
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                               CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -873,10 +1715,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => DERChargingParameters is not null &&
 
-               //EnergyAmount.Equals(DERChargingParameters.EnergyAmount) &&
-               //EVMinCurrent.Equals(DERChargingParameters.EVMinCurrent) &&
-               //EVMaxCurrent.Equals(DERChargingParameters.EVMaxCurrent) &&
-               //EVMaxVoltage.Equals(DERChargingParameters.EVMaxVoltage) &&
+               EVSupportedDERControls.ToHashSet().    SetEquals(DERChargingParameters.EVSupportedDERControls) &&
+              (EVOverExcitedMaxDischargePower?.          Equals(DERChargingParameters.EVOverExcitedMaxDischargePower)         ?? DERChargingParameters.EVOverExcitedMaxDischargePower.        HasValue == false) &&
+              (EVOverExcitedPowerFactor?.                Equals(DERChargingParameters.EVOverExcitedPowerFactor)               ?? DERChargingParameters.EVOverExcitedPowerFactor.              HasValue == false) &&
+              (EVUnderExcitedMaxDischargePower?.         Equals(DERChargingParameters.EVUnderExcitedMaxDischargePower)        ?? DERChargingParameters.EVUnderExcitedMaxDischargePower.       HasValue == false) &&
+              (EVUnderExcitedPowerFactor?.               Equals(DERChargingParameters.EVUnderExcitedPowerFactor)              ?? DERChargingParameters.EVUnderExcitedPowerFactor.             HasValue == false) &&
+
+              (MaxApparentPower?.                        Equals(DERChargingParameters.MaxApparentPower)                       ?? DERChargingParameters.MaxApparentPower.                      HasValue == false) &&
+              (MaxChargeApparentPower?.                  Equals(DERChargingParameters.MaxChargeApparentPower)                 ?? DERChargingParameters.MaxChargeApparentPower.                HasValue == false) &&
+              (MaxChargeApparentPower_L2?.               Equals(DERChargingParameters.MaxChargeApparentPower_L2)              ?? DERChargingParameters.MaxChargeApparentPower_L2.             HasValue == false) &&
+              (MaxChargeApparentPower_L3?.               Equals(DERChargingParameters.MaxChargeApparentPower_L3)              ?? DERChargingParameters.MaxChargeApparentPower_L3.             HasValue == false) &&
+              (MaxDischargeApparentPower?.               Equals(DERChargingParameters.MaxDischargeApparentPower)              ?? DERChargingParameters.MaxDischargeApparentPower.             HasValue == false) &&
+              (MaxDischargeApparentPower_L2?.            Equals(DERChargingParameters.MaxDischargeApparentPower_L2)           ?? DERChargingParameters.MaxDischargeApparentPower_L2.          HasValue == false) &&
+              (MaxDischargeApparentPower_L3?.            Equals(DERChargingParameters.MaxDischargeApparentPower_L3)           ?? DERChargingParameters.MaxDischargeApparentPower_L3.          HasValue == false) &&
+
+              (MaxChargeReactivePower?.                  Equals(DERChargingParameters.MaxChargeReactivePower)                 ?? DERChargingParameters.MaxChargeReactivePower.                HasValue == false) &&
+              (MaxChargeReactivePower_L2?.               Equals(DERChargingParameters.MaxChargeReactivePower_L2)              ?? DERChargingParameters.MaxChargeReactivePower_L2.             HasValue == false) &&
+              (MaxChargeReactivePower_L3?.               Equals(DERChargingParameters.MaxChargeReactivePower_L3)              ?? DERChargingParameters.MaxChargeReactivePower_L3.             HasValue == false) &&
+              (MinChargeReactivePower?.                  Equals(DERChargingParameters.MinChargeReactivePower)                 ?? DERChargingParameters.MinChargeReactivePower.                HasValue == false) &&
+              (MinChargeReactivePower_L2?.               Equals(DERChargingParameters.MinChargeReactivePower_L2)              ?? DERChargingParameters.MinChargeReactivePower_L2.             HasValue == false) &&
+              (MinChargeReactivePower_L3?.               Equals(DERChargingParameters.MinChargeReactivePower_L3)              ?? DERChargingParameters.MinChargeReactivePower_L3.             HasValue == false) &&
+
+              (MaxDischargeReactivePower?.               Equals(DERChargingParameters.MaxDischargeReactivePower)              ?? DERChargingParameters.MaxDischargeReactivePower.             HasValue == false) &&
+              (MaxDischargeReactivePower_L2?.            Equals(DERChargingParameters.MaxDischargeReactivePower_L2)           ?? DERChargingParameters.MaxDischargeReactivePower_L2.          HasValue == false) &&
+              (MaxDischargeReactivePower_L3?.            Equals(DERChargingParameters.MaxDischargeReactivePower_L3)           ?? DERChargingParameters.MaxDischargeReactivePower_L3.          HasValue == false) &&
+              (MinDischargeReactivePower?.               Equals(DERChargingParameters.MinDischargeReactivePower)              ?? DERChargingParameters.MinDischargeReactivePower.             HasValue == false) &&
+              (MinDischargeReactivePower_L2?.            Equals(DERChargingParameters.MinDischargeReactivePower_L2)           ?? DERChargingParameters.MinDischargeReactivePower_L2.          HasValue == false) &&
+              (MinDischargeReactivePower_L3?.            Equals(DERChargingParameters.MinDischargeReactivePower_L3)           ?? DERChargingParameters.MinDischargeReactivePower_L3.          HasValue == false) &&
+
+              (NominalVoltage?.                          Equals(DERChargingParameters.NominalVoltage)                         ?? DERChargingParameters.NominalVoltage.                        HasValue == false) &&
+              (NominalVoltageOffset?.                    Equals(DERChargingParameters.NominalVoltageOffset)                   ?? DERChargingParameters.NominalVoltageOffset.                  HasValue == false) &&
+              (MaxNominalVoltage?.                       Equals(DERChargingParameters.MaxNominalVoltage)                      ?? DERChargingParameters.MaxNominalVoltage.                     HasValue == false) &&
+              (MinNominalVoltage?.                       Equals(DERChargingParameters.MinNominalVoltage)                      ?? DERChargingParameters.MinNominalVoltage.                     HasValue == false) &&
+
+              (EVInverterManufacturer?.                  Equals(DERChargingParameters.EVInverterManufacturer)                 ?? DERChargingParameters.EVInverterManufacturer is null) &&
+              (EVInverterModel?.                         Equals(DERChargingParameters.EVInverterModel)                        ?? DERChargingParameters.EVInverterModel        is null) &&
+              (EVInverterSerialNumber?.                  Equals(DERChargingParameters.EVInverterSerialNumber)                 ?? DERChargingParameters.EVInverterSerialNumber is null) &&
+              (EVInverterSWVersion?.                     Equals(DERChargingParameters.EVInverterSWVersion)                    ?? DERChargingParameters.EVInverterSWVersion    is null) &&
+              (EVInverterHWVersion?.                     Equals(DERChargingParameters.EVInverterHWVersion)                    ?? DERChargingParameters.EVInverterHWVersion    is null) &&
+
+               EVIslandingDetectionMethod.ToHashSet().SetEquals(DERChargingParameters.EVIslandingDetectionMethod) &&
+              (EVIslandingTripTime?.                     Equals(DERChargingParameters.EVIslandingTripTime)                    ?? DERChargingParameters.EVIslandingTripTime.                   HasValue == false) &&
+              (EVMaximumLevel1DCInjection?.              Equals(DERChargingParameters.EVMaximumLevel1DCInjection)             ?? DERChargingParameters.EVMaximumLevel1DCInjection.            HasValue == false) &&
+              (EVDurationLevel1DCInjection?.             Equals(DERChargingParameters.EVDurationLevel1DCInjection)            ?? DERChargingParameters.EVDurationLevel1DCInjection.           HasValue == false) &&
+              (EVMaximumLevel2DCInjection?.              Equals(DERChargingParameters.EVMaximumLevel2DCInjection)             ?? DERChargingParameters.EVMaximumLevel2DCInjection.            HasValue == false) &&
+              (EVDurationLevel2DCInjection?.             Equals(DERChargingParameters.EVDurationLevel2DCInjection)            ?? DERChargingParameters.EVDurationLevel2DCInjection.           HasValue == false) &&
+              (EVReactiveSusceptance?.                   Equals(DERChargingParameters.EVReactiveSusceptance)                  ?? DERChargingParameters.EVReactiveSusceptance.                 HasValue == false) &&
+              (EVSessionTotalDischargeEnergyAvailable?.  Equals(DERChargingParameters.EVSessionTotalDischargeEnergyAvailable) ?? DERChargingParameters.EVSessionTotalDischargeEnergyAvailable.HasValue == false) &&
 
                base.Equals(DERChargingParameters);
 
@@ -903,12 +1788,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(""
-                   //EnergyAmount, " Wh, ",
-                   //EVMinCurrent, " A, ",
-                   //EVMaxCurrent, " A, ",
-                   //EVMaxVoltage, " V"
-               );
+            => new String[] {
+
+                   EVSupportedDERControls.Any()
+                       ? $"EV Supported DER Controls: '{EVSupportedDERControls.AggregateWith(", ")}'"
+                       : "",
+
+                   EVIslandingDetectionMethod.Any()
+                       ? $"EV Islanding Detection Methods: '{EVIslandingDetectionMethod.AggregateWith(", ")}'"
+                       : ""
+
+               }.AggregateWith(", ");
 
         #endregion
 

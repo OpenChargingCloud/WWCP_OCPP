@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "properties": {
         //         "startValue": {
         //             "description": "The lowest level of consumption that defines the starting point of this consumption block.
-        //                             The block interval extends to the start of the next interval.\r\n",
+        //                             The block interval extends to the start of the next interval.",
         //             "type": "number"
         //         },
         //         "cost": {

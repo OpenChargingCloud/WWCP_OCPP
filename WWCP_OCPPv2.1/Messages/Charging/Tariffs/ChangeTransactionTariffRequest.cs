@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //                     "maxLength": 8
         //                 },
         //                 "content": {
-        //                     "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
+        //                     "description": "Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,21 +47,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumChargePower
         /// </summary>
         [Optional]
-        public Watt?           MinChargePower           { get; }
+        public Watt?            MinChargePower           { get; }
 
         /// <summary>
         /// The optional minimum charge power in W on phase L2, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargePower_L2
         /// </summary>
         [Optional]
-        public Watt?           MinChargePower_L2        { get; }
+        public Watt?            MinChargePower_L2        { get; }
 
         /// <summary>
         /// The optional minimum charge power in W on phase L3, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargePower_L3
         /// </summary>
         [Optional]
-        public Watt?           MinChargePower_L3        { get; }
+        public Watt?            MinChargePower_L3        { get; }
 
         /// <summary>
         /// The optional maximum charge power in W, defined by min(EV, EVSE).
@@ -68,21 +70,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumChargePower
         /// </summary>
         [Optional]
-        public Watt?           MaxChargePower           { get; }
+        public Watt?            MaxChargePower           { get; }
 
         /// <summary>
         /// The optional maximum charge power in W on phase L2, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargePower_L2
         /// </summary>
         [Optional]
-        public Watt?           MaxChargePower_L2        { get; }
+        public Watt?            MaxChargePower_L2        { get; }
 
         /// <summary>
         /// The optional maximum charge power in W on phase L3, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargePower_L3
         /// </summary>
         [Optional]
-        public Watt?           MaxChargePower_L3        { get; }
+        public Watt?            MaxChargePower_L3        { get; }
 
 
         /// <summary>
@@ -92,21 +94,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumDischargePower
         /// </summary>
         [Optional]
-        public Watt?           MinDischargePower        { get; }
+        public Watt?            MinDischargePower        { get; }
 
         /// <summary>
         /// The optional minimum discharge power in W on phase L2, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargePower_L2
         /// </summary>
         [Optional]
-        public Watt?           MinDischargePower_L2     { get; }
+        public Watt?            MinDischargePower_L2     { get; }
 
         /// <summary>
         /// The optional minimum discharge power in W on phase L3, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargePower_L3
         /// </summary>
         [Optional]
-        public Watt?           MinDischargePower_L3     { get; }
+        public Watt?            MinDischargePower_L3     { get; }
 
         /// <summary>
         /// The optional maximum discharge power in W, defined by min(EV, EVSE).
@@ -115,21 +117,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumDischargePower
         /// </summary>
         [Optional]
-        public Watt?           MaxDischargePower        { get; }
+        public Watt?            MaxDischargePower        { get; }
 
         /// <summary>
         /// The optional maximum discharge power in W on phase L2, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargePower_L2
         /// </summary>
         [Optional]
-        public Watt?           MaxDischargePower_L2     { get; }
+        public Watt?            MaxDischargePower_L2     { get; }
 
         /// <summary>
         /// The optional maximum discharge power in W on phase L3, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargePower_L3
         /// </summary>
         [Optional]
-        public Watt?           MaxDischargePower_L3     { get; }
+        public Watt?            MaxDischargePower_L3     { get; }
 
 
         /// <summary>
@@ -137,42 +139,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumChargeCurrent
         /// </summary>
         [Optional]
-        public Ampere?         MinChargeCurrent         { get; }
+        public Ampere?          MinChargeCurrent         { get; }
 
         /// <summary>
         /// The optional maximum charge current in A, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumChargeCurrent
         /// </summary>
         [Optional]
-        public Ampere?         MaxChargeCurrent         { get; }
+        public Ampere?          MaxChargeCurrent         { get; }
 
         /// <summary>
         /// The optional minimum discharge current in A, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumDischargeCurrent
         /// </summary>
         [Optional]
-        public Ampere?         MinDischargeCurrent      { get; }
+        public Ampere?          MinDischargeCurrent      { get; }
 
         /// <summary>
         /// The optional maximum discharge current in A, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumDischargeCurrent
         /// </summary>
         [Optional]
-        public Ampere?         MaxDischargeCurrent      { get; }
+        public Ampere?          MaxDischargeCurrent      { get; }
 
         /// <summary>
         /// The optional minimum voltage in V, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumVoltage
         /// </summary>
         [Optional]
-        public Volt?           MinVoltage               { get; }
+        public Volt?            MinVoltage               { get; }
 
         /// <summary>
         /// The optional maximum voltage in V, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumVoltage
         /// </summary>
         [Optional]
-        public Volt?           MaxVoltage               { get; }
+        public Volt?            MaxVoltage               { get; }
 
 
         /// <summary>
@@ -180,21 +182,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic/Scheduled_SEReqControlModeType: EVTargetEnergyRequest
         /// </summary>
         [Optional]
-        public WattHour?       EVTargetEnergyRequest    { get; }
+        public WattHour?        EVTargetEnergyRequest    { get; }
 
         /// <summary>
         /// The optional energy to minimum allowed state-of-charge in Wh.
         /// ISO 15118-20: Dynamic/Scheduled_SEReqControlModeType: EVMinimumEnergyRequest
         /// </summary>
         [Optional]
-        public WattHour?       EVMinEnergyRequest       { get; }
+        public WattHour?        EVMinEnergyRequest       { get; }
 
         /// <summary>
         /// The optional energy to maximum-state-of charge in Wh.
         /// ISO 15118-20: Dynamic/Scheduled_SEReqControlModeType: EVMaximumEnergyRequest
         /// </summary>
         [Optional]
-        public WattHour?       EVMaxEnergyRequest       { get; }
+        public WattHour?        EVMaxEnergyRequest       { get; }
 
         /// <summary>
         /// The optional energy to minimum state-of-charge for cycling (V2X) activity.
@@ -202,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic_SEReqControlModeType: EVMinimumV2XEnergyRequest
         /// </summary>
         [Optional]
-        public WattHour?       EVMinV2XEnergyRequest    { get; }
+        public WattHour?        EVMinV2XEnergyRequest    { get; }
 
         /// <summary>
         /// The optional energy to maximum state-of-charge for cycling (V2X) activity.
@@ -210,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic_SEReqControlModeType: EVMaximumV2XEnergyRequest
         /// </summary>
         [Optional]
-        public WattHour?       EVMaxV2XEnergyRequest    { get; }
+        public WattHour?        EVMaxV2XEnergyRequest    { get; }
 
         /// <summary>
         /// The optional target state-of-charge at departure as a percentage.
@@ -255,35 +257,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TargetSoC">The optional target state-of-charge at departure as a percentage.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public V2XChargingParameters(Watt?           MinChargePower          = null,
-                                     Watt?           MinChargePower_L2       = null,
-                                     Watt?           MinChargePower_L3       = null,
-                                     Watt?           MaxChargePower          = null,
-                                     Watt?           MaxChargePower_L2       = null,
-                                     Watt?           MaxChargePower_L3       = null,
+        public V2XChargingParameters(Watt?            MinChargePower          = null,
+                                     Watt?            MinChargePower_L2       = null,
+                                     Watt?            MinChargePower_L3       = null,
+                                     Watt?            MaxChargePower          = null,
+                                     Watt?            MaxChargePower_L2       = null,
+                                     Watt?            MaxChargePower_L3       = null,
 
-                                     Watt?           MinDischargePower       = null,
-                                     Watt?           MinDischargePower_L2    = null,
-                                     Watt?           MinDischargePower_L3    = null,
-                                     Watt?           MaxDischargePower       = null,
-                                     Watt?           MaxDischargePower_L2    = null,
-                                     Watt?           MaxDischargePower_L3    = null,
+                                     Watt?            MinDischargePower       = null,
+                                     Watt?            MinDischargePower_L2    = null,
+                                     Watt?            MinDischargePower_L3    = null,
+                                     Watt?            MaxDischargePower       = null,
+                                     Watt?            MaxDischargePower_L2    = null,
+                                     Watt?            MaxDischargePower_L3    = null,
 
-                                     Ampere?         MinChargeCurrent        = null,
-                                     Ampere?         MaxChargeCurrent        = null,
-                                     Ampere?         MinDischargeCurrent     = null,
-                                     Ampere?         MaxDischargeCurrent     = null,
-                                     Volt?           MinVoltage              = null,
-                                     Volt?           MaxVoltage              = null,
+                                     Ampere?          MinChargeCurrent        = null,
+                                     Ampere?          MaxChargeCurrent        = null,
+                                     Ampere?          MinDischargeCurrent     = null,
+                                     Ampere?          MaxDischargeCurrent     = null,
+                                     Volt?            MinVoltage              = null,
+                                     Volt?            MaxVoltage              = null,
 
-                                     WattHour?       EVTargetEnergyRequest   = null,
-                                     WattHour?       EVMinEnergyRequest      = null,
-                                     WattHour?       EVMaxEnergyRequest      = null,
-                                     WattHour?       EVMinV2XEnergyRequest   = null,
-                                     WattHour?       EVMaxV2XEnergyRequest   = null,
+                                     WattHour?        EVTargetEnergyRequest   = null,
+                                     WattHour?        EVMinEnergyRequest      = null,
+                                     WattHour?        EVMaxEnergyRequest      = null,
+                                     WattHour?        EVMinV2XEnergyRequest   = null,
+                                     WattHour?        EVMaxV2XEnergyRequest   = null,
                                      PercentageByte?  TargetSoC               = null,
 
-                                     CustomData?     CustomData              = null)
+                                     CustomData?      CustomData              = null)
 
             : base(CustomData)
 
@@ -357,10 +359,153 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "Charging parameters for ISO 15118-20, also supporting V2X charging/discharging.
+        //                     All values are greater or equal to zero, with the exception of EVMinEnergyRequest, EVMaxEnergyRequest,
+        //                     EVTargetEnergyRequest, EVMinV2XEnergyRequest and EVMaxV2XEnergyRequest.",
+        //     "javaType": "V2XChargingParameters",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "minChargePower": {
+        //             "description": "Minimum charge power in W, defined by max(EV, EVSE).
+        //                             This field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumChargePower",
+        //             "type": "number"
+        //         },
+        //         "minChargePower_L2": {
+        //             "description": "Minimum charge power on phase L2 in W, defined by max(EV, EVSE).
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumChargePower_L2",
+        //             "type": "number"
+        //         },
+        //         "minChargePower_L3": {
+        //             "description": "Minimum charge power on phase L3 in W, defined by max(EV, EVSE).
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumChargePower_L3",
+        //             "type": "number"
+        //         },
+        //         "maxChargePower": {
+        //             "description": "Maximum charge (absorbed) power in W, defined by min(EV, EVSE) at unity power factor.
+        //                             This field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.
+        //                             It corresponds to the ChaWMax attribute in the IEC 61850.
+        //                             It is usually equivalent to the rated apparent power of the EV when discharging (ChaVAMax) in IEC 61850.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumChargePower",
+        //             "type": "number"
+        //         },
+        //         "maxChargePower_L2": {
+        //             "description": "Maximum charge power on phase L2 in W, defined by min(EV, EVSE)
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumChargePower_L2",
+        //             "type": "number"
+        //         },
+        //         "maxChargePower_L3": {
+        //             "description": "Maximum charge power on phase L3 in W, defined by min(EV, EVSE)
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumChargePower_L3",
+        //             "type": "number"
+        //         },
+        //         "minDischargePower": {
+        //             "description": "Minimum discharge (injected) power in W, defined by max(EV, EVSE) at unity power factor. Value &gt;= 0.
+        //                             This field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.
+        //                             It corresponds to the WMax attribute in the IEC 61850.
+        //                             It is usually equivalent to the rated apparent power of the EV when discharging (VAMax attribute in the IEC 61850).
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumDischargePower",
+        //             "type": "number"
+        //         },
+        //         "minDischargePower_L2": {
+        //             "description": "Minimum discharge power on phase L2 in W, defined by max(EV, EVSE).  Value &gt;= 0.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumDischargePower_L2",
+        //             "type": "number"
+        //         },
+        //         "minDischargePower_L3": {
+        //             "description": "Minimum discharge power on phase L3 in W, defined by max(EV, EVSE).  Value &gt;= 0.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumDischargePower_L3",
+        //             "type": "number"
+        //         },
+        //         "maxDischargePower": {
+        //             "description": "Maximum discharge (injected) power in W, defined by min(EV, EVSE) at unity power factor.  Value &gt;= 0.
+        //                             This field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumDischargePower",
+        //             "type": "number"
+        //         },
+        //         "maxDischargePower_L2": {
+        //             "description": "Maximum discharge power on phase L2 in W, defined by min(EV, EVSE).  Value &gt;= 0.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumDischargePowe_L2",
+        //             "type": "number"
+        //         },
+        //         "maxDischargePower_L3": {
+        //             "description": "Maximum discharge power on phase L3 in W, defined by min(EV, EVSE).  Value &gt;= 0.
+        //                             Relates to: *ISO 15118-20*: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumDischargePower_L3",
+        //             "type": "number"
+        //         },
+        //         "minChargeCurrent": {
+        //             "description": "Minimum charge current in A, defined by max(EV, EVSE)
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumChargeCurrent",
+        //             "type": "number"
+        //         },
+        //         "maxChargeCurrent": {
+        //             "description": "Maximum charge current in A, defined by min(EV, EVSE)
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumChargeCurrent",
+        //             "type": "number"
+        //         },
+        //         "minDischargeCurrent": {
+        //             "description": "Minimum discharge current in A, defined by max(EV, EVSE).  Value &gt;= 0.
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumDischargeCurrent",
+        //             "type": "number"
+        //         },
+        //         "maxDischargeCurrent": {
+        //             "description": "Maximum discharge current in A, defined by min(EV, EVSE).  Value &gt;= 0.
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumDischargeCurrent",
+        //             "type": "number"
+        //         },
+        //         "minVoltage": {
+        //             "description": "Minimum voltage in V, defined by max(EV, EVSE)
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumVoltage",
+        //             "type": "number"
+        //         },
+        //         "maxVoltage": {
+        //             "description": "Maximum voltage in V, defined by min(EV, EVSE)
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumVoltage",
+        //             "type": "number"
+        //         },
+        //         "evTargetEnergyRequest": {
+        //             "description": "Energy to requested state of charge in Wh
+        //                             Relates to: *ISO 15118-20*: Dynamic/Scheduled_SEReqControlModeType: EVTargetEnergyRequest",
+        //             "type": "number"
+        //         },
+        //         "evMinEnergyRequest": {
+        //             "description": "Energy to minimum allowed state of charge in Wh
+        //                             Relates to: *ISO 15118-20*: Dynamic/Scheduled_SEReqControlModeType: EVMinimumEnergyRequest",
+        //             "type": "number"
+        //         },
+        //         "evMaxEnergyRequest": {
+        //             "description": "Energy to maximum state of charge in Wh
+        //                             Relates to: *ISO 15118-20*: Dynamic/Scheduled_SEReqControlModeType: EVMaximumEnergyRequest",
+        //             "type": "number"
+        //         },
+        //         "evMinV2XEnergyRequest": {
+        //             "description": "Energy (in Wh) to minimum state of charge for cycling (V2X) activity.
+        //                             Positive value means that current state of charge is below V2X range.
+        //                             Relates to: *ISO 15118-20*: Dynamic_SEReqControlModeType: EVMinimumV2XEnergyRequest",
+        //             "type": "number"
+        //         },
+        //         "evMaxV2XEnergyRequest": {
+        //             "description": "Energy (in Wh) to maximum state of charge for cycling (V2X) activity.
+        //                             Negative value indicates that current state of charge is above V2X range.
+        //                             Relates to: *ISO 15118-20*: Dynamic_SEReqControlModeType: EVMaximumV2XEnergyRequest",
+        //             "type": "number"
+        //         },
+        //         "targetSoC": {
+        //             "description": "Target state of charge at departure as percentage.
+        //                             Relates to: *ISO 15118-20*: BPT_DC_CPDReqEnergyTransferModeType: TargetSOC",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
@@ -378,8 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var v2xChargingParameters,
                          out var errorResponse,
-                         CustomV2XChargingParametersParser) &&
-                v2xChargingParameters is not null)
+                         CustomV2XChargingParametersParser))
             {
                 return v2xChargingParameters;
             }
@@ -401,9 +545,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="V2XChargingParameters">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       out V2XChargingParameters?  V2XChargingParameters,
-                                       out String?                 ErrorResponse)
+        public static Boolean TryParse(JObject                                          JSON,
+                                       [NotNullWhen(true)]  out V2XChargingParameters?  V2XChargingParameters,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         out V2XChargingParameters,
@@ -419,8 +563,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomV2XChargingParametersParser">A delegate to parse custom V2X charging parameters JSON objects.</param>
         public static Boolean TryParse(JObject                                              JSON,
-                                       out V2XChargingParameters?                           V2XChargingParameters,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out V2XChargingParameters?      V2XChargingParameters,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<V2XChargingParameters>?  CustomV2XChargingParametersParser)
         {
 

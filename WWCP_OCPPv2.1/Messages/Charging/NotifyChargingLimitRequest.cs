@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "ChargingRateUnitEnumType": {
-        //             "description": "The unit of measure in which limits and setpoints are expressed.\r\n",
+        //             "description": "The unit of measure in which limits and setpoints are expressed.",
         //             "javaType": "ChargingRateUnitEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "CostKindEnumType": {
-        //             "description": "The kind of cost referred to in the message element amount\r\n",
+        //             "description": "The kind of cost referred to in the message element amount",
         //             "javaType": "CostKindEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "OperationModeEnumType": {
-        //             "description": "*(2.1)* Charging operation mode to use during this time interval. When absent defaults to `ChargingOnly`.\r\n",
+        //             "description": "Charging operation mode to use during this time interval. When absent defaults to `ChargingOnly`.",
         //             "javaType": "OperationModeEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -196,38 +196,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "AbsolutePriceScheduleType": {
-        //             "description": "The AbsolutePriceScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.\r\n\r\nimage::images/AbsolutePriceSchedule-Simple.png[]\r\n\r\n",
+        //             "description": "The AbsolutePriceScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.\r\n\r\nimage::images/AbsolutePriceSchedule-Simple.png[]",
         //             "javaType": "AbsolutePriceSchedule",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "timeAnchor": {
-        //                     "description": "Starting point of price schedule.\r\n",
+        //                     "description": "Starting point of price schedule.",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
         //                 "priceScheduleID": {
-        //                     "description": "Unique ID of price schedule\r\n",
+        //                     "description": "Unique ID of price schedule",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "priceScheduleDescription": {
-        //                     "description": "Description of the price schedule.\r\n",
+        //                     "description": "Description of the price schedule.",
         //                     "type": "string",
         //                     "maxLength": 160
         //                 },
         //                 "currency": {
-        //                     "description": "Currency according to ISO 4217.\r\n",
+        //                     "description": "Currency according to ISO 4217.",
         //                     "type": "string",
         //                     "maxLength": 3
         //                 },
         //                 "language": {
-        //                     "description": "String that indicates what language is used for the human readable strings in the price schedule. Based on ISO 639.\r\n",
+        //                     "description": "String that indicates what language is used for the human readable strings in the price schedule. Based on ISO 639.",
         //                     "type": "string",
         //                     "maxLength": 8
         //                 },
         //                 "priceAlgorithm": {
-        //                     "description": "A string in URN notation which shall uniquely identify an algorithm that defines how to compute an energy fee sum for a specific power profile based on the EnergyFee information from the PriceRule elements.\r\n",
+        //                     "description": "A string in URN notation which shall uniquely identify an algorithm that defines how to compute an energy fee sum for a specific power profile based on the EnergyFee information from the PriceRule elements.",
         //                     "type": "string",
         //                     "maxLength": 2000
         //                 },
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "AdditionalSelectedServicesType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "AdditionalSelectedServices",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/RationalNumberType"
         //                 },
         //                 "serviceName": {
-        //                     "description": "Human readable string to identify this service.\r\n",
+        //                     "description": "Human readable string to identify this service.",
         //                     "type": "string",
         //                     "maxLength": 80
         //                 },
@@ -309,16 +309,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "chargingLimitSource": {
-        //                     "description": "Represents the source of the charging limit. Values defined in appendix as ChargingLimitSourceEnumStringType.\r\n",
+        //                     "description": "Represents the source of the charging limit. Values defined in appendix as ChargingLimitSourceEnumStringType.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
         //                 "isLocalGeneration": {
-        //                     "description": "*(2.1)* True when the reported limit concerns local generation that is providing extra capacity, instead of a limitation.\r\n",
+        //                     "description": "True when the reported limit concerns local generation that is providing extra capacity, instead of a limitation.",
         //                     "type": "boolean"
         //                 },
         //                 "isGridCritical": {
-        //                     "description": "Indicates whether the charging limit is critical for the grid.\r\n",
+        //                     "description": "Indicates whether the charging limit is critical for the grid.",
         //                     "type": "boolean"
         //                 },
         //                 "customData": {
@@ -330,88 +330,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "ChargingSchedulePeriodType": {
-        //             "description": "Charging schedule period structure defines a time period in a charging schedule. It is used in: CompositeScheduleType and in ChargingScheduleType. When used in a NotifyEVChargingScheduleRequest only _startPeriod_, _limit_, _limit_L2_, _limit_L3_ are relevant.\r\n",
+        //             "description": "Charging schedule period structure defines a time period in a charging schedule. It is used in: CompositeScheduleType and in ChargingScheduleType. When used in a NotifyEVChargingScheduleRequest only _startPeriod_, _limit_, _limit_L2_, _limit_L3_ are relevant.",
         //             "javaType": "ChargingSchedulePeriod",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "startPeriod": {
-        //                     "description": "Start of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.\r\n",
+        //                     "description": "Start of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.",
         //                     "type": "integer"
         //                 },
         //                 "limit": {
-        //                     "description": "Optional only when not required by the _operationMode_, as in CentralSetpoint, ExternalSetpoint, ExternalLimits, LocalFrequency,  LocalLoadBalancing. +\r\nCharging rate limit during the schedule period, in the applicable _chargingRateUnit_. \r\nThis SHOULD be a non-negative value; a negative value is only supported for backwards compatibility with older systems that use a negative value to specify a discharging limit.\r\nWhen using _chargingRateUnit_ = `W`, this field represents the sum of the power of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.\r\n",
+        //                     "description": "Optional only when not required by the _operationMode_, as in CentralSetpoint, ExternalSetpoint, ExternalLimits, LocalFrequency,  LocalLoadBalancing. +\r\nCharging rate limit during the schedule period, in the applicable _chargingRateUnit_. \r\nThis SHOULD be a non-negative value; a negative value is only supported for backwards compatibility with older systems that use a negative value to specify a discharging limit.\r\nWhen using _chargingRateUnit_ = `W`, this field represents the sum of the power of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //                     "type": "number"
         //                 },
         //                 "limit_L2": {
-        //                     "description": "*(2.1)* Charging rate limit on phase L2  in the applicable _chargingRateUnit_. \r\n",
+        //                     "description": "Charging rate limit on phase L2  in the applicable _chargingRateUnit_. ",
         //                     "type": "number"
         //                 },
         //                 "limit_L3": {
-        //                     "description": "*(2.1)* Charging rate limit on phase L3  in the applicable _chargingRateUnit_. \r\n",
+        //                     "description": "Charging rate limit on phase L3  in the applicable _chargingRateUnit_. ",
         //                     "type": "number"
         //                 },
         //                 "numberPhases": {
-        //                     "description": "The number of phases that can be used for charging. +\r\nFor a DC EVSE this field should be omitted. +\r\nFor an AC EVSE a default value of _numberPhases_ = 3 will be assumed if the field is absent.\r\n",
+        //                     "description": "The number of phases that can be used for charging. +\r\nFor a DC EVSE this field should be omitted. +\r\nFor an AC EVSE a default value of _numberPhases_ = 3 will be assumed if the field is absent.",
         //                     "type": "integer",
         //                     "minimum": 0.0,
         //                     "maximum": 3.0
         //                 },
         //                 "phaseToUse": {
-        //                     "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It\u2019s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.\r\n\r\n",
+        //                     "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It\u2019s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.",
         //                     "type": "integer",
         //                     "minimum": 0.0,
         //                     "maximum": 3.0
         //                 },
         //                 "dischargeLimit": {
-        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.\r\n",
+        //                     "description": "Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //                     "type": "number",
         //                     "maximum": 0.0
         //                 },
         //                 "dischargeLimit_L2": {
-        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. \r\n",
+        //                     "description": "Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. ",
         //                     "type": "number",
         //                     "maximum": 0.0
         //                 },
         //                 "dischargeLimit_L3": {
-        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. \r\n",
+        //                     "description": "Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. ",
         //                     "type": "number",
         //                     "maximum": 0.0
         //                 },
         //                 "setpoint": {
-        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.\r\n",
+        //                     "description": "Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //                     "type": "number"
         //                 },
         //                 "setpoint_L2": {
-        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.\r\n",
+        //                     "description": "Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.",
         //                     "type": "number"
         //                 },
         //                 "setpoint_L3": {
-        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. \r\n",
+        //                     "description": "Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. ",
         //                     "type": "number"
         //                 },
         //                 "setpointReactive": {
-        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.\r\n",
+        //                     "description": "Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //                     "type": "number"
         //                 },
         //                 "setpointReactive_L2": {
-        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. \r\n",
+        //                     "description": "Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. ",
         //                     "type": "number"
         //                 },
         //                 "setpointReactive_L3": {
-        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. \r\n",
+        //                     "description": "Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. ",
         //                     "type": "number"
         //                 },
         //                 "preconditioningRequest": {
-        //                     "description": "*(2.1)* If  true, the EV should attempt to keep the BMS preconditioned for this time interval.\r\n",
+        //                     "description": "If  true, the EV should attempt to keep the BMS preconditioned for this time interval.",
         //                     "type": "boolean"
         //                 },
         //                 "evseSleep": {
-        //                     "description": "*(2.1)* If true, the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.\r\n",
+        //                     "description": "If true, the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.",
         //                     "type": "boolean"
         //                 },
         //                 "v2xBaseline": {
-        //                     "description": "*(2.1)* Power value that, when present, is used as a baseline on top of which values from _v2xFreqWattCurve_ and _v2xSignalWattCurve_ are added.\r\n\r\n",
+        //                     "description": "Power value that, when present, is used as a baseline on top of which values from _v2xFreqWattCurve_ and _v2xSignalWattCurve_ are added.",
         //                     "type": "number"
         //                 },
         //                 "operationMode": {
@@ -444,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "ChargingScheduleType": {
-        //             "description": "Charging schedule structure defines a list of charging periods, as used in: NotifyEVChargingScheduleRequest and ChargingProfileType. When used in a NotifyEVChargingScheduleRequest only _duration_ and _chargingSchedulePeriod_ are relevant and _chargingRateUnit_ must be 'W'. +\r\nAn ISO 15118-20 session may provide either an _absolutePriceSchedule_ or a _priceLevelSchedule_. An ISO 15118-2 session can only provide a_salesTariff_ element. The field _digestValue_ is used when price schedule or sales tariff are signed.\r\n\r\nimage::images/ChargingSchedule-Simple.png[]\r\n\r\n\r\n",
+        //             "description": "Charging schedule structure defines a list of charging periods, as used in: NotifyEVChargingScheduleRequest and ChargingProfileType. When used in a NotifyEVChargingScheduleRequest only _duration_ and _chargingSchedulePeriod_ are relevant and _chargingRateUnit_ must be 'W'. +\r\nAn ISO 15118-20 session may provide either an _absolutePriceSchedule_ or a _priceLevelSchedule_. An ISO 15118-2 session can only provide a_salesTariff_ element. The field _digestValue_ is used when price schedule or sales tariff are signed.\r\n\r\nimage::images/ChargingSchedule-Simple.png[]",
         //             "javaType": "ChargingSchedule",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -456,37 +456,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/LimitAtSoCType"
         //                 },
         //                 "startSchedule": {
-        //                     "description": "Starting point of an absolute schedule or recurring schedule.\r\n",
+        //                     "description": "Starting point of an absolute schedule or recurring schedule.",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
         //                 "duration": {
-        //                     "description": "Duration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction in case startSchedule is absent.\r\n",
+        //                     "description": "Duration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction in case startSchedule is absent.",
         //                     "type": "integer"
         //                 },
         //                 "chargingRateUnit": {
         //                     "$ref": "#/definitions/ChargingRateUnitEnumType"
         //                 },
         //                 "minChargingRate": {
-        //                     "description": "Minimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. \r\n",
+        //                     "description": "Minimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. ",
         //                     "type": "number"
         //                 },
         //                 "powerTolerance": {
-        //                     "description": "*(2.1)* Power tolerance when following EVPowerProfile.\r\n\r\n",
+        //                     "description": "Power tolerance when following EVPowerProfile.",
         //                     "type": "number"
         //                 },
         //                 "signatureId": {
-        //                     "description": "*(2.1)* Id of this element for referencing in a signature.\r\n",
+        //                     "description": "Id of this element for referencing in a signature.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "digestValue": {
-        //                     "description": "*(2.1)* Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.\r\n",
+        //                     "description": "Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.",
         //                     "type": "string",
         //                     "maxLength": 88
         //                 },
         //                 "useLocalTime": {
-        //                     "description": "*(2.1)* Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.\r\n\r\n",
+        //                     "description": "Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.",
         //                     "type": "boolean"
         //                 },
         //                 "chargingSchedulePeriod": {
@@ -499,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "maxItems": 1024
         //                 },
         //                 "randomizedDelay": {
-        //                     "description": "*(2.1)* Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.\r\n\r\n",
+        //                     "description": "Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "startValue": {
-        //                     "description": "The lowest level of consumption that defines the starting point of this consumption block. The block interval extends to the start of the next interval.\r\n",
+        //                     "description": "The lowest level of consumption that defines the starting point of this consumption block. The block interval extends to the start of the next interval.",
         //                     "type": "number"
         //                 },
         //                 "cost": {
@@ -558,11 +558,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/CostKindEnumType"
         //                 },
         //                 "amount": {
-        //                     "description": "The estimated or actual cost per kWh\r\n",
+        //                     "description": "The estimated or actual cost per kWh",
         //                     "type": "integer"
         //                 },
         //                 "amountMultiplier": {
-        //                     "description": "Values: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier\r\n",
+        //                     "description": "Values: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
         //                     "type": "integer"
         //                 },
         //                 "customData": {
@@ -580,13 +580,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "soc": {
-        //                     "description": "The SoC value beyond which the charging rate limit should be applied.\r\n",
+        //                     "description": "The SoC value beyond which the charging rate limit should be applied.",
         //                     "type": "integer",
         //                     "minimum": 0.0,
         //                     "maximum": 100.0
         //                 },
         //                 "limit": {
-        //                     "description": "Charging rate limit beyond the SoC value.\r\nThe unit is defined by _chargingSchedule.chargingRateUnit_.\r\n\r\n",
+        //                     "description": "Charging rate limit beyond the SoC value.\r\nThe unit is defined by _chargingSchedule.chargingRateUnit_.",
         //                     "type": "number"
         //                 },
         //                 "customData": {
@@ -599,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "OverstayRuleListType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "OverstayRuleList",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -617,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "maxItems": 5
         //                 },
         //                 "overstayTimeThreshold": {
-        //                     "description": "Time till overstay is applied in seconds.\r\n",
+        //                     "description": "Time till overstay is applied in seconds.",
         //                     "type": "integer"
         //                 },
         //                 "customData": {
@@ -629,7 +629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "OverstayRuleType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "OverstayRule",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -638,16 +638,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/RationalNumberType"
         //                 },
         //                 "overstayRuleDescription": {
-        //                     "description": "Human readable string to identify the overstay rule.\r\n",
+        //                     "description": "Human readable string to identify the overstay rule.",
         //                     "type": "string",
         //                     "maxLength": 32
         //                 },
         //                 "startTime": {
-        //                     "description": "Time in seconds after trigger of the parent Overstay Rules for this particular fee to apply.\r\n",
+        //                     "description": "Time in seconds after trigger of the parent Overstay Rules for this particular fee to apply.",
         //                     "type": "integer"
         //                 },
         //                 "overstayFeePeriod": {
-        //                     "description": "Time till overstay will be reapplied\r\n",
+        //                     "description": "Time till overstay will be reapplied",
         //                     "type": "integer"
         //                 },
         //                 "customData": {
@@ -661,17 +661,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "PriceLevelScheduleEntryType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "PriceLevelScheduleEntry",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "duration": {
-        //                     "description": "The amount of seconds that define the duration of this given PriceLevelScheduleEntry.\r\n",
+        //                     "description": "The amount of seconds that define the duration of this given PriceLevelScheduleEntry.",
         //                     "type": "integer"
         //                 },
         //                 "priceLevel": {
-        //                     "description": "Defines the price level of this PriceLevelScheduleEntry (referring to NumberOfPriceLevels). Small values for the PriceLevel represent a cheaper PriceLevelScheduleEntry. Large values for the PriceLevel represent a more expensive PriceLevelScheduleEntry.\r\n",
+        //                     "description": "Defines the price level of this PriceLevelScheduleEntry (referring to NumberOfPriceLevels). Small values for the PriceLevel represent a cheaper PriceLevelScheduleEntry. Large values for the PriceLevel represent a more expensive PriceLevelScheduleEntry.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "PriceLevelScheduleType": {
-        //             "description": "The PriceLevelScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.\r\n",
+        //             "description": "The PriceLevelScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.",
         //             "javaType": "PriceLevelSchedule",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -700,22 +700,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "maxItems": 100
         //                 },
         //                 "timeAnchor": {
-        //                     "description": "Starting point of this price schedule.\r\n",
+        //                     "description": "Starting point of this price schedule.",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
         //                 "priceScheduleId": {
-        //                     "description": "Unique ID of this price schedule.\r\n",
+        //                     "description": "Unique ID of this price schedule.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "priceScheduleDescription": {
-        //                     "description": "Description of the price schedule.\r\n",
+        //                     "description": "Description of the price schedule.",
         //                     "type": "string",
         //                     "maxLength": 32
         //                 },
         //                 "numberOfPriceLevels": {
-        //                     "description": "Defines the overall number of distinct price level elements used across all PriceLevelSchedules.\r\n",
+        //                     "description": "Defines the overall number of distinct price level elements used across all PriceLevelSchedules.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -731,13 +731,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "PriceRuleStackType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "PriceRuleStack",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "duration": {
-        //                     "description": "Duration of the stack of price rules.  he amount of seconds that define the duration of the given PriceRule(s).\r\n",
+        //                     "description": "Duration of the stack of price rules.  he amount of seconds that define the duration of the given PriceRule(s).",
         //                     "type": "integer"
         //                 },
         //                 "priceRule": {
@@ -759,22 +759,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "PriceRuleType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "PriceRule",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "parkingFeePeriod": {
-        //                     "description": "The duration of the parking fee period (in seconds).\r\nWhen the time enters into a ParkingFeePeriod, the ParkingFee will apply to the session. .\r\n",
+        //                     "description": "The duration of the parking fee period (in seconds).\r\nWhen the time enters into a ParkingFeePeriod, the ParkingFee will apply to the session. .",
         //                     "type": "integer"
         //                 },
         //                 "carbonDioxideEmission": {
-        //                     "description": "Number of grams of CO2 per kWh.\r\n",
+        //                     "description": "Number of grams of CO2 per kWh.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "renewableGenerationPercentage": {
-        //                     "description": "Percentage of the power that is created by renewable resources.\r\n",
+        //                     "description": "Percentage of the power that is created by renewable resources.",
         //                     "type": "integer",
         //                     "minimum": 0.0,
         //                     "maximum": 100.0
@@ -798,17 +798,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "RationalNumberType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "RationalNumber",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "exponent": {
-        //                     "description": "The exponent to base 10 (dec)\r\n",
+        //                     "description": "The exponent to base 10 (dec)",
         //                     "type": "integer"
         //                 },
         //                 "value": {
-        //                     "description": "Value which shall be multiplied.\r\n",
+        //                     "description": "Value which shall be multiplied.",
         //                     "type": "integer"
         //                 },
         //                 "customData": {
@@ -826,11 +826,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "start": {
-        //                     "description": "Start of the interval, in seconds from NOW.\r\n",
+        //                     "description": "Start of the interval, in seconds from NOW.",
         //                     "type": "integer"
         //                 },
         //                 "duration": {
-        //                     "description": "Duration of the interval, in seconds.\r\n",
+        //                     "description": "Duration of the interval, in seconds.",
         //                     "type": "integer"
         //                 },
         //                 "customData": {
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/RelativeTimeIntervalType"
         //                 },
         //                 "ePriceLevel": {
-        //                     "description": "Defines the price level of this SalesTariffEntry (referring to NumEPriceLevels). Small values for the EPriceLevel represent a cheaper TariffEntry. Large values for the EPriceLevel represent a more expensive TariffEntry.\r\n",
+        //                     "description": "Defines the price level of this SalesTariffEntry (referring to NumEPriceLevels). Small values for the EPriceLevel represent a cheaper TariffEntry. Large values for the EPriceLevel represent a more expensive TariffEntry.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -872,23 +872,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "SalesTariffType": {
-        //             "description": "A SalesTariff provided by a Mobility Operator (EMSP) .\r\nNOTE: This dataType is based on dataTypes from &lt;&lt;ref-ISOIEC15118-2,ISO 15118-2&gt;&gt;.\r\n",
+        //             "description": "A SalesTariff provided by a Mobility Operator (EMSP) .\r\nNOTE: This dataType is based on dataTypes from &lt;&lt;ref-ISOIEC15118-2,ISO 15118-2&gt;&gt;.",
         //             "javaType": "SalesTariff",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "id": {
-        //                     "description": "SalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.\r\n",
+        //                     "description": "SalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "salesTariffDescription": {
-        //                     "description": "A human readable title/short description of the sales tariff e.g. for HMI display purposes.\r\n",
+        //                     "description": "A human readable title/short description of the sales tariff e.g. for HMI display purposes.",
         //                     "type": "string",
         //                     "maxLength": 32
         //                 },
         //                 "numEPriceLevels": {
-        //                     "description": "Defines the overall number of distinct price levels used across all provided SalesTariff elements.\r\n",
+        //                     "description": "Defines the overall number of distinct price levels used across all provided SalesTariff elements.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -911,39 +911,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "TaxRuleType": {
-        //             "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //             "description": "Part of ISO 15118-20 price schedule.",
         //             "javaType": "TaxRule",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "taxRuleID": {
-        //                     "description": "Id for the tax rule.\r\n",
+        //                     "description": "Id for the tax rule.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "taxRuleName": {
-        //                     "description": "Human readable string to identify the tax rule.\r\n",
+        //                     "description": "Human readable string to identify the tax rule.",
         //                     "type": "string",
         //                     "maxLength": 100
         //                 },
         //                 "taxIncludedInPrice": {
-        //                     "description": "Indicates whether the tax is included in any price or not.\r\n",
+        //                     "description": "Indicates whether the tax is included in any price or not.",
         //                     "type": "boolean"
         //                 },
         //                 "appliesToEnergyFee": {
-        //                     "description": "Indicates whether this tax applies to Energy Fees.\r\n",
+        //                     "description": "Indicates whether this tax applies to Energy Fees.",
         //                     "type": "boolean"
         //                 },
         //                 "appliesToParkingFee": {
-        //                     "description": "Indicates whether this tax applies to Parking Fees.\r\n\r\n",
+        //                     "description": "Indicates whether this tax applies to Parking Fees.",
         //                     "type": "boolean"
         //                 },
         //                 "appliesToOverstayFee": {
-        //                     "description": "Indicates whether this tax applies to Overstay Fees.\r\n\r\n",
+        //                     "description": "Indicates whether this tax applies to Overstay Fees.",
         //                     "type": "boolean"
         //                 },
         //                 "appliesToMinimumMaximumCost": {
-        //                     "description": "Indicates whether this tax applies to Minimum/Maximum Cost.\r\n\r\n",
+        //                     "description": "Indicates whether this tax applies to Minimum/Maximum Cost.",
         //                     "type": "boolean"
         //                 },
         //                 "taxRate": {
@@ -963,17 +963,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "V2XFreqWattPointType": {
-        //             "description": "*(2.1)* A point of a frequency-watt curve.\r\n",
+        //             "description": "A point of a frequency-watt curve.",
         //             "javaType": "V2XFreqWattPoint",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "frequency": {
-        //                     "description": "Net frequency in Hz.\r\n",
+        //                     "description": "Net frequency in Hz.",
         //                     "type": "number"
         //                 },
         //                 "power": {
-        //                     "description": "Power in W to charge (positive) or discharge (negative) at specified frequency.\r\n",
+        //                     "description": "Power in W to charge (positive) or discharge (negative) at specified frequency.",
         //                     "type": "number"
         //                 },
         //                 "customData": {
@@ -986,17 +986,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "V2XSignalWattPointType": {
-        //             "description": "*(2.1)* A point of a signal-watt curve.\r\n",
+        //             "description": "A point of a signal-watt curve.",
         //             "javaType": "V2XSignalWattPoint",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "signal": {
-        //                     "description": "Signal value from an AFRRSignalRequest.\r\n",
+        //                     "description": "Signal value from an AFRRSignalRequest.",
         //                     "type": "integer"
         //                 },
         //                 "power": {
-        //                     "description": "Power in W to charge (positive) or discharge (negative) at specified frequency.\r\n",
+        //                     "description": "Power in W to charge (positive) or discharge (negative) at specified frequency.",
         //                     "type": "number"
         //                 },
         //                 "customData": {
@@ -1035,7 +1035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "minItems": 1
         //         },
         //         "evseId": {
-        //             "description": "The EVSE to which the charging limit is set. If absent or when zero, it applies to the entire Charging Station.\r\n",
+        //             "description": "The EVSE to which the charging limit is set. If absent or when zero, it applies to the entire Charging Station.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "UploadLogStatusEnumType": {
-        //             "description": "This contains the status of the log upload.\r\n",
+        //             "description": "This contains the status of the log upload.",
         //             "javaType": "UploadLogStatusEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -164,18 +164,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "StatusInfoType": {
-        //             "description": "Element providing more information about the status.\r\n",
+        //             "description": "Element providing more information about the status.",
         //             "javaType": "StatusInfo",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "reasonCode": {
-        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
         //                 "additionalInfo": {
-        //                     "description": "Additional text to provide detailed information.\r\n",
+        //                     "description": "Additional text to provide detailed information.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "$ref": "#/definitions/UploadLogStatusEnumType"
         //         },
         //         "requestId": {
-        //             "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.\r\n",
+        //             "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.",
         //             "type": "integer"
         //         },
         //         "statusInfo": {

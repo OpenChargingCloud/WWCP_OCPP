@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "id": {
-        //                     "description": "Uniquely identifies the stream\r\n",
+        //                     "description": "Uniquely identifies the stream",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/PeriodicEventStreamParamsType"
         //                 },
         //                 "variableMonitoringId": {
-        //                     "description": "Id of monitor used to report his event. It can be a preconfigured or hardwired monitor.\r\n",
+        //                     "description": "Id of monitor used to report his event. It can be a preconfigured or hardwired monitor.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -206,12 +206,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "interval": {
-        //                     "description": "Time in seconds after which stream data is sent.\r\n",
+        //                     "description": "Time in seconds after which stream data is sent.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "values": {
-        //                     "description": "Number of items to be sent together in stream.\r\n",
+        //                     "description": "Number of items to be sent together in stream.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },

@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "additionalProperties": false,
         //     "properties": {
         //         "additionalIdToken": {
-        //             "description": "*(2.1)* This field specifies the additional IdToken.",
+        //             "description": "This field specifies the additional IdToken.",
         //             "type": "string",
         //             "maxLength": 255
         //         },

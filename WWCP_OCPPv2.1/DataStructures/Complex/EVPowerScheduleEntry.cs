@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -51,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// A positive value indicates that the EV currently is not able to offer energy to discharge.
         /// </summary>
         [Mandatory]
-        public Decimal   Power       { get; }
+        public Watt      Power       { get; }
 
         #endregion
 
@@ -64,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Power">The maximum amount of power for this power schedule entry to be discharged from the EV battery through EVSE power outlet. Negative values are used for discharging.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EVPowerScheduleEntry(TimeSpan     Duration,
-                                    Decimal      Power,
+                                    Watt         Power,
                                     CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -79,7 +81,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = Duration.GetHashCode() * 5 ^
                            Power.   GetHashCode() * 3 ^
-
                            base.    GetHashCode();
 
             }
@@ -89,10 +90,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "description": "An entry in schedule of the energy amount over time that EV is willing to discharge.
+        //                     A negative value indicates the willingness to discharge under specific conditions,
+        //                     a positive value indicates that the EV currently is not able to offer energy to discharge.",
+        //     "javaType": "EVPowerScheduleEntry",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "duration": {
+        //             "description": "The duration of this entry.",
+        //             "type": "integer"
+        //         },
+        //         "power": {
+        //             "description": "Defines maximum amount of power for the duration of this EVPowerScheduleEntry to be discharged
+        //                             from the EV battery through EVSE power outlet. Negative values are used for discharging.",
+        //             "type": "number"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "duration",
+        //         "power"
+        //     ]
+        // }
 
         #endregion
 
@@ -110,8 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evPowerScheduleEntry,
                          out var errorResponse,
-                         CustomEVPowerScheduleEntryParser) &&
-                evPowerScheduleEntry is not null)
+                         CustomEVPowerScheduleEntryParser))
             {
                 return evPowerScheduleEntry;
             }
@@ -133,9 +157,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVPowerScheduleEntry">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       out EVPowerScheduleEntry?  EVPowerScheduleEntry,
-                                       out String?                ErrorResponse)
+        public static Boolean TryParse(JObject                                         JSON,
+                                       [NotNullWhen(true)]  out EVPowerScheduleEntry?  EVPowerScheduleEntry,
+                                       [NotNullWhen(false)] out String?                ErrorResponse)
 
             => TryParse(JSON,
                         out EVPowerScheduleEntry,
@@ -151,8 +175,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEVPowerScheduleEntryParser">A delegate to parse custom power schedule entry JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
-                                       out EVPowerScheduleEntry?                           EVPowerScheduleEntry,
-                                       out String?                                         ErrorResponse,
+                                       [NotNullWhen(true)]  out EVPowerScheduleEntry?      EVPowerScheduleEntry,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<EVPowerScheduleEntry>?  CustomEVPowerScheduleEntryParser)
         {
 
@@ -177,7 +201,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("power",
                                          "common power or power on phase L1",
-                                         out Decimal Power,
+                                         Watt.TryParseKW,
+                                         out Watt Power,
                                          out ErrorResponse))
                 {
                     return false;
@@ -240,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("duration",     (UInt64) Math.Round(Duration.TotalSeconds, 0)),
 
-                                 new JProperty("power",        Power),
+                                 new JProperty("power",        Power.kW),
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -355,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Power} kW for {Duration.TotalSeconds} second(s)";
+            => $"{Power.kW} kW for {Duration.TotalSeconds} second(s)";
 
         #endregion
 

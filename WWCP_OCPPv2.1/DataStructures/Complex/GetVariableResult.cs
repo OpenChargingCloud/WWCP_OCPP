@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Class to hold results of GetVariables request.\r\n",
+        //     "description": "Class to hold results of GetVariables request.",
         //     "javaType": "GetVariableResult",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/AttributeEnumType"
         //         },
         //         "attributeValue": {
-        //             "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
+        //             "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
         //             "type": "string",
         //             "maxLength": 2500
         //         },

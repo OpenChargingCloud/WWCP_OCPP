@@ -184,32 +184,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         //     "additionalProperties": false,
         //     "properties": {
         //         "timeAnchor": {
-        //             "description": "Starting point of price schedule.\r\n",
+        //             "description": "Starting point of price schedule.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "priceScheduleID": {
-        //             "description": "Unique ID of price schedule\r\n",
+        //             "description": "Unique ID of price schedule",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "priceScheduleDescription": {
-        //             "description": "Description of the price schedule.\r\n",
+        //             "description": "Description of the price schedule.",
         //             "type": "string",
         //             "maxLength": 160
         //         },
         //         "currency": {
-        //             "description": "Currency according to ISO 4217.\r\n",
+        //             "description": "Currency according to ISO 4217.",
         //             "type": "string",
         //             "maxLength": 3
         //         },
         //         "language": {
-        //             "description": "String that indicates what language is used for the human readable strings in the price schedule. Based on ISO 639.\r\n",
+        //             "description": "String that indicates what language is used for the human readable strings in the price schedule. Based on ISO 639.",
         //             "type": "string",
         //             "maxLength": 8
         //         },
         //         "priceAlgorithm": {
-        //             "description": "A string in URN notation which shall uniquely identify an algorithm that defines how to compute an energy fee sum for a specific power profile based on the EnergyFee information from the PriceRule elements.\r\n",
+        //             "description": "A string in URN notation which shall uniquely identify an algorithm that defines how to compute an energy fee sum for a specific power profile based on the EnergyFee information from the PriceRule elements.",
         //             "type": "string",
         //             "maxLength": 2000
         //         },

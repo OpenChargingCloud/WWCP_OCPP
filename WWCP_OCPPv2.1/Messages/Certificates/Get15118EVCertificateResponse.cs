@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "maxLength": 17000
         //         },
         //         "remainingContracts": {
-        //             "description": "*(2.1)* Number of contracts that can be retrieved with additional requests.",
+        //             "description": "Number of contracts that can be retrieved with additional requests.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

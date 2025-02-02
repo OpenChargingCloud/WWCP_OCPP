@@ -336,11 +336,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "type": "number"
         //         },
         //         "limit_L2": {
-        //             "description": "*(2.1)* Charging rate limit on phase L2  in the applicable _chargingRateUnit_. ",
+        //             "description": "Charging rate limit on phase L2  in the applicable _chargingRateUnit_. ",
         //             "type": "number"
         //         },
         //         "limit_L3": {
-        //             "description": "*(2.1)* Charging rate limit on phase L3  in the applicable _chargingRateUnit_. ",
+        //             "description": "Charging rate limit on phase L3  in the applicable _chargingRateUnit_. ",
         //             "type": "number"
         //         },
         //         "numberPhases": {
@@ -356,54 +356,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "maximum": 3.0
         //         },
         //         "dischargeLimit": {
-        //             "description": "*(2.1)* Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "description": "Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //             "type": "number",
         //             "maximum": 0.0
         //         },
         //         "dischargeLimit_L2": {
-        //             "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. ",
+        //             "description": "Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. ",
         //             "type": "number",
         //             "maximum": 0.0
         //         },
         //         "dischargeLimit_L3": {
-        //             "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. ",
+        //             "description": "Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. ",
         //             "type": "number",
         //             "maximum": 0.0
         //         },
         //         "setpoint": {
-        //             "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "description": "Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //             "type": "number"
         //         },
         //         "setpoint_L2": {
-        //             "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.",
+        //             "description": "Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.",
         //             "type": "number"
         //         },
         //         "setpoint_L3": {
-        //             "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. ",
+        //             "description": "Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. ",
         //             "type": "number"
         //         },
         //         "setpointReactive": {
-        //             "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //             "description": "Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
         //             "type": "number"
         //         },
         //         "setpointReactive_L2": {
-        //             "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. ",
+        //             "description": "Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. ",
         //             "type": "number"
         //         },
         //         "setpointReactive_L3": {
-        //             "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. ",
+        //             "description": "Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. ",
         //             "type": "number"
         //         },
         //         "preconditioningRequest": {
-        //             "description": "*(2.1)* If  true, the EV should attempt to keep the BMS preconditioned for this time interval.",
+        //             "description": "If  true, the EV should attempt to keep the BMS preconditioned for this time interval.",
         //             "type": "boolean"
         //         },
         //         "evseSleep": {
-        //             "description": "*(2.1)* If true, the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.",
+        //             "description": "If true, the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.",
         //             "type": "boolean"
         //         },
         //         "v2xBaseline": {
-        //             "description": "*(2.1)* Power value that, when present, is used as a baseline on top of which values from _v2xFreqWattCurve_ and _v2xSignalWattCurve_ are added.",
+        //             "description": "Power value that, when present, is used as a baseline on top of which values from _v2xFreqWattCurve_ and _v2xSignalWattCurve_ are added.",
         //             "type": "number"
         //         },
         //         "operationMode": {

@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "InstallCertificateUseEnumType": {
-        //             "description": "Indicates the certificate type that is sent.\r\n",
+        //             "description": "Indicates the certificate type that is sent.",
         //             "javaType": "InstallCertificateUseEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "$ref": "#/definitions/InstallCertificateUseEnumType"
         //         },
         //         "certificate": {
-        //             "description": "A PEM encoded X.509 certificate.\r\n",
+        //             "description": "A PEM encoded X.509 certificate.",
         //             "type": "string",
         //             "maxLength": 10000
         //         },

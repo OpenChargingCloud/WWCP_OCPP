@@ -34,14 +34,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Indicates whether this price algorithm identification is null or empty.
         /// </summary>
         /// <param name="PriceAlgorithmId">A price algorithm identification.</param>
-        public static Boolean IsNullOrEmpty(this PriceAlgorithm_Id? PriceAlgorithmId)
+        public static Boolean IsNullOrEmpty(this PriceAlgorithm? PriceAlgorithmId)
             => !PriceAlgorithmId.HasValue || PriceAlgorithmId.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this price algorithm identification is null or empty.
         /// </summary>
         /// <param name="PriceAlgorithmId">A price algorithm identification.</param>
-        public static Boolean IsNotNullOrEmpty(this PriceAlgorithm_Id? PriceAlgorithmId)
+        public static Boolean IsNotNullOrEmpty(this PriceAlgorithm? PriceAlgorithmId)
             => PriceAlgorithmId.HasValue && PriceAlgorithmId.Value.IsNotNullOrEmpty;
 
     }
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A price algorithm identification.
     /// </summary>
-    public readonly struct PriceAlgorithm_Id : IId,
-                                               IEquatable<PriceAlgorithm_Id>,
-                                               IComparable<PriceAlgorithm_Id>
+    public readonly struct PriceAlgorithm : IId,
+                                               IEquatable<PriceAlgorithm>,
+                                               IComparable<PriceAlgorithm>
     {
 
         #region Data
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new price algorithm identification based on the given string.
         /// </summary>
         /// <param name="String">The string representation of the price algorithm identification.</param>
-        private PriceAlgorithm_Id(String String)
+        private PriceAlgorithm(String String)
         {
             this.InternalId  = String;
         }
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given string as price algorithm identification.
         /// </summary>
         /// <param name="Text">A text representation of a price algorithm identification.</param>
-        public static PriceAlgorithm_Id Parse(String Text)
+        public static PriceAlgorithm Parse(String Text)
         {
 
             if (TryParse(Text, out var priceAlgorithmId))
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as price algorithm identification.
         /// </summary>
         /// <param name="Text">A text representation of a price algorithm identification.</param>
-        public static PriceAlgorithm_Id? TryParse(String Text)
+        public static PriceAlgorithm? TryParse(String Text)
         {
 
             if (TryParse(Text, out var priceAlgorithmId))
@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Text">A text representation of a price algorithm identification.</param>
         /// <param name="PriceAlgorithmId">The parsed price algorithm identification.</param>
-        public static Boolean TryParse(String Text, out PriceAlgorithm_Id PriceAlgorithmId)
+        public static Boolean TryParse(String Text, out PriceAlgorithm PriceAlgorithmId)
         {
 
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty())
             {
-                PriceAlgorithmId = new PriceAlgorithm_Id(Text.Trim());
+                PriceAlgorithmId = new PriceAlgorithm(Text.Trim());
                 return true;
             }
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this price algorithm identification.
         /// </summary>
-        public PriceAlgorithm_Id Clone()
+        public PriceAlgorithm Clone()
 
             => new (
                    InternalId.CloneString()
@@ -186,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceAlgorithmId1">A price algorithm identification.</param>
         /// <param name="PriceAlgorithmId2">Another price algorithm identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (PriceAlgorithm_Id PriceAlgorithmId1,
-                                           PriceAlgorithm_Id PriceAlgorithmId2)
+        public static Boolean operator == (PriceAlgorithm PriceAlgorithmId1,
+                                           PriceAlgorithm PriceAlgorithmId2)
 
             => PriceAlgorithmId1.Equals(PriceAlgorithmId2);
 
@@ -201,8 +201,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceAlgorithmId1">A price algorithm identification.</param>
         /// <param name="PriceAlgorithmId2">Another price algorithm identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (PriceAlgorithm_Id PriceAlgorithmId1,
-                                           PriceAlgorithm_Id PriceAlgorithmId2)
+        public static Boolean operator != (PriceAlgorithm PriceAlgorithmId1,
+                                           PriceAlgorithm PriceAlgorithmId2)
 
             => !PriceAlgorithmId1.Equals(PriceAlgorithmId2);
 
@@ -216,8 +216,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceAlgorithmId1">A price algorithm identification.</param>
         /// <param name="PriceAlgorithmId2">Another price algorithm identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (PriceAlgorithm_Id PriceAlgorithmId1,
-                                          PriceAlgorithm_Id PriceAlgorithmId2)
+        public static Boolean operator < (PriceAlgorithm PriceAlgorithmId1,
+                                          PriceAlgorithm PriceAlgorithmId2)
 
             => PriceAlgorithmId1.CompareTo(PriceAlgorithmId2) < 0;
 
@@ -231,8 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceAlgorithmId1">A price algorithm identification.</param>
         /// <param name="PriceAlgorithmId2">Another price algorithm identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (PriceAlgorithm_Id PriceAlgorithmId1,
-                                           PriceAlgorithm_Id PriceAlgorithmId2)
+        public static Boolean operator <= (PriceAlgorithm PriceAlgorithmId1,
+                                           PriceAlgorithm PriceAlgorithmId2)
 
             => PriceAlgorithmId1.CompareTo(PriceAlgorithmId2) <= 0;
 
@@ -246,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceAlgorithmId1">A price algorithm identification.</param>
         /// <param name="PriceAlgorithmId2">Another price algorithm identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (PriceAlgorithm_Id PriceAlgorithmId1,
-                                          PriceAlgorithm_Id PriceAlgorithmId2)
+        public static Boolean operator > (PriceAlgorithm PriceAlgorithmId1,
+                                          PriceAlgorithm PriceAlgorithmId2)
 
             => PriceAlgorithmId1.CompareTo(PriceAlgorithmId2) > 0;
 
@@ -261,8 +261,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceAlgorithmId1">A price algorithm identification.</param>
         /// <param name="PriceAlgorithmId2">Another price algorithm identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (PriceAlgorithm_Id PriceAlgorithmId1,
-                                           PriceAlgorithm_Id PriceAlgorithmId2)
+        public static Boolean operator >= (PriceAlgorithm PriceAlgorithmId1,
+                                           PriceAlgorithm PriceAlgorithmId2)
 
             => PriceAlgorithmId1.CompareTo(PriceAlgorithmId2) >= 0;
 
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A price algorithm identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is PriceAlgorithm_Id priceAlgorithmId
+            => Object is PriceAlgorithm priceAlgorithmId
                    ? CompareTo(priceAlgorithmId)
                    : throw new ArgumentException("The given object is not a price algorithm identification!",
                                                  nameof(Object));
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two price algorithm identifications.
         /// </summary>
         /// <param name="PriceAlgorithmId">A price algorithm identification to compare with.</param>
-        public Int32 CompareTo(PriceAlgorithm_Id PriceAlgorithmId)
+        public Int32 CompareTo(PriceAlgorithm PriceAlgorithmId)
 
             => String.Compare(InternalId,
                               PriceAlgorithmId.InternalId,
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A price algorithm identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is PriceAlgorithm_Id priceAlgorithmId &&
+            => Object is PriceAlgorithm priceAlgorithmId &&
                    Equals(priceAlgorithmId);
 
         #endregion
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two price algorithm identifications for equality.
         /// </summary>
         /// <param name="PriceAlgorithmId">A price algorithm identification to compare with.</param>
-        public Boolean Equals(PriceAlgorithm_Id PriceAlgorithmId)
+        public Boolean Equals(PriceAlgorithm PriceAlgorithmId)
 
             => String.Equals(InternalId,
                              PriceAlgorithmId.InternalId,

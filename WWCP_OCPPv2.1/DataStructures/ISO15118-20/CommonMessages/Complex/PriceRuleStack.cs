@@ -84,13 +84,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "PriceRuleStack",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "duration": {
-        //             "description": "Duration of the stack of price rules.  he amount of seconds that define the duration of the given PriceRule(s).\r\n",
+        //             "description": "Duration of the stack of price rules.  he amount of seconds that define the duration of the given PriceRule(s).",
         //             "type": "integer"
         //         },
         //         "priceRule": {

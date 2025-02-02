@@ -128,12 +128,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "minItems": 1
         //         },
         //         "idToken": {
-        //             "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //             "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //             "type": "string",
         //             "maxLength": 255
         //         },
         //         "type": {
-        //             "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //             "description": "Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
         //             "type": "string",
         //             "maxLength": 20
         //         },

@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "OverstayRule",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -112,16 +112,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         //             "$ref": "#/definitions/RationalNumberType"
         //         },
         //         "overstayRuleDescription": {
-        //             "description": "Human readable string to identify the overstay rule.\r\n",
+        //             "description": "Human readable string to identify the overstay rule.",
         //             "type": "string",
         //             "maxLength": 32
         //         },
         //         "startTime": {
-        //             "description": "Time in seconds after trigger of the parent Overstay Rules for this particular fee to apply.\r\n",
+        //             "description": "Time in seconds after trigger of the parent Overstay Rules for this particular fee to apply.",
         //             "type": "integer"
         //         },
         //         "overstayFeePeriod": {
-        //             "description": "Time till overstay will be reapplied\r\n",
+        //             "description": "Time till overstay will be reapplied",
         //             "type": "integer"
         //         },
         //         "customData": {

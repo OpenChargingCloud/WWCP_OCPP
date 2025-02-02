@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "$ref": "#/definitions/CertificateSigningUseEnumType"
         //         },
         //         "requestId": {
-        //             "description": "*(2.1)* RequestId to correlate this message with the SignCertificateRequest.",
+        //             "description": "RequestId to correlate this message with the SignCertificateRequest.",
         //             "type": "integer"
         //         },
         //         "customData": {

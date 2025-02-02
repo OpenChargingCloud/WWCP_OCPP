@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         #region Documentation
 
         // {
-        //     "description": "The PriceLevelScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.\r\n",
+        //     "description": "The PriceLevelScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.",
         //     "javaType": "PriceLevelSchedule",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -118,22 +118,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         //             "maxItems": 100
         //         },
         //         "timeAnchor": {
-        //             "description": "Starting point of this price schedule.\r\n",
+        //             "description": "Starting point of this price schedule.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "priceScheduleId": {
-        //             "description": "Unique ID of this price schedule.\r\n",
+        //             "description": "Unique ID of this price schedule.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "priceScheduleDescription": {
-        //             "description": "Description of the price schedule.\r\n",
+        //             "description": "Description of the price schedule.",
         //             "type": "string",
         //             "maxLength": 32
         //         },
         //         "numberOfPriceLevels": {
-        //             "description": "Defines the overall number of distinct price level elements used across all PriceLevelSchedules.\r\n",
+        //             "description": "Defines the overall number of distinct price level elements used across all PriceLevelSchedules.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

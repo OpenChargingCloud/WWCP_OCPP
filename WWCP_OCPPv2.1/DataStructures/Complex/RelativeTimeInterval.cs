@@ -85,11 +85,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "additionalProperties": false,
         //     "properties": {
         //         "start": {
-        //             "description": "Start of the interval, in seconds from NOW.\r\n",
+        //             "description": "Start of the interval, in seconds from NOW.",
         //             "type": "integer"
         //         },
         //         "duration": {
-        //             "description": "Duration of the interval, in seconds.\r\n",
+        //             "description": "Duration of the interval, in seconds.",
         //             "type": "integer"
         //         },
         //         "customData": {

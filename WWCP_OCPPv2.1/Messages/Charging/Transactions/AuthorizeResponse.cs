@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "additionalIdToken": {
-        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "description": "This field specifies the additional IdToken.",
         //                     "type": "string",
         //                     "maxLength": 255
         //                 },
@@ -366,12 +366,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //                     "minItems": 1
         //                 },
         //                 "idToken": {
-        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //                     "type": "string",
         //                     "maxLength": 255
         //                 },
         //                 "type": {
-        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "description": "Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //                     "maxLength": 8
         //                 },
         //                 "content": {
-        //                     "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
+        //                     "description": "Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "$ref": "#/definitions/AuthorizeCertificateStatusEnumType"
         //         },
         //         "allowedEnergyTransfer": {
-        //             "description": "*(2.1)* List of allowed energy transfer modes the EV can choose from. If omitted this defaults to charging only.",
+        //             "description": "List of allowed energy transfer modes the EV can choose from. If omitted this defaults to charging only.",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {

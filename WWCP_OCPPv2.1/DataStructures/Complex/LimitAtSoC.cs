@@ -86,13 +86,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "additionalProperties": false,
         //     "properties": {
         //         "soc": {
-        //             "description": "The SoC value beyond which the charging rate limit should be applied.\r\n",
+        //             "description": "The SoC value beyond which the charging rate limit should be applied.",
         //             "type": "integer",
         //             "minimum": 0.0,
         //             "maximum": 100.0
         //         },
         //         "limit": {
-        //             "description": "Charging rate limit beyond the SoC value.\r\nThe unit is defined by _chargingSchedule.chargingRateUnit_.\r\n\r\n",
+        //             "description": "Charging rate limit beyond the SoC value.\r\nThe unit is defined by _chargingSchedule.chargingRateUnit_.",
         //             "type": "number"
         //         },
         //         "customData": {

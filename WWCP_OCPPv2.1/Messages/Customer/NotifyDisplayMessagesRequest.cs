@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "MessageFormatEnumType": {
-        //             "description": "Format of the message.\r\n",
+        //             "description": "Format of the message.",
         //             "javaType": "MessageFormatEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "MessagePriorityEnumType": {
-        //             "description": "With what priority should this message be shown\r\n",
+        //             "description": "With what priority should this message be shown",
         //             "javaType": "MessagePriorityEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "MessageStateEnumType": {
-        //             "description": "During what state should this message be shown. When omitted this message should be shown in any state of the Charging Station.\r\n",
+        //             "description": "During what state should this message be shown. When omitted this message should be shown in any state of the Charging Station.",
         //             "javaType": "MessageStateEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "ComponentType": {
-        //             "description": "A physical or logical component\r\n",
+        //             "description": "A physical or logical component",
         //             "javaType": "Component",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -214,12 +214,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/EVSEType"
         //                 },
         //                 "name": {
-        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
         //                 "instance": {
-        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
@@ -232,18 +232,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "EVSEType": {
-        //             "description": "Electric Vehicle Supply Equipment\r\n",
+        //             "description": "Electric Vehicle Supply Equipment",
         //             "javaType": "EVSE",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "id": {
-        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
         //                 "connectorId": {
-        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "MessageContentType": {
-        //             "description": "Contains message details, for a message to be displayed on a Charging Station.\r\n\r\n",
+        //             "description": "Contains message details, for a message to be displayed on a Charging Station.",
         //             "javaType": "MessageContent",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -265,12 +265,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/MessageFormatEnumType"
         //                 },
         //                 "language": {
-        //                     "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n",
+        //                     "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
         //                     "type": "string",
         //                     "maxLength": 8
         //                 },
         //                 "content": {
-        //                     "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.\r\n\r\n",
+        //                     "description": "Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
         //                     "type": "string",
         //                     "maxLength": 1024
         //                 },
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "MessageInfoType": {
-        //             "description": "Contains message details, for a message to be displayed on a Charging Station.\r\n",
+        //             "description": "Contains message details, for a message to be displayed on a Charging Station.",
         //             "javaType": "MessageInfo",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/ComponentType"
         //                 },
         //                 "id": {
-        //                     "description": "Unique id within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).\r\n",
+        //                     "description": "Unique id within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).",
         //                     "type": "integer",
         //                     "minimum": 0.0
         //                 },
@@ -304,17 +304,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "$ref": "#/definitions/MessageStateEnumType"
         //                 },
         //                 "startDateTime": {
-        //                     "description": "From what date-time should this message be shown. If omitted: directly.\r\n",
+        //                     "description": "From what date-time should this message be shown. If omitted: directly.",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
         //                 "endDateTime": {
-        //                     "description": "Until what date-time should this message be shown, after this date/time this message SHALL be removed.\r\n",
+        //                     "description": "Until what date-time should this message be shown, after this date/time this message SHALL be removed.",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
         //                 "transactionId": {
-        //                     "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.\r\n",
+        //                     "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.",
         //                     "type": "string",
         //                     "maxLength": 36
         //                 },
@@ -367,11 +367,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "minItems": 1
         //         },
         //         "requestId": {
-        //             "description": "The id of the &lt;&lt;getdisplaymessagesrequest,GetDisplayMessagesRequest&gt;&gt; that requested this message.\r\n",
+        //             "description": "The id of the &lt;&lt;getdisplaymessagesrequest,GetDisplayMessagesRequest&gt;&gt; that requested this message.",
         //             "type": "integer"
         //         },
         //         "tbc": {
-        //             "description": "\"to be continued\" indicator. Indicates whether another part of the report follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.\r\n",
+        //             "description": "\"to be continued\" indicator. Indicates whether another part of the report follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.",
         //             "type": "boolean",
         //             "default": false
         //         },

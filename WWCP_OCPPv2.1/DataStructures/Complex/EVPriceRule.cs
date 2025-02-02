@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -50,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// value, the EnergyFee of the previous EVPriceRule applies.
         /// </summary>
         [Mandatory]
-        public Decimal  PowerRangeStart    { get; }
+        public Watt     PowerRangeStart    { get; }
 
         #endregion
 
@@ -63,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PowerRangeStart">The EnergyFee applies between this value and the value of the PowerRangeStart of the subsequent EVPriceRule.If the power is below this value, the EnergyFee of the previous EVPriceRule applies.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EVPriceRule(Decimal      EnergyFee,
-                           Decimal      PowerRangeStart,
+                           Watt         PowerRangeStart,
                            CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -78,7 +80,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = EnergyFee.      GetHashCode() * 5 ^
                            PowerRangeStart.GetHashCode() * 3 ^
-
                            base.           GetHashCode();
 
             }
@@ -90,16 +91,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
+        // {
+        //     "description": "An entry in price schedule over time for which EV is willing to discharge.",
+        //     "javaType": "EVPriceRule",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "energyFee": {
+        //             "description": "Cost per kWh.",
+        //             "type": "number"
+        //         },
+        //         "powerRangeStart": {
+        //             "description": "The EnergyFee applies between this value and the value of the PowerRangeStart of the subsequent EVPriceRule.
+        //                             If the power is below this value, the EnergyFee of the previous EVPriceRule applies. Negative values are used for discharging.",
+        //             "type": "number"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "energyFee",
+        //         "powerRangeStart"
+        //     ]
+        // }
 
         #endregion
 
         #region (static) Parse   (JSON, CustomEVPriceRuleParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an ev price rule.
+        /// Parse the given JSON representation of an EV price rule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomEVPriceRuleParser">A delegate to parse custom ev price rule JSON objects.</param>
+        /// <param name="CustomEVPriceRuleParser">A delegate to parse custom EV price rule JSON objects.</param>
         public static EVPriceRule Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<EVPriceRule>?  CustomEVPriceRuleParser   = null)
         {
@@ -107,13 +132,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evPriceRule,
                          out var errorResponse,
-                         CustomEVPriceRuleParser) &&
-                evPriceRule is not null)
+                         CustomEVPriceRuleParser))
             {
                 return evPriceRule;
             }
 
-            throw new ArgumentException("The given JSON representation of an ev price rule is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an EV price rule is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -125,14 +149,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of an ev price rule.
+        /// Try to parse the given JSON representation of an EV price rule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVPriceRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject           JSON,
-                                       out EVPriceRule?  EVPriceRule,
-                                       out String?       ErrorResponse)
+        public static Boolean TryParse(JObject                                JSON,
+                                       [NotNullWhen(true)]  out EVPriceRule?  EVPriceRule,
+                                       [NotNullWhen(false)] out String?       ErrorResponse)
 
             => TryParse(JSON,
                         out EVPriceRule,
@@ -141,15 +165,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of an ev price rule.
+        /// Try to parse the given JSON representation of an EV price rule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVPriceRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEVPriceRuleParser">A delegate to parse custom ev price rule JSON objects.</param>
+        /// <param name="CustomEVPriceRuleParser">A delegate to parse custom EV price rule JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       out EVPriceRule?                           EVPriceRule,
-                                       out String?                                ErrorResponse,
+                                       [NotNullWhen(true)]  out EVPriceRule?      EVPriceRule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse,
                                        CustomJObjectParserDelegate<EVPriceRule>?  CustomEVPriceRuleParser)
         {
 
@@ -174,7 +198,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("PowerRangeStart",
                                          "power range start",
-                                         out Decimal PowerRangeStart,
+                                         Watt.TryParseKW,
+                                         out Watt PowerRangeStart,
                                          out ErrorResponse))
                 {
                     return false;
@@ -213,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 EVPriceRule    = default;
-                ErrorResponse  = "The given JSON representation of an ev price rule is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of an EV price rule is invalid: " + e.Message;
                 return false;
 
             }
@@ -227,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
+        /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom EV price rules.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<EVPriceRule>?  CustomEVPriceRuleSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?   CustomCustomDataSerializer    = null)
@@ -236,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("energyFee",         EnergyFee),
-                                 new JProperty("powerRangeStart",   PowerRangeStart),
+                                 new JProperty("powerRangeStart",   PowerRangeStart.kW),
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
@@ -260,8 +285,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPriceRule1">An ev price rule.</param>
-        /// <param name="EVPriceRule2">Another ev price rule.</param>
+        /// <param name="EVPriceRule1">An EV price rule.</param>
+        /// <param name="EVPriceRule2">Another EV price rule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVPriceRule? EVPriceRule1,
                                            EVPriceRule? EVPriceRule2)
@@ -286,8 +311,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPriceRule1">An ev price rule.</param>
-        /// <param name="EVPriceRule2">Another ev price rule.</param>
+        /// <param name="EVPriceRule1">An EV price rule.</param>
+        /// <param name="EVPriceRule2">Another EV price rule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVPriceRule? EVPriceRule1,
                                            EVPriceRule? EVPriceRule2)
@@ -303,9 +328,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two ev price rules for equality..
+        /// Compares two EV price rules for equality..
         /// </summary>
-        /// <param name="Object">An ev price rule to compare with.</param>
+        /// <param name="Object">An EV price rule to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVPriceRule evPriceRule &&
@@ -316,9 +341,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(EVPriceRule)
 
         /// <summary>
-        /// Compares two ev price rules for equality.
+        /// Compares two EV price rules for equality.
         /// </summary>
-        /// <param name="EVPriceRule">An ev price rule to compare with.</param>
+        /// <param name="EVPriceRule">An EV price rule to compare with.</param>
         public Boolean Equals(EVPriceRule? EVPriceRule)
 
             => EVPriceRule is not null &&
@@ -351,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{EnergyFee} >= {PowerRangeStart} kW";
+            => $"{EnergyFee} >= {PowerRangeStart.kW} kW";
 
         #endregion
 

@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "additionalProperties": false,
         //             "properties": {
         //                 "additionalIdToken": {
-        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "description": "This field specifies the additional IdToken.",
         //                     "type": "string",
         //                     "maxLength": 255
         //                 },
@@ -214,12 +214,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "minItems": 1
         //                 },
         //                 "idToken": {
-        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
         //                     "type": "string",
         //                     "maxLength": 255
         //                 },
         //                 "type": {
-        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "description": "Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
         //                     "type": "string",
         //                     "maxLength": 20
         //                 },
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             "$ref": "#/definitions/IdTokenType"
         //         },
         //         "certificate": {
-        //             "description": "*(2.1)* The X.509 certificate chain presented by EV and encoded in PEM format. Order of certificates in chain is from leaf up to (but excluding) root certificate. +\r\nOnly needed in case of central contract validation when Charging Station cannot validate the contract certificate.",
+        //             "description": "The X.509 certificate chain presented by EV and encoded in PEM format. Order of certificates in chain is from leaf up to (but excluding) root certificate. +\r\nOnly needed in case of central contract validation when Charging Station cannot validate the contract certificate.",
         //             "type": "string",
         //             "maxLength": 10000
         //         },

@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Represent a signed version of the meter value.\r\n",
+        //     "description": "Represent a signed version of the meter value.",
         //     "javaType": "SignedMeterValue",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -122,23 +122,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //         "signedMeterData": {
         //             "description": "Base64 encoded, contains the signed data from the meter in the format specified in _encodingMethod_,
         //                             which might contain more then just the meter value. It can contain information like timestamps,
-        //                             reference to a customer etc.\r\n",
+        //                             reference to a customer etc.",
         //             "type": "string",
         //             "maxLength": 32768
         //         },
         //         "signingMethod": {
-        //             "description": "*(2.1)* Method used to create the digital signature. Optional, if already included in _signedMeterData_.
-        //                             Standard values for this are defined in Appendix as SigningMethodEnumStringType.\r\n",
+        //             "description": "Method used to create the digital signature. Optional, if already included in _signedMeterData_.
+        //                             Standard values for this are defined in Appendix as SigningMethodEnumStringType.",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "encodingMethod": {
-        //             "description": "Format used by the energy meter to encode the meter data. For example: OCMF or EDL.\r\n",
+        //             "description": "Format used by the energy meter to encode the meter data. For example: OCMF or EDL.",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "publicKey": {
-        //             "description": "*(2.1)* Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.\r\n",
+        //             "description": "Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.",
         //             "type": "string",
         //             "maxLength": 2500
         //         },

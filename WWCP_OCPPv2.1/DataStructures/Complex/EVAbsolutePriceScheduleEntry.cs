@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -77,7 +79,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = Duration.    GetHashCode()  * 5 ^
                            EVPriceRules.CalcHashCode() * 3 ^
-
                            base.        GetHashCode();
 
             }
@@ -89,6 +90,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
+        // {
+        //     "description": "An entry in price schedule over time for which EV is willing to discharge.",
+        //     "javaType": "EVAbsolutePriceScheduleEntry",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "duration": {
+        //             "description": "The amount of seconds of this entry.",
+        //             "type": "integer"
+        //         },
+        //         "evPriceRule": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/EVPriceRuleType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 8
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "duration",
+        //         "evPriceRule"
+        //     ]
+        // }
 
         #endregion
 
@@ -99,15 +128,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomEVAbsolutePriceScheduleEntryParser">A delegate to parse custom charging limit JSON objects.</param>
-        public static EVAbsolutePriceScheduleEntry Parse(JObject                                      JSON,
-                                          CustomJObjectParserDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntryParser   = null)
+        public static EVAbsolutePriceScheduleEntry Parse(JObject                                                     JSON,
+                                                         CustomJObjectParserDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntryParser   = null)
         {
 
             if (TryParse(JSON,
                          out var evAbsolutePriceScheduleEntry,
                          out var errorResponse,
-                         CustomEVAbsolutePriceScheduleEntryParser) &&
-                evAbsolutePriceScheduleEntry is not null)
+                         CustomEVAbsolutePriceScheduleEntryParser))
             {
                 return evAbsolutePriceScheduleEntry;
             }
@@ -129,9 +157,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVAbsolutePriceScheduleEntry">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       out EVAbsolutePriceScheduleEntry?  EVAbsolutePriceScheduleEntry,
-                                       out String?                        ErrorResponse)
+        public static Boolean TryParse(JObject                                                 JSON,
+                                       [NotNullWhen(true)]  out EVAbsolutePriceScheduleEntry?  EVAbsolutePriceScheduleEntry,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         out EVAbsolutePriceScheduleEntry,
@@ -147,8 +175,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEVAbsolutePriceScheduleEntryParser">A delegate to parse custom charging limit JSON objects.</param>
         public static Boolean TryParse(JObject                                                     JSON,
-                                       out EVAbsolutePriceScheduleEntry?                           EVAbsolutePriceScheduleEntry,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out EVAbsolutePriceScheduleEntry?      EVAbsolutePriceScheduleEntry,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntryParser)
         {
 

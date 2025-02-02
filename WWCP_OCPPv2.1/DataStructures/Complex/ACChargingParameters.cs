@@ -111,25 +111,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "EV AC charging parameters for ISO 15118-2\r\n\r\n",
+        //     "description": "EV AC charging parameters for ISO 15118-2",
         //     "javaType": "ACChargingParameters",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "energyAmount": {
-        //             "description": "Amount of energy requested (in Wh). This includes energy required for preconditioning.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EAmount +\r\n*ISO 15118-20*: Dynamic/Scheduled_SEReqControlModeType: EVTargetEnergyRequest\r\n\r\n",
+        //             "description": "Amount of energy requested (in Wh). This includes energy required for preconditioning.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EAmount +\r\n*ISO 15118-20*: Dynamic/Scheduled_SEReqControlModeType: EVTargetEnergyRequest",
         //             "type": "number"
         //         },
         //         "evMinCurrent": {
-        //             "description": "Minimum current (amps) supported by the electric vehicle (per phase).\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMinCurrent\r\n\r\n",
+        //             "description": "Minimum current (amps) supported by the electric vehicle (per phase).\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMinCurrent",
         //             "type": "number"
         //         },
         //         "evMaxCurrent": {
-        //             "description": "Maximum current (amps) supported by the electric vehicle (per phase). Includes cable capacity.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMaxCurrent\r\n\r\n",
+        //             "description": "Maximum current (amps) supported by the electric vehicle (per phase). Includes cable capacity.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMaxCurrent",
         //             "type": "number"
         //         },
         //         "evMaxVoltage": {
-        //             "description": "Maximum voltage supported by the electric vehicle.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMaxVoltage\r\n\r\n",
+        //             "description": "Maximum voltage supported by the electric vehicle.\r\nRelates to: +\r\n*ISO 15118-2*: AC_EVChargeParameterType: EVMaxVoltage",
         //             "type": "number"
         //         },
         //         "customData": {

@@ -103,19 +103,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Reference key to a component-variable.\r\n",
+        //     "description": "Reference key to a component-variable.",
         //     "javaType": "Variable",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "name": {
         //             "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible.
-        //                             Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //                             Case Insensitive. strongly advised to use Camel Case.",
         //             "type": "string",
         //             "maxLength": 50
         //         },
         //         "instance": {
-        //             "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.\r\n",
+        //             "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
         //             "type": "string",
         //             "maxLength": 50
         //         },

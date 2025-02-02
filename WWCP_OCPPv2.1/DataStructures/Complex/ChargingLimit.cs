@@ -95,17 +95,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "properties": {
         //         "chargingLimitSource": {
         //             "description": "Represents the source of the charging limit.
-        //                             Values defined in appendix as ChargingLimitSourceEnumStringType.\r\n",
+        //                             Values defined in appendix as ChargingLimitSourceEnumStringType.",
         //             "type": "string",
         //             "maxLength": 20
         //         },
         //         "isLocalGeneration": {
-        //             "description": "*(2.1)* True when the reported limit concerns local generation that is
-        //                             providing extra capacity, instead of a limitation.\r\n",
+        //             "description": "True when the reported limit concerns local generation that is
+        //                             providing extra capacity, instead of a limitation.",
         //             "type": "boolean"
         //         },
         //         "isGridCritical": {
-        //             "description": "Indicates whether the charging limit is critical for the grid.\r\n",
+        //             "description": "Indicates whether the charging limit is critical for the grid.",
         //             "type": "boolean"
         //         },
         //         "customData": {

@@ -87,18 +87,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Electric Vehicle Supply Equipment\r\n",
+        //     "description": "Electric Vehicle Supply Equipment",
         //     "javaType": "EVSE",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "id": {
-        //             "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //             "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "connectorId": {
-        //             "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //             "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

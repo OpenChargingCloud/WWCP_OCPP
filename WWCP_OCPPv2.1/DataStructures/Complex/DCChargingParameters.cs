@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -104,15 +106,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="FullSoC">The optional percentage of SoC at which the EV considers the battery fully charged.</param>
         /// <param name="BulkSoC">The optional percentage of SoC at which the EV considers a fast charging process to end.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public DCChargingParameters(Ampere          EVMaxCurrent,
-                                    Volt            EVMaxVoltage,
-                                    WattHour?       EnergyAmount,
-                                    Watt?           EVMaxPower,
+        public DCChargingParameters(Ampere           EVMaxCurrent,
+                                    Volt             EVMaxVoltage,
+                                    WattHour?        EnergyAmount,
+                                    Watt?            EVMaxPower,
                                     PercentageByte?  StateOfCharge,
-                                    WattHour?       EVEnergyCapacity,
+                                    WattHour?        EVEnergyCapacity,
                                     PercentageByte?  FullSoC,
                                     PercentageByte?  BulkSoC,
-                                    CustomData?     CustomData   = null)
+                                    CustomData?      CustomData   = null)
 
             : base(CustomData)
 
@@ -130,16 +132,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = EVMaxCurrent.     GetHashCode()       * 29 ^
+                hashCode = EVMaxCurrent.     GetHashCode()       * 23 ^
                            EVMaxVoltage.     GetHashCode()       * 19 ^
-
                           (EnergyAmount?.    GetHashCode() ?? 0) * 17 ^
                           (EVMaxPower?.      GetHashCode() ?? 0) * 13 ^
                           (StateOfCharge?.   GetHashCode() ?? 0) * 11 ^
                           (EVEnergyCapacity?.GetHashCode() ?? 0) *  7 ^
                           (FullSoC?.         GetHashCode() ?? 0) *  5 ^
                           (BulkSoC?.         GetHashCode() ?? 0) *  3 ^
-
                            base.             GetHashCode();
 
             }
@@ -151,58 +151,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "DCChargingParametersType": {
-        //   "description": "DC_ Charging_ Parameters\r\nurn:x-oca:ocpp:uid:2:233251\r\nEV DC charging parameters",
-        //   "javaType": "DCChargingParameters",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "EV DC charging parameters for ISO 15118-2",
+        //     "javaType": "DCChargingParameters",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evMaxCurrent": {
+        //             "description": "Maximum current (in A) supported by the electric vehicle. Includes cable capacity.\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType:EVMaximumCurrentLimit",
+        //             "type": "number"
+        //         },
+        //         "evMaxVoltage": {
+        //             "description": "Maximum voltage supported by the electric vehicle.\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: EVMaximumVoltageLimit",
+        //             "type": "number"
+        //         },
+        //         "evMaxPower": {
+        //             "description": "Maximum power (in W) supported by the electric vehicle. Required for DC charging.\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: EVMaximumPowerLimit",
+        //             "type": "number"
+        //         },
+        //         "evEnergyCapacity": {
+        //             "description": "Capacity of the electric vehicle battery (in Wh).\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: EVEnergyCapacity",
+        //             "type": "number"
+        //         },
+        //         "energyAmount": {
+        //             "description": "Amount of energy requested (in Wh). This inludes energy required for preconditioning.\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: EVEnergyRequest",
+        //             "type": "number"
+        //         },
+        //         "stateOfCharge": {
+        //             "description": "Energy available in the battery (in percent of the battery capacity)\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: DC_EVStatus: EVRESSSOC",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "fullSoC": {
+        //             "description": "Percentage of SoC at which the EV considers the battery fully charged. (possible values: 0 - 100)\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: FullSOC",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "bulkSoC": {
+        //             "description": "Percentage of SoC at which the EV considers a fast charging process to end. (possible values: 0 - 100)\r\nRelates to: +\r\n*ISO 15118-2*: DC_EVChargeParameterType: BulkSOC",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "evMaxCurrent": {
-        //       "description": "DC_ Charging_ Parameters. EV_ Max. Current\r\nurn:x-oca:ocpp:uid:1:569215\r\nMaximum current (amps) supported by the electric vehicle. Includes cable capacity.",
-        //       "type": "integer"
-        //     },
-        //     "evMaxVoltage": {
-        //       "description": "DC_ Charging_ Parameters. EV_ Max. Voltage\r\nurn:x-oca:ocpp:uid:1:569216\r\nMaximum voltage supported by the electric vehicle",
-        //       "type": "integer"
-        //     },
-        //     "energyAmount": {
-        //       "description": "DC_ Charging_ Parameters. Energy_ Amount. Energy_ Amount\r\nurn:x-oca:ocpp:uid:1:569217\r\nAmount of energy requested (in Wh). This inludes energy required for preconditioning.",
-        //       "type": "integer"
-        //     },
-        //     "evMaxPower": {
-        //       "description": "DC_ Charging_ Parameters. EV_ Max. Power\r\nurn:x-oca:ocpp:uid:1:569218\r\nMaximum power (in W) supported by the electric vehicle. Required for DC charging.",
-        //       "type": "integer"
-        //     },
-        //     "stateOfCharge": {
-        //       "description": "DC_ Charging_ Parameters. State_ Of_ Charge. Numeric\r\nurn:x-oca:ocpp:uid:1:569219\r\nEnergy available in the battery (in percent of the battery capacity)",
-        //       "type": "integer",
-        //       "minimum": 0.0,
-        //       "maximum": 100.0
-        //     },
-        //     "evEnergyCapacity": {
-        //       "description": "DC_ Charging_ Parameters. EV_ Energy_ Capacity. Numeric\r\nurn:x-oca:ocpp:uid:1:569220\r\nCapacity of the electric vehicle battery (in Wh)",
-        //       "type": "integer"
-        //     },
-        //     "fullSoC": {
-        //       "description": "DC_ Charging_ Parameters. Full_ SOC. Percentage\r\nurn:x-oca:ocpp:uid:1:569221\r\nPercentage of SoC at which the EV considers the battery fully charged. (possible values: 0 - 100)",
-        //       "type": "integer",
-        //       "minimum": 0.0,
-        //       "maximum": 100.0
-        //     },
-        //     "bulkSoC": {
-        //       "description": "DC_ Charging_ Parameters. Bulk_ SOC. Percentage\r\nurn:x-oca:ocpp:uid:1:569222\r\nPercentage of SoC at which the EV considers a fast charging process to end. (possible values: 0 - 100)",
-        //       "type": "integer",
-        //       "minimum": 0.0,
-        //       "maximum": 100.0
-        //     }
-        //   },
-        //   "required": [
-        //     "evMaxCurrent",
-        //     "evMaxVoltage"
-        //   ]
+        //     "required": [
+        //         "evMaxCurrent",
+        //         "evMaxVoltage"
+        //     ]
         // }
 
         #endregion
@@ -221,8 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var dcChargingParameters,
                          out var errorResponse,
-                         CustomDCChargingParametersParser) &&
-                dcChargingParameters is not null)
+                         CustomDCChargingParametersParser))
             {
                 return dcChargingParameters;
             }
@@ -244,9 +243,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DCChargingParameters">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       out DCChargingParameters?  DCChargingParameters,
-                                       out String?                ErrorResponse)
+        public static Boolean TryParse(JObject                                         JSON,
+                                       [NotNullWhen(true)]  out DCChargingParameters?  DCChargingParameters,
+                                       [NotNullWhen(false)] out String?                ErrorResponse)
 
             => TryParse(JSON,
                         out DCChargingParameters,
@@ -262,8 +261,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDCChargingParametersParser">A delegate to parse custom DC charging parameters JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
-                                       out DCChargingParameters?                           DCChargingParameters,
-                                       out String?                                         ErrorResponse,
+                                       [NotNullWhen(true)]  out DCChargingParameters?      DCChargingParameters,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<DCChargingParameters>?  CustomDCChargingParametersParser)
         {
 

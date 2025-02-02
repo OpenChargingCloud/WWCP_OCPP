@@ -81,19 +81,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         // </xs:complexType>
 
         // {
-        //     "description": "Part of ISO 15118-20 price schedule.\r\n",
+        //     "description": "Part of ISO 15118-20 price schedule.",
         //     "javaType": "PriceLevelScheduleEntry",
         //     "type": "object",
         //     "additionalProperties": false,
         //     "properties": {
         //         "duration": {
-        //             "description": "The amount of seconds that define the duration of this given PriceLevelScheduleEntry.\r\n",
+        //             "description": "The amount of seconds that define the duration of this given PriceLevelScheduleEntry.",
         //             "type": "integer"
         //         },
         //         "priceLevel": {
         //             "description": "Defines the price level of this PriceLevelScheduleEntry (referring to NumberOfPriceLevels).
         //                             Small values for the PriceLevel represent a cheaper PriceLevelScheduleEntry.
-        //                             Large values for the PriceLevel represent a more expensive PriceLevelScheduleEntry.\r\n",
+        //                             Large values for the PriceLevel represent a more expensive PriceLevelScheduleEntry.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

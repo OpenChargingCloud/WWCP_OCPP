@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Represents a UnitOfMeasure with a multiplier\r\n",
+        //     "description": "Represents a UnitOfMeasure with a multiplier",
         //     "javaType": "UnitOfMeasure",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //         "unit": {
         //             "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.
         //                             This field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices.
-        //                             If an applicable unit is available in that list, otherwise a \"custom\" unit might be used.\r\n",
+        //                             If an applicable unit is available in that list, otherwise a \"custom\" unit might be used.",
         //             "type": "string",
         //             "default": "Wh",
         //             "maxLength": 20
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to
         //                             the 3rd power. Default is 0.
         //                             The _multiplier_ only multiplies the value of the measurand.
-        //                             It does not specify a conversion between units, for example, kW and W.\r\n",
+        //                             It does not specify a conversion between units, for example, kW and W.",
         //             "type": "integer",
         //             "default": 0
         //         },

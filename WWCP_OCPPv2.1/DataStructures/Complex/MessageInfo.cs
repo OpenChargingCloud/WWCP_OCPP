@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Contains message details, for a message to be displayed on a Charging Station.\r\n",
+        //     "description": "Contains message details, for a message to be displayed on a Charging Station.",
         //     "javaType": "MessageInfo",
         //     "type": "object",
         //     "additionalProperties": false,
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/ComponentType"
         //         },
         //         "id": {
-        //             "description": "Unique id within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).\r\n",
+        //             "description": "Unique id within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
@@ -149,17 +149,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/MessageStateEnumType"
         //         },
         //         "startDateTime": {
-        //             "description": "From what date-time should this message be shown. If omitted: directly.\r\n",
+        //             "description": "From what date-time should this message be shown. If omitted: directly.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "endDateTime": {
-        //             "description": "Until what date-time should this message be shown, after this date/time this message SHALL be removed.\r\n",
+        //             "description": "Until what date-time should this message be shown, after this date/time this message SHALL be removed.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "transactionId": {
-        //             "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.\r\n",
+        //             "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.",
         //             "type": "string",
         //             "maxLength": 36
         //         },

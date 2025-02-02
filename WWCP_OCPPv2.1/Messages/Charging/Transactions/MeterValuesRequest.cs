@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
         //     "definitions": {
         //         "LocationEnumType": {
-        //             "description": "Indicates where the measured value has been sampled. Default =  \"Outlet\"\r\n\r\n",
+        //             "description": "Indicates where the measured value has been sampled. Default =  \"Outlet\"",
         //             "javaType": "LocationEnum",
         //             "type": "string",
         //             "default": "Outlet",
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "MeasurandEnumType": {
-        //             "description": "Type of measurement. Default = \"Energy.Active.Import.Register\"\r\n",
+        //             "description": "Type of measurement. Default = \"Energy.Active.Import.Register\"",
         //             "javaType": "MeasurandEnum",
         //             "type": "string",
         //             "default": "Energy.Active.Import.Register",
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "PhaseEnumType": {
-        //             "description": "Indicates how the measured value is to be interpreted. For instance between L1 and neutral (L1-N) Please note that not all values of phase are applicable to all Measurands. When phase is absent, the measured value is interpreted as an overall value.\r\n",
+        //             "description": "Indicates how the measured value is to be interpreted. For instance between L1 and neutral (L1-N) Please note that not all values of phase are applicable to all Measurands. When phase is absent, the measured value is interpreted as an overall value.",
         //             "javaType": "PhaseEnum",
         //             "type": "string",
         //             "additionalProperties": false,
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "ReadingContextEnumType": {
-        //             "description": "Type of detail value: start, end or sample. Default = \"Sample.Periodic\"\r\n",
+        //             "description": "Type of detail value: start, end or sample. Default = \"Sample.Periodic\"",
         //             "javaType": "ReadingContextEnum",
         //             "type": "string",
         //             "default": "Sample.Periodic",
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "MeterValueType": {
-        //             "description": "Collection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.\r\n",
+        //             "description": "Collection of one or more sampled values in MeterValuesRequest and TransactionEvent. All sampled values in a MeterValue are sampled at the same point in time.",
         //             "javaType": "MeterValue",
         //             "type": "object",
         //             "additionalProperties": false,
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                     "minItems": 1
         //                 },
         //                 "timestamp": {
-        //                     "description": "Timestamp for measured value(s).\r\n",
+        //                     "description": "Timestamp for measured value(s).",
         //                     "type": "string",
         //                     "format": "date-time"
         //                 },
@@ -293,13 +293,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "SampledValueType": {
-        //             "description": "Single sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.\r\n",
+        //             "description": "Single sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.",
         //             "javaType": "SampledValue",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "value": {
-        //                     "description": "Indicates the measured value.\r\n\r\n",
+        //                     "description": "Indicates the measured value.",
         //                     "type": "number"
         //                 },
         //                 "measurand": {
@@ -329,28 +329,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "SignedMeterValueType": {
-        //             "description": "Represent a signed version of the meter value.\r\n",
+        //             "description": "Represent a signed version of the meter value.",
         //             "javaType": "SignedMeterValue",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "signedMeterData": {
-        //                     "description": "Base64 encoded, contains the signed data from the meter in the format specified in _encodingMethod_, which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.\r\n",
+        //                     "description": "Base64 encoded, contains the signed data from the meter in the format specified in _encodingMethod_, which might contain more then just the meter value. It can contain information like timestamps, reference to a customer etc.",
         //                     "type": "string",
         //                     "maxLength": 32768
         //                 },
         //                 "signingMethod": {
-        //                     "description": "*(2.1)* Method used to create the digital signature. Optional, if already included in _signedMeterData_. Standard values for this are defined in Appendix as SigningMethodEnumStringType.\r\n",
+        //                     "description": "Method used to create the digital signature. Optional, if already included in _signedMeterData_. Standard values for this are defined in Appendix as SigningMethodEnumStringType.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
         //                 "encodingMethod": {
-        //                     "description": "Format used by the energy meter to encode the meter data. For example: OCMF or EDL.\r\n",
+        //                     "description": "Format used by the energy meter to encode the meter data. For example: OCMF or EDL.",
         //                     "type": "string",
         //                     "maxLength": 50
         //                 },
         //                 "publicKey": {
-        //                     "description": "*(2.1)* Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.\r\n",
+        //                     "description": "Base64 encoded, sending depends on configuration variable _PublicKeyWithSignedMeterValue_.",
         //                     "type": "string",
         //                     "maxLength": 2500
         //                 },
@@ -364,19 +364,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //             ]
         //         },
         //         "UnitOfMeasureType": {
-        //             "description": "Represents a UnitOfMeasure with a multiplier\r\n",
+        //             "description": "Represents a UnitOfMeasure with a multiplier",
         //             "javaType": "UnitOfMeasure",
         //             "type": "object",
         //             "additionalProperties": false,
         //             "properties": {
         //                 "unit": {
-        //                     "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.\r\n",
+        //                     "description": "Unit of the value. Default = \"Wh\" if the (default) measurand is an \"Energy\" type.\r\nThis field SHALL use a value from the list Standardized Units of Measurements in Part 2 Appendices. \r\nIf an applicable unit is available in that list, otherwise a \"custom\" unit might be used.",
         //                     "type": "string",
         //                     "default": "Wh",
         //                     "maxLength": 20
         //                 },
         //                 "multiplier": {
-        //                     "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0. +\r\nThe _multiplier_ only multiplies the value of the measurand. It does not specify a conversion between units, for example, kW and W.\r\n",
+        //                     "description": "Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power. Default is 0. +\r\nThe _multiplier_ only multiplies the value of the measurand. It does not specify a conversion between units, for example, kW and W.",
         //                     "type": "integer",
         //                     "default": 0
         //                 },
@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //     "additionalProperties": false,
         //     "properties": {
         //         "evseId": {
-        //             "description": "This contains a number (&gt;0) designating an EVSE of the Charging Station. \u20180\u2019 (zero) is used to designate the main power meter.\r\n",
+        //             "description": "This contains a number (&gt;0) designating an EVSE of the Charging Station. \u20180\u2019 (zero) is used to designate the main power meter.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },

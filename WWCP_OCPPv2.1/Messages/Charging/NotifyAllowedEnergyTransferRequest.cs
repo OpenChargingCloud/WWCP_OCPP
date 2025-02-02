@@ -178,12 +178,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     "additionalProperties": false,
         //     "properties": {
         //         "transactionId": {
-        //             "description": "The transaction for which the allowed energy transfer is allowed.\r\n",
+        //             "description": "The transaction for which the allowed energy transfer is allowed.",
         //             "type": "string",
         //             "maxLength": 36
         //         },
         //         "allowedEnergyTransfer": {
-        //             "description": "Modes of energy transfer that are accepted by CSMS.\r\n",
+        //             "description": "Modes of energy transfer that are accepted by CSMS.",
         //             "type": "array",
         //             "additionalItems": false,
         //             "items": {

@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //             "$ref": "#/definitions/StatusInfoType"
         //         },
         //         "ocspResult": {
-        //             "description": "*(2.1)* OCSPResponse class as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;. DER encoded (as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;), and then base64 encoded. MAY only be omitted when status is not Accepted. +\r\nThe minimum supported length is 18000. If a longer _ocspResult_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"GetCertificateStatusResponse.ocspResult\" ].",
+        //             "description": "OCSPResponse class as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;. DER encoded (as defined in &lt;&lt;ref-ocpp_security_24, IETF RFC 6960&gt;&gt;), and then base64 encoded. MAY only be omitted when status is not Accepted. +\r\nThe minimum supported length is 18000. If a longer _ocspResult_ is supported, then the supported length must be communicated in variable OCPPCommCtrlr.FieldLength[ \"GetCertificateStatusResponse.ocspResult\" ].",
         //             "type": "string",
         //             "maxLength": 18000
         //         },

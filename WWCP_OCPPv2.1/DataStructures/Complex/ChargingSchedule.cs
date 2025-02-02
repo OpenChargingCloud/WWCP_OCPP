@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //                     An ISO 15118-2 session can only provide a_salesTariff_ element.
         //                     The field _digestValue_ is used when price schedule or sales tariff are signed.
         //
-        //                     image::images/ChargingSchedule-Simple.png[]\r\n\r\n\r\n",
+        //                     image::images/ChargingSchedule-Simple.png[]",
         //
         //     "javaType": "ChargingSchedule",
         //     "type": "object",
@@ -255,37 +255,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/LimitAtSoCType"
         //         },
         //         "startSchedule": {
-        //             "description": "Starting point of an absolute schedule or recurring schedule.\r\n",
+        //             "description": "Starting point of an absolute schedule or recurring schedule.",
         //             "type": "string",
         //             "format": "date-time"
         //         },
         //         "duration": {
-        //             "description": "Duration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction in case startSchedule is absent.\r\n",
+        //             "description": "Duration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction in case startSchedule is absent.",
         //             "type": "integer"
         //         },
         //         "chargingRateUnit": {
         //             "$ref": "#/definitions/ChargingRateUnitEnumType"
         //         },
         //         "minChargingRate": {
-        //             "description": "Minimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. \r\n",
+        //             "description": "Minimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. ",
         //             "type": "number"
         //         },
         //         "powerTolerance": {
-        //             "description": "*(2.1)* Power tolerance when following EVPowerProfile.\r\n\r\n",
+        //             "description": "Power tolerance when following EVPowerProfile.",
         //             "type": "number"
         //         },
         //         "signatureId": {
-        //             "description": "*(2.1)* Id of this element for referencing in a signature.\r\n",
+        //             "description": "Id of this element for referencing in a signature.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "digestValue": {
-        //             "description": "*(2.1)* Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.\r\n",
+        //             "description": "Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.",
         //             "type": "string",
         //             "maxLength": 88
         //         },
         //         "useLocalTime": {
-        //             "description": "*(2.1)* Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.\r\n\r\n",
+        //             "description": "Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.",
         //             "type": "boolean"
         //         },
         //         "chargingSchedulePeriod": {
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "maxItems": 1024
         //         },
         //         "randomizedDelay": {
-        //             "description": "*(2.1)* Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.\r\n\r\n",
+        //             "description": "Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
